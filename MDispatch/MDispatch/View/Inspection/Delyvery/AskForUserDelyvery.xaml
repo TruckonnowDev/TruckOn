@@ -5,7 +5,7 @@
              xmlns:sig="clr-namespace:SignaturePad.Forms;assembly=SignaturePad.Forms"
              xmlns:input="clr-namespace:Plugin.InputKit.Shared.Controls;assembly=Plugin.InputKit"
              xmlns:helperLang="clr-namespace:MDispatch.Helpers"
-             Title="{x:Static helperLang:LanguageHelper.TitleAskQuestionPage}"
+             Title="{x:Static helperLang:LanguageHelper.WithoutTranslationTitleAskQuestionPage}"
              xmlns:shadowFrame="clr-namespace:MDispatch.NewElement.FrameCusstomise">
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="BOL" Clicked="ToolbarItem_Clicked_1"/>
@@ -20,14 +20,14 @@
                     <shadowFrame:ShadowFrame x:Name="askBlock1"
                                              Style="{StaticResource Key=frameAsk}">
                         <StackLayout Spacing="10">
-                            <Label Text="{x:Static helperLang:LanguageHelper.AskBlockInspectedVehicleAdditionalImperfectionsTitle}" 
+                            <Label Text="{x:Static helperLang:LanguageHelper.WithoutTranslationAskBlockInspectedVehicleAdditionalImperfectionsTitle}" 
                                    Style="{StaticResource Key=labelTitleAsk}"/>
                             <StackLayout Orientation="Horizontal"
                                          Spacing="13">
-                                <Button Text="{x:Static helperLang:LanguageHelper.YesBtnText}"
+                                <Button Text="{x:Static helperLang:LanguageHelper.WithoutTranslationYesBtnText}"
                                         Clicked="Button_Clicked1"
                                         Style="{StaticResource btnAsk}"/>
-                                <Button Text="{x:Static helperLang:LanguageHelper.FoundIssueBtnText}"
+                                <Button Text="{x:Static helperLang:LanguageHelper.WithoutTranslationFoundIssueBtnText}"
                                         Clicked="Button_Clicked1"
                                         Style="{StaticResource btnAsk}"/>
                             </StackLayout>
@@ -66,7 +66,7 @@
                             <StackLayout x:Name="bilingPay"
                                          IsVisible="False"
                                          Spacing="10">
-                                <Label Text="{x:Static helperLang:LanguageHelper.AskBlockBilingPayTitle}"
+                                <Label Text="{x:Static helperLang:LanguageHelper.WithoutTranslationAskBlockBilingPayTitle}"
                                        Style="{StaticResource Key=labelTitleAsk}"/>
                                 <Label x:Name="instructionL"
                                        FontSize="14"
@@ -78,17 +78,17 @@
                     <shadowFrame:ShadowFrame x:Name="askBlock3"
                                              Style="{StaticResource Key=frameAsk}">
                         <StackLayout Spacing="10">
-                            <Label Text="{x:Static helperLang:LanguageHelper.AskBlockClientSignatureBlockTitle}"
+                            <Label Text="{x:Static helperLang:LanguageHelper.WithoutTranslationAskBlockClientSignatureBlockTitle}"
                                    Style="{StaticResource Key=labelTitleAsk}"/>
                             <StackLayout Spacing="10">
-                                <Label Text="{x:Static helperLang:LanguageHelper.AskBlockClientNameTitle}"
+                                <Label Text="{x:Static helperLang:LanguageHelper.WithoutTranslationAskBlockClientNameTitle}"
                                        Style="{StaticResource Key=labelTitleAsk}"/>
-                                <Entry Placeholder="{x:Static helperLang:LanguageHelper.PlaceholderName}"
+                                <Entry Placeholder="{x:Static helperLang:LanguageHelper.WithoutTranslationPlaceholderName}"
                                        TextChanged="Entry_TextChanged"
                                        Style="{StaticResource entryAsk}"/>
                             </StackLayout>
                             <StackLayout>
-                                <Label Text="{x:Static helperLang:LanguageHelper.AskBlockClientSignatureTitle}"
+                                <Label Text="{x:Static helperLang:LanguageHelper.WithoutTranslationAskBlockClientSignatureTitle}"
                                        Style="{StaticResource Key=labelTitleAsk}"/>
                                 <sig:SignaturePadView x:Name="sign"
                                                       StrokeColor="Black"
@@ -107,14 +107,14 @@
                     <shadowFrame:ShadowFrame x:Name="askBlock4"
                                              Style="{StaticResource Key=frameAsk}">
                         <StackLayout Spacing="10">
-                            <Label Text="{x:Static helperLang:LanguageHelper.AskBlockLikeRecive20fromYourNextCarTransportTitle}" 
+                            <Label Text="{x:Static helperLang:LanguageHelper.WithoutTranslationAskBlockLikeRecive20fromYourNextCarTransportTitle}" 
                                    Style="{StaticResource Key=labelTitleAsk}"/>
                             <StackLayout Orientation="Horizontal"
                                          Spacing="13">
-                                <Button Text="{x:Static helperLang:LanguageHelper.YesBtnText}"
+                                <Button Text="{x:Static helperLang:LanguageHelper.WithoutTranslationYesBtnText}"
                                         Clicked="Button_Clicked_1"
                                         Style="{StaticResource btnAsk}"/>
-                                <Button Text="{x:Static helperLang:LanguageHelper.NoBtnText}"
+                                <Button Text="{x:Static helperLang:LanguageHelper.WithoutTranslationNoBtnText}"
                                         Clicked="Button_Clicked_1"
                                         Style="{StaticResource btnAsk}"/>
                             </StackLayout>
@@ -123,7 +123,7 @@
                     <shadowFrame:ShadowFrame x:Name="askBlock5"
                                              Style="{StaticResource Key=frameAsk}">
                         <StackLayout Spacing="10">
-                            <Label Text="{x:Static helperLang:LanguageHelper.AskBlockRateDriverTitle}"
+                            <Label Text="{x:Static helperLang:LanguageHelper.WithoutTranslationAskBlockRateDriverTitle}"
                                    Style="{StaticResource Key=labelTitleAsk}"/>
                             <input:AdvancedSlider
                                 MaxValue="10"
@@ -134,7 +134,7 @@
                     </shadowFrame:ShadowFrame>
                 </StackLayout>
                 <Button x:Name="btnSave"
-                        Text="{x:Static helperLang:LanguageHelper.SaveBtnText}"
+                        Text="{x:Static helperLang:LanguageHelper.WithoutTranslatioSaveBtnText}"
                         BackgroundColor="#2C5DEB"
                         TextColor="White"
                         Clicked="Button_Clicked2"
@@ -145,7 +145,7 @@
                                          x:Name="bloclThank"
                                          Style="{StaticResource Key=frameAsk}">
                     <StackLayout>
-                        <Label Text="{x:Static helperLang:LanguageHelper.ThankYouInspactionText}" 
+                        <Label Text="{x:Static helperLang:LanguageHelper.WithoutTranslationThankYouInspactionText}" 
                                TextColor="#2C5DEB"
                                FontSize="18"
                                FontFamily="{StaticResource OpenSans-Regular}"/>

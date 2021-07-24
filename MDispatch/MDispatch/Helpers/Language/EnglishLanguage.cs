@@ -297,7 +297,7 @@
 
         public string HintAddDamageForUser => "Click on the damaged area to add damage, which would remove the touch of the damage (After adding the damage, the application will return to the camera)";
 
-        public string AskBlockInspectedVehicleAdditionalImperfectionsTitle => "Осматривали ли вы автомобиль на предмет каких-либо дополнительных недостатков, кроме перечисленных при получении?";
+        public string AskBlockInspectedVehicleAdditionalImperfectionsTitle => "Have you examined the vehicle for any additional deficiencies other than those listed upon receipt?";
         public string FoundIssueBtnText => "Found an issue";
 
         public string AskBlockBilingPayTitle => "Biling pay";

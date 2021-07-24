@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MDispatch.View.Inspection.Feedback"
              xmlns:input="clr-namespace:Plugin.InputKit.Shared.Controls;assembly=Plugin.InputKit"
-             Title="{x:Static helperLang:LanguageHelper.TitleFeedBackPage}"
+             Title="{x:Static helperLang:LanguageHelper.WithoutTranslationTitleFeedBackPage}"
              xmlns:shadowFrame="clr-namespace:MDispatch.NewElement.FrameCusstomise"
              xmlns:helperLang="clr-namespace:MDispatch.Helpers">
     <ContentPage.Content>
@@ -15,7 +15,7 @@
                 <shadowFrame:ShadowFrame x:Name="askBlock1"
                                          Style="{StaticResource Key=frameAsk}">
                     <StackLayout Spacing="10">
-                        <Label Text="{x:Static helperLang:LanguageHelper.AskBlockSatisfiedServiceTitle}"
+                        <Label Text="{x:Static helperLang:LanguageHelper.WithoutTranslationAskBlockSatisfiedServiceTitle}"
                                Style="{StaticResource Key=labelTitleAsk}"/>
                         <input:AdvancedSlider
                             MaxValue="10"
@@ -27,17 +27,17 @@
                 <shadowFrame:ShadowFrame x:Name="askBlock2"
                                          Style="{StaticResource Key=frameAsk}">
                     <StackLayout Spacing="10">
-                        <Label Text="{x:Static helperLang:LanguageHelper.AskBlockUseCompanyAgainTitle}"
+                        <Label Text="{x:Static helperLang:LanguageHelper.WithoutTranslationAskBlockUseCompanyAgainTitle}"
                                Style="{StaticResource Key=labelTitleAsk}"/>
                         <StackLayout Orientation="Horizontal"
                                      Spacing="13">
-                            <Button Text="{x:Static helperLang:LanguageHelper.YesBtnText}"
+                            <Button Text="{x:Static helperLang:LanguageHelper.WithoutTranslationYesBtnText}"
                                     Clicked="Button_Clicked"
                                     Style="{StaticResource btnAsk}"/>
-                            <Button Text="{x:Static helperLang:LanguageHelper.MaybeBtnText}"
+                            <Button Text="{x:Static helperLang:LanguageHelper.WithoutTranslationMaybeBtnText}"
                                     Clicked="Button_Clicked"
                                     Style="{StaticResource btnAsk}"/>
-                            <Button Text="{x:Static helperLang:LanguageHelper.NoBtnText}"
+                            <Button Text="{x:Static helperLang:LanguageHelper.WithoutTranslationNoBtnText}"
                                     Clicked="Button_Clicked"
                                     Style="{StaticResource btnAsk}"/>
                         </StackLayout>
@@ -46,14 +46,14 @@
                 <shadowFrame:ShadowFrame x:Name="askBlock3"
                                          Style="{StaticResource Key=frameAsk}">
                     <StackLayout Spacing="10">
-                        <Label Text="{x:Static helperLang:LanguageHelper.AskBlockSatisfiedServiceTitle}"
+                        <Label Text="{x:Static helperLang:LanguageHelper.WithoutTranslationAskBlockSatisfiedServiceTitle}"
                                Style="{StaticResource Key=labelTitleAsk}"/>
                         <StackLayout Orientation="Horizontal"
                                      Spacing="13">
-                            <Button Text="{x:Static helperLang:LanguageHelper.YesBtnText}"
+                            <Button Text="{x:Static helperLang:LanguageHelper.WithoutTranslationYesBtnText}"
                                     Clicked="Button_Clicked1"
                                     Style="{StaticResource btnAsk}"/>
-                            <Button Text="{x:Static helperLang:LanguageHelper.NoBtnText}"
+                            <Button Text="{x:Static helperLang:LanguageHelper.WithoutTranslationNoBtnText}"
                                     Clicked="Button_Clicked1"
                                     Style="{StaticResource btnAsk}"/>
                         </StackLayout>
@@ -62,7 +62,7 @@
                 <shadowFrame:ShadowFrame x:Name="askBlock4"
                                          Style="{StaticResource Key=frameAsk}">
                     <StackLayout Spacing="10">
-                        <Label Text="{x:Static helperLang:LanguageHelper.AskBlockDriverPerformTitle}"
+                        <Label Text="{x:Static helperLang:LanguageHelper.WithoutTranslationAskBlockDriverPerformTitle}"
                                Style="{StaticResource Key=labelTitleAsk}"/>
                         <input:AdvancedSlider
                             MaxValue="10"
@@ -73,14 +73,14 @@
                 <shadowFrame:ShadowFrame x:Name="askBlock5"
                                          Style="{StaticResource Key=frameAsk}">
                     <StackLayout Spacing="10">
-                        <Label Text="{x:Static helperLang:LanguageHelper.AskBlockYourTitle}"
+                        <Label Text="{x:Static helperLang:LanguageHelper.WithoutTranslationAskBlockYourTitle}"
                                Style="{StaticResource Key=labelTitleAsk}"/>
-                        <Entry Placeholder="{x:Static helperLang:LanguageHelper.PlaceholderEmail}"
+                        <Entry Placeholder="{x:Static helperLang:LanguageHelper.WithoutTranslationPlaceholderEmail}"
                                Text="{Binding Email}"
                                Style="{StaticResource entryAsk}"/>
                     </StackLayout>
                 </shadowFrame:ShadowFrame>
-                <Button Text="{x:Static helperLang:LanguageHelper.ContinuetnBtnText}"
+                <Button Text="{x:Static helperLang:LanguageHelper.WithoutTranslationContinuingBtnText}"
                         Clicked="ToolbarItem_Clicked"
                         BackgroundColor="#2C5DEB"
                         TextColor="White"

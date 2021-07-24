@@ -19,7 +19,7 @@
                  </FlexLayout>
                 <shadowFrame:ShadowFrame Style="{StaticResource Key=frameAsk}">
                     <StackLayout Spacing="4">
-                        <Label Text="{x:Static helperLang:LanguageHelper.TitleOriginInfo}"
+                        <Label Text="{x:Static helperLang:LanguageHelper.WithoutTranslatioTitleOriginInfo}"
                                Style="{StaticResource Key=labelTitleAsk}"/>
                         <Label FontSize="14"
                                TextColor="#101010"
@@ -41,7 +41,7 @@
                                FontFamily="{StaticResource OpenSans-Regular}" >
                             <Label.FormattedText>
                                 <FormattedString>
-                                    <Span Text="{x:Static helperLang:LanguageHelper.ContatInfo}"/>
+                                    <Span Text="{x:Static helperLang:LanguageHelper.WithoutTranslationContatInfo}"/>
                                     <Span Text=" "/>
                                     <Span Text="{Binding Shipping.ContactNameP}"/>
                                 </FormattedString>
@@ -52,7 +52,7 @@
                                FontFamily="{StaticResource OpenSans-Regular}" >
                             <Label.FormattedText>
                                 <FormattedString>
-                                    <Span Text="{x:Static helperLang:LanguageHelper.PhoneInfo}"/>
+                                    <Span Text="{x:Static helperLang:LanguageHelper.WithoutTranslationPhoneInfo}"/>
                                     <Span Text=" "/>
                                     <Span Text="{Binding Shipping.PhoneP}" TextColor="#2C5DEB"/>
                                 </FormattedString>
@@ -62,7 +62,7 @@
                 </shadowFrame:ShadowFrame>
                 <shadowFrame:ShadowFrame Style="{StaticResource Key=frameAsk}">
                     <StackLayout Spacing="4">
-                        <Label Text="{x:Static helperLang:LanguageHelper.TitleDestinatiinInfo}"
+                        <Label Text="{x:Static helperLang:LanguageHelper.WithoutTranslatioTitleDestinatiinInfo}"
                                Style="{StaticResource Key=labelTitleAsk}"/>
                         <Label FontSize="14"
                                TextColor="#101010"
@@ -84,7 +84,7 @@
                                FontFamily="{StaticResource OpenSans-Regular}" >
                              <Label.FormattedText>
                                 <FormattedString>
-                                    <Span Text="{x:Static helperLang:LanguageHelper.ContatInfo}"/>
+                                    <Span Text="{x:Static helperLang:LanguageHelper.WithoutTranslationContatInfo}"/>
                                     <Span Text=" "/>
                                     <Span Text="{Binding Shipping.ContactNameD}"/>
                                 </FormattedString>
@@ -95,7 +95,7 @@
                                 FontFamily="{StaticResource OpenSans-Regular}" >
                             <Label.FormattedText>
                                 <FormattedString>
-                                    <Span Text="{x:Static helperLang:LanguageHelper.PhoneInfo}"/>
+                                    <Span Text="{x:Static helperLang:LanguageHelper.WithoutTranslationPhoneInfo}"/>
                                     <Span Text=" "/>
                                     <Span Text="{Binding Shipping.PhoneD}" TextColor="#2C5DEB"/>
                                 </FormattedString>
@@ -118,13 +118,13 @@
                 <shadowFrame:ShadowFrame x:Name="askBlock14"
                                          Style="{StaticResource Key=frameAsk}">
                     <StackLayout Spacing="10">
-                        <Label Text="{x:Static helperLang:LanguageHelper.AskBlockSendBOLTitle}"
+                        <Label Text="{x:Static helperLang:LanguageHelper.WithoutTranslationAskBlockSendBOLTitle}"
                                Style="{StaticResource labelTitleAsk}"/>
-                        <Entry Placeholder="{x:Static helperLang:LanguageHelper.PlaceholderEmail}"
+                        <Entry Placeholder="{x:Static helperLang:LanguageHelper.WithoutTranslationPlaceholderEmail}"
                                Keyboard="Email"
                                Text="{Binding Email}"
                                Style="{StaticResource entryAsk}"/>
-                        <Button Text="{x:Static helperLang:LanguageHelper.SendBOLBtnText}"
+                        <Button Text="{x:Static helperLang:LanguageHelper.WithoutTranslationSendBOLBtnText}"
                                 BackgroundColor="#2C5DEB"
                                 TextColor="White"
                                 Clicked="Button_Clicked"

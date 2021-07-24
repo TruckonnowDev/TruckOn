@@ -39,7 +39,7 @@
                                        FontFamily="{StaticResource OpenSans-Regular}" >
                                     <Label.FormattedText>
                                         <FormattedString>
-                                            <Span Text="{x:Static helperLang:LanguageHelper.ContatInfo}"/>
+                                            <Span Text="{x:Static helperLang:LanguageHelper.WithoutTranslationContatInfo}"/>
                                             <Span Text=" "/>
                                             <Span Text="{Binding Shipping.ContactNameP}"/>
                                         </FormattedString>
@@ -50,7 +50,7 @@
                                            FontFamily="{StaticResource OpenSans-Regular}" >
                                     <Label.FormattedText>
                                         <FormattedString>
-                                            <Span Text="{x:Static helperLang:LanguageHelper.PhoneInfo}"/>
+                                            <Span Text="{x:Static helperLang:LanguageHelper.WithoutTranslationPhoneInfo}"/>
                                             <Span Text=" "/>
                                             <Span Text="{Binding Shipping.PhoneP}" TextColor="#2C5DEB"/>
                                         </FormattedString>
@@ -82,7 +82,7 @@
                                        FontFamily="{StaticResource OpenSans-Regular}" >
                                     <Label.FormattedText>
                                         <FormattedString>
-                                            <Span Text="{x:Static helperLang:LanguageHelper.ContatInfo}"/>
+                                            <Span Text="{x:Static helperLang:LanguageHelper.WithoutTranslationContatInfo}"/>
                                             <Span Text=" "/>
                                             <Span Text="{Binding Shipping.ContactNameD}"/>
                                         </FormattedString>
@@ -93,7 +93,7 @@
                                            FontFamily="{StaticResource OpenSans-Regular}" >
                                     <Label.FormattedText>
                                         <FormattedString>
-                                            <Span Text="{x:Static helperLang:LanguageHelper.PhoneInfo}"/>
+                                            <Span Text="{x:Static helperLang:LanguageHelper.WithoutTranslationPhoneInfo}"/>
                                             <Span Text=" "/>
                                             <Span Text="{Binding Shipping.PhoneD}" TextColor="#2C5DEB"/>
                                         </FormattedString>
@@ -154,7 +154,7 @@
                         <shadowFrame:ShadowFrame x:Name="askBlock3"
                                                  Style="{StaticResource Key=frameAsk}">
                             <StackLayout Spacing="10">
-                                <Label Text="{x:Static helperLang:LanguageHelper.TitleYourSignature}"
+                                <Label Text="{x:Static helperLang:LanguageHelper.WithoutTranslatioTitleYourSignature}"
                                        Style="{StaticResource Key=labelTitleAsk}"/>
                                 <sig:SignaturePadView x:Name="sign"
                                                       StrokeColor="Black"
@@ -172,7 +172,7 @@
                     </StackLayout>
                 </StackLayout>
                 <Button x:Name="btnSave"
-                        Text="{x:Static helperLang:LanguageHelper.SaveBtnText}"
+                        Text="{x:Static helperLang:LanguageHelper.WithoutTranslatioSaveBtnText}"
                         TextColor="White"
                         Clicked="Button_Clicked_1"
                         HeightRequest="46"
@@ -184,7 +184,7 @@
                        x:Name="bloclThank"
                        Style="{StaticResource Key=frameAsk}">
                     <StackLayout Padding="10">
-                        <Label Text="{x:Static helperLang:LanguageHelper.ThankYouInspactionText}" 
+                        <Label Text="{x:Static helperLang:LanguageHelper.WithoutTranslationThankYouInspactionText}" 
                                FontSize="14"
                                TextColor="#2C5DEB"
                                FontFamily="{StaticResource OpenSans-Regular}"/>

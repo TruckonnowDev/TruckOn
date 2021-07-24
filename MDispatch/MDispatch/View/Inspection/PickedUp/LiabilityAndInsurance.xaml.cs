@@ -163,7 +163,7 @@ namespace MDispatch.View.Inspection.PickedUp
                         {
                             new Label()
                                     {
-                                        Text = LanguageHelper.TypeInfo,
+                                        Text = LanguageHelper.WithoutTranslationTypeInfo,
                                         FontSize = 14,
                                         TextColor = Color.FromHex("#101010"),
                                         FontFamily = fontRegular
@@ -184,7 +184,7 @@ namespace MDispatch.View.Inspection.PickedUp
                         {
                             new Label()
                             {
-                                Text = LanguageHelper.ColorInfo,
+                                Text = LanguageHelper.WithoutTranslationColorInfo,
                                 FontSize = 14,
                                 TextColor = Color.FromHex("#101010"),
                                 FontFamily = fontRegular
@@ -225,7 +225,7 @@ namespace MDispatch.View.Inspection.PickedUp
                                     new Label()
                                     {
                                         HorizontalTextAlignment = TextAlignment.Center,
-                                        Text = LanguageHelper.HintDamegePickedUp,
+                                        Text = LanguageHelper.WithoutTranslationHintDamegePickedUp,
                                         FontSize = 12,
                                         TextColor = Color.FromHex("#101010"),
                                         FontFamily = fontRegular
@@ -246,7 +246,7 @@ namespace MDispatch.View.Inspection.PickedUp
                                     new Label()
                                     {
                                         HorizontalTextAlignment = TextAlignment.Center,
-                                        Text = LanguageHelper.HintDamegeDelivery,
+                                        Text = LanguageHelper.WithoutTranslationHintDamegeDelivery,
                                         FontSize = 12,
                                         TextColor = Color.FromHex("#101010"),
                                         FontFamily = fontRegular
@@ -264,7 +264,7 @@ namespace MDispatch.View.Inspection.PickedUp
                             new Label()
                             {
                                 HorizontalTextAlignment = TextAlignment.Center,
-                                Text = LanguageHelper.SeeInspactinPhoneBtnText,
+                                Text = LanguageHelper.WithoutTranslationSeeInspactinPhoneBtnText,
                                 FontSize = 16,
                                 VerticalTextAlignment = TextAlignment.Center,
                                 FontFamily = fontBold,
@@ -455,7 +455,7 @@ namespace MDispatch.View.Inspection.PickedUp
                     {
                         ((Entry)sender).Text = "";
                         blockAskPay.IsVisible = false;
-                        await PopupNavigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
+                        await PopupNavigation.PushAsync(new Alert(LanguageHelper.WithoutTranslationAskErrorAlert, null));
                         CheckAsk();
                     }
                 }

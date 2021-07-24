@@ -14,6 +14,7 @@ namespace MDispatch.Helpers
         public static string PlaceholderPassword => Language.PlaceholderPassword;
         public static string BtnLogInText => Language.BtnLogInText;
         public static string ForGotPasswordText => Language.ForGotPasswordText;
+        public static string WithoutTranslationPlaceholderEmail => WithoutTranslationLanguage.PlaceholderEmail;
 
         public static string PasswordChangeRequestTitel => Language.PasswordChangeRequestTitel;
         public static string PlaceholderEmailChangeRequest => Language.PlaceholderEmailChangeRequest;
@@ -43,6 +44,7 @@ namespace MDispatch.Helpers
         public static string InformationPikedUpSaved => Language.InformationPikedUpSaved;
         public static string FeedbackSaved => Language.FeedbackSaved;
         public static string PaymmantMethodSaved => Language.PaymmantMethodSaved;
+        public static string WithoutTranslationAskErrorAlert => WithoutTranslationLanguage.AskErrorAlert;
 
         public static string ScanPlateNumber => Language.ScanPlateNumber;
         public static string TitleSetPlateTruckAlert => Language.TitleSetPlateTruckAlert;
@@ -62,6 +64,9 @@ namespace MDispatch.Helpers
         public static string PaymentInfo => Language.PaymentInfo;
         public static string Instructions => Language.Instructions;
         public static string ReedInstructionsBtnText => Language.ReedInstructionsBtnText;
+        public static string WithoutTranslationContatInfo => WithoutTranslationLanguage.ContatInfo;
+        public static string WithoutTranslationPhoneInfo => WithoutTranslationLanguage.PhoneInfo;
+        public static string WithoutTranslationPaymentInfo => WithoutTranslationLanguage.PaymentInfo;
 
         public static string TitleSettingsPage => Language.TitleSettingsPage;
         public static string DocumentInfo => Language.DocumentInfo;
@@ -169,6 +174,7 @@ namespace MDispatch.Helpers
         public static string AskBlockHelpYouLoadTitle => Language.AskBlockHelpYouLoadTitle;
         public static string AskBlockLoadTheVehicleTitle => Language.AskBlockLoadTheVehicleTitle;
         public static string PlaceholderName => Language.PlaceholderName;
+        public static string WithoutTranslationPlaceholderName => WithoutTranslationLanguage.PlaceholderName;
 
         public static string AskBlockDamageAnythingTitle => Language.AskBlockDamageAnythingTitle;
         public static string PlaceholderIfAny => Language.PlaceholderIfAny;
@@ -204,12 +210,13 @@ namespace MDispatch.Helpers
         public static string TitleDestinatiinInfo => Language.TitleDestinatiinInfo;
         public static string TitleYourSignature => Language.TitleYourSignature;
         public static string SaveBtnText => Language.SaveBtnText;
-        public static string TitleOriginInfo => Language.TitleOriginInfo;
-        public static string TitleDestinatiinInfo => Language.TitleDestinatiinInfo;
-        public static string TitleYourSignature => Language.TitleYourSignature;
-        public static string SaveBtnText => Language.SaveBtnText;
+        public static string WithoutTranslatioTitleOriginInfo => WithoutTranslationLanguage.TitleOriginInfo;
+        public static string WithoutTranslatioTitleDestinatiinInfo => WithoutTranslationLanguage.TitleDestinatiinInfo;
+        public static string WithoutTranslatioTitleYourSignature => WithoutTranslationLanguage.TitleYourSignature;
+        public static string WithoutTranslatioSaveBtnText => WithoutTranslationLanguage.SaveBtnText;
 
         public static string ThankYouInspactionText => Language.ThankYouInspactionText;
+        public static string WithoutTranslationThankYouInspactionText => WithoutTranslationLanguage.ThankYouInspactionText;
 
         public static string AskBlockAccountPasswordTitle => Language.AskBlockAccountPasswordTitle;
         public static string PlaceholderAccountPassword => Language.PlaceholderAccountPassword;
@@ -222,29 +229,46 @@ namespace MDispatch.Helpers
         public static string HintDamegePickedUp => Language.HintDamegePickedUp;
         public static string HintDamegeDelivery => Language.HintDamegeDelivery;
         public static string SeeInspactinPhoneBtnText => Language.SeeInspactinPhoneBtnText;
+        public static string WithoutTranslationTypeInfo => WithoutTranslationLanguage.TypeInfo;
+        public static string WithoutTranslationColorInfo => WithoutTranslationLanguage.ColorInfo;
+        public static string WithoutTranslationHintDamegePickedUp => WithoutTranslationLanguage.HintDamegePickedUp;
+        public static string WithoutTranslationHintDamegeDelivery => WithoutTranslationLanguage.HintDamegeDelivery;
+        public static string WithoutTranslationSeeInspactinPhoneBtnText => WithoutTranslationLanguage.SeeInspactinPhoneBtnText;
 
         public static string AskBlockSendBOLTitle => Language.AskBlockSendBOLTitle;
+        public static string WithoutTranslationAskBlockSendBOLTitle => WithoutTranslationLanguage.AskBlockSendBOLTitle;
         public static string SendBOLBtnText => Language.SendBOLBtnText;
+        public static string WithoutTranslationSendBOLBtnText => WithoutTranslationLanguage.SendBOLBtnText;
 
         public static string TitlePhotoInspactionPickedUp => Language.TitlePhotoInspactionPickedUp;
+        public static string WithoutTranslationTitlePhotoInspactionPickedUp => WithoutTranslationLanguage.TitlePhotoInspactionPickedUp;
         public static string TitlePhotoInspactionDelivery => Language.TitlePhotoInspactionDelivery;
+        public static string WithoutTranslationTitlePhotoInspactionDelivery => WithoutTranslationLanguage.TitlePhotoInspactionDelivery;
 
         public static string TitleAlertSendEmailBOL => Language.TitleAlertSendEmailBOL;
+        public static string WithoutTranslationTitleAlertSendEmailBOL => WithoutTranslationLanguage.TitleAlertSendEmailBOL;
 
         public static string DescriptionDiscount => Language.DescriptionDiscount;
+        public static string WithoutTranslationDescriptionDiscount => WithoutTranslationLanguage.DescriptionDiscount;
 
         public static string TitleFeedBackPage => Language.TitleFeedBackPage;
+        public static string WithoutTranslationTitleFeedBackPage => WithoutTranslationLanguage.TitleFeedBackPage;
 
         public static string AskBlockSatisfiedServiceTitle => Language.AskBlockSatisfiedServiceTitle;
+        public static string WithoutTranslationAskBlockSatisfiedServiceTitle => WithoutTranslationLanguage.AskBlockSatisfiedServiceTitle;
 
         public static string AskBlockUseCompanyAgainTitle => Language.AskBlockUseCompanyAgainTitle;
+        public static string WithoutTranslationAskBlockUseCompanyAgainTitle => WithoutTranslationLanguage.AskBlockUseCompanyAgainTitle;
         public static string MaybeBtnText => Language.MaybeBtnText;
+        public static string WithoutTranslationMaybeBtnText => WithoutTranslationLanguage.MaybeBtnText;
 
         public static string AskBlockPromotionTitle => Language.AskBlockPromotionTitle;
 
         public static string AskBlockDriverPerformTitle => Language.AskBlockDriverPerformTitle;
+        public static string WithoutTranslationAskBlockDriverPerformTitle => WithoutTranslationLanguage.AskBlockDriverPerformTitle;
 
         public static string AskBlockYourTitle => Language.AskBlockYourTitle;
+        public static string WithoutTranslationAskBlockYourTitle => WithoutTranslationLanguage.AskBlockYourTitle;
 
         public static string AskBlockManyKeysTotalTitle => Language.AskBlockManyKeysTotalTitle;
         public static string PlaceholderManyKeysTotal => Language.PlaceholderManyKeysTotal;
@@ -320,18 +344,27 @@ namespace MDispatch.Helpers
         public static string IConfirmTheInspectionBtnText => Language.IConfirmTheInspectionBtnText;
 
         public static string HintAddDamageForUser => Language.HintAddDamageForUser;
+        public static string WithoutTranslationHintAddDamageForUser => WithoutTranslationLanguage.HintAddDamageForUser;
 
         public static string AskBlockInspectedVehicleAdditionalImperfectionsTitle => Language.AskBlockInspectedVehicleAdditionalImperfectionsTitle;
         public static string FoundIssueBtnText => Language.FoundIssueBtnText;
+        public static string WithoutTranslationFoundIssueBtnText => WithoutTranslationLanguage.FoundIssueBtnText;
+        public static string WithoutTranslationAskBlockInspectedVehicleAdditionalImperfectionsTitle => WithoutTranslationLanguage.AskBlockInspectedVehicleAdditionalImperfectionsTitle;
 
         public static string AskBlockBilingPayTitle => Language.AskBlockBilingPayTitle;
+        public static string WithoutTranslationAskBlockBilingPayTitle => WithoutTranslationLanguage.AskBlockBilingPayTitle;
         public static string AskBlockClientSignatureBlockTitle => Language.AskBlockClientSignatureBlockTitle;
+        public static string WithoutTranslationAskBlockClientSignatureBlockTitle => WithoutTranslationLanguage.AskBlockClientSignatureBlockTitle;
         public static string AskBlockClientNameTitle => Language.AskBlockClientNameTitle;
+        public static string WithoutTranslationAskBlockClientNameTitle => WithoutTranslationLanguage.AskBlockClientNameTitle;
         public static string AskBlockClientSignatureTitle => Language.AskBlockClientSignatureTitle;
+        public static string WithoutTranslationAskBlockClientSignatureTitle => WithoutTranslationLanguage.AskBlockClientSignatureTitle;
 
         public static string AskBlockLikeRecive20fromYourNextCarTransportTitle => Language.AskBlockLikeRecive20fromYourNextCarTransportTitle;
+        public static string WithoutTranslationAskBlockLikeRecive20fromYourNextCarTransportTitle => WithoutTranslationLanguage.AskBlockLikeRecive20fromYourNextCarTransportTitle;
 
         public static string AskBlockRateDriverTitle => Language.AskBlockRateDriverTitle;
+        public static string WithoutTranslationAskBlockRateDriverTitle => WithoutTranslationLanguage.AskBlockRateDriverTitle;
 
         public static string VehicleInspectionPikedUp => Language.VehicleInspectionPikedUp;
         public static string VehicleInspectionDelivery => Language.VehicleInspectionDelivery;

@@ -65,7 +65,7 @@ namespace MDispatch.View.Inspection
                 {
                     blockPhotoInspection.Children.Add(new Label()
                     {
-                        Text = LanguageHelper.TitlePhotoInspactionPickedUp,
+                        Text = LanguageHelper.WithoutTranslationTitlePhotoInspactionPickedUp,
                         FontSize = 14,
                         FontFamily = fontBold,
                         Margin = new Thickness(0, 0, 0, 15),
@@ -91,7 +91,7 @@ namespace MDispatch.View.Inspection
                 {
                     blockPhotoInspection.Children.Add(new Label()
                     {
-                        Text = LanguageHelper.TitlePhotoInspactionDelivery,
+                        Text = LanguageHelper.WithoutTranslationTitlePhotoInspactionDelivery,
                         FontSize = 14,
                         FontFamily = fontBold,
                         Margin = new Thickness(0, 5, 0, 15),
@@ -197,7 +197,7 @@ namespace MDispatch.View.Inspection
                         {
                             new Label()
                                     {
-                                        Text = LanguageHelper.TypeInfo,
+                                        Text = LanguageHelper.WithoutTranslationTypeInfo,
                                         FontSize = 14,
                                         TextColor = Color.FromHex("#101010"),
                                         FontFamily = fontRegular
@@ -218,7 +218,7 @@ namespace MDispatch.View.Inspection
                         {
                             new Label()
                             {
-                                Text = LanguageHelper.ColorInfo,
+                                Text = LanguageHelper.WithoutTranslationColorInfo,
                                         FontSize = 14,
                                         TextColor = Color.FromHex("#101010"),
                                         FontFamily = fontRegular
@@ -259,7 +259,7 @@ namespace MDispatch.View.Inspection
                                     new Label()
                                     {
                                         HorizontalTextAlignment = TextAlignment.Center,
-                                        Text = LanguageHelper.HintDamegePickedUp,
+                                        Text = LanguageHelper.WithoutTranslationHintDamegePickedUp,
                                         FontSize = 12,
                                         TextColor = Color.FromHex("#101010"),
                                         FontFamily = fontRegular
@@ -280,7 +280,7 @@ namespace MDispatch.View.Inspection
                                     new Label()
                                     {
                                         HorizontalTextAlignment = TextAlignment.Center,
-                                        Text = LanguageHelper.HintDamegeDelivery,
+                                        Text = LanguageHelper.WithoutTranslationHintDamegeDelivery,
                                         FontSize = 12,
                                         TextColor = Color.FromHex("#101010"),
                                         FontFamily = fontRegular

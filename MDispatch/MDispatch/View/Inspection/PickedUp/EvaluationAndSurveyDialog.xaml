@@ -32,7 +32,7 @@
                        Margin="20"/>
                 <Label TextColor="#101010"
                        FontSize="20"
-                       Text="{x:Static helperLang:LanguageHelper.DescriptionDiscount}"
+                       Text="{x:Static helperLang:LanguageHelper.WithoutTranslationDescriptionDiscount}"
                        VerticalOptions="Center"
                        HorizontalTextAlignment="Center"
                        FontFamily="{StaticResource OpenSans-Bold}"
@@ -41,7 +41,7 @@
                          BackgroundColor="#E6E6E6"
                          Margin="10, 0, 10, 0"/>
                 <FlexLayout JustifyContent="SpaceEvenly">
-                    <Button Text="{x:Static helperLang:LanguageHelper.NoBtnText}"
+                    <Button Text="{x:Static helperLang:LanguageHelper.WithoutTranslationNoBtnText}"
                             BackgroundColor="White"
                             TextColor="#2C5DEB"
                             Clicked="Button_Clicked_1"
@@ -50,7 +50,7 @@
                     <BoxView WidthRequest="1"
                              BackgroundColor="#E6E6E6"
                              Margin="0, 10, 0, 10"/>
-                    <Button Text="{x:Static helperLang:LanguageHelper.YesBtnText}"
+                    <Button Text="{x:Static helperLang:LanguageHelper.WithoutTranslationYesBtnText}"
                             BackgroundColor="White"
                             TextColor="#2C5DEB"
                             Command="{Binding GoToFeedBackCommand}"

@@ -19,7 +19,7 @@
                     <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
                 </Image.GestureRecognizers>
             </Image>
-            <Label Text="{x:Static helperLang:LanguageHelper.HintAddDamageForUser}"
+            <Label Text="{x:Static helperLang:LanguageHelper.WithoutTranslationHintAddDamageForUser}"
                    TextColor="#2C5DEB"
                    FontSize="14" AbsoluteLayout.LayoutFlags="PositionProportional"
                    AbsoluteLayout.LayoutBounds=".5, .9, Autosize, Autosize"

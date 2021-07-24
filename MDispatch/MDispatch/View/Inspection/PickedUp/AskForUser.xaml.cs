@@ -100,7 +100,7 @@ namespace MDispatch.View.Inspection.PickedUp
             }
             else
             {
-                await PopupNavigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
+                await PopupNavigation.PushAsync(new Alert(LanguageHelper.WithoutTranslationAskErrorAlert, null));
                 CheckAsk();
             }
         }

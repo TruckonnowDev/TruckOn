@@ -25,7 +25,7 @@
             <StackLayout Spacing="0">
                 <Label TextColor="#101010"
                        FontSize="20"
-                       Text="{x:Static helperLang:LanguageHelper.TitleAlertSendEmailBOL}"
+                       Text="{x:Static helperLang:LanguageHelper.WithoutTranslationTitleAlertSendEmailBOL}"
                        VerticalOptions="Center"
                        HorizontalTextAlignment="Center"
                        FontFamily="{StaticResource OpenSans-Bold}"
@@ -34,7 +34,7 @@
                          BackgroundColor="#E6E6E6"
                          Margin="10, 0, 10, 0"/>
                 <FlexLayout JustifyContent="SpaceEvenly">
-                    <Button Text="{x:Static helperLang:LanguageHelper.NoBtnText}"
+                    <Button Text="{x:Static helperLang:LanguageHelper.WithoutTranslationNoBtnText}"
                             BackgroundColor="White"
                             TextColor="#2C5DEB"
                             Clicked="Button_Clicked_1"
@@ -43,7 +43,7 @@
                     <BoxView WidthRequest="1"
                              BackgroundColor="#E6E6E6"
                              Margin="0, 10, 0, 10"/>
-                    <Button Text="{x:Static helperLang:LanguageHelper.YesBtnText}"
+                    <Button Text="{x:Static helperLang:LanguageHelper.WithoutTranslationYesBtnText}"
                             BackgroundColor="White"
                             TextColor="#2C5DEB"
                             Clicked="Button_Clicked"
@@ -58,10 +58,10 @@
                              Padding="10">
                     <Entry x:Name="emailE"
                            Text="{Binding Email}"
-                           Placeholder="{x:Static helperLang:LanguageHelper.PlaceholderEmail}"
+                           Placeholder="{x:Static helperLang:LanguageHelper.WithoutTranslationPlaceholderEmail}"
                            TextChanged="EmailE_TextChanged"
                            Style="{StaticResource entryAsk}"/>
-                    <Button Text="{x:Static helperLang:LanguageHelper.ContinuetnBtnText}"
+                    <Button Text="{x:Static helperLang:LanguageHelper.WithoutTranslationContinuingBtnText}"
                             BackgroundColor="#2C5DEB"
                             Clicked="Button_Clicked_2"
                             TextColor="White"

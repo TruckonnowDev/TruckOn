@@ -80,6 +80,7 @@ namespace MDispatch.Helpers.Language
         public string TitleInspectionDriverAlert => "Para aceptar un pedido, ¿necesita someterse a una inspección técnica de un camión y un remolque, para someterse a una inspección técnica de un camión?";
         public string YesBtnText => "Sí";
         public string NoBtnText => "No";
+        public string TakeBtnText => "Fotografiar";
 
         public string ContinuingInspectionDelivery => "Continúa la inspección de entrega";
         public string ContinuingInspectionPickedUp => "Inspección constante de la carga";

@@ -81,6 +81,7 @@ namespace MDispatch.Helpers.Language
         public string TitleInspectionDriverAlert => "Чтобы принять заказ, нужно пройти техосмотр грузового автомобиля и прицепа, пройти техосмотр грузового автомобиля?";
         public string YesBtnText => "Да";
         public string NoBtnText => "Нет";
+        public string TakeBtnText => "Сфотографировать";
 
         public string ContinuingInspectionDelivery => "Продолжение осмотра Доставка";
         public string ContinuingInspectionPickedUp => "Постоянное осмотр Погрузки";
@@ -95,7 +96,7 @@ namespace MDispatch.Helpers.Language
         public string TitleAskQuestionPage => "Вопросы осмотра";
         public string ItemNextPage => "Следующий";
 
-        public string AskBlockWeatherTitle => "Погодные условияs";
+        public string AskBlockWeatherTitle => "Погодные условияx";
         public string ClearAnswer => "Солнечно";
         public string RainAnswer => "Дождь";
         public string SnowAnswer => "Снег";
@@ -113,7 +114,7 @@ namespace MDispatch.Helpers.Language
         public string AskBlockGaveKeysTitle => "Пожалуйста, введите, как далеко вы от трейлера";
         public string PlaceholderGaveKeysAnswer => "Введите полное имя";
 
-        public string AskBlockEnoughSpaceTitle => "остаточно места для фотографий?";
+        public string AskBlockEnoughSpaceTitle => "Достаточно места для фотографий?";
 
         public string AskBlockAnyoneRushingTitle => "Кто-нибудь спешит провести осмотр?";
 
@@ -143,7 +144,7 @@ namespace MDispatch.Helpers.Language
         public string NextBtnText => "Следующий";
         public string AddPhotoText => "Добавить фото";
 
-        public string AskBlockJumpedVehicleTitle => "Вы запрыгнули с машины, чтобы тронуться с места?";
+        public string AskBlockJumpedVehicleTitle => "Вы исполузували кабель чтобы запустить машину?";
 
         public string AskBlockMusteMileageTitle => "Точный пробег после загрузки (необходимо ввести мили)";
         public string PlaceholderMusteMileage => "Пробег";
@@ -157,7 +158,7 @@ namespace MDispatch.Helpers.Language
         public string SunroofAnswer => "Люк на крыше";
         public string ConvertibleAnswer => "Кабриолет";
 
-        public string AskBlockHelpYouLoadTitle => "Кто-то помог вам загрузить это";
+        public string AskBlockHelpYouLoadTitle => "Кто-то помог вам загрузить машину?";
         public string AskBlockLoadTheVehicleTitle => "Кто-то загрузил автомобиль за вас?";
         public string PlaceholderName => "Введите имя";
 
@@ -233,9 +234,9 @@ namespace MDispatch.Helpers.Language
         public string AskBlockManyKeysTotalTitle => "Сколько всего ключей вам дали?";
         public string PlaceholderManyKeysTotal => "Введите количество ключей";
 
-        public string AskBlockAdditionalDocumentationTitle => "Любая дополнительная документация предоставляется после загрузки";
+        public string AskBlockAdditionalDocumentationTitle => "Любая дополнительная документация была предоставлена вам после загрузки?";
 
-        public string AskBlockAdditionalPartsTitle => "Любые дополнительные детали были переданы вам";
+        public string AskBlockAdditionalPartsTitle => "Любые дополнительные детали были переданы вам?";
 
         public string AskBlockCarLokedTitle => "Автомобиль заблокирован?";
 
@@ -269,15 +270,15 @@ namespace MDispatch.Helpers.Language
 
         public string AskBlockTruckEmergencyBrakeTitle => "Грузовик на аварийном тормозе?";
 
-        public string AskBlockMeetClientTitle => "Встретиличь ли вы с клиентом";
+        public string AskBlockMeetClientTitle => " Встретились ли вы с клиентом?";
 
-        public string AskBlockTruckLockedTitle => "Грузовик заблокирован?";
+        public string AskBlockTruckLockedTitle => "Машина заблокирована?";
 
         public string AskBlockPictureIdPersonTitle => "Пожалуйста, сфотографируйте идентификатор человека, принимающего доставку";
 
         public string AskBlockTrailerLockedTitle => "Все замки на прицепе заблокированы?";
 
-        public string AskBlockAnyoneRushingPerformTitle => "Кто-нибудь спешит с доставкой?";
+        public string AskBlockAnyoneRushingPerformTitle => "Кто то торопит вас с доставкой?";
 
         public string AskBlockWhileVehicleBeingTransportedTitle => "Заметили ли вы какие-либо недостатки на кузове при транспортировке автомобиля?";
 
@@ -300,7 +301,7 @@ namespace MDispatch.Helpers.Language
         public string AskBlockTimeOfDeliveryTitle => "Время доставки";
 
         public string InfoKeysGiveDriver => "Пожалуйста, удалите все предметы доставки и оставьте ключи при себе";
-        public string AskBlockDeliveryCustomerInspectCarTitle => "Попросить клиента осмотреть машину? Осмотрев авто, нажмите кнопку подтверждения.";
+        public string AskBlockDeliveryCustomerInspectCarTitle => "Попросите клиента осмотреть машину";
         public string IConfirmTheInspectionBtnText => "Подтверждаю осмотр";
 
         public string HintAddDamageForUser => "Нажмите на поврежденную область, чтобы добавить метку повреждение(после добавления повреждений приложение вернется к камере)";

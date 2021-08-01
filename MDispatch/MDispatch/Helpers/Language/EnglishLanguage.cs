@@ -79,10 +79,11 @@
         public string TitleInspectionDriverAlert => "To take an order, you need to pass the inspection of the truck and the trailer, pass the inspection of the truck?";
         public string YesBtnText => "Yes";
         public string NoBtnText => "No";
+        public string TakeBtnText => "Take";
 
         public string ContinuingInspectionDelivery => "Continuing inspection Delivery";
         public string ContinuingInspectionPickedUp => "Continuing inspection Picked up";
-        public string StartInspectionDelivery => "Start Inspection Delivery";
+        public string StartInspectionDelivery => "Start Inspection of the Delivered Car";
         public string StartInspectionPickedUp => "Start Inspection Picked up";
 
         public string HintPhotoItemsPage => "Please take a picture of the items being transported with the car";
@@ -105,7 +106,7 @@
 
         public string AskBlockSafeLoctionTitle => "Safe delivery location";
 
-        public string AskBlockFarFromTrailerTitle => "How far from trailer?";
+        public string AskBlockFarFromTrailerTitle => "How many ft far from trailer?";
         public string PlaceholderFarFromTrailerAnswer => "Please enter how far are you from the trailer";
 
         public string AskBlockGaveKeysTitle => "Enter the name of the person who gave you the keys to the car";
@@ -113,7 +114,7 @@
 
         public string AskBlockEnoughSpaceTitle => "Enough space to take pictures?";
 
-        public string AskBlockAnyoneRushingTitle => "Anyone Rushing you to perform the inspection?";
+        public string AskBlockAnyoneRushingTitle => "Anyone is rushing you to perform the inspection?";
 
         public string AskBlockNamePersonTitle => "Enter the name of the person";
         public string PlaceholderNamePersonAnswer => "Enter full name";
@@ -149,20 +150,20 @@
         public string AskBlockImperfectionsWileLoadingTitle => "Did you notice any mechanical imperfections wile loading?";
         public string PlaceholderMechanicalDefects => "Enter Mechanical defects";
 
-        public string AskBlockMethodExitTitle => "What method of exit did you use";
+        public string AskBlockMethodExitTitle => "What method of exit did you use?";
         public string DoorAnswer => "Door";
         public string WindowAnswer => "Window";
         public string SunroofAnswer => "Sunroof";
         public string ConvertibleAnswer => "Convertible";
 
-        public string AskBlockHelpYouLoadTitle => "Did someone help you load it";
+        public string AskBlockHelpYouLoadTitle => "Did someone help you load it?";
         public string AskBlockLoadTheVehicleTitle => "Did someone load the vehicle for you?";
         public string PlaceholderName => "Enter name";
 
-        public string AskBlockDamageAnythingTitle => "Did you Damage anything at the pick up";
+        public string AskBlockDamageAnythingTitle => "Did you damage anything at the pick up?";
         public string PlaceholderIfAny => "Enter damage, if any";
 
-        public string AskBlockUsedWinchTitle => "Have you used winch";
+        public string AskBlockUsedWinchTitle => "Have you used winch?";
 
         public string TitleHelloCustomerPage => "Hello customer";
         public string ThankYouForUsingOurCompany => "Thank you for using our company.";
@@ -265,7 +266,7 @@
 
         public string AskBlockTruckLockedTitle => "Truck locked?";
 
-        public string AskBlockPictureIdPersonTitle => "Please take a picture Id of the person taking the delivery";
+        public string AskBlockPictureIdPersonTitle => "Please take a picture of the person's ID, who is receiving the delivery";
 
         public string AskBlockTrailerLockedTitle => "All locks on the trailer?";
 
@@ -275,13 +276,13 @@
 
         public string PlaceholderBodyFlaws => "Enter body flaws";
 
-        public string AskBlockVehicleStartsTitle => "Did the vehicle starts?";
+        public string AskBlockVehicleStartsTitle => "Does the vehicle starts?";
         public string AskBlockVehicleStarts1Title => "How did you start the car?";
         public string JumpAnswer => "Jump";
         public string CablesAnswer => "Cables";
         public string RolledOutAnswer => "Rolled out";
 
-        public string AskBlockDoesVehicleDrivesTitle => "Does the vehicle Drives?";
+        public string AskBlockDoesVehicleDrivesTitle => "Does the vehicle drives?";
 
         public string AskBlockAnyoneHelpingUnloadTitle => "Anyone helping you unload?";
 
@@ -289,7 +290,7 @@
 
         public string AskBlockVehicleParkedSafeLocationTitle => "Vehicle parked in the safe location?";
 
-        public string AskBlockTimeOfDeliveryTitle => "Time Of Delivery";
+        public string AskBlockTimeOfDeliveryTitle => "Time of delivery";
 
         public string InfoKeysGiveDriver => "Please remove all your delivery items and keep keys to yourself";
         public string AskBlockDeliveryCustomerInspectCarTitle => "Ask the delivery customer to inspect the car? After inspecting the car, press the confirm button";
@@ -297,7 +298,7 @@
 
         public string HintAddDamageForUser => "Click on the damaged area to add damage, which would remove the touch of the damage (After adding the damage, the application will return to the camera)";
 
-        public string AskBlockInspectedVehicleAdditionalImperfectionsTitle => "Have you examined the vehicle for any additional deficiencies other than those listed upon receipt?";
+        public string AskBlockInspectedVehicleAdditionalImperfectionsTitle => "iu examined the vehicle for any additional deficiencies other than those listed upon receipt?";
         public string FoundIssueBtnText => "Found an issue";
 
         public string AskBlockBilingPayTitle => "Biling pay";

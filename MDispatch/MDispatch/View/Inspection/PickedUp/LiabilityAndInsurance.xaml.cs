@@ -114,21 +114,21 @@ namespace MDispatch.View.Inspection.PickedUp
                         {
                             new Label()
                             {
-                                Text = VehiclwInformation.Year,
+                                Text = VehiclwInformation.Year ?? "----",
                                 FontSize = 16,
                                 TextColor = Color.FromHex("#101010"),
                                 FontFamily = fontBold
                             },
                             new Label()
                             {
-                                Text = VehiclwInformation.Make,
+                                Text = VehiclwInformation.Make ?? "--------",
                                 FontSize = 16,
                                 TextColor = Color.FromHex("#101010"),
                                 FontFamily = fontBold
                             },
                             new Label()
                             {
-                                Text = VehiclwInformation.Model,
+                                Text = VehiclwInformation.Model ?? "--------",
                                 FontSize = 16,
                                 TextColor = Color.FromHex("#101010"),
                                 FontFamily = fontBold
@@ -149,7 +149,7 @@ namespace MDispatch.View.Inspection.PickedUp
                                     },
                                     new Label()
                                     {
-                                        Text = VehiclwInformation.VIN,
+                                        Text = VehiclwInformation.VIN ?? "---------",
                                         FontSize = 14,
                                         TextColor = Color.FromHex("#101010"),
                                         FontFamily = fontRegular
@@ -170,7 +170,7 @@ namespace MDispatch.View.Inspection.PickedUp
                                     },
                                     new Label()
                                     {
-                                        Text = VehiclwInformation.Type,
+                                        Text = VehiclwInformation.Type ?? "-----------",
                                         FontSize = 14,
                                         TextColor = Color.FromHex("#101010"),
                                         FontFamily = fontRegular
@@ -191,7 +191,7 @@ namespace MDispatch.View.Inspection.PickedUp
                             },
                             new Label()
                             {
-                                Text = VehiclwInformation.Color,
+                                Text = VehiclwInformation.Color ?? "---------",
                                 FontSize = 14,
                                 TextColor = Color.FromHex("#101010"),
                                 FontFamily = fontRegular

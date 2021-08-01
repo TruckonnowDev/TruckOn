@@ -18,7 +18,7 @@
                 <shadowFrame:ShadowFrame x:Name="askBlock4" Style="{StaticResource Key=frameAsk}">
                     <StackLayout Spacing="10">
                         <Label Text="{x:Static helperLang:LanguageHelper.AskBlockWeatherTitle}" Style="{StaticResource Key=labelTitleAsk}" />
-                        <StackLayout Orientation="Horizontal">
+                        <!--<StackLayout Orientation="Horizontal">
                             <input:RadioButtonGroupView x:Name="radioBtnWeather" Orientation="Horizontal" Spacing="13">
                                 <input:RadioButton Text="{x:Static helperLang:LanguageHelper.ClearAnswer}"
                                                    Clicked="RadioButton_Clicked"
@@ -49,7 +49,26 @@
                                                    HeightRequest="19"
                                                    Spacing="6"/>
                             </input:RadioButtonGroupView>
-                        </StackLayout>
+                        </StackLayout>-->
+                        <FlexLayout Wrap="Wrap"
+                                    JustifyContent="SpaceBetween">
+                            <Button Text="{x:Static helperLang:LanguageHelper.ClearAnswer}"
+                                    Clicked="RadioButton_Clicked"
+                                    Style="{StaticResource btnAsk}"
+                                    Margin="0, 0, 13, 0"/>
+                            <Button Text="{x:Static helperLang:LanguageHelper.RainAnswer}"
+                                    Clicked="RadioButton_Clicked"
+                                    Style="{StaticResource btnAsk}"
+                                    Margin="0, 0, 13, 0"/>
+                            <Button Text="{x:Static helperLang:LanguageHelper.SnowAnswer}"
+                                    Clicked="RadioButton_Clicked"
+                                    Style="{StaticResource btnAsk}"
+                                    Margin="0, 0, 13, 0"/>
+                            <Button Text="{x:Static helperLang:LanguageHelper.DustAnswer}"
+                                    Clicked="RadioButton_Clicked"
+                                    Style="{StaticResource btnAsk}"
+                                    Margin="0, 0, 13, 0"/>
+                        </FlexLayout>
                     </StackLayout>
                 </shadowFrame:ShadowFrame>
                 <shadowFrame:ShadowFrame x:Name="askBlock1" Style="{StaticResource Key=frameAsk}">
@@ -170,7 +189,8 @@
                 <shadowFrame:ShadowFrame x:Name="askBlock2" Style="{StaticResource Key=frameAsk}">
                     <StackLayout Spacing="10">
                         <Label Text="{x:Static helperLang:LanguageHelper.AskBlockConditionTitle}" Style="{StaticResource Key=labelTitleAsk}"/>
-                        <FlexLayout Wrap="Wrap">
+                        <FlexLayout Wrap="Wrap"
+                                    JustifyContent="SpaceBetween">
                             <Button Text="{x:Static helperLang:LanguageHelper.CleanAnswer}"
                                     Clicked="Button_Clicked_1"
                                     Style="{StaticResource btnAsk}"

@@ -88,10 +88,11 @@
                 </shadowFrame:ShadowFrame>
                 <shadowFrame:ShadowFrame x:Name="askBlock5"
                                          Style="{StaticResource Key=frameAsk}">
-                    <FlexLayout Wrap="Wrap">
+                    <StackLayout Spacing="10">
                         <Label Text="{x:Static helperLang:LanguageHelper.AskBlockKeysLocationTitle}"
                                Style="{StaticResource Key=labelTitleAsk}"/>
-                        <StackLayout Orientation="Vertical" Spacing="13">
+                        <FlexLayout Wrap="Wrap"
+                                    JustifyContent="SpaceBetween">
                             <Button Text="{x:Static helperLang:LanguageHelper.TruckAnswer}"
                                     Clicked="Button_Clicked"
                                     Style="{StaticResource btnAsk}"
@@ -104,8 +105,8 @@
                                     Clicked="Button_Clicked"
                                     Style="{StaticResource btnAsk}"
                                     Margin="0, 0, 0, 7"/>
-                        </StackLayout>
-                    </FlexLayout>
+                        </FlexLayout>
+                    </StackLayout>
                 </shadowFrame:ShadowFrame>
                 <shadowFrame:ShadowFrame x:Name="askBlock6"
                                          Style="{StaticResource Key=frameAsk}">

@@ -12,10 +12,10 @@
         public static string PlaceholderFullName => "Enter Full Name";
         public static string AskBlockYourPhoneTitle => "Your phone";
         public static string PlaceholderYourPhone => "Enter Your phone";
-        public static string AskBlockManyKesTitle => "How many keys are driver been given";
+        public static string AskBlockManyKesTitle => "How many keys a driver received?";
         public static string PlaceholderManyKes => "Enter the number of keys you gave";
-        public static string AskBlockGivenToDriverTitle => "Any titles been given to driver?";
-        public static string IDontKnowBtnText => "I don't know";
+        public static string AskBlockGivenToDriverTitle => "Any titles has been given to the driver?";
+        public static string IDontKnowBtnText => "No, I don't know";
         public static string YesBtnText => "Yes";
         public static string NoBtnText => "No";
         public static string MaybeBtnText => "Maybe";
@@ -38,7 +38,7 @@
         public static string TitleAlertSendEmailBOL => "Do you need a copy of inspection?";
         public static string PlaceholderEmail => "Email";
         public static string DescriptionDiscount => "Would you like to get 10% off from next load just for giving us a good revue and filling out a short survey?";
-        public static string AskBlockInspectedVehicleAdditionalImperfectionsTitle => "Have you examined the vehicle for any additional deficiencies other than those listed upon receipt?";
+        public static string AskBlockInspectedVehicleAdditionalImperfectionsTitle => "Have you inspected the vehicle for any additional imperfections other than listed at the pick up?";
         public static string FoundIssueBtnText => "Found an issue";
         public static string AskBlockBilingPayTitle => "Biling pay";
         public static string HintAddDamageForUser => "Click on the damaged area to add damage, which would remove the touch of the damage (After adding the damage, the application will return to the camera)";

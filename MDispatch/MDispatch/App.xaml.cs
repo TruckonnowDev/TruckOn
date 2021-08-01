@@ -1,4 +1,6 @@
 using System;
+using System.Globalization;
+using System.Threading;
 using System.Threading.Tasks;
 using FormsControls.Base;
 using MDispatch.Helpers;
@@ -21,6 +23,7 @@ namespace MDispatch
 
         public App ()
         {
+            SetCurrentCultureThread();
             LanguageHelper.InitLanguage();
             InitializeComponent();
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
@@ -41,7 +44,6 @@ namespace MDispatch
         [Obsolete]
         protected override async void OnStart()
         {
-
             if (isAvtorization)
             {
                 TaskManager.isWorkTask = true;
@@ -75,5 +77,10 @@ namespace MDispatch
                 await Utils.StartListening();
             }
         }
-	}
+
+        private async void SetCurrentCultureThread()
+        {
+
+        }
+    }
 }

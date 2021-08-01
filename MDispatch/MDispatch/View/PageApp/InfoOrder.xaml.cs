@@ -44,14 +44,14 @@ namespace MDispatch.View.PageApp
                 string font = ((OnPlatform<string>)Application.Current.Resources["OpenSans-Regular"]).Platforms.ToList().First(p => p.Platform.FirstOrDefault(pp => pp == Device.RuntimePlatform) != null).Value.ToString();
                 stackLayout.Children.Add(new Label()
                 {
-                    Text = $"{vehiclwInformations.Year} {vehiclwInformations.Make} {vehiclwInformations.Make}",
+                    Text = $"{vehiclwInformations.Year ?? "---"} {vehiclwInformations.Make ?? "------"} {vehiclwInformations.Make ?? "------"}",
                     FontSize = 14,
                     FontFamily = font,
                     TextColor = Color.FromHex("#101010")
                 });;
                 stackLayout.Children.Add(new Label()
                 {
-                    Text = $"VIN: {vehiclwInformations.VIN}",
+                    Text = $"VIN: {vehiclwInformations.VIN ?? "-----------"}",
                     FontSize = 14,
                     FontFamily = font,
                     TextColor = Color.FromHex("#101010")

@@ -39,8 +39,9 @@ namespace MDispatch.View.Inspection.Delyvery
 
         private void InitAsk()
         {
+            var ssssss = App.time.GetDateTimeFormats();
             curentTime = App.time.TimeOfDay.ToString("hh':'mm");
-            currentDate = App.time.ToShortDateString();
+            currentDate = App.time.ToString("dd/MM/yyyy");
             askDelyveryMV.AskDelyvery.Time_Of_Delivery = $"{currentDate} {curentTime}";
             time.Text = $"{currentDate} {curentTime}";
             methodExitPik.ItemsSource = new List<string>()

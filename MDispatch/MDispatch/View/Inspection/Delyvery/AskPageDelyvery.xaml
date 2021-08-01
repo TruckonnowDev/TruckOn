@@ -20,7 +20,8 @@
                     <StackLayout Spacing="10">
                         <Label Text="{x:Static helperLang:LanguageHelper.AskBlockWeatherTitle}"
                                Style="{StaticResource Key=labelTitleAsk}"/>
-                        <FlexLayout Wrap="Wrap">
+                        <FlexLayout Wrap="Wrap"
+                                    JustifyContent="SpaceBetween">
                             <Button Text="{x:Static helperLang:LanguageHelper.ClearAnswer}"
                                     Clicked="Dropdown_SelectedItemChanged_2"
                                     Style="{StaticResource btnAsk}"
@@ -63,7 +64,8 @@
                     <StackLayout Spacing="10">
                         <Label Text="{x:Static helperLang:LanguageHelper.AskBlockSafeDeliveryLocationTitle}"
                                Style="{StaticResource labelTitleAsk}"/>
-                        <FlexLayout Wrap="Wrap">
+                        <FlexLayout Wrap="Wrap"
+                                    JustifyContent="SpaceBetween">
                             <Button Text="{x:Static helperLang:LanguageHelper.ParkingLotAnswer}"
                                     Clicked="RadioButton_Clicked_1"
                                     Style="{StaticResource btnAsk}"
@@ -146,7 +148,7 @@
                         <Label Text="{x:Static helperLang:LanguageHelper.AskBlockPictureIdPersonTitle}"
                                Style="{StaticResource labelTitleAsk}"/>
                         <StackLayout Orientation="Horizontal">
-                            <Button Text="{x:Static helperLang:LanguageHelper.YesBtnText}"
+                            <Button Text="{x:Static helperLang:LanguageHelper.TakeBtnText}"
                                     Clicked="Button_Clicked_5"
                                     FontFamily="{StaticResource OpenSans-Regular}"
                                     Style="{StaticResource btnAsk}" />
@@ -206,7 +208,8 @@
                     <StackLayout Spacing="10">
                         <Label Text="{x:Static helperLang:LanguageHelper.AskBlockConditionTitle}"
                                Style="{StaticResource labelTitleAsk}"/>
-                        <FlexLayout Wrap="Wrap">
+                        <FlexLayout Wrap="Wrap"
+                                    JustifyContent="SpaceBetween">
                             <Button Text="{x:Static helperLang:LanguageHelper.CleanAnswer}"
                                     Clicked="Button_Clicked_2"
                                     Style="{StaticResource btnAsk}"

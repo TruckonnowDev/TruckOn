@@ -90,6 +90,7 @@ namespace MDispatch.Helpers
         public static string TitleInspectionDriverAlert => Language.TitleInspectionDriverAlert;
         public static string YesBtnText => Language.YesBtnText;
         public static string NoBtnText => Language.NoBtnText;
+        public static string TakeBtnText => Language.TakeBtnText;
         public static string WithoutTranslationYesBtnText => WithoutTranslationLanguage.YesBtnText;
         public static string WithoutTranslationNoBtnText => WithoutTranslationLanguage.NoBtnText;
         public static string WithoutTranslationContinuingBtnText => WithoutTranslationLanguage.ContinuingBtnText;

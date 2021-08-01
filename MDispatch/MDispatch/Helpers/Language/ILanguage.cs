@@ -83,6 +83,7 @@ namespace MDispatch.Helpers.Language
         string TitleInspectionDriverAlert { get; }
         string YesBtnText { get; }
         string NoBtnText { get; }
+        string TakeBtnText { get; }
 
         string ContinuingInspectionDelivery { get; }
         string ContinuingInspectionPickedUp { get; }

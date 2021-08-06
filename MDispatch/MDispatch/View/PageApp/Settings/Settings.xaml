@@ -38,12 +38,11 @@
                         <Button Text="{x:Static helperLang:LanguageHelper.ShowDocumentBtnText}"
                                 Clicked="TapGestureRecognizer_Tapped_1"
                                 TextColor="#2C5DEB"
-                                HeightRequest="14"
                                 Padding="0"
-                                WidthRequest="110"
                                 FontSize="12"
                                 FontFamily="{StaticResource OpenSans-Bold}"
-                                BackgroundColor="White"/>
+                                BackgroundColor="White"
+                                FlexLayout.Basis="75"/>
                     </FlexLayout>
                         <StackLayout>
                             <StackLayout Spacing="4"
@@ -137,10 +136,10 @@
                                             FontSize="12"
                                             FontFamily="{StaticResource OpenSans-Bold}"
                                             BackgroundColor="White"
-                                            HeightRequest="14"
                                             Padding="0"
                                             WidthRequest="110"
-                                            HorizontalOptions="StartAndExpand"/>
+                                            HorizontalOptions="StartAndExpand"
+                                            FlexLayout.Basis="75"/>
                             </StackLayout>
                         </StackLayout>
                      <BoxView HeightRequest="1" BackgroundColor="#E5E5E5"/>
@@ -185,12 +184,11 @@
                                 IsVisible="{Binding IsUpdateVersion}"
                                 Clicked="Button_Clicked_2" 
                                 TextColor="#2C5DEB"
-                                HeightRequest="19"
                                 FontSize="12"
                                 FontFamily="{StaticResource OpenSans-Bold}"
                                 BackgroundColor="White"
                                 Padding="0"
-                                />
+                                FlexLayout.Basis="75"/>
                     </FlexLayout>
                     <StackLayout BackgroundColor="White"
                                  Margin="0, 6, 0, 11">

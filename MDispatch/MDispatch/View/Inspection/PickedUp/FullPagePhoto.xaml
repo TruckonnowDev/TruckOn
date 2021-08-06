@@ -50,9 +50,9 @@
                         HorizontalOptions="Start"
                         Clicked="Button_Clicked_3"
                         FontFamily="{StaticResource OpenSans-Bold}"
-                        WidthRequest="105"
                         CornerRadius="23"
                         Margin="24, 0, 0, 0"
+                        Padding="10, 0, 10, 0"
                         FontSize="16"
                         BackgroundColor="#FF9314"
                         TextColor="White"/>
@@ -64,11 +64,10 @@
                         TextColor="White"
                         HorizontalOptions="EndAndExpand"
                         Clicked="Button_Clicked_2"
-                        WidthRequest="148"
                         CornerRadius="23"
+                        Padding="10, 0, 10, 0"
                         Margin="0, 0, 24, 0" 
-                        FontFamily="{StaticResource OpenSans-Bold}"
-                        />
+                        FontFamily="{StaticResource OpenSans-Bold}"/>
                 <Button x:Name="btnAddPhoto"
                         Text="{x:Static helperLang:LanguageHelper.AddPhotoText}"
                         FontSize="16"
@@ -77,9 +76,9 @@
                         Clicked="Button_Clicked"
                         HorizontalOptions="End"
                         FontFamily="{StaticResource OpenSans-Bold}"
-                        WidthRequest="130"
                         CornerRadius="23"
-                        Margin="24, 0, 0, 0"/>
+                        Margin="24, 0, 0, 0"
+                        Padding="10, 0, 10, 0"/>
                 <Button x:Name="btnNext"
                         Text="{x:Static helperLang:LanguageHelper.NextBtnText}"
                         FontSize="16"
@@ -89,6 +88,7 @@
                         WidthRequest="105"
                         CornerRadius="23"
                         Margin="0, 0, 24, 0" 
+                        Padding="10, 0, 10, 0"
                         FontFamily="{StaticResource OpenSans-Bold}"
                         IsVisible="False"/>
             </StackLayout>

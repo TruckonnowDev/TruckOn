@@ -139,7 +139,7 @@ namespace MDispatch.Helpers.Language
         public string BackMainBtnText => "Назад на Главную";
         public string NextInspactionBtnText => "Следующий осмотр";
 
-        public string RetakeBtnText => "Повторно сфотографировать";
+        public string RetakeBtnText => "Перефотографировать";
         public string AddDamagBtnText => "Добавить урон";
         public string NextBtnText => "Следующий";
         public string AddPhotoText => "Добавить фото";

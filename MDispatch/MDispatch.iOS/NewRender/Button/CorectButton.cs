@@ -15,6 +15,10 @@ namespace MDispatch.iOS.NewRender.Button
         protected override void OnElementChanged(ElementChangedEventArgs<Xamarin.Forms.Button> e)
         {
             base.OnElementChanged(e);
+            if (Control != null)
+            {
+                Control.TitleLabel.LineBreakMode = UIKit.UILineBreakMode.WordWrap;
+            }
         }
     
     }

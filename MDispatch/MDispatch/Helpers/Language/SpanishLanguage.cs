@@ -320,5 +320,9 @@ namespace MDispatch.Helpers.Language
         public string VehicleInspectionPikedUp => "Inspeccion de vehiculo: Piked Up";
         public string VehicleInspectionDelivery => "Inspeccion de vehiculo: Delivery";
         public string ThereAreNoVehiclesInThisOrder => "No hay vehículos en este orden.";
+
+        public string TitelSelectPickPhoto => "Escoge una opción";
+        public string SelectPhoto => "Galería";
+        public string SelectGalery => "Cámara";
     }
 }

@@ -161,6 +161,7 @@
     <Compile Include="NewrRender\PageRenders\NavigationPageRenderer.cs" />
     <Compile Include="NewrRender\TextInputRender\TextInputeRender.cs" />
     <Compile Include="NewrRender\Frame\ShadowFrame.cs" />
+    <Compile Include="NewrRender\Direktory\PickerService.cs" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\Truckonnow-8fb90a135d42.json" />
@@ -607,6 +608,7 @@
     <Folder Include="NewrRender\PageRenders\" />
     <Folder Include="NewrRender\TextInputRender\" />
     <Folder Include="NewrRender\Frame\" />
+    <Folder Include="NewrRender\Direktory\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MDispatch\MDispatch.csproj">

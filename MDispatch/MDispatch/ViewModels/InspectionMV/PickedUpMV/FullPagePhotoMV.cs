@@ -246,7 +246,7 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
             AllSourseImage = imageSources1;
         }
 
-        public async Task SetPhoto(byte[] PhotoInArrayByte, double width, double height)
+        public async Task SetPhoto(byte[] PhotoInArrayByte, double width = 0, double height = 0)
         {
             if (PhotoInspection == null)
             {

@@ -371,6 +371,10 @@ namespace MDispatch.Helpers
         public static string VehicleInspectionDelivery => Language.VehicleInspectionDelivery;
         public static string ThereAreNoVehiclesInThisOrder => Language.ThereAreNoVehiclesInThisOrder;
 
+        public static string TitelSelectPickPhoto => Language.TitelSelectPickPhoto;
+        public static string SelectPhoto => Language.SelectPhoto;
+        public static string SelectGalery => Language.SelectGalery;
+
         public static void InitLanguage()
         {
             switch(CrossSettings.Current.GetValueOrDefault("Language" , (int)LanguageType.English))

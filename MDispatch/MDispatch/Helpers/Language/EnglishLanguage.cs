@@ -313,5 +313,9 @@
         public string VehicleInspectionPikedUp => "Vehicle inspection: Piked Up";
         public string VehicleInspectionDelivery => "Vehicle inspection: Delivery";
         public string ThereAreNoVehiclesInThisOrder => "There are no vehicles in this order";
+
+        public string TitelSelectPickPhoto => "Choose an option";
+        public string SelectPhoto => "Gallery";
+        public string SelectGalery => "Camera";
     }
 }

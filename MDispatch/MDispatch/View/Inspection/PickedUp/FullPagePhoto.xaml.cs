@@ -1,5 +1,7 @@
-﻿using MDispatch.Models;
+﻿using MDispatch.Helpers;
+using MDispatch.Models;
 using MDispatch.NewElement;
+using MDispatch.NewElement.Directory;
 using MDispatch.NewElement.ResIzeImage;
 using MDispatch.Service;
 using MDispatch.View.Inspection;
@@ -74,7 +76,24 @@ namespace MDispatch.View.PageApp
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new CameraPagePhoto(pngPaternPhoto, this, "PhotoIspection"));
+            var actionSheet = await DisplayActionSheet(LanguageHelper.TitelSelectPickPhoto, LanguageHelper.CancelBtnText, null, LanguageHelper.SelectGalery, LanguageHelper.SelectPhoto);
+            if (actionSheet == LanguageHelper.SelectGalery)
+            {
+                Stream stream = await DependencyService.Get<IPhotoPickerService>().GetImageStreamAsync();
+                if (stream != null)
+                {
+                    MemoryStream ms = new MemoryStream();
+                    stream.CopyTo(ms);
+                    await fullPagePhotoMV.AddNewFotoSourse(ms.ToArray());
+                    await fullPagePhotoMV.SetPhoto(ms.ToArray(), 0, 0);
+                    await SetbtnVisable();
+                }
+            }
+            else if (actionSheet == LanguageHelper.SelectPhoto)
+            {
+                await Navigation.PushAsync(new CameraPagePhoto(pngPaternPhoto, this, "PhotoIspection"));
+            }
+
         }
 
         private async void MessagesListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
@@ -127,16 +146,35 @@ namespace MDispatch.View.PageApp
 
         private async void Button_Clicked_3(object sender, EventArgs e)
         {
-            RetakeFullPagePickedUp retakeFullPagePickedUp = null;
-            StreamImageSource streamImageSource = (StreamImageSource)fullPagePhotoMV.SourseImage;
-            System.Threading.CancellationToken cancellationToken = System.Threading.CancellationToken.None;
-            Task<Stream> task = streamImageSource.Stream(cancellationToken);
-            Stream stream = task.Result;
-            MemoryStream ms = new MemoryStream();
-            stream.CopyTo(ms);
-            byte[] bytes = ms.ToArray();
-            retakeFullPagePickedUp = new RetakeFullPagePickedUp(fullPagePhotoMV, bytes);
-            await Navigation.PushAsync(new RetakePage(retakeFullPagePickedUp));
+            var actionSheet = await DisplayActionSheet(LanguageHelper.TitelSelectPickPhoto, LanguageHelper.CancelBtnText, null, LanguageHelper.SelectGalery, LanguageHelper.SelectPhoto);
+            if (actionSheet == LanguageHelper.SelectGalery)
+            {
+                Stream streamNewPhoto = await DependencyService.Get<IPhotoPickerService>().GetImageStreamAsync();
+                if (streamNewPhoto != null)
+                {
+                    MemoryStream msNewPhoto = new MemoryStream();
+                    streamNewPhoto.CopyTo(msNewPhoto);
+                    StreamImageSource streamImageSource = (StreamImageSource)fullPagePhotoMV.SourseImage;
+                    Task<Stream> task = streamImageSource.Stream(System.Threading.CancellationToken.None);
+                    Stream streamOldPhpto = task.Result;
+                    MemoryStream msOldPhoto = new MemoryStream();
+                    streamOldPhpto.CopyTo(msOldPhoto);
+                    fullPagePhotoMV.ReSetPhoto(msNewPhoto.ToArray(), msOldPhoto.ToArray());
+
+                }
+            }
+            else if (actionSheet == LanguageHelper.SelectPhoto)
+            {
+                RetakeFullPagePickedUp retakeFullPagePickedUp = null;
+                StreamImageSource streamImageSource = (StreamImageSource)fullPagePhotoMV.SourseImage;
+                Task<Stream> task = streamImageSource.Stream(System.Threading.CancellationToken.None);
+                Stream stream = task.Result;
+                MemoryStream ms = new MemoryStream();
+                stream.CopyTo(ms);
+                byte[] bytes = ms.ToArray();
+                retakeFullPagePickedUp = new RetakeFullPagePickedUp(fullPagePhotoMV, bytes);
+                await Navigation.PushAsync(new RetakePage(retakeFullPagePickedUp));
+            }
         }
     }
 }

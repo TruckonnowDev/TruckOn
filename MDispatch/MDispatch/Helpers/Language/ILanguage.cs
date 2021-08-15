@@ -316,5 +316,9 @@ namespace MDispatch.Helpers.Language
         string VehicleInspectionDelivery { get; }
         string ThereAreNoVehiclesInThisOrder { get; }
 
+        string TitelSelectPickPhoto { get; }
+        string SelectPhoto { get; }
+        string SelectGalery { get; }
+
     }
 }

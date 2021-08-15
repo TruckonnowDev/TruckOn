@@ -1,9 +1,12 @@
-﻿using MDispatch.NewElement.ResIzeImage;
+﻿using MDispatch.Helpers;
+using MDispatch.NewElement.Directory;
+using MDispatch.NewElement.ResIzeImage;
 using MDispatch.View.PageApp;
 using MDispatch.ViewModels.InspectionMV.PickedUpMV;
 using Rg.Plugins.Popup.Services;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
@@ -55,7 +58,24 @@ namespace MDispatch.View.Inspection.PickedUp
             if (stateSelect == 0)
             {
                 stateSelect = 1;
-                await Navigation.PushAsync(new CameraPagePhoto(null, fullPagePhoto, null, this));
+
+                var actionSheet = await DisplayActionSheet(LanguageHelper.TitelSelectPickPhoto, LanguageHelper.CancelBtnText, null, LanguageHelper.SelectGalery, LanguageHelper.SelectPhoto);
+                if (actionSheet == LanguageHelper.SelectGalery)
+                {
+                    Stream streamNewPhoto = await DependencyService.Get<IPhotoPickerService>().GetImageStreamAsync();
+                    if (streamNewPhoto != null)
+                    {
+                        MemoryStream msNewPhoto = new MemoryStream();
+                        streamNewPhoto.CopyTo(msNewPhoto);
+                        await FullPagePhotoMV.AddNewFotoSourse(msNewPhoto.ToArray());
+                        await FullPagePhotoMV.SetPhoto(msNewPhoto.ToArray());
+                        stateSelect = 0;
+                    }
+                }
+                else if (actionSheet == LanguageHelper.SelectPhoto)
+                {
+                    await Navigation.PushAsync(new CameraPagePhoto(null, fullPagePhoto, null, this));
+                }
                 await WaiteSelectDamage();
                 ImgResize image = new ImgResize()
                 {

@@ -229,6 +229,7 @@
     <Compile Include="NewRender\Effect\CornerRadius.cs" />
     <Compile Include="NewRender\Frame\ShadowFrame.cs" />
     <Compile Include="NewRender\TextIn\CustomXfxEntryRendererTouch.cs" />
+    <Compile Include="NewRender\Direktory\PickerService.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
@@ -1287,5 +1288,6 @@
     <Folder Include="NewRender\Effect\" />
     <Folder Include="Resources\Fonts\" />
     <Folder Include="NewRender\Frame\" />
+    <Folder Include="NewRender\Direktory\" />
   </ItemGroup>
 </Project>

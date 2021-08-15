@@ -321,5 +321,9 @@ namespace MDispatch.Helpers.Language
         public string VehicleInspectionPikedUp => "Техосмотр автомобиля: Piked Up";
         public string VehicleInspectionDelivery => "Техосмотр автомобил: Delivery";
         public string ThereAreNoVehiclesInThisOrder => "В этом заказе нет транспортных средств";
+
+        public string TitelSelectPickPhoto => "Выберете вариант";
+        public string SelectPhoto => "Камера";
+        public string SelectGalery => "Галерея";
     }
 }

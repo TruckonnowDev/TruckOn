@@ -29,7 +29,7 @@ namespace MDispatch.View.PageApp
             GetVechicleDelegate getVechicleDelegate, string nameLayoute, string onDeliveryToCarrier, string totalPaymentToCarrier)
         {
             this.pngPaternPhoto = pngPaternPhoto;
-            fullPagePhotoMV = new FullPagePhotoMV(managerDispatchMob, vehiclwInformation, idShip, typeCar, photoIndex, Navigation, initDasbordDelegate, getVechicleDelegate, onDeliveryToCarrier, totalPaymentToCarrier);
+            fullPagePhotoMV = new FullPagePhotoMV(managerDispatchMob, vehiclwInformation, idShip, typeCar, photoIndex, Navigation, initDasbordDelegate, getVechicleDelegate, onDeliveryToCarrier, totalPaymentToCarrier, this);
             InitializeComponent();
             BindingContext = fullPagePhotoMV;
             paternPhoto.Source = pngPaternPhoto;
@@ -175,6 +175,12 @@ namespace MDispatch.View.PageApp
                 retakeFullPagePickedUp = new RetakeFullPagePickedUp(fullPagePhotoMV, bytes);
                 await Navigation.PushAsync(new RetakePage(retakeFullPagePickedUp));
             }
+        }
+
+        public async Task CreateActionSheet(Action<string> calbackResultAction, params string[] paramsAction)
+        {
+            var actionSheet = await DisplayActionSheet(LanguageHelper.TitelSelectPickPhoto, LanguageHelper.CancelBtnText, null, paramsAction);
+            calbackResultAction(actionSheet);
         }
     }
 }

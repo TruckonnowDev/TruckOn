@@ -320,5 +320,10 @@ namespace MDispatch.Helpers.Language
         string SelectPhoto { get; }
         string SelectGalery { get; }
 
+        string SelectBackToRootBage { get; }
+        string SelectLoadGalery { get; }
+        string SelectLoadFolderOffline { get; }
+        string SelectLoadFolderOfflineAndGalery { get; }
+
     }
 }

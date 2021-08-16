@@ -33,7 +33,6 @@ namespace MDispatch.Service.RequestQueue
 
         private static async Task StartRequest()
         {
-            //await Task.Run(() => Utils.CheckNet(true));
             if (App.isNetwork)
             {
                 if (CountWorkRequest < 2 && RequvestAll.Count > 0)

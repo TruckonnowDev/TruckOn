@@ -317,5 +317,10 @@
         public string TitelSelectPickPhoto => "Choose an option";
         public string SelectPhoto => "Gallery";
         public string SelectGalery => "Camera";
+
+        public string SelectBackToRootBage => "Return to order screen";
+        public string SelectLoadGalery => "Upload photo to gallery";
+        public string SelectLoadFolderOffline => "Upload photo to offline folder";
+        public string SelectLoadFolderOfflineAndGalery => "Upload photo to offline folder and gallery";
     }
 }

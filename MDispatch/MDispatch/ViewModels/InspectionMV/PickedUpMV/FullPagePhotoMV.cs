@@ -34,9 +34,10 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
         public IVehicle Car = null;
         private InitDasbordDelegate initDasbordDelegate = null;
         private GetVechicleDelegate getVechicleDelegate = null;
+        private FullPagePhoto fullPagePhoto = null;
 
         public FullPagePhotoMV(ManagerDispatchMob managerDispatchMob, VehiclwInformation vehiclwInformation, string idShip, string typeCar, int inderxPhotoInspektion, INavigation navigation, InitDasbordDelegate initDasbordDelegate, 
-            GetVechicleDelegate getVechicleDelegate, string onDeliveryToCarrier, string totalPaymentToCarrier)
+            GetVechicleDelegate getVechicleDelegate, string onDeliveryToCarrier, string totalPaymentToCarrier, FullPagePhoto fullPagePhoto)
         {
             Navigation = navigation;
             this.getVechicleDelegate = getVechicleDelegate;
@@ -49,6 +50,7 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
             IdShip = idShip;
             OnDeliveryToCarrier = onDeliveryToCarrier;
             TotalPaymentToCarrier = totalPaymentToCarrier;
+            this.fullPagePhoto = fullPagePhoto;
         }
 
         private async void Init()
@@ -272,10 +274,6 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
         public async void SavePhoto(bool isNavigWthDamag = false)
         {
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
-            //bool isNavigationMany = false;
-            //bool isTask = false;
-            //string description = null;
-            //int state = 0;
             if (InderxPhotoInspektion < Car.CountCarImg)
             {
                 Car.OrintableScreen(InderxPhotoInspektion);
@@ -307,10 +305,44 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
             }
             else
             {
+                
+                SelectMethodAction();
+            }
+        }
+
+        private async void SelectMethodAction()
+        {
+            await ClosePageToFirstPageInspction();
+            await fullPagePhoto.CreateActionSheet(SelectMethodAction, LanguageHelper.SelectBackToRootBage, LanguageHelper.SelectLoadGalery, LanguageHelper.SelectLoadFolderOffline, LanguageHelper.SelectLoadFolderOfflineAndGalery);
+        }
+
+        private async void SelectMethodAction(string actionSheet)
+        {
+            if (actionSheet == LanguageHelper.SelectBackToRootBage)
+            {
                 HelpersView.ReSet();
                 HelpersView.CallError(LanguageHelper.NotNetworkAlert);
-                //await PopupNavigation.PushAsync(new Errror("Not Network", null));
                 BackToRootPage();
+            }
+            else if (actionSheet == LanguageHelper.SelectLoadGalery)
+            {
+
+            }
+            else if (actionSheet == LanguageHelper.SelectLoadFolderOffline)
+            {
+
+            }
+            else if (actionSheet == LanguageHelper.SelectLoadFolderOfflineAndGalery)
+            {
+
+            }
+        }
+
+        public async Task ClosePageToFirstPageInspction()
+        {
+            for(int i = 0; Navigation.NavigationStack.Count >= 3; i++)
+            {
+                await Navigation.PopAsync();
             }
         }
 

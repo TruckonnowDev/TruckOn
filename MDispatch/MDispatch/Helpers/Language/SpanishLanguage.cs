@@ -324,5 +324,10 @@ namespace MDispatch.Helpers.Language
         public string TitelSelectPickPhoto => "Escoge una opción";
         public string SelectPhoto => "Galería";
         public string SelectGalery => "Cámara";
+
+        public string SelectBackToRootBage => "Volver a la pantalla de pedidos";
+        public string SelectLoadGalery => "Subir foto a la galería";
+        public string SelectLoadFolderOffline => "Subir foto a la carpeta sin conexión";
+        public string SelectLoadFolderOfflineAndGalery => "Cargar una foto en una carpeta y una galería sin conexión";
     }
 }

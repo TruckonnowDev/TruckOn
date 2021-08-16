@@ -325,5 +325,10 @@ namespace MDispatch.Helpers.Language
         public string TitelSelectPickPhoto => "Выберете вариант";
         public string SelectPhoto => "Камера";
         public string SelectGalery => "Галерея";
+
+        public string SelectBackToRootBage => "Вернуться на экран заказов";
+        public string SelectLoadGalery => "Загрузить фото в галерею";
+        public string SelectLoadFolderOffline => "Загрузить фото в офлайн папку";
+        public string SelectLoadFolderOfflineAndGalery => "Загрузить фото в офлайн папку и галерею";
     }
 }

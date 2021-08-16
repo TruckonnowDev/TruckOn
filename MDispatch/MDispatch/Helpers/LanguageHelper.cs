@@ -374,6 +374,11 @@ namespace MDispatch.Helpers
         public static string TitelSelectPickPhoto => Language.TitelSelectPickPhoto;
         public static string SelectPhoto => Language.SelectPhoto;
         public static string SelectGalery => Language.SelectGalery;
+        
+        public static string SelectBackToRootBage => Language.SelectBackToRootBage;
+        public static string SelectLoadGalery => Language.SelectLoadGalery;
+        public static string SelectLoadFolderOffline => Language.SelectLoadFolderOffline;
+        public static string SelectLoadFolderOfflineAndGalery => Language.SelectLoadFolderOfflineAndGalery;
 
         public static void InitLanguage()
         {

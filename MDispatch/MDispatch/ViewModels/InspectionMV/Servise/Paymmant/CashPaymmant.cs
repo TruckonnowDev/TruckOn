@@ -40,7 +40,7 @@ namespace MDispatch.ViewModels.InspectionMV.Servise.Paymmant
                 entry.HeightRequest = 40;
             }
 
-            button.Text = "I am paid";
+            button.Text = "Paid";
             button.BackgroundColor = Color.White;
             button.TextColor = Color.FromHex("#2C5DEB"); ;
             button.Clicked += ClickBtn;

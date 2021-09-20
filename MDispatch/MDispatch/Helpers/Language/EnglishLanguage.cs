@@ -83,8 +83,8 @@
 
         public string ContinuingInspectionDelivery => "Continuing inspection Delivery";
         public string ContinuingInspectionPickedUp => "Continuing inspection Picked up";
-        public string StartInspectionDelivery => "Start Inspection of the Delivered Car";
-        public string StartInspectionPickedUp => "Start Inspection Picked up";
+        public string StartInspectionDelivery => "Inspection of the Delivered Car";
+        public string StartInspectionPickedUp => "Inspection of the Picked Up Car";
 
         public string HintPhotoItemsPage => "Please take a picture of the items being transported with the car";
         public string HintPhotoInspactionPage => "Try to photograph the item exactly on the layout or damage close";
@@ -104,7 +104,7 @@
         public string HighAnswer => "High";
         public string LowAnswer => "Low";
 
-        public string AskBlockSafeLoctionTitle => "Safe delivery location";
+        public string AskBlockSafeLoctionTitle => "delivery location";
 
         public string AskBlockFarFromTrailerTitle => "How many ft far from trailer?";
         public string PlaceholderFarFromTrailerAnswer => "Please enter how far are you from the trailer";
@@ -134,7 +134,7 @@
         public string AskBlockAdditionalItemsTitle => "Any personal or additional items with or in vehicle";
 
         public string HintAddDamagePage => "Click on the damaged spot to add a damage mark";
-        public string BackMainBtnText => "Back Main";
+        public string BackMainBtnText => "Back";
         public string NextInspactionBtnText => "Next inspection";
 
         public string RetakeBtnText => "Retake";
@@ -252,7 +252,7 @@
         public string TakePictureProblem => "Please take a picture of the problem areas of the vehicle";
         public string PictureOneSafetyBelt => "Take a picture of one of the safety belt, but the same one that has already been photographed";
 
-        public string AskBlockSafeDeliveryLocationTitle => "Safe delivery location";
+        public string AskBlockSafeDeliveryLocationTitle => "delivery location";
         public string ParkingLotAnswer => "Parking lot";
         public string DrivewayAnswer => "Driveway";
         public string GravelAnswer => "Gravel";
@@ -268,9 +268,9 @@
 
         public string AskBlockPictureIdPersonTitle => "Please take a picture of the person's ID, who is receiving the delivery";
 
-        public string AskBlockTrailerLockedTitle => "All locks on the trailer?";
+        public string AskBlockTrailerLockedTitle => "everything locks on the trailer? ";
 
-        public string AskBlockAnyoneRushingPerformTitle => "Anyone Rushing you to perform the delivery?";
+        public string AskBlockAnyoneRushingPerformTitle => "Anyone rushing you to perform the delivery?";
 
         public string AskBlockWhileVehicleBeingTransportedTitle => "Did you notice any imperfections on body while vehicle being transported?";
 
@@ -284,7 +284,7 @@
 
         public string AskBlockDoesVehicleDrivesTitle => "Does the vehicle drives?";
 
-        public string AskBlockAnyoneHelpingUnloadTitle => "Anyone helping you unload?";
+        public string AskBlockAnyoneHelpingUnloadTitle => "Anyone helping you to unload?";
 
         public string AskBlockSomeoneElseUnloadedVehicleTitle => "Did someone else unloaded the vehicle for you?";
 

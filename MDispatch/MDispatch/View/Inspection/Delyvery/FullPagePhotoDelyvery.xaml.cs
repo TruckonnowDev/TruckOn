@@ -62,6 +62,10 @@ namespace MDispatch.View.PageApp
             var actionSheet = await DisplayActionSheet(LanguageHelper.TitelSelectPickPhoto, LanguageHelper.CancelBtnText, null, LanguageHelper.SelectGalery, LanguageHelper.SelectPhoto);
             if (actionSheet == LanguageHelper.SelectGalery)
             {
+                await Navigation.PushAsync(new CameraPagePhoto1(pngPaternPhoto, this, "PhotoIspection"));
+            }
+            else if (actionSheet == LanguageHelper.SelectPhoto)
+            {
                 Stream stream = await DependencyService.Get<IPhotoPickerService>().GetImageStreamAsync();
                 if (stream != null)
                 {
@@ -71,10 +75,6 @@ namespace MDispatch.View.PageApp
                     fullPagePhotoDelyveryMV.SetPhoto(ms.ToArray());
                     SetbtnVisable();
                 }
-            }
-            else if (actionSheet == LanguageHelper.SelectPhoto)
-            {
-                await Navigation.PushAsync(new CameraPagePhoto1(pngPaternPhoto, this, "PhotoIspection"));
             }
         }
 
@@ -149,6 +149,19 @@ namespace MDispatch.View.PageApp
             var actionSheet = await DisplayActionSheet(LanguageHelper.TitelSelectPickPhoto, LanguageHelper.CancelBtnText, null, LanguageHelper.SelectGalery, LanguageHelper.SelectPhoto);
             if (actionSheet == LanguageHelper.SelectGalery)
             {
+                RetakeFullPageDelivery retakeFullPageDelivery = null;
+                StreamImageSource streamImageSource = (StreamImageSource)fullPagePhotoDelyveryMV.SourseImage;
+                Task<Stream> task = streamImageSource.Stream(System.Threading.CancellationToken.None);
+                Stream stream = task.Result;
+                MemoryStream ms = new MemoryStream();
+                stream.CopyTo(ms);
+                byte[] bytes = ms.ToArray();
+                retakeFullPageDelivery = new RetakeFullPageDelivery(fullPagePhotoDelyveryMV, bytes);
+                await Navigation.PushAsync(new RetakePage(retakeFullPageDelivery));
+            }
+            else if (actionSheet == LanguageHelper.SelectPhoto)
+            {
+
                 Stream streamNewPhoto = await DependencyService.Get<IPhotoPickerService>().GetImageStreamAsync();
                 if (streamNewPhoto != null)
                 {
@@ -160,20 +173,8 @@ namespace MDispatch.View.PageApp
                     MemoryStream msOldPhoto = new MemoryStream();
                     streamOldPhpto.CopyTo(msOldPhoto);
                     fullPagePhotoDelyveryMV.ReSetPhoto(msNewPhoto.ToArray(), msOldPhoto.ToArray());
-                    
+
                 }
-            }
-            else if (actionSheet == LanguageHelper.SelectPhoto)
-            {
-                RetakeFullPageDelivery retakeFullPageDelivery = null;
-                StreamImageSource streamImageSource = (StreamImageSource)fullPagePhotoDelyveryMV.SourseImage;
-                Task<Stream> task = streamImageSource.Stream(System.Threading.CancellationToken.None);
-                Stream stream = task.Result;
-                MemoryStream ms = new MemoryStream();
-                stream.CopyTo(ms);
-                byte[] bytes = ms.ToArray();
-                retakeFullPageDelivery = new RetakeFullPageDelivery(fullPagePhotoDelyveryMV, bytes);
-                await Navigation.PushAsync(new RetakePage(retakeFullPageDelivery));
             }
         }
     }

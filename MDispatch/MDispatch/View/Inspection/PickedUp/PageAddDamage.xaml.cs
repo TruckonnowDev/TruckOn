@@ -62,6 +62,10 @@ namespace MDispatch.View.Inspection.PickedUp
                 var actionSheet = await DisplayActionSheet(LanguageHelper.TitelSelectPickPhoto, LanguageHelper.CancelBtnText, null, LanguageHelper.SelectGalery, LanguageHelper.SelectPhoto);
                 if (actionSheet == LanguageHelper.SelectGalery)
                 {
+                    await Navigation.PushAsync(new CameraPagePhoto(null, fullPagePhoto, null, this));
+                }
+                else if (actionSheet == LanguageHelper.SelectPhoto)
+                {
                     Stream streamNewPhoto = await DependencyService.Get<IPhotoPickerService>().GetImageStreamAsync();
                     if (streamNewPhoto != null)
                     {
@@ -71,10 +75,6 @@ namespace MDispatch.View.Inspection.PickedUp
                         await FullPagePhotoMV.SetPhoto(msNewPhoto.ToArray());
                         stateSelect = 0;
                     }
-                }
-                else if (actionSheet == LanguageHelper.SelectPhoto)
-                {
-                    await Navigation.PushAsync(new CameraPagePhoto(null, fullPagePhoto, null, this));
                 }
                 await WaiteSelectDamage();
                 ImgResize image = new ImgResize()

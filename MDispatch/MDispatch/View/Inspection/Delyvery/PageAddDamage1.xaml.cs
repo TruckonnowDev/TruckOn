@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
@@ -87,6 +86,10 @@ namespace MDispatch.View.Inspection.PickedUp
                 var actionSheet = await DisplayActionSheet(LanguageHelper.TitelSelectPickPhoto, LanguageHelper.CancelBtnText, null, LanguageHelper.SelectGalery, LanguageHelper.SelectPhoto);
                 if (actionSheet == LanguageHelper.SelectGalery)
                 {
+                    await Navigation.PushAsync(new CameraPagePhoto1(null, fullPagePhotoDelyvery, null, this));
+                }
+                else if (actionSheet == LanguageHelper.SelectPhoto)
+                {
                     Stream streamNewPhoto = await DependencyService.Get<IPhotoPickerService>().GetImageStreamAsync();
                     if (streamNewPhoto != null)
                     {
@@ -96,10 +99,6 @@ namespace MDispatch.View.Inspection.PickedUp
                         fullPagePhotoDelyveryMV.SetPhoto(msNewPhoto.ToArray());
                         stateSelect = 0;
                     }
-                }
-                else if (actionSheet == LanguageHelper.SelectPhoto)
-                {
-                    await Navigation.PushAsync(new CameraPagePhoto1(null, fullPagePhotoDelyvery, null, this));
                 }
                 await WaiteSelectDamage();
                 ImgResize image = new ImgResize()

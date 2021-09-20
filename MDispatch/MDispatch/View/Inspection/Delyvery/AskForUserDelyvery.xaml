@@ -78,8 +78,8 @@
                     <shadowFrame:ShadowFrame x:Name="askBlock3"
                                              Style="{StaticResource Key=frameAsk}">
                         <StackLayout Spacing="10">
-                            <Label Text="{x:Static helperLang:LanguageHelper.WithoutTranslationAskBlockClientSignatureBlockTitle}"
-                                   Style="{StaticResource Key=labelTitleAsk}"/>
+                            <!--<Label Text="{x:Static helperLang:LanguageHelper.WithoutTranslationAskBlockClientSignatureBlockTitle}"
+                                   Style="{StaticResource Key=labelTitleAsk}"/>-->
                             <StackLayout Spacing="10">
                                 <Label Text="{x:Static helperLang:LanguageHelper.WithoutTranslationAskBlockClientNameTitle}"
                                        Style="{StaticResource Key=labelTitleAsk}"/>

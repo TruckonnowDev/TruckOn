@@ -15,27 +15,27 @@
   <ItemGroup>
     <PackageReference Include="Ansuria.XFGloss" Version="1.1.3" />
     <PackageReference Include="DLToolkit.Forms.Controls.FlowListView" Version="2.0.11" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="Plugin.Badge" Version="2.3.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Plugin.Badge" Version="2.3.1" />
     <PackageReference Include="Plugin.Permissions" Version="6.0.1" />
-    <PackageReference Include="Prism.Forms" Version="7.2.0.1422" />
-    <PackageReference Include="RestSharp" Version="106.11.4" />
-    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+    <PackageReference Include="Prism.Forms" Version="8.1.97" />
+    <PackageReference Include="RestSharp" Version="106.12.0" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
     <PackageReference Include="Xam.Plugin.Connectivity" Version="3.2.0" />
     <PackageReference Include="Xam.Plugin.Geolocator" Version="4.5.0.6" />
-    <PackageReference Include="Xam.Plugin.LatestVersion" Version="1.1.2" />
+    <PackageReference Include="Xam.Plugin.LatestVersion" Version="2.1.0" />
     <PackageReference Include="Xam.Plugins.Settings" Version="3.1.1" />
     <PackageReference Include="Xamarin.Controls.SignaturePad.Forms" Version="3.0.0" />
-    <PackageReference Include="Xamarin.Essentials" Version="1.5.3.2" />
-    <PackageReference Include="Xamarin.Forms" Version="4.7.0.1179" />
-    <PackageReference Include="Xamarin.Forms.InputKit" Version="3.3.1" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.7.0" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2083" />
+    <PackageReference Include="Xamarin.Forms.InputKit" Version="3.7.2" />
     <PackageReference Include="XForms.Plugin.AnimationNavigationPage" Version="1.0.8" />
     <PackageReference Include="Xam.Plugin.DeviceInfo" Version="4.1.1" />
-    <PackageReference Include="NodaTime" Version="3.0.0" />
+    <PackageReference Include="NodaTime" Version="3.0.5" />
     <PackageReference Include="NodaTime.Serialization.JsonNet" Version="3.0.0" />
-    <PackageReference Include="NodaTime.Testing" Version="3.0.0" />
+    <PackageReference Include="NodaTime.Testing" Version="3.0.5" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Rg.Plugins.Popup" Version="1.2.0.223" />
+    <PackageReference Include="Rg.Plugins.Popup" Version="2.0.0.12" />
   </ItemGroup>
 
   <ItemGroup>

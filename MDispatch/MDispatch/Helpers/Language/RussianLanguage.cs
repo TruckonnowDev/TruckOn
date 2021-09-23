@@ -83,7 +83,7 @@ namespace MDispatch.Helpers.Language
         public string NoBtnText => "Нет";
         public string TakeBtnText => "Сфотографировать";
 
-        public string ContinuingInspectionDelivery => "Продолжение осмотра Доставка";
+        public string ContinuingInspectionDelivery => "Продолжение осмотра при доставке";
         public string ContinuingInspectionPickedUp => "Постоянное осмотр Погрузки";
         public string StartInspectionDelivery => "Начать инспекци доставку";
         public string StartInspectionPickedUp => "Начать осмотр Полученния";

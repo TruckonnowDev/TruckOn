@@ -12,6 +12,7 @@ using MDispatch.View.Inspection.PickedUp;
 using MDispatch.View.PageApp;
 using MDispatch.View.ServiceView.ResizeImage;
 using MDispatch.ViewModels.InspectionMV;
+using Rg.Plugins.Popup.Services;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using static MDispatch.Service.ManagerDispatchMob;
@@ -81,7 +82,7 @@ namespace MDispatch.View.Inspection
                                 WidthRequest = 106,
                                 Margin = new Thickness(0, 0, 5, 5)
                             };
-                            //image.GestureRecognizers.Add(new TapGestureRecognizer(VievFull));
+                            image.GestureRecognizers.Add(new TapGestureRecognizer(VievFull));
                             flexLayout.Children.Add(image);
                         }
                         blockPhotoInspection.Children.Add(flexLayout);
@@ -107,7 +108,7 @@ namespace MDispatch.View.Inspection
                                 WidthRequest = 106,
                                 Margin = new Thickness(0, 0, 5, 5)
                             };
-                            //image.GestureRecognizers.Add(new TapGestureRecognizer(VievFull));
+                            image.GestureRecognizers.Add(new TapGestureRecognizer(VievFull));
                             flexLayout.Children.Add(image);
                         }
                         blockPhotoInspection.Children.Add(flexLayout);
@@ -124,12 +125,13 @@ namespace MDispatch.View.Inspection
         private async void VievFull(Xamarin.Forms.View v, object s)
         {
             Image image = ((Image)v);
-            MemoryStream memoryStream = new MemoryStream();
-            StreamImageSource streamImageSource = (StreamImageSource)image.Source;
-            System.Threading.CancellationToken cancellationToken = System.Threading.CancellationToken.None;
-            Stream stream = await streamImageSource.Stream(cancellationToken);
-            stream.CopyTo(memoryStream);
-            await Navigation.PushAsync(new ViewPhoto(memoryStream.ToArray()));
+            //MemoryStream memoryStream = new MemoryStream();
+            //StreamImageSource streamImageSource = (StreamImageSource)image.Source;
+            //System.Threading.CancellationToken cancellationToken = System.Threading.CancellationToken.None;
+            //Stream stream = await streamImageSource.Stream(cancellationToken);
+            //stream.CopyTo(memoryStream);
+            //await Navigation.PushAsync(new ViewPhoto(memoryStream.ToArray()));
+            await PopupNavigation.PushAsync(new ViewPhoto(image.Source));
         }
 
         private async void InitElemnt()

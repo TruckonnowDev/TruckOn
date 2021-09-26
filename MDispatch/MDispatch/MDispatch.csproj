@@ -11,6 +11,7 @@
     <EmbeddedResource Remove="View\GlobalDialogView\Comlete.xaml" />
     <Compile Remove="View\GlobalDialogView\Comlete.xaml.cs" />
     <None Remove="NewElement\Directory\" />
+    <None Remove="ViewExtension\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -122,5 +123,6 @@
     <Folder Include="Helpers\Language\" />
     <Folder Include="Models\Enum\" />
     <Folder Include="NewElement\Directory\" />
+    <Folder Include="ViewExtension\" />
   </ItemGroup>
 </Project>

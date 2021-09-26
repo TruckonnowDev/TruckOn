@@ -12,6 +12,7 @@
     <Compile Remove="View\GlobalDialogView\Comlete.xaml.cs" />
     <None Remove="NewElement\Directory\" />
     <None Remove="ViewExtension\" />
+    <None Remove="NewElement\FeedBackHaptik\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -114,7 +115,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Service\TimeSync\" />
-    <Folder Include="Service\Helpers\" />
+    <Folder Include="Service\HelpersViews\" />
     <Folder Include="Service\RequestQueue\" />
     <Folder Include="NewElement\AuntificationID\" />
     <Folder Include="NewElement\Effect\" />
@@ -124,5 +125,6 @@
     <Folder Include="Models\Enum\" />
     <Folder Include="NewElement\Directory\" />
     <Folder Include="ViewExtension\" />
+    <Folder Include="NewElement\FeedBackHaptik\" />
   </ItemGroup>
 </Project>

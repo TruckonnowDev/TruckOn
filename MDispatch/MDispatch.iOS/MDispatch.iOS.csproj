@@ -230,6 +230,7 @@
     <Compile Include="NewRender\Frame\ShadowFrame.cs" />
     <Compile Include="NewRender\TextIn\CustomXfxEntryRendererTouch.cs" />
     <Compile Include="NewRender\Direktory\PickerService.cs" />
+    <Compile Include="NewRender\FeedBackHaptik\HaptikFeedBack.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
@@ -1289,5 +1290,6 @@
     <Folder Include="Resources\Fonts\" />
     <Folder Include="NewRender\Frame\" />
     <Folder Include="NewRender\Direktory\" />
+    <Folder Include="NewRender\FeedBackHaptik\" />
   </ItemGroup>
 </Project>

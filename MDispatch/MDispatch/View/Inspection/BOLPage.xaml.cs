@@ -8,6 +8,7 @@ using MDispatch.Helpers;
 using MDispatch.Models;
 using MDispatch.Service;
 using MDispatch.Service.Helpers;
+using MDispatch.Service.HelpersViews;
 using MDispatch.View.Inspection.PickedUp;
 using MDispatch.View.PageApp;
 using MDispatch.View.ServiceView.ResizeImage;
@@ -131,6 +132,7 @@ namespace MDispatch.View.Inspection
             //Stream stream = await streamImageSource.Stream(cancellationToken);
             //stream.CopyTo(memoryStream);
             //await Navigation.PushAsync(new ViewPhoto(memoryStream.ToArray()));
+            await OpacityTouchView.TouchFeedBack(image);
             await PopupNavigation.PushAsync(new ViewPhoto(image.Source));
         }
 
@@ -240,7 +242,6 @@ namespace MDispatch.View.Inspection
                         HeightRequest = 300,
                         Source = ImageSource.FromUri(new Uri($"{Config.BaseReqvesteUrl}/Mobile/Image?name=../Photo/{VehiclwInformation.Id}/scan.jpg&type=jpg"))
                     });
-
                     VechInfoSt.Children.Add(new FlexLayout()
                     {
                         JustifyContent = FlexJustify.SpaceAround,

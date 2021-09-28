@@ -461,6 +461,9 @@
     <BundleResource Include="Resources\Bumperpool2CarEeclosedTraile16.png" />
     <BundleResource Include="Resources\Bumperpool2CarEeclosedTraile17.png" />
     <BundleResource Include="Resources\Bumperpool2CarEeclosedTraile18.png" />
+    <BundleResource Include="Resources\EnglishLanIcon.png" />
+    <BundleResource Include="Resources\RussianLanIcon.png" />
+    <BundleResource Include="Resources\SpanishLanIcon.png" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\deliveredOrder.png" />

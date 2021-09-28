@@ -6,6 +6,7 @@ using MDispatch.Service.Helpers;
 using MDispatch.ViewModels.PageAppMV.Settings;
 using Plugin.LatestVersion;
 using Plugin.Settings;
+using Rg.Plugins.Popup.Services;
 using System;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration;
@@ -25,7 +26,7 @@ namespace MDispatch.View.PageApp.Settings
             InitializeComponent();
             On<iOS>().SetUseSafeArea(true);
             BindingContext = settingsMV;
-            piLang.SelectedIndex = CrossSettings.Current.GetValueOrDefault("Language", (int)LanguageType.English);
+            SetLan(CrossSettings.Current.GetValueOrDefault("Language", (int)LanguageType.English));
         }
 
         private async void TapGestureRecognizer_Tapped(object sender, EventArgs e)
@@ -80,10 +81,15 @@ namespace MDispatch.View.PageApp.Settings
             HelpersView.Hidden();
         }
 
-        private void Picker_SelectedIndexChanged(System.Object sender, System.EventArgs e)
+        private async void TapGestureRecognizer_Tapped_4(System.Object sender, System.EventArgs e)
         {
-            CrossSettings.Current.AddOrUpdateValue("Language", piLang.SelectedIndex);
-            LanguageHelper.InitLanguage();
+            await PopupNavigation.PushAsync(new SelectLanguage(SetLan));
+        }
+
+        private void SetLan(int lanIndex)
+        {
+            imgLan.Source = lanIndex == (int)LanguageType.English ? "EnglishLanIcon.png" : lanIndex == (int)LanguageType.Russian ? "RussianLanIcon.png" : "SpanishLanIcon.png";
+            piLang.Text = lanIndex == (int)LanguageType.English ? "English" : lanIndex == (int)LanguageType.Russian ? "Russian" : "Spanish";
         }
     }
 }

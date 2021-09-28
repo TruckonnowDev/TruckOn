@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<pages:PopupPage 
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
+    xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup"
+    x:Class="MDispatch.View.PageApp.Settings.SelectLanguage" >
+    <pages:PopupPage.Animation>
+        <animations:ScaleAnimation 
+            PositionIn="Center"
+            PositionOut="Center"
+            ScaleIn="3"     
+            ScaleOut="1.5"
+            DurationIn="200"
+            DurationOut="200"
+            EasingIn="SinOut"
+            EasingOut="SinIn"
+            HasBackgroundAnimation="True"/>
+    </pages:PopupPage.Animation>
+        <Frame CornerRadius="6" Padding="28, 24" Margin="50">
+            <StackLayout Spacing="20">
+                <FlexLayout JustifyContent="SpaceBetween">
+                    <Label Text="Select the language"
+                           Style="{StaticResource labelTitleAsk}"/>
+                    <Image Source="Close.png"
+                           HorizontalOptions="End"
+                           WidthRequest="14"
+                           HeightRequest="14"
+                           Margin="0, 5, 0, 0">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                        </Image.GestureRecognizers>
+                    </Image>
+                </FlexLayout>
+                <ListView x:Name="collectionLangLv"
+                          SeparatorVisibility="Default"
+                          ItemSelected="CollectionLang_ItemSelected"
+                          Margin="0">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <ViewCell.View>
+                                    <FlexLayout Padding="0" Margin="0, 12, 0, 15">
+                                        <Image WidthRequest="20" Margin="5, 0, 5, 0"
+                                               Source="{Binding Icon}"/>
+                                        <Label Text="{Binding Titel}"
+                                               TextColor="#A1A1A1"
+                                               FontSize="16"
+                                               FontFamily="{StaticResource OpenSans-Regular}"/>
+                                    </FlexLayout>
+                                </ViewCell.View>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
+        </Frame>
+</pages:PopupPage>

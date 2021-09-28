@@ -10,7 +10,6 @@ using MDispatch.Service;
 using MDispatch.Service.Helpers;
 using MDispatch.Service.HelpersViews;
 using MDispatch.View.Inspection.PickedUp;
-using MDispatch.View.PageApp;
 using MDispatch.View.ServiceView.ResizeImage;
 using MDispatch.ViewModels.InspectionMV;
 using Rg.Plugins.Popup.Services;
@@ -126,12 +125,6 @@ namespace MDispatch.View.Inspection
         private async void VievFull(Xamarin.Forms.View v, object s)
         {
             Image image = ((Image)v);
-            //MemoryStream memoryStream = new MemoryStream();
-            //StreamImageSource streamImageSource = (StreamImageSource)image.Source;
-            //System.Threading.CancellationToken cancellationToken = System.Threading.CancellationToken.None;
-            //Stream stream = await streamImageSource.Stream(cancellationToken);
-            //stream.CopyTo(memoryStream);
-            //await Navigation.PushAsync(new ViewPhoto(memoryStream.ToArray()));
             await OpacityTouchView.TouchFeedBack(image);
             await PopupNavigation.PushAsync(new ViewPhoto(image.Source));
         }

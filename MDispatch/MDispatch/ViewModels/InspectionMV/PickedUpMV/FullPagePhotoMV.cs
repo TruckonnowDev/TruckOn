@@ -1,6 +1,7 @@
 ﻿using MDispatch.Helpers;
 using MDispatch.Models;
 using MDispatch.NewElement;
+using MDispatch.NewElement.Directory;
 using MDispatch.NewElement.ToastNotify;
 using MDispatch.Service;
 using MDispatch.Service.Helpers;
@@ -305,7 +306,6 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
             }
             else
             {
-                
                 SelectMethodAction();
             }
         }
@@ -326,7 +326,18 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
             }
             else if (actionSheet == LanguageHelper.SelectLoadGalery)
             {
-
+                List<byte[]> imgBytes = PhotoInspection.Photos.Select(p => Convert.FromBase64String(p.Base64)).ToList();
+                bool isSaveAllPhoto = await SaveAllPhoto(imgBytes);
+                if(isSaveAllPhoto)
+                {
+                    FullPagePhoto fullPagePhoto = new FullPagePhoto(managerDispatchMob, VehiclwInformation, IdShip, $"{Car.TypeIndex.Replace(" ", "")}{InderxPhotoInspektion + 1}.png", Car.TypeIndex.Replace(" ", ""), InderxPhotoInspektion + 1, initDasbordDelegate, getVechicleDelegate, Car.GetNameLayout(InderxPhotoInspektion + 1), OnDeliveryToCarrier, TotalPaymentToCarrier);
+                    await Navigation.PushAsync(fullPagePhoto);
+                    await Navigation.PushAsync(new CameraPagePhoto($"{Car.TypeIndex.Replace(" ", "")}{InderxPhotoInspektion + 1}.png", fullPagePhoto, "PhotoIspection"));
+                    if (Navigation.NavigationStack.Count > 1)
+                    {
+                        Navigation.RemovePage(Navigation.NavigationStack[1]);
+                    }
+                }
             }
             else if (actionSheet == LanguageHelper.SelectLoadFolderOffline)
             {
@@ -336,6 +347,20 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
             {
 
             }
+        }
+
+        private async Task<bool> SaveAllPhoto(List<byte[]> imgBytes)
+        {
+            int i = 0;
+            foreach (byte[] imgByte in imgBytes)
+            {
+                bool isSaveAllPhoto = await DependencyService.Get<IMediaService>().SaveImageFromByte(imgByte, $"{VehiclwInformation.Id}-PikedUp-PhotoInspection-{i}");
+                if(!isSaveAllPhoto)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         public async Task ClosePageToFirstPageInspction()

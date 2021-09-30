@@ -162,6 +162,7 @@
     <Compile Include="NewrRender\TextInputRender\TextInputeRender.cs" />
     <Compile Include="NewrRender\Frame\ShadowFrame.cs" />
     <Compile Include="NewrRender\Direktory\PickerService.cs" />
+    <Compile Include="NewrRender\Direktory\MediaService.cs" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\Truckonnow-8fb90a135d42.json" />

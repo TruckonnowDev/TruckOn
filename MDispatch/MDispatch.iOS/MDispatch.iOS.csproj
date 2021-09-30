@@ -231,6 +231,7 @@
     <Compile Include="NewRender\TextIn\CustomXfxEntryRendererTouch.cs" />
     <Compile Include="NewRender\Direktory\PickerService.cs" />
     <Compile Include="NewRender\FeedBackHaptik\HaptikFeedBack.cs" />
+    <Compile Include="NewRender\Direktory\MediaService.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />

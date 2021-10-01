@@ -1,4 +1,6 @@
-﻿namespace MDispatch.Models
+﻿using SQLite;
+
+namespace MDispatch.Models
 {
     public class Photo
     {

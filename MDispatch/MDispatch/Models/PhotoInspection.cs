@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SQLite;
 
 namespace MDispatch.Models
 {

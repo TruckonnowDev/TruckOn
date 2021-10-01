@@ -15,6 +15,7 @@
     <None Remove="NewElement\FeedBackHaptik\" />
     <None Remove="sqlite-net-pcl" />
     <None Remove="NewElement\DataBase\" />
+    <None Remove="Models\ModelDataBase\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -130,5 +131,6 @@
     <Folder Include="ViewExtension\" />
     <Folder Include="NewElement\FeedBackHaptik\" />
     <Folder Include="NewElement\DataBase\" />
+    <Folder Include="Models\ModelDataBase\" />
   </ItemGroup>
 </Project>

@@ -1,5 +1,7 @@
 ﻿using MDispatch.Helpers;
 using MDispatch.Models;
+using MDispatch.Models.Enum;
+using MDispatch.Models.ModelDataBase;
 using MDispatch.NewElement;
 using MDispatch.NewElement.Directory;
 using MDispatch.NewElement.ToastNotify;
@@ -15,9 +17,9 @@ using MDispatch.View.Inspection.PickedUp;
 using MDispatch.View.PageApp;
 using MDispatch.ViewModels.AskPhoto;
 using MDispatch.ViewModels.InspectionMV.Servise.Models;
+using Newtonsoft.Json;
 using Plugin.Settings;
 using Prism.Mvvm;
-using Rg.Plugins.Popup.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -326,27 +328,50 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
             }
             else if (actionSheet == LanguageHelper.SelectLoadGalery)
             {
-                List<byte[]> imgBytes = PhotoInspection.Photos.Select(p => Convert.FromBase64String(p.Base64)).ToList();
-                bool isSaveAllPhoto = await SaveAllPhoto(imgBytes);
-                if(isSaveAllPhoto)
-                {
-                    FullPagePhoto fullPagePhoto = new FullPagePhoto(managerDispatchMob, VehiclwInformation, IdShip, $"{Car.TypeIndex.Replace(" ", "")}{InderxPhotoInspektion + 1}.png", Car.TypeIndex.Replace(" ", ""), InderxPhotoInspektion + 1, initDasbordDelegate, getVechicleDelegate, Car.GetNameLayout(InderxPhotoInspektion + 1), OnDeliveryToCarrier, TotalPaymentToCarrier);
-                    await Navigation.PushAsync(fullPagePhoto);
-                    await Navigation.PushAsync(new CameraPagePhoto($"{Car.TypeIndex.Replace(" ", "")}{InderxPhotoInspektion + 1}.png", fullPagePhoto, "PhotoIspection"));
-                    if (Navigation.NavigationStack.Count > 1)
-                    {
-                        Navigation.RemovePage(Navigation.NavigationStack[1]);
-                    }
-                }
+                await SaveAllPhotoInspactionToGalery();
+                await NextInspectionPhotoPage();
             }
             else if (actionSheet == LanguageHelper.SelectLoadFolderOffline)
             {
-
+                await SaveAllPhotoInspactionToOflineFolder();
+                await NextInspectionPhotoPage();
             }
             else if (actionSheet == LanguageHelper.SelectLoadFolderOfflineAndGalery)
             {
-
+                await SaveAllPhotoInspactionToGalery();
+                await SaveAllPhotoInspactionToOflineFolder();
+                await NextInspectionPhotoPage();
             }
+        }
+
+        private async Task NextInspectionPhotoPage()
+        {
+            FullPagePhoto fullPagePhoto = new FullPagePhoto(managerDispatchMob, VehiclwInformation, IdShip, $"{Car.TypeIndex.Replace(" ", "")}{InderxPhotoInspektion + 1}.png", Car.TypeIndex.Replace(" ", ""), InderxPhotoInspektion + 1, initDasbordDelegate, getVechicleDelegate, Car.GetNameLayout(InderxPhotoInspektion + 1), OnDeliveryToCarrier, TotalPaymentToCarrier);
+            await Navigation.PushAsync(fullPagePhoto);
+            await Navigation.PushAsync(new CameraPagePhoto($"{Car.TypeIndex.Replace(" ", "")}{InderxPhotoInspektion + 1}.png", fullPagePhoto, "PhotoIspection"));
+            if (Navigation.NavigationStack.Count > 1)
+            {
+                Navigation.RemovePage(Navigation.NavigationStack[1]);
+            }
+        }
+
+        private async Task SaveAllPhotoInspactionToGalery()
+        {
+            List<byte[]> imgBytes = PhotoInspection.Photos.Select(p => Convert.FromBase64String(p.Base64)).ToList();
+            bool isSaveAllPhoto = await SaveAllPhoto(imgBytes);
+        }
+
+
+        private async Task SaveAllPhotoInspactionToOflineFolder()
+        {
+            await managerDispatchMob.dataBaseContext.AddPhotoInspection(new FolderOffline()
+            {
+                IdShiping = IdShip,
+                IdVech = VehiclwInformation.Id,
+                Index = InderxPhotoInspektion,
+                FolderOflineType = FolderOflineType.PhotoInspaction,
+                Json = JsonConvert.SerializeObject(PhotoInspection),
+            });
         }
 
         private async Task<bool> SaveAllPhoto(List<byte[]> imgBytes)

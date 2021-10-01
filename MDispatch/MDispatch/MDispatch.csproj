@@ -13,6 +13,8 @@
     <None Remove="NewElement\Directory\" />
     <None Remove="ViewExtension\" />
     <None Remove="NewElement\FeedBackHaptik\" />
+    <None Remove="sqlite-net-pcl" />
+    <None Remove="NewElement\DataBase\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,6 +42,7 @@
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Rg.Plugins.Popup" Version="2.0.0.12" />
     <PackageReference Include="Xfx.Controls" Version="1.2.1" />
+    <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
   </ItemGroup>
 
   <ItemGroup>
@@ -126,5 +129,6 @@
     <Folder Include="NewElement\Directory\" />
     <Folder Include="ViewExtension\" />
     <Folder Include="NewElement\FeedBackHaptik\" />
+    <Folder Include="NewElement\DataBase\" />
   </ItemGroup>
 </Project>

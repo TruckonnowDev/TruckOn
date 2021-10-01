@@ -232,6 +232,7 @@
     <Compile Include="NewRender\Direktory\PickerService.cs" />
     <Compile Include="NewRender\FeedBackHaptik\HaptikFeedBack.cs" />
     <Compile Include="NewRender\Direktory\MediaService.cs" />
+    <Compile Include="NewRender\DataBase\SQLiteDb.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
@@ -351,6 +352,9 @@
     </PackageReference>
     <PackageReference Include="Xfx.Controls">
       <Version>1.2.1</Version>
+    </PackageReference>
+    <PackageReference Include="sqlite-net-pcl">
+      <Version>1.8.116</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -1295,5 +1299,6 @@
     <Folder Include="NewRender\Frame\" />
     <Folder Include="NewRender\Direktory\" />
     <Folder Include="NewRender\FeedBackHaptik\" />
+    <Folder Include="NewRender\DataBase\" />
   </ItemGroup>
 </Project>

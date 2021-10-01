@@ -18,6 +18,7 @@ namespace MDispatch.Service
         private DriverInspecktion driverInspecktion = null;
         private GoogleApi googleApi = null;
         private int CountReqvest = 0;
+        public DataBaseContext dataBaseContext = new DataBaseContext();
 
         public int DriverWork(string typeDriver, string token, ref string description, ref bool isInspection, ref int indexPhoto, ref TruckCar truckCar)
         {

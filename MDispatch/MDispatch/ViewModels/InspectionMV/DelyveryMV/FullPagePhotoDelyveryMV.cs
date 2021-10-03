@@ -1,6 +1,9 @@
 ﻿using MDispatch.Helpers;
 using MDispatch.Models;
+using MDispatch.Models.Enum;
+using MDispatch.Models.ModelDataBase;
 using MDispatch.NewElement;
+using MDispatch.NewElement.Directory;
 using MDispatch.Service;
 using MDispatch.Service.Helpers;
 using MDispatch.Service.Net;
@@ -9,6 +12,7 @@ using MDispatch.View.GlobalDialogView;
 using MDispatch.View.Inspection;
 using MDispatch.View.PageApp;
 using MDispatch.ViewModels.InspectionMV.Servise.Models;
+using Newtonsoft.Json;
 using Plugin.Settings;
 using Prism.Mvvm;
 using Rg.Plugins.Popup.Services;
@@ -29,10 +33,11 @@ namespace MDispatch.ViewModels.InspectionMV.DelyveryMV
         public IVehicle Car = null;
         private InitDasbordDelegate initDasbordDelegate = null;
         private GetVechicleDelegate getVechicleDelegate = null;
+        private FullPagePhotoDelyvery fullPagePhoto = null;
 
         public FullPagePhotoDelyveryMV(ManagerDispatchMob managerDispatchMob, VehiclwInformation vehiclwInformation, string idShip, string typeCar,
             int inderxPhotoInspektion, INavigation navigation, InitDasbordDelegate initDasbordDelegate, GetVechicleDelegate getVechicleDelegate,
-            string onDeliveryToCarrier, string totalPaymentToCarrier)
+            string onDeliveryToCarrier, string totalPaymentToCarrier, FullPagePhotoDelyvery fullPagePhoto)
         {
             this.getVechicleDelegate = getVechicleDelegate;
             Navigation = navigation;
@@ -45,6 +50,7 @@ namespace MDispatch.ViewModels.InspectionMV.DelyveryMV
             TotalPaymentToCarrier = totalPaymentToCarrier;
             Car = GetTypeCar(typeCar.Replace(" ", ""));
             Init();
+            this.fullPagePhoto = fullPagePhoto;
         }
 
         private async void Init()
@@ -271,10 +277,11 @@ namespace MDispatch.ViewModels.InspectionMV.DelyveryMV
             }
             else
             {
-                HelpersView.ReSet();
-                HelpersView.CallError(LanguageHelper.NotNetworkAlert);
-                //await PopupNavigation.PushAsync(new Errror("Not Network", null));
-                BackToRootPage();
+                //HelpersView.ReSet();
+                //HelpersView.CallError(LanguageHelper.NotNetworkAlert);
+                ////await PopupNavigation.PushAsync(new Errror("Not Network", null));
+                //BackToRootPage();
+                SelectMethodAction();
             }
         }
 
@@ -393,6 +400,92 @@ namespace MDispatch.ViewModels.InspectionMV.DelyveryMV
         {
             DependencyService.Get<IOrientationHandler>().ForceSensor();
             await Navigation.PopToRootAsync();
+        }
+
+
+        private async void SelectMethodAction()
+        {
+            await ClosePageToFirstPageInspction();
+            await fullPagePhoto.CreateActionSheet(SelectMethodAction, LanguageHelper.SelectBackToRootBage, LanguageHelper.SelectLoadGalery, LanguageHelper.SelectLoadFolderOffline, LanguageHelper.SelectLoadFolderOfflineAndGalery);
+        }
+
+        private async void SelectMethodAction(string actionSheet)
+        {
+            if (actionSheet == LanguageHelper.SelectBackToRootBage)
+            {
+                HelpersView.ReSet();
+                HelpersView.CallError(LanguageHelper.NotNetworkAlert);
+                BackToRootPage();
+            }
+            else if (actionSheet == LanguageHelper.SelectLoadGalery)
+            {
+                await SaveAllPhotoInspactionToGalery();
+                await NextInspectionPhotoPage();
+            }
+            else if (actionSheet == LanguageHelper.SelectLoadFolderOffline)
+            {
+                await SaveAllPhotoInspactionToOflineFolder();
+                await NextInspectionPhotoPage();
+            }
+            else if (actionSheet == LanguageHelper.SelectLoadFolderOfflineAndGalery)
+            {
+                await SaveAllPhotoInspactionToGalery();
+                await SaveAllPhotoInspactionToOflineFolder();
+                await NextInspectionPhotoPage();
+            }
+        }
+
+        private async Task NextInspectionPhotoPage()
+        {
+            FullPagePhoto fullPagePhoto = new FullPagePhoto(managerDispatchMob, VehiclwInformation, IdShip, $"{Car.TypeIndex.Replace(" ", "")}{InderxPhotoInspektion + 1}.png", Car.TypeIndex.Replace(" ", ""), InderxPhotoInspektion + 1, initDasbordDelegate, getVechicleDelegate, Car.GetNameLayout(InderxPhotoInspektion + 1), OnDeliveryToCarrier, TotalPaymentToCarrier);
+            await Navigation.PushAsync(fullPagePhoto);
+            await Navigation.PushAsync(new CameraPagePhoto($"{Car.TypeIndex.Replace(" ", "")}{InderxPhotoInspektion + 1}.png", fullPagePhoto, "PhotoIspection"));
+            if (Navigation.NavigationStack.Count > 1)
+            {
+                Navigation.RemovePage(Navigation.NavigationStack[1]);
+            }
+        }
+
+        private async Task SaveAllPhotoInspactionToGalery()
+        {
+            List<byte[]> imgBytes = PhotoInspection.Photos.Select(p => Convert.FromBase64String(p.Base64)).ToList();
+            bool isSaveAllPhoto = await SaveAllPhoto(imgBytes);
+        }
+
+
+        private async Task SaveAllPhotoInspactionToOflineFolder()
+        {
+            await managerDispatchMob.dataBaseContext.AddPhotoInspection(new FolderOffline()
+            {
+                IdShiping = IdShip,
+                IdVech = VehiclwInformation.Id,
+                Index = InderxPhotoInspektion,
+                FolderOflineType = FolderOflineType.PhotoInspaction,
+                Json = JsonConvert.SerializeObject(PhotoInspection),
+                InspactionType = InspactionType.Delivery,
+            });
+        }
+
+        private async Task<bool> SaveAllPhoto(List<byte[]> imgBytes)
+        {
+            int i = 0;
+            foreach (byte[] imgByte in imgBytes)
+            {
+                bool isSaveAllPhoto = await DependencyService.Get<IMediaService>().SaveImageFromByte(imgByte, $"{VehiclwInformation.Id}-PikedUp-PhotoInspection-{i}");
+                if (!isSaveAllPhoto)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public async Task ClosePageToFirstPageInspction()
+        {
+            for (int i = 0; Navigation.NavigationStack.Count >= 3; i++)
+            {
+                await Navigation.PopAsync();
+            }
         }
     }
 }

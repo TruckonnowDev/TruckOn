@@ -371,6 +371,7 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 Index = InderxPhotoInspektion,
                 FolderOflineType = FolderOflineType.PhotoInspaction,
                 Json = JsonConvert.SerializeObject(PhotoInspection),
+                InspactionType = InspactionType.PikedUp,
             });
         }
 

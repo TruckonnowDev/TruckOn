@@ -28,7 +28,7 @@ namespace MDispatch.View.PageApp
             string onDeliveryToCarrier, string totalPaymentToCarrier)
         {
             this.pngPaternPhoto = pngPaternPhoto;
-            fullPagePhotoDelyveryMV = new FullPagePhotoDelyveryMV(managerDispatchMob, vehiclwInformation, idShip, typeCar, photoIndex, Navigation, initDasbordDelegate, getVechicleDelegate, onDeliveryToCarrier, totalPaymentToCarrier);
+            fullPagePhotoDelyveryMV = new FullPagePhotoDelyveryMV(managerDispatchMob, vehiclwInformation, idShip, typeCar, photoIndex, Navigation, initDasbordDelegate, getVechicleDelegate, onDeliveryToCarrier, totalPaymentToCarrier, this);
             InitializeComponent();
             Xamarin.Forms.NavigationPage.SetHasNavigationBar(this, false);  
             BindingContext = fullPagePhotoDelyveryMV;
@@ -173,9 +173,15 @@ namespace MDispatch.View.PageApp
                     MemoryStream msOldPhoto = new MemoryStream();
                     streamOldPhpto.CopyTo(msOldPhoto);
                     fullPagePhotoDelyveryMV.ReSetPhoto(msNewPhoto.ToArray(), msOldPhoto.ToArray());
-
                 }
             }
         }
+
+        public async Task CreateActionSheet(Action<string> calbackResultAction, params string[] paramsAction)
+        {
+            var actionSheet = await DisplayActionSheet(LanguageHelper.TitelSelectPickPhoto, LanguageHelper.CancelBtnText, null, paramsAction);
+            calbackResultAction(actionSheet);
+        }
+
     }
 }

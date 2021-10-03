@@ -13,5 +13,6 @@ namespace MDispatch.Models.ModelDataBase
         public int Index { get; set; }
         public FolderOflineType FolderOflineType { get; set; }
         public string Json { get; set; }
+        public InspactionType InspactionType { get; set; }
     }
 }

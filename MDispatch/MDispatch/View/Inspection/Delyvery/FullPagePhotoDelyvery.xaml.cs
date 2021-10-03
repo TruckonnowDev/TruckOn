@@ -48,7 +48,7 @@ namespace MDispatch.View.PageApp
         {
             if (fullPagePhotoDelyveryMV.AllSourseImage != null && fullPagePhotoDelyveryMV.AllSourseImage.Count != 0)
             {
-                Photos.SelectedItem = fullPagePhotoDelyveryMV.AllSourseImage[0];
+                fullPagePhotoDelyveryMV.SourseImage = fullPagePhotoDelyveryMV.AllSourseImage[0];
                 btnNext.IsVisible = true;
                 btnNext.HorizontalOptions = LayoutOptions.End;
                 btnAddPhoto.IsVisible = false;
@@ -56,7 +56,17 @@ namespace MDispatch.View.PageApp
                 btnRetake.IsVisible = true;
             }
         }
+
+        public void SetbtnVisableButton()
+        {
+            btnNext.IsVisible = true;
+            btnNext.HorizontalOptions = LayoutOptions.End;
+            btnAddPhoto.IsVisible = false;
+            btnDamage.IsVisible = true;
+            btnRetake.IsVisible = true;
+        }
         
+
         private async void Button_Clicked(object sender, EventArgs e)
         {
             var actionSheet = await DisplayActionSheet(LanguageHelper.TitelSelectPickPhoto, LanguageHelper.CancelBtnText, null, LanguageHelper.SelectGalery, LanguageHelper.SelectPhoto);
@@ -80,7 +90,7 @@ namespace MDispatch.View.PageApp
 
         private async void MessagesListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
-            fullPagePhotoDelyveryMV.SourseImage = (ImageSource)e.SelectedItem;
+            fullPagePhotoDelyveryMV.SourseImage = fullPagePhotoDelyveryMV.ConvertBase64ToImageSource(fullPagePhotoDelyveryMV.PhotoInspection.Photos[e.SelectedItemIndex].Base64);
             if((ImageSource)Photos.SelectedItem != fullPagePhotoDelyveryMV.AllSourseImage[0])
             {
                 dmla.IsVisible = false;
@@ -126,7 +136,7 @@ namespace MDispatch.View.PageApp
 
         private async void Button_Clicked_2(object sender, EventArgs e)
         {
-            if (fullPagePhotoDelyveryMV.PhotoInspection != null && fullPagePhotoDelyveryMV.AllSourseImage.FindIndex(a => a == fullPagePhotoDelyveryMV.SourseImage) == 0)
+            if (fullPagePhotoDelyveryMV.PhotoInspection != null)
             {
                 await Navigation.PushAsync(new Inspection.PickedUp.PageAddDamage1(fullPagePhotoDelyveryMV, this, dmla.Children.ToList()));
             }

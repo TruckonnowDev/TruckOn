@@ -17,6 +17,7 @@ namespace MDispatch.Models
         public double YInterest { get; set; }
         public int HeightDamage { get; set; }
         public int WidthDamage { get; set; }
+        public string ImageBase64 { get; set; }
         [JsonIgnore]
         public Image Image { get; set; }
         [JsonIgnore]

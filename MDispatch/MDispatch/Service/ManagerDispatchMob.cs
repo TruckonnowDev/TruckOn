@@ -1,8 +1,12 @@
 ﻿using MDispatch.Models;
+using MDispatch.Models.Enum;
+using MDispatch.Models.ModelDataBase;
 using MDispatch.Vidget.VM;
 using Plugin.Connectivity;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace MDispatch.Service
 {
@@ -72,6 +76,12 @@ namespace MDispatch.Service
             driverInspecktion = null;
             CountReqvest--;
             return statePay;
+        }
+
+        internal async Task<FolderOffline> GetPhotoInspectionByOptinsInDB(string idShip, string id, FolderOflineType folderOflineType, InspactionType inspactionType, int index)
+        {
+            List<FolderOffline> folderOfflines = await dataBaseContext.GetFolderOfflines();
+            return folderOfflines.FirstOrDefault(f => f.IdShiping == idShip && f.IdVech == id && f.Index == index && f.FolderOflineType == folderOflineType && f.InspactionType == inspactionType);
         }
 
         public int A_RWork(string typeR_A, string login, string password, ref string description, ref string token)

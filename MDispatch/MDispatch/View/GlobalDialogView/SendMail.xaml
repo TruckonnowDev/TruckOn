@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<pages:PopupPage 
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
+    xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup"
+    x:Class="MDispatch.View.GlobalDialogView.SendMail">
+    <pages:PopupPage.Animation>
+        <animations:ScaleAnimation 
+            PositionIn="Center"
+            PositionOut="Center"
+            ScaleIn="3"     
+            ScaleOut="1.5"
+            DurationIn="200"
+            DurationOut="200"
+            EasingIn="SinOut"
+            EasingOut="SinIn"
+            HasBackgroundAnimation="True"/>
+    </pages:PopupPage.Animation>
+    <StackLayout VerticalOptions="Center"
+                 HorizontalOptions="FillAndExpand"
+                 Margin="5">
+        <Frame CornerRadius="6" Padding="15" Margin="4" BorderColor="BlueViolet">
+            <StackLayout>
+                <Entry x:Name="subj" Placeholder="Write subject"/>
+                <Editor x:Name="msg" Placeholder="Write your message" HeightRequest="200"/>
+                <StackLayout Orientation="Horizontal">
+                    <Button BackgroundColor="#4fd2c2" Text="Send Messege" TextColor="White" Clicked="Button_Clicked"/>
+                    <Button BackgroundColor="BlueViolet" Text="Close" TextColor="White" Clicked="Button_Clicked_1"/>
+                </StackLayout>
+                <Label x:Name="warn" IsVisible="False" Text="Please enter a message" FontSize="8" TextColor="Red"/>
+            </StackLayout>
+        </Frame>
+    </StackLayout>
+</pages:PopupPage>

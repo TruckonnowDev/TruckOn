@@ -4,6 +4,7 @@ using MDispatch.Models.Enum;
 using MDispatch.Models.ModelDataBase;
 using MDispatch.NewElement;
 using MDispatch.NewElement.Directory;
+using MDispatch.NewElement.ResIzeImage;
 using MDispatch.Service;
 using MDispatch.Service.Helpers;
 using MDispatch.Service.Net;
@@ -72,6 +73,13 @@ namespace MDispatch.ViewModels.InspectionMV.DelyveryMV
                     {
                         AllSourseImage.Add(ConvertBase64ToImageSource(damage.ImageBase64));
                         damage.ImageSource = ConvertBase64ToImageSource(damage.ImageBase64);
+                        damage.Image = new ImgResize()
+                        {
+                            Source = $"DamageD{damage.IndexDamage}.png",
+                            WidthRequest = damage.WidthDamage,
+                            HeightRequest = damage.HeightDamage,
+                        };
+                        fullPagePhoto.AddDamagCurrentLayut(damage.Image, damage.XInterest, damage.YInterest);
                     }
                 }
             }

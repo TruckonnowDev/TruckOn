@@ -119,8 +119,15 @@ namespace MDispatch.View.PageApp
             }
         }
 
-        internal void AddDamagCurrentLayut(Xamarin.Forms.View view)
+        internal void AddDamagCurrentLayut(Xamarin.Forms.View view, double? xInterest = null, double? yInterest = null, int? width = null, int? height = null)
         {
+            if(xInterest != null && yInterest != null)
+            {
+                double x = (double)xInterest;
+                double y = (double)yInterest;
+                AbsoluteLayout.SetLayoutBounds(view, new Rectangle((double)xInterest, (double)yInterest, 30, 30));
+                AbsoluteLayout.SetLayoutFlags(view, AbsoluteLayoutFlags.PositionProportional);
+            }
             ((ImgResize)view).OneTabAction += SelectImageSourse;
             dmla.Children.Add(view);
         }
@@ -192,6 +199,8 @@ namespace MDispatch.View.PageApp
             var actionSheet = await DisplayActionSheet(LanguageHelper.TitelSelectPickPhoto, LanguageHelper.CancelBtnText, null, paramsAction);
             calbackResultAction(actionSheet);
         }
+
+
 
     }
 }

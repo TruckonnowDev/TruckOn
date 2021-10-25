@@ -44,11 +44,18 @@ namespace MDispatch.View.PageApp
             }
         }
 
-        public void SetbtnVisable()
+        public void SetbtnVisable(bool isLoadFolderOffline = false)
         {
             if (fullPagePhotoDelyveryMV.AllSourseImage != null && fullPagePhotoDelyveryMV.AllSourseImage.Count != 0)
             {
-                fullPagePhotoDelyveryMV.SourseImage = fullPagePhotoDelyveryMV.AllSourseImage[0];
+                if(isLoadFolderOffline)
+                {
+                    Photos.SelectedItem = fullPagePhotoDelyveryMV.AllSourseImage[0];
+                }
+                else
+                {
+                    fullPagePhotoDelyveryMV.SourseImage = fullPagePhotoDelyveryMV.AllSourseImage[0];
+                }
                 btnNext.IsVisible = true;
                 btnNext.HorizontalOptions = LayoutOptions.End;
                 btnAddPhoto.IsVisible = false;
@@ -199,8 +206,5 @@ namespace MDispatch.View.PageApp
             var actionSheet = await DisplayActionSheet(LanguageHelper.TitelSelectPickPhoto, LanguageHelper.CancelBtnText, null, paramsAction);
             calbackResultAction(actionSheet);
         }
-
-
-
     }
 }

@@ -28,5 +28,17 @@ namespace MDispatch.Service
         {
             return await _connection.Table<FolderOffline>().ToListAsync();
         }
+
+        internal async Task DeleteFolderOfflines(int idFolderOffline)
+        {
+            try
+            {
+                await _connection.DeleteAsync<FolderOffline>(idFolderOffline);
+            }
+            catch
+            {
+
+            }
+        }
     }
 }

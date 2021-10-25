@@ -84,6 +84,11 @@ namespace MDispatch.Service
             return folderOfflines.FirstOrDefault(f => f.IdShiping == idShip && f.IdVech == id && f.Index == index && f.FolderOflineType == folderOflineType && f.InspactionType == inspactionType);
         }
 
+        internal async Task DeleteFolderOfflinesById(int idFolderOffline)
+        {
+            await dataBaseContext.DeleteFolderOfflines(idFolderOffline);
+        }
+
         public int A_RWork(string typeR_A, string login, string password, ref string description, ref string token)
         {
             a_R = new A_R();

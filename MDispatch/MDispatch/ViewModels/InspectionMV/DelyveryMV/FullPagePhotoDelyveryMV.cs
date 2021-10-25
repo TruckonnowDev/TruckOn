@@ -64,15 +64,14 @@ namespace MDispatch.ViewModels.InspectionMV.DelyveryMV
                 AllSourseImage = new ObservableCollection<ImageSource>();
                 IdFolderOffline = folderOffline.Id;
                 PhotoInspection = JsonConvert.DeserializeObject<PhotoInspection>(folderOffline.Json);
-                AllSourseImage.Add(ConvertBase64ToImageSource(PhotoInspection.Photos[0].Base64));
-                //SourseImage = ConvertBase64ToImageSource(PhotoInspection.Photos[0].Base64);
-                fullPagePhoto.SetbtnVisable();
+                AddNewFotoSourse(ConvertBase64ToIByte(PhotoInspection.Photos[0].Base64));
                 if (PhotoInspection.Damages != null && PhotoInspection.Damages.Count > 0)
                 {
                     foreach (Damage damage in PhotoInspection.Damages)
                     {
-                        AllSourseImage.Add(ConvertBase64ToImageSource(damage.ImageBase64));
-                        damage.ImageSource = ConvertBase64ToImageSource(damage.ImageBase64);
+                        byte[] damageImg = ConvertBase64ToIByte(damage.ImageBase64);
+                        ImageSource imageSource = AddNewFotoSourse(damageImg);
+                        damage.ImageSource = imageSource;
                         damage.Image = new ImgResize()
                         {
                             Source = $"DamageD{damage.IndexDamage}.png",
@@ -82,6 +81,7 @@ namespace MDispatch.ViewModels.InspectionMV.DelyveryMV
                         fullPagePhoto.AddDamagCurrentLayut(damage.Image, damage.XInterest, damage.YInterest);
                     }
                 }
+                fullPagePhoto.SetbtnVisable(true);
             }
             else
             {
@@ -239,13 +239,15 @@ namespace MDispatch.ViewModels.InspectionMV.DelyveryMV
             return car;
         }
 
-        public void AddNewFotoSourse(byte[] imageSorseByte)
+        public ImageSource AddNewFotoSourse(byte[] imageSorseByte)
         {
+            ImageSource imageSource = ImageSource.FromStream(() => new MemoryStream(imageSorseByte));
             if (AllSourseImage == null)
             {
                 AllSourseImage = new ObservableCollection<ImageSource>();
             }
-            AllSourseImage.Add(ImageSource.FromStream(() => new MemoryStream(imageSorseByte)));
+            AllSourseImage.Add(imageSource);
+            return imageSource;
         }
 
         public async void SetPhoto(byte[] PhotoInArrayByte)
@@ -299,6 +301,7 @@ namespace MDispatch.ViewModels.InspectionMV.DelyveryMV
                     ManagerQueue.AddReqvest("SavePhoto", token, VehiclwInformation.Id, PhotoInspection);
                     initDasbordDelegate.Invoke();
                 });
+                await managerDispatchMob.DeleteFolderOfflinesById(IdFolderOffline);
             }
             else
             {
@@ -456,9 +459,8 @@ namespace MDispatch.ViewModels.InspectionMV.DelyveryMV
 
         private async Task NextInspectionPhotoPage()
         {
-            FullPagePhoto fullPagePhoto = new FullPagePhoto(managerDispatchMob, VehiclwInformation, IdShip, $"{Car.TypeIndex.Replace(" ", "")}{InderxPhotoInspektion + 1}.png", Car.TypeIndex.Replace(" ", ""), InderxPhotoInspektion + 1, initDasbordDelegate, getVechicleDelegate, Car.GetNameLayout(InderxPhotoInspektion + 1), OnDeliveryToCarrier, TotalPaymentToCarrier);
-            await Navigation.PushAsync(fullPagePhoto);
-            await Navigation.PushAsync(new CameraPagePhoto($"{Car.TypeIndex.Replace(" ", "")}{InderxPhotoInspektion + 1}.png", fullPagePhoto, "PhotoIspection"));
+            FullPagePhotoDelyvery fullPagePhotoDelyvery = new FullPagePhotoDelyvery(managerDispatchMob, VehiclwInformation, IdShip, $"{Car.TypeIndex.Replace(" ", "")}{InderxPhotoInspektion + 1}.png", Car.TypeIndex.Replace(" ", ""), InderxPhotoInspektion + 1, initDasbordDelegate, getVechicleDelegate, Car.GetNameLayout(InderxPhotoInspektion + 1), OnDeliveryToCarrier, TotalPaymentToCarrier);
+            await Navigation.PushAsync(fullPagePhotoDelyvery);
             if (Navigation.NavigationStack.Count > 1)
             {
                 Navigation.RemovePage(Navigation.NavigationStack[1]);
@@ -509,8 +511,14 @@ namespace MDispatch.ViewModels.InspectionMV.DelyveryMV
 
         public ImageSource ConvertBase64ToImageSource(string base64)
         {
-            var byteArray = Convert.FromBase64String(base64); Stream stream = new MemoryStream(byteArray);
+            var byteArray = Convert.FromBase64String(base64);
+            Stream stream = new MemoryStream(byteArray);
             return ImageSource.FromStream(() => stream);
+        }
+
+        public byte[] ConvertBase64ToIByte(string base64)
+        {
+            return Convert.FromBase64String(base64);
         }
     }
 }

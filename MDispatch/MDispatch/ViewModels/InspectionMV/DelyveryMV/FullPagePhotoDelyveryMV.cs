@@ -65,6 +65,7 @@ namespace MDispatch.ViewModels.InspectionMV.DelyveryMV
                 IdFolderOffline = folderOffline.Id;
                 PhotoInspection = JsonConvert.DeserializeObject<PhotoInspection>(folderOffline.Json);
                 AddNewFotoSourse(ConvertBase64ToIByte(PhotoInspection.Photos[0].Base64));
+                fullPagePhoto.SetbtnVisable(true);
                 if (PhotoInspection.Damages != null && PhotoInspection.Damages.Count > 0)
                 {
                     foreach (Damage damage in PhotoInspection.Damages)
@@ -81,7 +82,6 @@ namespace MDispatch.ViewModels.InspectionMV.DelyveryMV
                         fullPagePhoto.AddDamagCurrentLayut(damage.Image, damage.XInterest, damage.YInterest);
                     }
                 }
-                fullPagePhoto.SetbtnVisable(true);
             }
             else
             {

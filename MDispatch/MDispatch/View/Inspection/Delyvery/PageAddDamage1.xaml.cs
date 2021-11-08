@@ -31,7 +31,7 @@ namespace MDispatch.View.Inspection.PickedUp
             this.fullPagePhotoDelyvery = fullPagePhotoDelyvery;
             this.fullPagePhotoDelyveryMV = fullPagePhotoDelyveryMV;
             InitializeComponent();
-            touchImage.Source = this.fullPagePhotoDelyveryMV.SourseImage;
+            touchImage.Source = this.fullPagePhotoDelyveryMV.AllSourseImage[0];
             Xamarin.Forms.NavigationPage.SetHasNavigationBar(this, false);
             On<iOS>().SetPrefersStatusBarHidden(StatusBarHiddenMode.True)
                 .SetPreferredStatusBarUpdateAnimation(UIStatusBarAnimation.Fade);

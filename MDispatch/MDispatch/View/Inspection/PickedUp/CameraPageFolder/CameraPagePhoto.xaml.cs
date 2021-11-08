@@ -34,7 +34,7 @@ namespace MDispatch.View.PageApp
             {
                 return;
             }
-            await fullPagePhoto.fullPagePhotoMV.AddNewFotoSourse(result.Result);
+            fullPagePhoto.fullPagePhotoMV.AddNewFotoSourse(result.Result);
             await fullPagePhoto.fullPagePhotoMV.SetPhoto(result.Result, result.Width, result.Height);
             await fullPagePhoto.SetbtnVisable();
             if (pageAddDamage != null)
@@ -60,7 +60,7 @@ namespace MDispatch.View.PageApp
             {
                 return;
             }
-            await fullPagePhoto.fullPagePhotoMV.AddNewFotoSourse(result.Result);
+            fullPagePhoto.fullPagePhotoMV.AddNewFotoSourse(result.Result);
             await fullPagePhoto.fullPagePhotoMV.SetPhoto(result.Result, result.Width, result.Height);
             await fullPagePhoto.SetbtnVisable();
             if (pageAddDamage != null)

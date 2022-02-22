@@ -31,14 +31,14 @@
                                     <div class="right">
                                         <a class="btn3" href="/Dashbord/Order/Edit?id=@ViewBag.Orders[i].Id&stasus=Assigned">Edit</a>
                                         <select onchange="SelectAssining1(this.options[this.selectedIndex].value, '@ViewBag.BaseUrl')" class="btn3">
-                                            <option value="">Reassang</option>
+                                            <option value="">Reassign</option>
                                             <option value="@ViewBag.Orders[i].Id,Unassign">Unassign</option>
                                             @for (int j = 0; j < ViewBag.Drivers.Count; j++)
                                             {
                                                 <option value="@ViewBag.Orders[i].Id,@ViewBag.Drivers[j].Id">@ViewBag.Drivers[j].FullName</option>
                                             }
                                         </select>
-                                        <a class="btn3" href="DeletedOrder?id=@ViewBag.Orders[i].Id&status=Assigned">Deleted</a>
+                                        <a class="btn3" href="DeletedOrder?id=@ViewBag.Orders[i].Id&status=Assigned">Delete</a>
                                     </div>
                                 </div>
                                 <div class="info-line">

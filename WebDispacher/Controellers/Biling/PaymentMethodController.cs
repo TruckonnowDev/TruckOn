@@ -127,7 +127,7 @@ namespace WebDispacher.Controellers.Biling
                 {
                     ViewBag.NameCompany = companyName;
                     ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany, "Settings");
-                    ResponseStripe responseStripe =  managerDispatch.AddPaymentCard(idCompany, number, name, expiry, cvc);
+                    WebDispacher.Models.ResponseStripe responseStripe =  managerDispatch.AddPaymentCard(idCompany, number, name, expiry, cvc);
                     if(responseStripe.IsError)
                     {
                         ViewBag.TxtError = responseStripe.Message;

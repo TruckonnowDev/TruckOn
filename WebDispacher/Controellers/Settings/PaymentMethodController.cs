@@ -10,7 +10,7 @@ using Stripe;
 using WebDispacher.Models;
 using WebDispacher.Service;
 
-namespace WebDispacher.Controellers.Biling
+namespace WebDispacher.Controellers.Settings
 {
     [Route("Settings/Biling")]
     public class PaymentMethodController : Controller

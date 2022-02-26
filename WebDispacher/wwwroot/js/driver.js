@@ -28,27 +28,3 @@ function SendRemindInspection(idDriver, url) {
     xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xmlHttp.send(body);
 }
-
-function ShowAlert(idDriver) {
-    IdDriver = idDriver;
-    let dialog = document.querySelector('dialog');
-    dialog.hidden = '';
-}
-
-function HiddenDialog() {
-    let dialog = document.querySelector('dialog');
-    console.log('hidden')
-    dialog.hidden = 'hidden';
-}
-
-function SelectExperience(value, Checked) {
-    if (Checked) {
-        if (experienceInp.value == undefined) {
-            experienceInp.value = "";
-        }
-        experienceInp.value += value + ", ";
-    }
-    else {
-        experienceInp.value = experienceInp.value.replace(value + ", ", "");
-    }
-}

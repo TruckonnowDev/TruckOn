@@ -30,7 +30,7 @@
                                     </div>
                                     <div class="right">
                                         <a class="btn3" href="/Dashbord/Order/Edit?id=@ViewBag.Orders[i].Id&stasus=Archived">Edit</a>
-                                        <a class="btn3" href="DeletedOrder?id=@ViewBag.Orders[i].Id&status=Archived">Delete</a>
+                                        <a class="btn3" href=@Url.Action("DeletedOrder", new { id = ViewBag.Orders[i].Id, status ="Archived"})>Delete</a>
                                     </div>
                                 </div>
                                 <div class="info-line">
@@ -47,7 +47,7 @@
                                         <p>Phone: @ViewBag.Orders[i].PhoneD</p>
                                     </div>
                                     <div class="info-block">
-                                        @if (ViewBag.Orders[i].Driverr != null)
+                                        @if (ViewBag.Orders[i].IdDriver != 0)
                                         {
                                             <p>Assigned to @ViewBag.Orders[i].NameDriver</p>
                                             <p>Phone: @ViewBag.Orders[i].PhoneDriver</p>

@@ -38,7 +38,8 @@
                                                 <option value="@ViewBag.Orders[i].Id,@ViewBag.Drivers[j].Id">@ViewBag.Drivers[j].FullName</option>
                                             }
                                         </select>
-                                        <a class="btn3" href="DeletedOrder?id=@ViewBag.Orders[i].Id&status=Assigned">Delete</a>
+                                        <a class="btn3" href=@Url.Action("DeletedOrder", new { id = ViewBag.Orders[i].Id, status ="Assigned"})>Delete</a>
+                                        
                                     </div>
                                 </div>
                                 <div class="info-line">

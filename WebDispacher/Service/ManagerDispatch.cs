@@ -886,7 +886,7 @@ namespace WebDispacher.Service
                 List<Driver> drivers = _sqlEntityFramworke.GetDriversByIdCompany(idCompany);
                 foreach(Driver driver in drivers)
                 {
-                    RemoveDrive(driver.Id, idCompany, "", "", "", "", "", "", "", "", "", "", "", "The site administration deleted the company in which this driver worked", "");
+                    RemoveDrive(idCompany, new DriverReportModel{Id = driver.Id, Description = "The site administration deleted the company in which this driver worked"});
                 }
             });
         }
@@ -1359,10 +1359,9 @@ namespace WebDispacher.Service
             return _sqlEntityFramworke.GetInspectionTrucksDb(idDriver, idTruck, idTrailer, date);
         }
 
-        public void RemoveDrive(int id, string idCompany, string numberOfAccidents, string english, string returnedEquipmen, string workingEfficiency, string eldKnowledge, string drivingSkills,
-            string paymentHandling, string alcoholTendency, string drugTendency, string terminated, string experience, string description, string dotViolations)
+        public void RemoveDrive(string idCompany, DriverReportModel model)
         {
-            _sqlEntityFramworke.RemoveDriveInDb(id, numberOfAccidents, english, returnedEquipmen, workingEfficiency, eldKnowledge, drivingSkills, paymentHandling, alcoholTendency, drugTendency, terminated, experience, description, dotViolations);
+            _sqlEntityFramworke.RemoveDriveInDb(model);
             Task.Run(() => UpdatePlanSubscribe(idCompany));
         }
 

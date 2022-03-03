@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using DaoModels.DAO.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WebDispacher.Models;
 using WebDispacher.Models.Driver;
 using WebDispacher.Service;
 
@@ -384,8 +385,7 @@ namespace WebDispacher.Controellers
         [HttpGet]
         [Route("Driver/Drivers/Remove")]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
-        public IActionResult RemoveDriver(int id, string numberOfAccidents, string english, string returnedEquipmen, string workingEfficiency, string eldKnowledge, string drivingSkills,
-            string paymentHandling, string alcoholTendency, string drugTendency, string terminated, string experience, string dotViolations, string description)
+        public IActionResult RemoveDriver(DriverReportModel model)
         {
             IActionResult actionResult = null;
             try
@@ -397,19 +397,19 @@ namespace WebDispacher.Controellers
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Driver"))
                 {
-                    if(terminated == "undefined")
+                    if(model.Terminated == "undefined")
                     {
-                        terminated = "Yes";
+                        model.Terminated = "Yes";
                     }
-                    if (experience == "undefined")
+                    if (model.Experience == "undefined")
                     {
-                        experience = "";
+                        model.Experience = "";
                     }
-                    if (experience != null && experience != "" && experience != "undefined" && experience.LastIndexOf(',') == experience.Length - 2)
+                    if (model.Experience != null && model.Experience != "" && model.Experience != "undefined" && model.Experience.LastIndexOf(',') == model.Experience.Length - 2)
                     {
-                        experience = experience.Remove(experience.Length - 2);
+                        model.Experience = model.Experience.Remove(model.Experience.Length - 2);
                     }
-                    managerDispatch.RemoveDrive(id, idCompany, numberOfAccidents, english, returnedEquipmen, workingEfficiency, eldKnowledge, drivingSkills, paymentHandling, alcoholTendency, drugTendency, terminated, experience, description, dotViolations);
+                    managerDispatch.RemoveDrive(idCompany, model);
                     actionResult = Redirect($"{Config.BaseReqvesteUrl}/Driver/Drivers");
                 }
                 else

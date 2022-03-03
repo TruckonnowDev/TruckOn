@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebDispacher.Models;
 
 namespace WebDispacher.Dao
 {
@@ -1518,33 +1519,34 @@ namespace WebDispacher.Dao
             context.SaveChanges();
         }
 
-        public void RemoveDriveInDb(int id, string numberOfAccidents, string english, string returnedEquipmen, string workingEfficiency, string eldKnowledge, string drivingSkills,
-            string paymentHandling, string alcoholTendency, string drugTendency, string terminated, string experience, string description, string dotViolations)
+        public void RemoveDriveInDb(DriverReportModel model)
         {
             Driver driver = context.Drivers
-                .FirstOrDefault(d => d.Id == id);
+                .FirstOrDefault(d => d.Id == model.Id);
+            
             driver.IsFired = true;
+            
             DriverReport driverReport = new DriverReport()
             {
-                Comment = description,
+                Comment = model.Description,
                 DriversLicenseNumber = driver.DriversLicenseNumber,
                 FullName = driver.FullName,
                 IdDriver = driver.Id,
                 DateRegistration = driver.DateRegistration,
                 DateFired = DateTime.Now.ToString(),
-                AlcoholTendency = alcoholTendency,
-                DrivingSkills = drivingSkills,
-                DrugTendency = drugTendency,
-                EldKnowledge = eldKnowledge,
-                English = english,
-                Experience = experience,
+                AlcoholTendency = model.AlcoholTendency,
+                DrivingSkills = model.DrivingSkills,
+                DrugTendency = model.DrugTendency,
+                EldKnowledge = model.EldKnowledge,
+                English = model.English,
+                Experience = model.Experience,
                 IdCompany = driver.CompanyId,
-                PaymentHandling = paymentHandling,
-                ReturnedEquipmen = returnedEquipmen,
-                Terminated = terminated,
-                WorkingEfficiency = workingEfficiency,
-                DotViolations = dotViolations,
-                NumberOfAccidents = numberOfAccidents
+                PaymentHandling = model.PaymentHandling,
+                ReturnedEquipmen = model.ReturnedEquipmen,
+                Terminated = model.Terminated,
+                WorkingEfficiency = model.WorkingEfficiency,
+                DotViolations = model.DotViolations,
+                NumberOfAccidents = model.NumberOfAccidents
             };
             context.DriverReports.Add(driverReport);
             context.SaveChanges();

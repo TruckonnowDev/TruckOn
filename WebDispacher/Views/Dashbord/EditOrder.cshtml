@@ -15,100 +15,98 @@
                             <div class="w1">
                                 <label for="">
                                     Load ID
-                                    <input type="text" name="idLoad" value="@ViewBag.Order.idOrder">
+                                    <input type="text" id="idLoad" name="idLoad" value="@ViewBag.Order.idOrder">
                                 </label>
                                 <label for="">
                                     Status
-                                    <select name="status" id="">
-                                        <option value="@ViewBag.Order.CurrentStatus">@ViewBag.Order.CurrentStatus</option>
-                                        <option value="">NewLoad</option>
-                                        <option value="">Picked up</option>
-                                        <option value="">Delivered</option>
+                                    <select name="status" id="statusId">
+                                        <option value="NewLoad">NewLoad</option>
+                                        <option value="Picked up">Picked up</option>
+                                        <option value="Delivered">Delivered</option>
                                     </select>
                                 </label>
                                 <h3>Pickup Information</h3>
                                 <label for="">
                                     Name
-                                    <input type="text" value="@ViewBag.Order.NameP" placeholder="Name" name="nameP">
+                                    <input type="text" id="nameP" value="@ViewBag.Order.NameP" placeholder="Name" name="nameP">
                                 </label>
                                 <label for="">
                                     Contact
-                                    <input type="text" name="contactP" value="@ViewBag.Order.ContactNameP" placeholder="Contact name">
+                                    <input type="text" id="contactNameP" name="contactP" value="@ViewBag.Order.ContactNameP" placeholder="Contact name">
                                 </label>
                                 <label for="">
                                     Address
-                                    <input type="text" name="addressP" value="@ViewBag.Order.AddresP" placeholder="Address" required>
+                                    <input type="text" id="addressP" name="addressP" value="@ViewBag.Order.AddresP" placeholder="Address" required>
                                 </label>
                                 <label for="">
                                     City
-                                    <input type="text" name="cityP" value="@ViewBag.Order.CityP" placeholder="City" required>
+                                    <input type="text" id="cityP" name="cityP" value="@ViewBag.Order.CityP" placeholder="City" required>
                                 </label>
                                 <label for="">
                                     State
-                                    <input type="text" name="stateP" value="@ViewBag.Order.StateP" pattern="[A-Z]{2}" placeholder="XX - State" required>
+                                    <input type="text" id="stateP" name="stateP" value="@ViewBag.Order.StateP" pattern="[A-Z]{2}" placeholder="XX - State" required>
                                 </label>
                                 <label for="">
                                     Zip
-                                    <input type="text" name="zipP" value="@ViewBag.Order.ZipP" pattern="[0-9]{5}" placeholder="XXXXX - Zip code" required>
+                                    <input type="text" id="zipP" name="zipP" value="@ViewBag.Order.ZipP" pattern="[0-9]{5}" placeholder="XXXXX - Zip code" required>
                                 </label>
                                 <label for="">
                                     Phone
-                                    <input type="tel" name="phoneP" placeholder="XXXXXXXXXX - Phone number" pattern="[0-9]{4,12}" value="@ViewBag.Order.PhoneP" required>
+                                    <input type="tel" id="phoneP" name="phoneP" placeholder="XXXXXXXXXX - Phone number" pattern="[0-9]{4,12}" value="@ViewBag.Order.PhoneP" required>
                                 </label>
                                 <label for="">
                                     Email
-                                    <input type="text" name="emailP" type="email" value="@ViewBag.Order.EmailP" placeholder="Email" required>
+                                    <input type="text" id="emailP" name="emailP" type="email" value="@ViewBag.Order.EmailP" placeholder="Email" required>
                                 </label>
                                 <label for="">
                                     Scheduled pickup date
-                                    <input type="text" name="scheduledPickupDateP" value="@ViewBag.Order.PickupExactly">
+                                    <input type="text" id="scheduledPickupDateP" name="scheduledPickupDateP" value="@ViewBag.Order.PickupExactly">
                                 </label>
                             </div>
                             <div class="w1">
                                 <label for="">
                                     Instructions
-                                    <textarea type="text" name="instructions" style="height:92px;">@ViewBag.Order.Titl1DI</textarea>
+                                    <textarea type="text" id="instructions" name="instructions" style="height:92px;">@ViewBag.Order.Titl1DI</textarea>
                                 </label>
                                 <h3>Delivery Information</h3>
                                 <label for="">
                                     Name
-                                    <input type="text" name="nameD" value="@ViewBag.Order.NameD" placeholder="Name">
+                                    <input type="text" id="nameD" name="nameD" value="@ViewBag.Order.NameD" placeholder="Name">
                                 </label>
                                 <label for="">
                                     Contact
-                                    <input type="text" name="contactD" value="@ViewBag.Order.ContactNameD" placeholder="Contact name">
+                                    <input type="text" id="contactD" name="contactD" value="@ViewBag.Order.ContactNameD" placeholder="Contact name">
                                 </label>
                                 <label for="">
                                     Address
-                                    <input type="text" name="addressD" value="@ViewBag.Order.AddresD" placeholder="Address" required>
+                                    <input type="text" id="addressD" name="addressD" value="@ViewBag.Order.AddresD" placeholder="Address" required>
                                 </label>
                                 <label for="">
                                     City
-                                    <input type="text" name="cityD" type="text" value="@ViewBag.Order.CityD" placeholder="City" required>
+                                    <input type="text" id="cityD" name="cityD" value="@ViewBag.Order.CityD" placeholder="City" required>
                                 </label>
                                 <label for="">
                                     State
-                                    <input type="text" name="stateD" pattern="[A-Z]{2}" type="text" value="@ViewBag.Order.StateD" placeholder="XX - State" required>
+                                    <input type="text" id="stateD" name="stateD" pattern="[A-Z]{2}" value="@ViewBag.Order.StateD" placeholder="XX - State" required>
                                 </label>
                                 <label for="">
                                     Zip
-                                    <input type="text" name="zipD" type="text" value="@ViewBag.Order.ZipD" pattern="[0-9]{5}" placeholder="XXXXX - Zip code" required>
+                                    <input type="text" id="zipD" name="zipD" value="@ViewBag.Order.ZipD" pattern="[0-9]{5}" placeholder="XXXXX - Zip code" required>
                                 </label>
                                 <label for="">
                                     Phone
-                                    <input name="phoneD" placeholder="XXXXXXXXXX - Phone number" type="tel" pattern="[0-9]{4,12}" value="@ViewBag.Order.PhoneD" required>
+                                    <input name="phoneD" id="phoneD" placeholder="XXXXXXXXXX - Phone number" type="tel" pattern="[0-9]{4,12}" value="@ViewBag.Order.PhoneD" required>
                                 </label>
                                 <label for="">
                                     Email
-                                    <input name="emailD" type="email" value="@ViewBag.Order.EmailD" placeholder="Email" required>
+                                    <input name="emailD" id="emailD" type="email" value="@ViewBag.Order.EmailD" placeholder="Email" required>
                                 </label>
                             </div>
                             <div class="w1">
                                 <h3>Payment Information</h3>
                                 <label for="">
                                     Payment method
-                                    <select name="paymentMethod" required>
-                                        <option value="@ViewBag.Order.TotalPaymentToCarrier">@ViewBag.Order.TotalPaymentToCarrier</option>
+                                    <select id="paymentMethod" name="paymentMethod" required>
                                         <option value="COP">COP</option>
                                         <option value="COD">COD</option>
                                         <option value="1 days">1 days</option>
@@ -120,11 +118,11 @@
                                 </label>
                                 <label for="">
                                     Price
-                                    <input type="text" name="price" value="@ViewBag.Order.PriceListed" required>
+                                    <input type="text" id="price" name="price" value="@ViewBag.Order.PriceListed" required>
                                 </label>
                                 <label for="">
                                     Broker fee
-                                    <input type="text" name="brokerFee" value="@ViewBag.Order.BrokerFee">
+                                    <input type="text" id="brokerFee" name="brokerFee" value="@ViewBag.Order.BrokerFee">
                                 </label>
                                 <input class="btn1" type="submit" value="Save Order" />
                                 <button class="btn2">Archive Order</button>
@@ -193,19 +191,60 @@
 </body>
 
 <script>
+$(document).ready(function() {
+    if ("@ViewBag.Order.CurrentStatus" != null)
+    { 
+        $('#statusId option[value="@ViewBag.Order.CurrentStatus"]').prop('selected', true);
+    }
+    if ("@ViewBag.Order.TotalPaymentToCarrier" != null)
+    { 
+            $('#paymentMethod option[value="@ViewBag.Order.TotalPaymentToCarrier"]').prop('selected', true);
+    }
+});
+
     function AddVech(btnE) {
+        const loadId = document.getElementById('idLoad').value;
+        const status = document.getElementById('statusId').value;
+        const nameP = document.getElementById('nameP').value;
+        const contactNameP = document.getElementById('contactNameP').value;
+        const addressP = document.getElementById('addressP').value;
+        const cityP = document.getElementById('cityP').value;
+        const stateP = document.getElementById('stateP').value;
+        const zipP = document.getElementById('zipP').value;
+        const phoneP = document.getElementById('phoneP').value;
+        const emailP = document.getElementById('emailP').value;
+        const scheduledPickupDateP = document.getElementById('scheduledPickupDateP').value;
+        const instructions = document.getElementById('instructions').value;
+        const nameD = document.getElementById('nameD').value;
+        const contactD = document.getElementById('contactD').value;
+        const addressD = document.getElementById('addressD').value;
+        const cityD = document.getElementById('cityD').value;
+        const stateD = document.getElementById('stateD').value;
+        const zipD = document.getElementById('zipD').value;
+        const phoneD = document.getElementById('phoneD').value;
+        const emailD = document.getElementById('emailD').value;
+        const paymentMethod = document.getElementById('paymentMethod').value;
+        const price = document.getElementById('price').value;
+        const brokerFee = document.getElementById('brokerFee').value;
+       
         let idOrder = document.getElementById('idOrder').value;
-        var xhttp = new XMLHttpRequest();
-        let Req = "idOrder=" + idOrder;
-        xhttp.onreadystatechange = function (e) {
-            if (this.readyState == 4 && this.status == 200) {
-                alert(this.responseText);
-                location.reload(true);
-            }
-        };
-        xhttp.open("POST", "@ViewBag.BaseUrl/Dashbord/Order/AddVech", true);
-        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhttp.setRequestHeader('Accept-Encoding', 'br');
-        xhttp.send(Req);
+        console.log("idOrder: " + idOrder);
+             var xhttp = new XMLHttpRequest();
+             let Req = "idOrder=" + idOrder;
+             xhttp.onreadystatechange = function (e) {
+                 if (this.readyState == 4 && this.status == 200) {
+                     alert(this.responseText);
+                     var url = `@ViewBag.BaseUrl/Dashbord/Order/EditReload?id=${idOrder}&stasus=${status}&idOrder=${loadId}&NameP=${nameP}`+
+                                                 `&ContactNameP=${contactNameP}&Address=${addressP}&CityP=${cityP}&StateP=${stateP}&CurrentStatus=${status}` +
+                                                 `&ZipP=${zipP}&PhoneP=${phoneP}&EmailP=${emailP}&PickupExactly=${scheduledPickupDateP}&Instructions=${instructions}` +
+                                                 `&NameD=${nameD}&ContactNameD=${contactD}&AddressD=${addressD}&CityD=${cityD}&StateD=${stateD}&ZipD=${zipD}&PhoneD=${phoneD}` +
+                                                 `&EmailD=${emailD}&TotalPaymentToCarrier=${paymentMethod}&PriceListed=${price}&BrokerFee=${brokerFee}`;
+                    window.location.href = url;
+                 }
+             };
+             xhttp.open("POST", "@ViewBag.BaseUrl/Dashbord/Order/AddVech", true);
+             xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+             xhttp.setRequestHeader('Accept-Encoding', 'br');
+             xhttp.send(Req);
     }
 </script>

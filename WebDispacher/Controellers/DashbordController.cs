@@ -6,6 +6,7 @@ using DaoModels.DAO.DTO;
 using DaoModels.DAO.Models;
 using MDispatch.View.GlobalDialogView;
 using Microsoft.AspNetCore.Mvc;
+using WebDispacher.Models;
 using WebDispacher.Service;
 
 namespace WebDispacher.Controellers
@@ -781,9 +782,54 @@ namespace WebDispacher.Controellers
             return actionResult;
         }
         
-        [Route("Dashbord/Order/Edit")]
+         [Route("Dashbord/Order/Edit")]
+         [ResponseCache(Location = ResponseCacheLocation.None, Duration = 300)]
+         public IActionResult EditOrder(string id, string stasus)
+         {
+             IActionResult actionResult = null;
+             try
+             {
+                 string key = null;
+                 string idCompany = null;
+                 string companyName = null;
+                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                 Request.Cookies.TryGetValue("KeyAvtho", out key);
+                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
+                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
+                 if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                 {
+                     ViewBag.NameCompany = companyName;
+                     ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
+                     if (id != "" && id != null)
+                     {
+                         ViewBag.Order = managerDispatch.GetOrder(id);
+                         actionResult = View("EditOrder");
+                         Status = stasus;
+                     }
+                     else
+                     {
+                         actionResult = Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{stasus}");
+                     }
+                 }
+                 else
+                 {
+                     if (Request.Cookies.ContainsKey("KeyAvtho"))
+                     {
+                         Response.Cookies.Delete("KeyAvtho");
+                     }
+                     actionResult = Redirect(Config.BaseReqvesteUrl);
+                 }
+             }
+             catch (Exception)
+             {
+         
+             }
+             return actionResult;
+         }
+         
+        [Route("Dashbord/Order/EditReload")]
         [ResponseCache(Location = ResponseCacheLocation.None, Duration = 300)]
-        public IActionResult EditOrder(string id, string stasus)
+        public IActionResult EditReload(string id, string stasus, OrderModel model)
         {
             IActionResult actionResult = null;
             try
@@ -801,7 +847,34 @@ namespace WebDispacher.Controellers
                     ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
                     if (id != "" && id != null)
                     {
-                        ViewBag.Order = managerDispatch.GetOrder(id);
+                        var searchOrder = managerDispatch.GetOrder(id);
+                        
+                        ViewBag.Order = searchOrder == null ? new Shipping() : searchOrder;
+                        
+                        ViewBag.Order.NameP = model.NameP;
+                        ViewBag.Order.ContactNameP = model.ContactNameP;
+                        ViewBag.Order.CurrentStatus = model.CurrentStatus;
+                        ViewBag.Order.AddresP = model.Address;
+                        ViewBag.Order.CityP = model.CityP;
+                        ViewBag.Order.StateP = model.StateP;
+                        ViewBag.Order.idOrder = model.idOrder;
+                        ViewBag.Order.ZipP = model.ZipP;
+                        ViewBag.Order.PhoneP = model.PhoneP;
+                        ViewBag.Order.EmailP = model.EmailP;
+                        ViewBag.Order.PickupExactly = model.PickupExactly;
+                        ViewBag.Order.Titl1DI = model.Instructions;
+                        ViewBag.Order.NameD = model.NameD;
+                        ViewBag.Order.ContactNameD = model.ContactNameD;
+                        ViewBag.Order.AddresD = model.AddressD;
+                        ViewBag.Order.CityD = model.CityD;
+                        ViewBag.Order.StateD = model.StateD;
+                        ViewBag.Order.ZipD = model.ZipD;
+                        ViewBag.Order.PhoneD = model.PhoneD;
+                        ViewBag.Order.EmailD = model.EmailD;
+                        ViewBag.Order.TotalPaymentToCarrier = model.TotalPaymentToCarrier;
+                        ViewBag.Order.PriceListed = model.PriceListed;
+                        ViewBag.Order.BrokerFee = model.BrokerFee;
+                        
                         actionResult = View("EditOrder");
                         Status = stasus;
                     }
@@ -825,7 +898,7 @@ namespace WebDispacher.Controellers
             }
             return actionResult;
         }
-
+        
         [Route("Dashbord/Order/Creat")]
         [ResponseCache(Location = ResponseCacheLocation.None, Duration = 300)]
         public async Task<IActionResult> CreatOrderpage()

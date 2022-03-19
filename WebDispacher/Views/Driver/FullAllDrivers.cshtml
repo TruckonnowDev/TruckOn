@@ -25,8 +25,8 @@
                                             <p>
                                                 <strong>@ViewBag.Drivers[i].FullName</strong>
                                             </p>
-                                            <p>Trailer capacity: @ViewBag.Drivers[i].TrailerCapacity</p>
-                                            <p>Last inspection: @ViewBag.Drivers[i].LastDateInspaction</p>
+                                            <p class="text-p">Trailer capacity: @ViewBag.Drivers[i].TrailerCapacity</p>
+                                            <p class="text-p">Last inspection: @ViewBag.Drivers[i].LastDateInspaction</p>
                                         </div>
                                     </div>
                                     <div class="right">
@@ -37,15 +37,15 @@
                                 <div class="top-line">
                                     <div class="left">
                                         <div class="contact">
-                                            <p>Email: <a href="@ViewBag.Drivers[i].EmailAddress">@ViewBag.Drivers[i].EmailAddress</a></p>
-                                            <p>Phone: <a href="tel:@ViewBag.Drivers[i].PhoneNumber">@ViewBag.Drivers[i].PhoneNumber</a></p>
+                                            <p class="text-p">Email: <a href="@ViewBag.Drivers[i].EmailAddress">@ViewBag.Drivers[i].EmailAddress</a></p>
+                                            <p class="text-p">Phone: <a href="tel:@ViewBag.Drivers[i].PhoneNumber">@ViewBag.Drivers[i].PhoneNumber</a></p>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="top-line">
                                     <div class="left">
                                         <div class="contact">
-                                            <p>Registration: @ViewBag.Drivers[i].DateRegistration</p>
+                                            <p class="text-p">Registration: @ViewBag.Drivers[i].DateRegistration</p>
                                         </div>
                                     </div>
                                     <div class="right">
@@ -171,8 +171,8 @@
 </div>
 </body>
 <script>
- var IdDriver;
-englishInp.oninput = function () {
+    var IdDriver;
+    englishInp.oninput = function () {
         englishSpn.innerHTML = GetLevel(this.value);
     }
     
@@ -431,4 +431,11 @@ englishInp.oninput = function () {
                             clear: right;
                             margin-top: 15px;
                         }
+.font-weight-normal{
+    font-weight: 500;
+    }
+    .text-p{
+        font-size: 20px;
+    }
+                        
 </style>

@@ -1,47 +1,50 @@
 ﻿<body>
-    <div class="admin">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="title">
-                        <h1>Dispatchers</h1>
-                        <button class="btn1" onclick="window.location.href='@Url.Action("Extension", "Settings")' + '/CreateDispatch';">Add Dispatcher</button>
-                    </div>
+<div class="admin">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="title">
+                    <a href="#" onclick="history.back();">Back to Main Menu</a>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div id="tabs">
-                        <div class="tabContent">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Login</th>
-                                        <th>Password</th>
-                                        <th>Type Dispatchers</th>
-                                        <th>Key</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @for (int i = 0; i < ViewBag.Dispatchers.Count; i++)
-                                    {
-                                        <tr>
-                                            <td>@ViewBag.Dispatchers[i].Login</td>
-                                            <td>@ViewBag.Dispatchers[i].Password</td>
-                                            <td ondblclick="RefreshToken(@ViewBag.Dispatchers[i].Id, this, '@ViewBag.BaseUrl')">@ViewBag.Dispatchers[i].key</td>
-                                            <td>
-                                                <img src="~/img/pen.svg" alt="" onclick="document.location.href='@ViewBag.BaseUrl/Settings/Extension/EditDicpatch?idDispatch=@ViewBag.Dispatchers[i].Id'">
-                                                <img src="~/img/delet.svg" alt="" onclick="document.location.href='@ViewBag.BaseUrl/Settings/Extension/RemoveDispatch?idDispatch=@ViewBag.Dispatchers[i].Id'">
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
+                <div class="title">
+                    <h1 class="text-info-header-1">Extension Connection</h1>
+                
+                <button class="btn1" onclick="window.location.href='@Url.Action("Extension", "Settings")' + '/CreateDispatch';">Add Dispatcher</button>
+            </div></div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div id="tabs">
+                    <div class="tabContent">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Login</th>
+                                <th>Password</th>
+                                <th>Type Dispatchers</th>
+                                <th>Key</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @for (int i = 0; i < ViewBag.Dispatchers.Count; i++)
+                            {
+                                <tr>
+                                    <td>@ViewBag.Dispatchers[i].Login</td>
+                                    <td>@ViewBag.Dispatchers[i].Password</td>
+                                    <td ondblclick="RefreshToken(@ViewBag.Dispatchers[i].Id, this, '@ViewBag.BaseUrl')">@ViewBag.Dispatchers[i].key</td>
+                                    <td>
+                                        <img src="~/img/pen.svg" alt="" onclick="document.location.href='@ViewBag.BaseUrl/Settings/Extension/EditDicpatch?idDispatch=@ViewBag.Dispatchers[i].Id'">
+                                        <img src="~/img/delet.svg" alt="" onclick="document.location.href='@ViewBag.BaseUrl/Settings/Extension/RemoveDispatch?idDispatch=@ViewBag.Dispatchers[i].Id'">
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </body>

@@ -2,17 +2,22 @@
     <div class="admin truc">
         <div class="container">
             <div class="row">
-                <div class="col-md-6">
-                    <div class="tabContent">
-                        <h2>Add truck</h2>
-                        <form action="" method="post" enctype="multipart/form-data">
+            <div class="col-md-5">
+                            <div class="tabContent">
+                                <div class="title">
+                                    <a href="#" onclick="history.back();">Back to Equipment</a>
+                                </div>
+                                <div class="title">
+                                    <h1 class="text-info-header-1">Add truck</h1>
+                                </div>
+                                <form action="" method="post" enctype="multipart/form-data">
                             <label for="">
                                 Name Truck
                                 <input type="text" name="nameTruk" required>
                             </label>
                             <label for="">
                                 Type Truck <br />
-                                <select name="typeTruk" onchange="SelectTruck(this.options[this.selectedIndex].value)" required style="width:500px;">
+                                <select name="typeTruk" onchange="SelectTruck(this.options[this.selectedIndex].value)" required style="color:#000000;width:500px;border:1px solid #c4c9d5">
                                     <option value="">Choose a truck type</option>
                                     <option value="PickUpDually4TiresInTheBackMustHave4Door">Pick up Dually (4 tires in the bacK) must have 4 door</option>
                                     @*<option value="PickupFourWheel">Four-wheel pickup dually</option>
@@ -84,11 +89,11 @@
                                 NY HUT (optional for NY rolling)
                                 <input type="file" accept="application/pdf, image/jpeg, image/jpg" name="nYHUTDoc"><p>You can upload files only in pdf, jpg and jepg</p>
                             </label>
-                            <button class="btn1">Save Info</button>
+                            <button class="btn1 text-info-header-2">Save Info</button>
                         </form>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 image-col-place">
                     <div id="PickUpDually4TiresInTheBackMustHave4Door" class="row" style="display:none;">
                         <div class="col-md-auto">
                             <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door1.png&type=png" alt="">

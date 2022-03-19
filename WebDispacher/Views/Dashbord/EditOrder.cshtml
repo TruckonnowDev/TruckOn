@@ -5,7 +5,10 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="tabContente">
-                        <h2>Create Order</h2>
+                        <div class="title text-info-padding-5">
+                                            <a href="#" onclick="history.back();">Back to Orders</a>
+                                            </div>
+                        <h2 style="margin-block: 15px;">Create Order</h2>
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -66,9 +69,9 @@
                             <div class="w1">
                                 <label for="">
                                     Instructions
-                                    <textarea type="text" id="instructions" name="instructions" style="height:92px;">@ViewBag.Order.Titl1DI</textarea>
+                                    <textarea type="text" id="instructions" name="instructions" style="height:192px;">@ViewBag.Order.Titl1DI</textarea>
                                 </label>
-                                <h3>Delivery Information</h3>
+                                <h3 style="margin-top: 24px;">Delivery Information</h3>
                                 <label for="">
                                     Name
                                     <input type="text" id="nameD" name="nameD" value="@ViewBag.Order.NameD" placeholder="Name">

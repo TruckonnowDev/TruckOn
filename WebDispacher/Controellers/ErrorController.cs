@@ -22,5 +22,11 @@ namespace WebDispacher.Controellers
             }
             return actionResult;
         }
+
+        public IActionResult Error()
+        {
+            ViewData["TypeNavBar"] = "BaseAllUsers";
+            return View("Error500");
+        }
     }
 }

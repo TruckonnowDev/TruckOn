@@ -1,36 +1,42 @@
 ﻿<body>
-    <div class="admin Billing">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="title">
-                        <h1>Payment Method</h1>
+<div class="admin Billing">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="title">
+                        <h1 class="text-info-header-1">Payment Method</h1>
                         <button class="btn1" onclick="window.location.href='/Settings/Biling/AddPaymentMethod';">Add Payment Method</button>
                     </div>
-                </div>
-                <div class="col-md-12">
-
-                    @if (ViewBag.PaymentMethods != null)
+            </div>
+            <div class="col-md-12">
+                @if (ViewBag.PaymentMethods != null)
+                {
+                    foreach (var paymentMethod in ViewBag.PaymentMethods)
                     {
-                        foreach (var paymentMethod in ViewBag.PaymentMethods)
-                        {
-                            <div class="lineal"></div>
-                            <div class="left">
-                                <div class="contact">
-                                    <p><strong>@paymentMethod.Country @paymentMethod.Brand</strong></p>
-                                    <p><strong>Credit number: </strong> •••• •••• •••• @paymentMethod.Last4</p>
-                                    <p><strong>Expiration date: </strong> @paymentMethod.ExpMonth/@paymentMethod.ExpYear</p>
-                                    <p><strong>Name on card: </strong> @paymentMethod.Name</p>
-                                    <p><strong>cvv: </strong>@paymentMethod.CvcCheck</p>
-                                </div>
+                        <div class="lineal"></div>
+                        <div class="left">
+                            <div class="contact">
+                                <p><strong>Credit number: </strong> •••• •••• •••• @paymentMethod.Last4</p>
+                                <p><strong>Name on card: </strong> @paymentMethod.Name</p>
+                                <p><strong>Expiration date: </strong> @paymentMethod.ExpMonth/@paymentMethod.ExpYear</p>
                             </div>
-                            <div class="right">
-                                <button class="btn3" onclick="window.location.href='/Settings/Biling/DeletePaymentMethod?idPayment=@paymentMethod.Id'">Deleted</button>
-                            </div>
-                        }
+                        </div>
+                        <div class="right">
+                            <button class="btn3" onclick="window.location.href='/Settings/Biling/DeletePaymentMethod?idPayment=@paymentMethod.Id'">Delete</button>
+                        </div>
                     }
-                </div>
+                }
             </div>
         </div>
     </div>
+</div>
 </body>
+
+<style>
+    p {
+    color: #000000;
+    }
+    .btn1{
+    width: 25%;
+    }
+</style>

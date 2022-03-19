@@ -1,68 +1,95 @@
 ﻿<body>
-    <div class="admin">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="tabContent">
-                        <h2>Info About the Driver</h2>
-                        <form action="" method="post" enctype="multipart/form-data">
-                            <label for="">
-                                Full name
-                                <input type="text" name="fullName" required>
-                            </label>
-                            <label for="">
-                                Email address
-                                <input type="email" name="emailAddress" required>
-                            </label>
-                            <label for="">
-                                Password
-                                <input type="text" name="password" required>
-                            </label>
-                            <label for="">
-                                Phone number
-                                <input type="text" name="phoneNumbe" pattern="[0-9]{4,12}" required>
-                            </label>
-                            <label for="">
-                                Trailer capacity
-                                <input type="text" name="trailerCapacity">
-                            </label>
-                            <label for="">
-                                Driver's license number
-                                <input type="text" name="driversLicenseNumber" required>
-                            </label>
-                            <label for="">
-                                Document DL
-                                <input type="file" name="dLDoc" accept="application/pdf, image/jpeg, image/jpg" required><p>You can upload files only in pdf, jpg and jepg</p>
-                            </label>
-                            <label for="">
-                                Document medical card
-                                <input type="file" name="medicalCardDoc" accept="application/pdf, image/jpeg, image/jpg" required><p>You can upload files only in pdf, jpg and jepg</p>
-                            </label>
-                            <label for="">
-                                Document SSN
-                                <input type="file" name="sSNDoc" accept="application/pdf, image/jpeg, image/jpg" required><p>You can upload files only in pdf, jpg and jepg</p>
-                            </label>
-                            <label for="">
-                                Document proof of work authorization or GC
-                                <input type="file"  name="proofOfWorkAuthorizationOrGCDoc" accept="application/pdf, image/jpeg, image/jpg" required><p>You can upload files only in pdf, jpg and jepg</p>
-                            </label>
-                            <label for="">
-                                Document DQL (driver qualification file)
-                                <input type="file"  name="dQLDoc" accept="application/pdf, image/jpeg, image/jpg" required><p>You can upload files only in pdf, jpg and jepg</p>
-                            </label>
-                            <label for="">
-                                Document contract (company and driver)
-                                <input type="file" name="contractDoc" accept="application/pdf, image/jpeg, image/jpg" required><p>You can upload files only in pdf, jpg and jepg</p>
-                            </label>
-                            <label for="">
-                                Document Drug test results (optional for 26000+)
-                                <input type="file" name="drugTestResultsDoc" accept="application/pdf, image/jpeg, image/jpg" required><p>You can upload files only in pdf, jpg and jepg</p>
-                            </label>
-                            <input type="submit" value="Save Info" class="btn1"/>
-                        </form>
+<div class="admin">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="tabContent">
+                    <div class="title">
+                        <a href="#" onclick="history.back();">Back to Orders</a>
                     </div>
+                    <div class="title">
+                        <h1 class="text-info-header-1">Info About the Driver</h1>
+                    </div>
+                    <form action="" method="post" enctype="multipart/form-data">
+                        <label for="">
+                            Full name
+                            <input type="text" name="fullName" required>
+                        </label>
+                        <label for="">
+                            Email address
+                            <input type="email" name="emailAddress" required>
+                        </label>
+                        <label for="">
+                            Password
+                            <input type="text" name="password" required>
+                        </label>
+                        <label for="">
+                            Phone number
+                            <input type="text" name="phoneNumbe" pattern="[0-9]{4,12}" required>
+                        </label>
+                        <label for="">
+                            Trailer capacity
+                            <input type="text" name="trailerCapacity">
+                        </label>
+                        <label for="">
+                            Driver's license number
+                            <input type="text" name="driversLicenseNumber" required>
+                        </label>
+                        <label for="">
+                            Document DL
+                            <input type="file"  name="dLDoc" accept="application/pdf, image/jpeg, image/jpg" required><p>You can upload files only in pdf, jpg and jepg</p>
+                            <label class="tttt" for="file">
+                                SelectDocument
+                            </label>
+                        </label>
+                        <label for="">
+                            Document medical card
+                            <input type="file" name="medicalCardDoc" accept="application/pdf, image/jpeg, image/jpg" required><p>You can upload files only in pdf, jpg and jepg</p>
+                        </label>
+                        <label for="">
+                            Document SSN
+                            <input type="file" name="sSNDoc" accept="application/pdf, image/jpeg, image/jpg" required><p>You can upload files only in pdf, jpg and jepg</p>
+                        </label>
+                        <label for="">
+                            Document proof of work authorization or GC
+                            <input type="file"  name="proofOfWorkAuthorizationOrGCDoc" accept="application/pdf, image/jpeg, image/jpg" required><p>You can upload files only in pdf, jpg and jepg</p>
+                        </label>
+                        <label for="">
+                            Document DQL (driver qualification file)
+                            <input type="file"  name="dQLDoc" accept="application/pdf, image/jpeg, image/jpg" required><p>You can upload files only in pdf, jpg and jepg</p>
+                        </label>
+                        <label for="">
+                            Document contract (company and driver)
+                            <input type="file" name="contractDoc" accept="application/pdf, image/jpeg, image/jpg" required><p>You can upload files only in pdf, jpg and jepg</p>
+                        </label>
+                        <label for="">
+                            Document Drug test results (optional for 26000+)
+                            <input type="file" name="drugTestResultsDoc" accept="application/pdf, image/jpeg, image/jpg" required><p>You can upload files only in pdf, jpg and jepg</p>
+                        </label>
+                        <input type="submit" value="Save Info" class="btn1"/>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </body>
+
+<style>
+    input[type="file"]{
+        width:160px;      
+        height:54px;
+        background:#fff;
+        border:1px solid #c4c9d5;
+        border-radius:10px;
+                          padding:0 15px;
+                          font-family:Montserrat;
+                          font-style: normal;
+                          font-weight:300;
+                          font-size:16px;
+                          line-height:1.2;
+                          color:#2C5DEB;
+                          margin-top:6px
+                          }
+       
+</style>

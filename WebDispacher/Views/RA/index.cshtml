@@ -125,7 +125,7 @@
 <div class="bl-6">
     <div class="container-fluid">
         <div class="row align-items-center">
-            <div class="ml-5 col-md-4">
+            <div class="ml-4 pl-4 col-md-3">
                 <div class="text">
                     <h1>Full Access</h1>
                     <p>Any person using this App will have full access anywhere in the world with a simple Login and Password</p>
@@ -160,8 +160,8 @@
 </div>
 <div class="bl-8">
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12">
+        <div class="row d-flex justify-content-end">
+            <div class="col-md-10">
                 <img src="img/eliminatePaperwork.svg" alt="" class="desc">
                 <img src="img/bl8-mob.svg" alt="" class="mob">
             </div>
@@ -292,6 +292,84 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="addNewDocFormModal" tabindex="-1" role="dialog" aria-labelledby="addNewDocFormModalLabel" aria-hidden="true">
+        <content class="ng-modal-wrapper">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header modal-title">
+                        <h1 class="modal-h1 modal-header-2" id="DeleteDriverLabel">Get in Touch</h1>
+                        <p class="modal-p modal-p-2">
+                            Please fill out the quick form and we
+                            will be in touch with lightening speed.
+                            Or you can call the number <br/>
+                            <a href="tel:+17734204444">+1 (773) 420 4444</a>
+                        </p>
+                        <button type="button" style="margin-left:16px;font-size:22px;" class="close text-right" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&#9587;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="tabContent">
+                            <form action="">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="elem-1">
+                                            <label for="">
+                                                Your name
+                                                <input type="text" name="name" required>
+                                            </label>
+                                        </div>
+                                        <div class="elem-2">
+                                            <label for="">
+                                                Your Email
+                                                <input type="email" name="email" required>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 without-padding">
+                                        <div class="elem-3">
+                                            <label for="">
+                                                Your Message
+                                                <textarea type="text" name="message" required></textarea>
+                                            </label>
+                                            <button type="submit" class="btn1 btn-modal">Submit</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="left-modal-footer" style="width: 100%">
+                                    <div class="text-h2-white lh-3 mb-2">
+                                        Car Hauling Made Simple.
+                                        Try it for Free.
+                                    </div>
+                                    <div class="modal-ul lh-2-5">
+                                        <ul class="text-p-white pl-4">
+                                            <li>No credit card required</li>
+                                            <li>Cancel anytime</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 d-flex align-items-center">
+                                <div class="right-modal-footer" style="width:100%">
+                                    <div class="center-text">
+                                        <a href="/try_for_free">
+                                            <div class="btn1 btn-black">Try for free</div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </content>
+    </div>
 </div>
 <footer>
     <div class="container">
@@ -306,13 +384,9 @@
                 <p>To contact us, you can call the number <a href="tel:+1 (773) 420-4444">+1 (773) 420-4444</a></p>
             </div>
             <div class="d-flex justify-content-end">
-                <div class="col-md-auto p-4">
-                    <form action="">
-                        <input type="submit" value="Contact Us">
-                    </form>
-
+                <div class="col-md-6 p-4">
+                    <button class="btn1" data-toggle="modal" data-target="#addNewDocFormModal">Contact Us</button>
                 </div>
-                <a class="btn2-big" href="~/Root/File/Privacy%20policy.pdf?prefName=pdf">Privacy policy</a>
             </div>
 
         </div>
@@ -320,33 +394,242 @@
 </footer>
 
 <style>
-    .bl-3{
+    input {
+        height: 60px!important;
+    }
+    
+    textarea {
+        height: 175px!important;
+    }
+    
+    .without-padding {
+        padding-left: 0px;
+    }
+    
+    .modal-body {
+        padding-left: 2rem;
+        padding-right: 2rem;
+        padding-bottom: 2rem;
+        padding-top: 0;
+    }
+    
+    .modal-header {
+        padding: 1.25rem;
+    }
+    
+    label {
+        width: 100%!important;
+    }
+            
+    .form-group label {
+        width: 100%;
+        font-family:Montserrat;
+        font-style:normal;
+        font-weight:700;
+        font-size:16px;
+        line-height:1.7;
+        color:#08112b;
+        text-align:left;
+        margin-top:0;
+        display:block;
+        margin-bottom:15px;
+    }
+        
+    .modal-dialog {
+        position: absolute;
+        left: 30%;
+        top: 75px;
+        width: 700px!important;
+        text-align: left;
+        background-color: #fff;
+        -moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
+        -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
+        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
+        transition: height 0.25s linear;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        border-radius: 30px 30px 40px 40px;
+    }
+                
+    .modal-content {
+        border: 0px;
+        border-radius: 40px;
+    }
+                
+    .ng-modal-wrapper {
+        display: inline-block;
+        vertical-align: middle;
+        padding: 50px 0;
+        width: 100%;
+        position: relative;
+    }
+                
+    .modal-dialog label {
+        position: relative;
+        display: inline-block;
+        vertical-align: middle;
+        cursor: pointer;
+        padding: 3px 0px 4px;
+        -moz-border-radius: 3px;
+        -webkit-border-radius: 3px;
+        margin-top: 2px;
+        background: none;
+        font-size: 16px;
+        line-height: 19px;
+        letter-spacing: -.016em;
+        -moz-transition-property: all;
+        -o-transition-property: all;
+        -webkit-transition-property: all;
+        transition-property: all;
+        -moz-transition-duration: 300ms;
+        -o-transition-duration: 300ms;
+        -webkit-transition-duration: 300ms;
+        transition-duration: 300ms;
+        border-radius: 30px;
+    }
+                    
+    .modal-buttons .right-buttons {
+        float: right;
+    }
+                    
+    .modal-title h1 {
+        font-size: 36px;
+    }
+                                
+    .modal-header {
+        justify-content: center;
+        padding: 2rem;
+        border-bottom: 0;
+    }
+
+
+    .bl-3 {
         background:#f0f4fa;
     }
     
-    .bl-3 img{
-    width:100%;
-    height:auto
+    .bl-3 img {
+        width:100%;
+        height:auto
     }
     
-    .bl-3 .text h6{
-    font-style:normal;
-    font-weight:500;
-    font-size:16px;
-    line-height:1.25;
-    color:#686f7c
+    .bl-3 .text h6 {
+        font-style:normal;
+        font-weight:500;
+        font-size:16px;
+        line-height:1.25;
+        color:#686f7c
     }
-    .bl-3 .text a{
-    width:50%;
-    display:inline-block
+    
+    .bl-3 .text a {
+        width:45%;
+        display:inline-block
     }
-    .bl-3 .text a img{
-    width:80%;
-    margin-top:15%;
-    margin-bottom:5%;
+    
+    .bl-3 .text a img {
+        width:80%;
+        margin-top:15%;
+        margin-bottom:5%;
     }
-    .col-md-6
-    {
-        padding-left: 0px;
+    
+    .row {
+        justify-content: center;
     }
+    
+    .modal-h1 {
+        color: #000!important;
+    }
+    
+    .modal-header-2 {
+        min-width: 50%;
+        width: 50%;
+        padding-top: 2%;
+    }
+    
+    .modal-p {
+        font-size: 16px;
+    }
+    
+    .modal-p-2 {
+        padding-top: 2%;
+    }
+    
+    .elem-1 {
+        display: inline-block;
+        margin-right: 3%;
+        width: 100%;
+    }
+         
+    .elem-2 {
+        display: inline-block;
+        margin-right: 3%;
+        width: 100%;
+    }
+          
+    .elem-3 {
+        display: inline-block;
+        width: 100%;
+    }
+    
+    .btn-modal {
+        width: 100%!important;
+        text-align: center;
+        font-size: 24px;
+    }
+    
+    form {
+        margin-bottom: 0px!important;
+    }
+           
+    .modal-footer {
+        background: #2c5deb;
+        border-radius: 0px 0px 30px 30px;
+    }
+           
+    .text-h2-white {
+        font-size: 20px;
+        font-weight: 700;
+        color: #ffffff;
+    }
+           
+    .text-p-white {
+        font-size: 16px;
+        font-weight: 400;
+        color: #ffffff;
+    }
+           
+    ul li { 
+        list-style-type: none; 
+    }
+           
+    .modal-ul ul li:before {
+        content:'+';
+        color:#000000;
+        position:absolute;
+        left:12px;
+    }
+           
+    .lh-3{
+        line-height:30px;
+    }
+           
+    .lh-2-5{
+        line-height:25px;
+    }
+               
+    .modal-footer{
+        padding: 2rem;
+        justify-content: normal!important;
+    }
+           
+    .btn-black{
+        background: #000000!important;
+        border: 1px solid #000000;
+        text-align: center;
+        font-size: 24px;
+    }
+            
+    .center-text{
+        text-align: center;
+    }
+    
 </style>

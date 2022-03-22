@@ -12,32 +12,32 @@
                             <h1 class="text-info-header-1">Info About the Driver</h1>
                         </div>
                         <form action="" method="post">
-                            <label for="">
+                            <label class="big-label" for="">
                                 Full name
-                                <input type="text" name="fullName" value="@ViewBag.Driver.FullName" required>
+                                <input class="height-input" type="text" name="fullName" value="@ViewBag.Driver.FullName" required>
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Email address
-                                <input type="email" name="emailAddress" value="@ViewBag.Driver.EmailAddress" required>
+                                <input class="height-input" type="email" name="emailAddress" value="@ViewBag.Driver.EmailAddress" required>
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Password
-                                <input type="text" name="password" value="@ViewBag.Driver.Password" required>
+                                <input class="height-input" type="text" name="password" value="@ViewBag.Driver.Password" required>
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Phone number
-                                <input type="text" name="phoneNumbe" placeholder="XXXXXXXXXX" pattern="[0-9]{4,12}" value="@ViewBag.Driver.PhoneNumber" required>
+                                <input class="height-input" type="text" name="phoneNumbe" placeholder="XXXXXXXXXX" pattern="[0-9]{4,12}" value="@ViewBag.Driver.PhoneNumber" required>
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Trailer capacity
-                                <input type="text" name="trailerCapacity" value="@ViewBag.Driver.TrailerCapacity" required>
+                                <input class="height-input" type="text" name="trailerCapacity" value="@ViewBag.Driver.TrailerCapacity" required>
                             </label>
-                            <label for="">
+                            <label class="big-label pb-3" for="">
                                 Driver's license number
-                                <input type="text" name="driversLicenseNumber" value="@ViewBag.Driver.DriversLicenseNumber" required>
+                                <input class="height-input" type="text" name="driversLicenseNumber" value="@ViewBag.Driver.DriversLicenseNumber" required>
                             </label>
                             <input name="id" value="@ViewBag.Driver.Id" style="display:none"/>
-                            <input class="btn1" type="submit" value="Save Info"/>
+                            <input class="btn1 height-input big-font-size big-label" type="submit" value="Save Info"/>
                         </form>
                     </div>
                 </div>

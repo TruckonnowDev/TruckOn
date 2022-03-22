@@ -2,22 +2,22 @@
     <div class="admin truc">
         <div class="container">
             <div class="row">
-            <div class="col-md-5">
+            <div class="col-md-6">
                             <div class="tabContent">
                                 <div class="title">
                                     <a href="#" onclick="history.back();">Back to Equipment</a>
                                 </div>
                                 <div class="title">
-                                    <h1 class="text-info-header-1">Add truck</h1>
+                                    <h1 class="text-info-header-1">Add New Truck</h1>
                                 </div>
                                 <form action="" method="post" enctype="multipart/form-data">
-                            <label for="">
+                            <label class="big-label" for="">
                                 Name Truck
-                                <input type="text" name="nameTruk" required>
+                                <input class="height-input" type="text" name="nameTruk" required>
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Type Truck <br />
-                                <select name="typeTruk" onchange="SelectTruck(this.options[this.selectedIndex].value)" required style="color:#000000;width:500px;border:1px solid #c4c9d5">
+                                <select class="height-input" name="typeTruk" onchange="SelectTruck(this.options[this.selectedIndex].value)" required style="color:#000000;width:100%;border:1px solid #c4c9d5">
                                     <option value="">Choose a truck type</option>
                                     <option value="PickUpDually4TiresInTheBackMustHave4Door">Pick up Dually (4 tires in the bacK) must have 4 door</option>
                                     @*<option value="PickupFourWheel">Four-wheel pickup dually</option>
@@ -33,63 +33,63 @@
                                     <option value="PickUpDuallyFlatbedMustHave2Door">Pick Up Dually Flatbed Must Have 2 Door</option>*@
                                 </select>
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Year
-                                <input type="text" name="yera">
+                                <input class="height-input" type="text" name="yera">
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Make
-                                <input type="text" name="make">
+                                <input class="height-input" type="text" name="make">
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Model
-                                <input type="text" name="model">
+                                <input class="height-input" type="text" name="model">
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 State
-                                <input type="text" name="state">
+                                <input class="height-input" type="text" name="state">
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Plate Exp
-                                <input type="text" name="exp">
+                                <input class="height-input" type="text" name="exp">
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Vin#
-                                <input type="text" name="vin">
+                                <input class="height-input" type="text" name="vin">
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Owner
-                                <input type="text" name="owner">
+                                <input class="height-input" type="text" name="owner">
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Plate Truck
-                                <input type="text" name="plateTruk" required>
+                                <input class="height-input" type="text" name="plateTruk" required>
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Color
-                                <input type="text" name="color">
+                                <input class="height-input" type="text" name="color">
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Truck registration
-                                <input type="file" name="truckRegistrationDoc" accept="application/pdf, image/jpeg, image/jpg" required><p>You can upload files only in pdf, jpg and jepg</p>
+                                <input class="height-input" type="file" name="truckRegistrationDoc" accept="application/pdf, image/jpeg, image/jpg" required><p>You can upload files only in pdf, jpg and jepg</p>
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Truck lease agreement
-                                <input type="file" name="truckLeaseAgreementDoc" accept="application/pdf, image/jpeg, image/jpg" required><p>You can upload files only in pdf, jpg and jepg</p>
+                                <input class="height-input" type="file" name="truckLeaseAgreementDoc" accept="application/pdf, image/jpeg, image/jpg" required><p>You can upload files only in pdf, jpg and jepg</p>
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Truck annual inspection
-                                <input type="file" name="truckAnnualInspection" accept="application/pdf, image/jpeg, image/jpg" required><p>You can upload files only in pdf, jpg and jepg</p>
+                                <input class="height-input" type="file" name="truckAnnualInspection" accept="application/pdf, image/jpeg, image/jpg" required><p>You can upload files only in pdf, jpg and jepg</p>
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Bob tail physical damage (optional)
-                                <input type="file" name="bobTailPhysicalDamage" accept="application/pdf, image/jpeg, image/jpg"><p>You can upload files only in pdf, jpg and jepg</p>
+                                <input class="height-input" type="file" name="bobTailPhysicalDamage" accept="application/pdf, image/jpeg, image/jpg"><p>You can upload files only in pdf, jpg and jepg</p>
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 NY HUT (optional for NY rolling)
-                                <input type="file" accept="application/pdf, image/jpeg, image/jpg" name="nYHUTDoc"><p>You can upload files only in pdf, jpg and jepg</p>
+                                <input class="height-input" type="file" accept="application/pdf, image/jpeg, image/jpg" name="nYHUTDoc"><p>You can upload files only in pdf, jpg and jepg</p>
                             </label>
-                            <button class="btn1 text-info-header-2">Save Info</button>
+                            <button class="btn1 big-label height-input big-font-size">Save Info</button>
                         </form>
                     </div>
                 </div>

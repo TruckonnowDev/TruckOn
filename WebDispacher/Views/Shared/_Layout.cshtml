@@ -55,6 +55,9 @@
     {
         @await Html.PartialAsync("~/Views/PartView/NavSettingsCacelSubscribe.cshtml");
     }
+    else if (ViewData["TypeNavBar"] == "Error")
+    {
+    }
     @RenderBody()
     <script>
         $(document).ready(function () {
@@ -75,8 +78,7 @@
     @@keyframes open {
         from {opacity: 0;}
         to {opacity: 1;}
-    }
-}
+        }
 
 
     .navst {

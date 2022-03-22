@@ -9,7 +9,7 @@ namespace WebDispacher.Controellers
         [Route("error")]
         public IActionResult ExudeError(int code)
         {
-            ViewData["TypeNavBar"] = "BaseAllUsers";
+            ViewData["TypeNavBar"] = "Error";
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
             IActionResult actionResult = null;
             if(code >= 400 && code < 500)
@@ -21,12 +21,6 @@ namespace WebDispacher.Controellers
                 actionResult = View("Error500");
             }
             return actionResult;
-        }
-
-        public IActionResult Error()
-        {
-            ViewData["TypeNavBar"] = "BaseAllUsers";
-            return View("Error500");
         }
     }
 }

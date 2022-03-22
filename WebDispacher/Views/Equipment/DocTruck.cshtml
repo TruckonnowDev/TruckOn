@@ -44,7 +44,7 @@
             <div class="modal-content">
                 <div class="modal-header modal-title">
                     <h1 class="text-center" style="padding-left:20%" id="DeleteDriverLabel">Add New Document</h1>
-                     <button type="button" style="margin-left:82px;font-size:25px;" class="close text-right" data-dismiss="modal" aria-label="Close">
+                     <button type="button" style="margin-left:82px;font-size:22px;" class="close text-right" data-dismiss="modal" aria-label="Close">
                                <span aria-hidden="true">&#9587;</span>
                              </button>
                 </div>
@@ -77,7 +77,14 @@
 </body>
 
 <style>
-    .button-custom{
+    .modal-body {
+        padding: 1.5rem;
+    }
+    .modal-header {
+        padding: 1.25rem;
+    }
+    
+    .button-custom {
         background:#2c5deb;
         color:#f9f9f9;
         width: 100%;
@@ -90,7 +97,8 @@
         display:inline-block;
         border:1px solid #2c5deb
     }
-    .button-custom-2{
+    
+    .button-custom-2 {
         background: #ffffff;
         color:#686F7C;
         width: 100%;
@@ -103,110 +111,100 @@
         display:inline-block;
         border:1px solid #686F7C
     }
-    .form-group label{
-        width: 100%;
-        font-family:Montserrat;
-        font-style:normal;
-        font-weight:700;
-        font-size:16px;
-        line-height:1.7;
-        color:#08112b;
-        text-align:left;
-        margin-top:0;
-        display:block;
-        margin-bottom:15px;
-    }
-    .modal-dialog {
-        position: absolute;
-        left: 30%;
-        top: 200px;
-        width: 700px!important;
-        text-align: left;
-        background-color: #fff;
-        -moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
-        -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
-        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
-        transition: height 0.25s linear;
-        -moz-border-radius: 10px;
-        -webkit-border-radius: 10px;
-        border-radius: 30px;
+    
+        .form-group label{
+            width: 100%;
+            font-family:Montserrat;
+            font-style:normal;
+            font-weight:700;
+            font-size:16px;
+            line-height:1.7;
+            color:#08112b;
+            text-align:left;
+            margin-top:0;
+            display:block;
+            margin-bottom:15px;
         }
-        
-    .modal-content{
-        border: 0px;
-        border-radius: 30px;
-        }
-        
-    .ng-modal-wrapper {
-        display: inline-block;
-        vertical-align: middle;
-        padding: 50px 0;
-        width: 100%;
-        position: relative;
-        }
-        
-        .modal-dialog label {
-            position: relative;
-            display: inline-block;
-            vertical-align: middle;
-            cursor: pointer;
-            padding: 3px 10px 4px;
-            -moz-border-radius: 3px;
-            -webkit-border-radius: 3px;
-            margin-top: 2px;
-            background: none;
-            font-size: 16px;
-            line-height: 19px;
-            letter-spacing: -.016em;
-            -moz-transition-property: all;
-            -o-transition-property: all;
-            -webkit-transition-property: all;
-            transition-property: all;
-            -moz-transition-duration: 300ms;
-            -o-transition-duration: 300ms;
-            -webkit-transition-duration: 300ms;
-            transition-duration: 300ms;
+        .modal-dialog {
+            position: absolute;
+            left: 30%;
+            top: 200px;
+            width: 700px!important;
+            text-align: left;
+            background-color: #fff;
+            -moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
+            -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
+            transition: height 0.25s linear;
+            -moz-border-radius: 10px;
+            -webkit-border-radius: 10px;
             border-radius: 30px;
             }
             
-            .modal-buttons .right-buttons {
-                float: right;
+        .modal-content{
+            border: 0px;
+            border-radius: 30px;
             }
             
-            .spanModal {
-                font-family: 'SF UI Text Medium', 'SF UI Text Light', 'Helvetica Neue', 'HelveticaNeue', Helvetica, Arial, Verdana, sans-serif;
-                font-weight: 500;
-                font-size: 13px;
-                line-height: 16px;
-                letter-spacing: -.006em;
-                margin-right: 4px;
-                clear: right;
-                margin-top: 15px;
+        .ng-modal-wrapper {
+            display: inline-block;
+            vertical-align: middle;
+            padding: 50px 0;
+            width: 100%;
+            position: relative;
+            }
+            
+            .modal-dialog label {
+                position: relative;
+                display: inline-block;
+                vertical-align: middle;
+                cursor: pointer;
+                padding: 3px 10px 4px;
+                -moz-border-radius: 3px;
+                -webkit-border-radius: 3px;
+                margin-top: 2px;
+                background: none;
+                font-size: 16px;
+                line-height: 19px;
+                letter-spacing: -.016em;
+                -moz-transition-property: all;
+                -o-transition-property: all;
+                -webkit-transition-property: all;
+                transition-property: all;
+                -moz-transition-duration: 300ms;
+                -o-transition-duration: 300ms;
+                -webkit-transition-duration: 300ms;
+                transition-duration: 300ms;
+                border-radius: 30px;
                 }
                 
-            .modal-inp-text {
-                width:100%;
-                height:73px;
-                background:#fff;
-                border:1px solid #c4c9d5;
-                border-radius:10px;
-                padding:20px 15px;
-                font-family:Montserrat;
-                font-style:normal;
-                font-weight:400;
-                font-size:16px;
-                line-height:1.2;
-                color:#686f7c;
-                margin-top:6px
+                .modal-buttons .right-buttons {
+                    float: right;
                 }
                 
-            .modal-title h1 {
-            font-size: 36px;
-            }
-                        
-            .modal-header{
-                  justify-content: center;
-                  padding: 2rem;
-                  border-bottom: 0;
-            }
+                .modal-inp-text {
+                    width:100%;
+                    height:77px;
+                    background:#fff;
+                    border:1px solid #c4c9d5;
+                    border-radius:10px;
+                    padding:25px 15px;
+                    font-family:Montserrat;
+                    font-style:normal;
+                    font-weight:400;
+                    font-size:16px;
+                    line-height:1.2;
+                    color:#686f7c;
+                    margin-top:6px
+                    }
+                    
+                .modal-title h1 {
+                font-size: 36px;
+                }
+                            
+                .modal-header{
+                      justify-content: center;
+                      padding: 2rem;
+                      border-bottom: 0;
+                }
 </style>

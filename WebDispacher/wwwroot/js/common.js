@@ -1,5 +1,6 @@
-function show_hide_password(target) {
-    var input = document.getElementById('password-input');
+function show_hide_password(target, elementId) {
+    console.log(elementId);
+    var input = document.getElementById(elementId);
     if (input.getAttribute('type') == 'password') {
         target.classList.add('view');
         input.setAttribute('type', 'text');
@@ -8,8 +9,8 @@ function show_hide_password(target) {
         input.setAttribute('type', 'password');
     }
     return false;
-
 };
+
 $(function() {
     $("#phone").intlTelInput({
         // initialCountry: "auto",

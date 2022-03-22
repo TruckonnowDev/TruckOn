@@ -12,7 +12,7 @@ using WebDispacher.Service;
 
 namespace WebDispacher.Controellers.Biling
 {
-    [Route("Settings/Biling")]
+    [Route("Biling")]
     public class PaymentMethodController : Controller
     {
         ManagerDispatch managerDispatch = new ManagerDispatch();

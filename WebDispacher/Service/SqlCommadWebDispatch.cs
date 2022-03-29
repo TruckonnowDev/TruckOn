@@ -1406,7 +1406,8 @@ namespace WebDispacher.Dao
 
         public async void UpdateorderInDb(string idOrder, string idLoad, string internalLoadID, string driver, string status, string instructions, string nameP, string contactP,
             string addressP, string cityP, string stateP, string zipP, string phoneP, string emailP, string scheduledPickupDateP, string nameD, string contactD, string addressD,
-            string cityD, string stateD, string zipD, string phoneD, string emailD, string ScheduledPickupDateD, string paymentMethod, string price, string paymentTerms, string brokerFee)
+            string cityD, string stateD, string zipD, string phoneD, string emailD, string ScheduledPickupDateD, string paymentMethod, string price, string paymentTerms, string brokerFee,
+            string contactId, string phoneC, string faxC, string iccmcC)
         {
             Shipping shipping = context.Shipping.FirstOrDefault(s => s.Id == idOrder);
             shipping.idOrder = idLoad != null ? idLoad : shipping.Id;
@@ -1446,6 +1447,10 @@ namespace WebDispacher.Dao
             shipping.TotalPaymentToCarrier = paymentMethod != null ? paymentMethod : shipping.TotalPaymentToCarrier;
             shipping.PriceListed = price != null ? price : shipping.PriceListed;
             shipping.BrokerFee = brokerFee != null ? brokerFee : shipping.BrokerFee;
+            shipping.ContactC = contactId != null ? contactId : shipping.ContactC;
+            shipping.PhoneC = phoneC != null ? phoneC : shipping.PhoneC;
+            shipping.FaxC = faxC != null ? faxC : shipping.FaxC;
+            shipping.IccmcC = iccmcC != null ? iccmcC : shipping.IccmcC;
             await context.SaveChangesAsync();
         }
 

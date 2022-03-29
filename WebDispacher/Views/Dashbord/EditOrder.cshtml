@@ -28,6 +28,14 @@
                                         <option value="Delivered">Delivered</option>
                                     </select>
                                 </label>
+                                <label for="">
+                                    Contact
+                                    <input type="text" id="contactId" name="contactId" value="@ViewBag.Order.ContactC">
+                                </label>
+                                <label for="">
+                                    Phone
+                                    <input type="tel" id="phoneC" name="phoneC" value="@ViewBag.Order.PhoneC">
+                                </label>
                                 <h3>Pickup Information</h3>
                                 <label for="">
                                     Name
@@ -67,11 +75,19 @@
                                 </label>
                             </div>
                             <div class="w1">
-                                <label for="">
+                                <label style="margin-bottom: 7px;" for="">
                                     Instructions
                                     <textarea type="text" id="instructions" name="instructions" style="height:192px;">@ViewBag.Order.Titl1DI</textarea>
                                 </label>
-                                <h3 style="margin-top: 24px;">Delivery Information</h3>
+                                <label for="">
+                                    Fax
+                                    <input type="text" id="faxC" name="faxC" value="@ViewBag.Order.FaxC">
+                                </label>
+                                <label for="">
+                                    Iccmc
+                                    <input type="text" id="iccmcC" name="iccmcC" value="@ViewBag.Order.IccmcC">
+                                </label>
+                                <h3>Delivery Information</h3>
                                 <label for="">
                                     Name
                                     <input type="text" id="nameD" name="nameD" value="@ViewBag.Order.NameD" placeholder="Name">

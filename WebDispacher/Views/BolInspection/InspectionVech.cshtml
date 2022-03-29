@@ -1,302 +1,280 @@
 ﻿<body>
-    <div class="admin Pickup">
-        <div class="container">
-            <div class="col-md-8">
-                <div class="title">
-                    <h1 class="nameVehStlP"> @ViewBag.Vehiclw.Make @ViewBag.Vehiclw.Model @ViewBag.Vehiclw.Year</h1>
-                </div>
-                <p><b>Load id:</b> <span> @ViewBag.Shipp.Id</span></p>
-                <p><b>Origin:</b> <span>@ViewBag.Shipp.AddresP, @ViewBag.Shipp.CityP, @ViewBag.Shipp.StateP, @ViewBag.Shipp.ZipP</span></p>
-                <p><b>Destionation:</b> <span>@ViewBag.Shipp.AddresD, @ViewBag.Shipp.CityD, @ViewBag.Shipp.StateD, @ViewBag.Shipp.ZipD</span></p>
-                @if (ViewBag.Vehiclw.Ask != null)
-                {
-                    <p><b>Type:</b> <span>@ViewBag.Vehiclw.Ask.TypeVehicle</span></p>
-                }
-            </div>
-            <div class="col-md-4 pic">
-                @if (ViewBag.Vehiclw.Scan != null)
-                {
-                    <img src="data:image/gif;base64,@ViewBag.Vehiclw.Scan.Base64" alt="" onclick="ShowAlert(11)">
-                }
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <h2>Pickup Inspection</h2>
-                </div>
-                <div class="col-md-12">
-                    <h3>Photo inspection</h3>
-                </div>
-                @if (ViewBag.Vehiclw.PhotoInspections != null)
-                {
-                    @for (int i = 0; i < ViewBag.Vehiclw.PhotoInspections.Count; i++)
-                    {
-                        if (ViewBag.Vehiclw.PhotoInspections[i].CurrentStatusPhoto == "PikedUp")
-                        {
-                            @for (int j = 0; j < ViewBag.Vehiclw.PhotoInspections[i].Photos.Count; j++)
-                            {
-                                    <div class="col-md-3" style="width: 263px;height: 148px; margin:10px">
-                                        <img alt="" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.PhotoInspections[i].Photos[j].path&type=jpg" width="263" height="148">
-                                    </div>
-                              
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    <p>No Photo</p>
-                }
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <h3>Any personal or additional items with or in vehicle</h3>
-                </div>
-                @if (ViewBag.Vehiclw.Ask != null)
-                {
-                    @if (ViewBag.Vehiclw.Ask.Any_personal_or_additional_items_with_or_in_vehicle != null && ViewBag.Vehiclw.Ask.Any_personal_or_additional_items_with_or_in_vehicle.Count != 0)
-                    {
-                        for (int i = 0; i < ViewBag.Vehiclw.Ask.Any_personal_or_additional_items_with_or_in_vehicle.Count; i++)
-                        {
-                            
-                                <div class="col-md-3" style="width: 263px;height: 148px;margin-bottom:10px">
-                                    <img alt="" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.Ask.Any_personal_or_additional_items_with_or_in_vehicle[i].path&type=jpg" width="263" height="148">
-                                </div>
-                           
-                        }
-                    }
-                    else
-                    {
-                        <p>No Photo</p>
-                    }
-                }
-                else
-                {
-                    <p>No Photo</p>
-                }
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <h3>App will force driver to take pictures of each strap</h3>
-                </div>
-                @if (ViewBag.Vehiclw.Ask1 != null)
-                {
-                    @if (ViewBag.Vehiclw.Ask1.App_will_force_driver_to_take_pictures_of_each_strap != null && ViewBag.Vehiclw.Ask1.App_will_force_driver_to_take_pictures_of_each_strap.Count != 0)
-                    {
-                        for (int i = 0; i < ViewBag.Vehiclw.Ask1.App_will_force_driver_to_take_pictures_of_each_strap.Count; i++)
-                        {
-                                <div class="col-md-3" style="width: 263px;height: 148px;margin-bottom:10px">
-                                    <img src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.Ask1.App_will_force_driver_to_take_pictures_of_each_strap[i].path&type=jpg" width="263" height="148" />
-                                </div>
-                            
-                        }
-                    }
-                    else
-                    {
-                        <p>No Photo</p>
-                    }
-                }
-                else
-                {
-                    <p>No Photo</p>
-                }
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <h3>Photo after loading in the truck</h3>
-                </div>
-                @if (ViewBag.Vehiclw.Ask1 != null)
-                {
-                    @if (ViewBag.Vehiclw.Ask1.Photo_after_loading_in_the_truck != null && ViewBag.Vehiclw.Ask1.Photo_after_loading_in_the_truck.Count != 0)
-                    {
-                        for (int i = 0; i < ViewBag.Vehiclw.Ask1.Photo_after_loading_in_the_truck.Count; i++)
-                        {
-                                <div class="col-md-3" style="width: 263px;height: 148px;margin-bottom:10px">
-                                    <img src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.Ask1.Photo_after_loading_in_the_truck[i].path&type=jpg" width="263" height="148" />
-                                </div>
-                        }
-                    }
-                    else
-                    {
-                        <p>No Photo</p>
-                    }
-                }
-                else
-                {
-                    <p>No Photo</p>
-                }
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <h3>Customer painting Pickup</h3>
-                </div>
-                @if (ViewBag.Shipp.AskFromUser != null)
-                {
-                    @if (ViewBag.Shipp.AskFromUser.App_will_ask_for_signature_of_the_client_signature != null)
-                    {
-                            <div class="col-md-3" style="width: 263px;height: 148px;margin-bottom:10px">
-                                <img src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.AskFromUser.App_will_ask_for_signature_of_the_client_signature.path&type=jpg" width="263" height="148" />
-                            </div>
+<div class="admin Pickup">
+<div class="container">
+<div class="title">
+    <a href="#" onclick="history.back();">Back to Orders</a>
+</div>
+<div class="title">
 
-                    }
-                    else
-                    {
-                        <p>No Photo</p>
-                    }
-                }
-                else
+    <h1 class="nameVehStlP text-info-header-1"> @ViewBag.Vehiclw.Make @ViewBag.Vehiclw.Model @ViewBag.Vehiclw.Year</h1>
+</div>
+<p class="text-info-p-1">
+    <b>Load id:</b> <span> @ViewBag.Shipp.Id</span>
+</p>
+<p class="text-info-p-1">
+    <b>Origin:</b> <span>@ViewBag.Shipp.AddresP, @ViewBag.Shipp.CityP, @ViewBag.Shipp.StateP, @ViewBag.Shipp.ZipP</span>
+</p>
+<p class="text-info-p-1">
+    <b>Destionation:</b> <span>@ViewBag.Shipp.AddresD, @ViewBag.Shipp.CityD, @ViewBag.Shipp.StateD, @ViewBag.Shipp.ZipD</span>
+</p>
+@if (ViewBag.Vehiclw.Ask != null)
+{
+    <p class="text-info-p-1">
+        <b>Type:</b> <span>@ViewBag.Vehiclw.Ask.TypeVehicle</span>
+    </p>
+}
+<h1 class="title text-info-header-1">Pickup Inspection</h1>
+<div class="row image-group">
+    @if (ViewBag.Vehiclw.PhotoInspections != null)
+    {
+        @for (int i = 0; i < ViewBag.Vehiclw.PhotoInspections.Count; i++)
+        {
+            if (ViewBag.Vehiclw.PhotoInspections[i].CurrentStatusPhoto == "PikedUp")
+            {
+                @for (int j = 0; j < ViewBag.Vehiclw.PhotoInspections[i].Photos.Count; j++)
                 {
-                    <p>No Photo</p>
+                    <div class="col-md-3" style="width: 263px;height: 148px; margin-bottom:10px">
+                        <img class="image-border-10" alt="" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.PhotoInspections[i].Photos[j].path&type=jpg" width="263" height="148">
+                    </div>
                 }
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <h3>Payment Photo Pickup</h3>
+            }
+        }
+    }
+    else
+    {
+        <p class="col-md-3">No Photo</p>
+    }
+</div>
+<h3 class="text-info-h3">Any personal or additional items with or in vehicle</h3>
+<div class="row image-group">
+    @if (ViewBag.Vehiclw.Ask != null)
+    {
+        @if (ViewBag.Vehiclw.Ask.Any_personal_or_additional_items_with_or_in_vehicle != null && ViewBag.Vehiclw.Ask.Any_personal_or_additional_items_with_or_in_vehicle.Count != 0)
+        {
+            for (int i = 0; i < ViewBag.Vehiclw.Ask.Any_personal_or_additional_items_with_or_in_vehicle.Count; i++)
+            {
+                <div class="col-md-3" style="width: 263px;height: 148px;margin-bottom:10px">
+                    <img class="image-border-10" alt="" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.Ask.Any_personal_or_additional_items_with_or_in_vehicle[i].path&type=jpg" width="263" height="148">
                 </div>
-                @if (ViewBag.Shipp.AskFromUser != null)
-                {
-                    @if (ViewBag.Shipp.AskFromUser.PhotoPay != null)
-                    {
-                            <div class="col-md-3" style="width: 263px;height: 148px;margin-bottom:10px">
-                                <img src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.AskFromUser.PhotoPay.path&type=jpg" width="263" height="148" />
-                            </div>
-                    }
-                    else
-                    {
-                        <p>No Photo</p>
-                    }
-                }
-                else
-                {
-                    <p>No Photo</p>
-                }
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <h2>Delivery Inspection</h2>
+            }
+        }
+        else
+        {
+            <p class="col-md-3">No Photo</p>
+        }
+    }
+    else
+    {
+        <p class="col-md-3">No Photo</p>
+    }
+</div>
+<div>
+    <h3 class="text-info-h3">App will force driver to take pictures of each strap</h3>
+</div>
+<div class="row image-group">
+    @if (ViewBag.Vehiclw.Ask1 != null)
+    {
+        @if (ViewBag.Vehiclw.Ask1.App_will_force_driver_to_take_pictures_of_each_strap != null && ViewBag.Vehiclw.Ask1.App_will_force_driver_to_take_pictures_of_each_strap.Count != 0)
+        {
+            for (int i = 0; i < ViewBag.Vehiclw.Ask1.App_will_force_driver_to_take_pictures_of_each_strap.Count; i++)
+            {
+                <div class="col-md-3" style="width: 263px;height: 148px;margin-bottom:10px">
+                    <img class="image-border-10" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.Ask1.App_will_force_driver_to_take_pictures_of_each_strap[i].path&type=jpg" width="263" height="148"/>
                 </div>
-                <div class="col-md-12">
-                    <h3>Photo inspection</h3>
+            }
+        }
+        else
+        {
+            <p class="col-md-3">No Photo</p>
+        }
+    }
+    else
+    {
+        <p class="col-md-3">No Photo</p>
+    }
+</div>
+<div>
+    <h3 class="text-info-h3">Photo after loading in the truck</h3>
+</div>
+<div class="row image-group">
+    @if (ViewBag.Vehiclw.Ask1 != null)
+    {
+        @if (ViewBag.Vehiclw.Ask1.Photo_after_loading_in_the_truck != null && ViewBag.Vehiclw.Ask1.Photo_after_loading_in_the_truck.Count != 0)
+        {
+            for (int i = 0; i < ViewBag.Vehiclw.Ask1.Photo_after_loading_in_the_truck.Count; i++)
+            {
+                <div class="col-md-3" style="width: 263px;height: 148px;margin-bottom:10px">
+                    <img class="image-border-10" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.Ask1.Photo_after_loading_in_the_truck[i].path&type=jpg" width="263" height="148"/>
                 </div>
-                @if (ViewBag.Vehiclw.PhotoInspections != null)
-                {
-                    @for (int i = 0; i < ViewBag.Vehiclw.PhotoInspections.Count; i++)
-                    {
-                        if (ViewBag.Vehiclw.PhotoInspections[i].CurrentStatusPhoto == "Delyvery")
-                        {
-                            @for (int j = 0; j < ViewBag.Vehiclw.PhotoInspections[i].Photos.Count; j++)
-                            {
-                                    <div class="col-md-3" style="width: 263px;height: 148px;margin-bottom:10px">
-                                        <img src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.PhotoInspections[i].Photos[j].path&type=jpg"  width="263" height="148"/>
-                                    </div>
-                            }
-
-                        }
-                    }
-                }
-                else
-                {
-                    <p>No Photo</p>
-                }
+            }
+        }
+        else
+        {
+            <p class="col-md-3">No Photo</p>
+        }
+    }
+    else
+    {
+        <p class="col-md-3">No Photo</p>
+    }
+</div>
+<div>
+    <h3 class="text-info-h3">Customer painting Pickup</h3>
+</div>
+<div class="row image-group">
+    @if (ViewBag.Shipp.AskFromUser != null)
+    {
+        @if (ViewBag.Shipp.AskFromUser.App_will_ask_for_signature_of_the_client_signature != null)
+        {
+            <div class="col-md-3" style="width: 263px;height: 148px;margin-bottom:10px">
+                <img class="image-border-10" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.AskFromUser.App_will_ask_for_signature_of_the_client_signature.path&type=jpg" width="263" height="148"/>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <h3>Picture Id of the person taking the delivery</h3>
+        }
+        else
+        {
+            <p class="col-md-3">No Photo</p>
+        }
+    }
+    else
+    {
+        <p class="col-md-3">No Photo</p>
+    }
+</div>
+<div>
+    <h3 class="text-info-h3">Payment Photo Pickup</h3>
+</div>
+<div class="row image-group">
+    @if (ViewBag.Shipp.AskFromUser != null)
+    {
+        @if (ViewBag.Shipp.AskFromUser.PhotoPay != null)
+        {
+            <div class="col-md-3" style="width: 263px;height: 148px;margin-bottom:10px">
+                <img class="image-border-10" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.AskFromUser.PhotoPay.path&type=jpg" width="263" height="148"/>
+            </div>
+        }
+        else
+        {
+            <p class="col-md-3">No Photo</p>
+        }
+    }
+    else
+    {
+        <p class="col-md-3">No Photo</p>
+    }
+</div>   
+<h1 class="title text-info-header-1">Delivery Inspection</h1>
+<div class="row image-group">
+    @if (ViewBag.Vehiclw.PhotoInspections != null)
+    {
+        @for (int i = 0; i < ViewBag.Vehiclw.PhotoInspections.Count; i++)
+        {
+            if (ViewBag.Vehiclw.PhotoInspections[i].CurrentStatusPhoto == "Delyvery")
+            {
+                @for (int j = 0; j < ViewBag.Vehiclw.PhotoInspections[i].Photos.Count; j++)
+                {
+                    <div class="col-md-3" style="width: 263px;height: 148px;margin-bottom:10px">
+                        <img src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.PhotoInspections[i].Photos[j].path&type=jpg" width="263" height="148"/>
+                    </div>
+                }
+            }
+        }
+    }
+    else
+    {
+        <p class="col-md-3">No Photo</p>
+    }
+</div>
+<h3 class="text-info-h3">Picture Id of the person taking the delivery</h3>
+<div class="row image-group">
+    @if (ViewBag.Vehiclw.AskDelyvery != null)
+    {
+        @if (ViewBag.Vehiclw.AskDelyvery.Please_take_a_picture_Id_of_the_person_taking_the_delivery != null && ViewBag.Vehiclw.AskDelyvery.Please_take_a_picture_Id_of_the_person_taking_the_delivery.Count != 0)
+        {
+            for (int i = 0; i < ViewBag.Vehiclw.AskDelyvery.Please_take_a_picture_Id_of_the_person_taking_the_delivery.Count; i++)
+            {
+                <div class="col-md-3" style="width: 263px;height: 148px;margin-bottom:10px">
+                    <img src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.AskDelyvery.Please_take_a_picture_Id_of_the_person_taking_the_delivery[i].path&type=jpg" width="263" height="148"/>
                 </div>
-                @if (ViewBag.Vehiclw.AskDelyvery != null)
-                {
-                    @if (ViewBag.Vehiclw.AskDelyvery.Please_take_a_picture_Id_of_the_person_taking_the_delivery != null && ViewBag.Vehiclw.AskDelyvery.Please_take_a_picture_Id_of_the_person_taking_the_delivery.Count != 0)
-                    {
-                        for (int i = 0; i < ViewBag.Vehiclw.AskDelyvery.Please_take_a_picture_Id_of_the_person_taking_the_delivery.Count; i++)
-                        {
-                                <div class="col-md-3" style="width: 263px;height: 148px;margin-bottom:10px">
-                                    <img src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.AskDelyvery.Please_take_a_picture_Id_of_the_person_taking_the_delivery[i].path&type=jpg" width="263" height="148" />
-                                </div>
-                        }
-                    }
-                    else
-                    {
-                        <p>No Photo</p>
-                    }
-                }
-                else
-                {
-                    <p>No Photo</p>
-                }
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <h3>Customer Vehicle Inspection</h3>
+            }
+        }
+        else
+        {
+            <p class="col-md-3">No Photo</p>
+        }
+    }
+    else
+    {
+        <p class="col-md-3">No Photo</p>
+    }
+</div>
+<h3 class="text-info-h3">Customer Vehicle Inspection</h3>
+<div class="row image-group">
+    @if (ViewBag.Shipp.askForUserDelyveryM != null)
+    {
+        @if (ViewBag.Shipp.askForUserDelyveryM.Have_you_inspected_the_vehicle_For_any_additional_imperfections_other_than_listed_at_the_pick_up_photo != null && ViewBag.Shipp.askForUserDelyveryM.Have_you_inspected_the_vehicle_For_any_additional_imperfections_other_than_listed_at_the_pick_up_photo.Count != 0)
+        {
+            for (int i = 0; i < ViewBag.Shipp.askForUserDelyveryM.Have_you_inspected_the_vehicle_For_any_additional_imperfections_other_than_listed_at_the_pick_up_photo.Count; i++)
+            {
+                <div class="col-md-3" style="width: 263px;height: 148px;margin-bottom:10px">
+                    <img src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.askForUserDelyveryM.Have_you_inspected_the_vehicle_For_any_additional_imperfections_other_than_listed_at_the_pick_up_photo[i].path&type=jpg" width="263" height="148"/>
                 </div>
-                @if (ViewBag.Shipp.askForUserDelyveryM != null)
-                {
-                    @if (ViewBag.Shipp.askForUserDelyveryM.Have_you_inspected_the_vehicle_For_any_additional_imperfections_other_than_listed_at_the_pick_up_photo != null && ViewBag.Shipp.askForUserDelyveryM.Have_you_inspected_the_vehicle_For_any_additional_imperfections_other_than_listed_at_the_pick_up_photo.Count != 0)
-                    {
-                        for (int i = 0; i < ViewBag.Shipp.askForUserDelyveryM.Have_you_inspected_the_vehicle_For_any_additional_imperfections_other_than_listed_at_the_pick_up_photo.Count; i++)
-                        {
-                                <div class="col-md-3" style="width: 263px;height: 148px;margin-bottom:10px">
-                                    <img src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.askForUserDelyveryM.Have_you_inspected_the_vehicle_For_any_additional_imperfections_other_than_listed_at_the_pick_up_photo[i].path&type=jpg" width="263" height="148" />
-                                </div>
-                        }
-                    }
-                    else
-                    {
-                        <p>No Photo</p>
-                    }
-                }
-                else
-                {
-                    <p>No Photo</p>
-                }
+            }
+        }
+        else
+        {
+            <p class="col-md-3">No Photo</p>
+        }
+    }
+    else
+    {
+        <p class="col-md-3">No Photo</p>
+    }
+</div>
+<h3 class="text-info-h3">Customer painting Delivery</h3>
+<div class="row image-group">
+    @if (ViewBag.Shipp.askForUserDelyveryM != null)
+    {
+        @if (ViewBag.Shipp.askForUserDelyveryM.App_will_ask_for_signature_of_the_client_signature != null)
+        {
+            <div class="col-md-3" style="width: 263px;height: 148px;margin-bottom:10px">
+                <img src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.askForUserDelyveryM.App_will_ask_for_signature_of_the_client_signature.path&type=jpg" width="263" height="148"/>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <h3>Customer painting Delivery</h3>
-                </div>
-                @if (ViewBag.Shipp.askForUserDelyveryM != null)
-                {
-                    @if (ViewBag.Shipp.askForUserDelyveryM.App_will_ask_for_signature_of_the_client_signature != null)
-                    {
-                            <div class="col-md-3" style="width: 263px;height: 148px;margin-bottom:10px">
-                                <img src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.askForUserDelyveryM.App_will_ask_for_signature_of_the_client_signature.path&type=jpg" width="263" height="148" />
-                            </div>
-
-                    }
-                    else
-                    {
-                        <p>No Photo</p>
-                    }
-                }
-                else
-                {
-                    <p>No Photo</p>
-                }
+        }
+        else
+        {
+            <p class="col-md-3">No Photo</p>
+        }
+    }
+    else
+    {
+        <p class="col-md-3">No Photo</p>
+    }
+</div>
+<h3 class="text-info-h3">Payment Photo Delivery</h3>
+<div class="row image-group">
+    @if (ViewBag.Shipp.askForUserDelyveryM != null)
+    {
+        @if (ViewBag.Shipp.askForUserDelyveryM.PhotoPay != null)
+        {
+            <div class="col-md-3" style="width: 263px;height: 148px;margin-bottom:10px">
+                <img src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.askForUserDelyveryM.PhotoPay.path&type=jpg" width="263" height="148"/>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <h3>Payment Photo Delivery</h3>
-                </div>
-                @if (ViewBag.Shipp.askForUserDelyveryM != null)
-                {
-                    @if (ViewBag.Shipp.askForUserDelyveryM.PhotoPay != null)
-                    {
-                            <div class="col-md-3"  style="width: 263px;height: 148px;margin-bottom:10px">
-                                <img src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.askForUserDelyveryM.PhotoPay.path&type=jpg" width="263" height="148"/>
-                            </div>
-
-                    }
-                    else
-                    {
-                        <p>No Photo</p>
-                    }
-                }
-                else
-                {
-                    <p>No Photo</p>
-                }
-            </div>
-            <div class="col-md-12">
-                <button onclick="history.back();" class="btn1">Back to Order</button>
-            </div>
-        </div>
-    </div>
+        }
+        else
+        {
+            <p class="col-md-3">No Photo</p>
+        }
+    }
+    else
+    {
+        <p class="col-md-3">No Photo</p>
+    }
+</div>
+</div>
+</div>
 </body>
+<style>
+    p{
+        font-size: 20px;
+    }
+</style>

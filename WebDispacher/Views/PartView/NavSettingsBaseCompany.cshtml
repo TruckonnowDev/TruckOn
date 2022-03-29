@@ -8,10 +8,11 @@
             </div>
             <div class="col-md-auto">
                 <ul class="menu top-nav_menu">
-                    <li><a href="/Settings/User/Users">Users</a></li>
-                    <li><a href="/Settings/Trucks">Trucks and Trailers</a></li>
-                    <li><a href="/Settings/Extension/Dicpatchs">Extension connection</a></li>
-                    <li><a href="/Dashbord/Order/NewLoad">Back To Order</a></li>
+                    <li><a id="Order" href="/Dashbord/Order/NewLoad">Main Menu</a></li>
+                    <li><a id="User" href="/Settings/User/Users">Users</a></li>
+                    <li><a id="Trucks" href="/Settings/Trucks">Trucks and Trailers</a></li>
+                    <li><a id="Extension" href="/Settings/Extension/Dicpatchs">Extension connection</a></li>
+                    <li><a href="/Exsit">Exit</a></li>
                 </ul>
                 <div class="burger">
                     <button class="top-nav_btn hamburger hamburger--3dy">
@@ -24,3 +25,18 @@
         </div>
     </div>
 </header>
+
+<script>
+    const NavItems = ['User','Trucks','Extension','Order']
+        $(document).ready(function () {
+            var str = location.pathname
+            for (let i = 0; i < NavItems.length; i++)
+            {
+                 if (str.indexOf(NavItems[i]) >=0 ){
+                    $('#' + NavItems[i]).addClass('active');
+                    break;
+                }
+            }
+          
+        });
+</script>

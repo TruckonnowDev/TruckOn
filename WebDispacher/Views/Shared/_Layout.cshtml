@@ -15,6 +15,7 @@
     <script src="~/js/driver.js"></script>
     <script src="~/js/equipment.js"></script>
     <script src="~/js/dispatch.js"></script>
+    <script src="~/js/common.js"></script>
     <script>
         if (window.screen.width < 767) {
             document.write('<script src="js/dop-768.js"><\/script>');
@@ -55,6 +56,9 @@
     {
         @await Html.PartialAsync("~/Views/PartView/NavSettingsCacelSubscribe.cshtml");
     }
+    else if (ViewData["TypeNavBar"] == "Error")
+    {
+    }
     @RenderBody()
     <script>
         $(document).ready(function () {
@@ -75,8 +79,7 @@
     @@keyframes open {
         from {opacity: 0;}
         to {opacity: 1;}
-    }
-}
+        }
 
 
     .navst {
@@ -142,5 +145,10 @@
 
         ::-webkit-scrollbar-thumb:hover {
             background: rgba(16, 156, 228, 0.34);
+            
+            
+        }
+        .active{
+            color: #C4C9D4!important;
         }
 </style>

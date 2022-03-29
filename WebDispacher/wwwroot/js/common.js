@@ -1,5 +1,6 @@
-function show_hide_password(target) {
-    var input = document.getElementById('password-input');
+function show_hide_password(target, elementId) {
+    console.log(elementId);
+    var input = document.getElementById(elementId);
     if (input.getAttribute('type') == 'password') {
         target.classList.add('view');
         input.setAttribute('type', 'text');
@@ -8,8 +9,8 @@ function show_hide_password(target) {
         input.setAttribute('type', 'password');
     }
     return false;
-
 };
+
 $(function() {
     $("#phone").intlTelInput({
         // initialCountry: "auto",
@@ -43,6 +44,8 @@ $(function() {
         }
     };
 
+    
+
     function hideTabsContent(a) {
         for (var i = a; i < tabContent.length; i++) {
             tabContent[i].classList.remove('show');
@@ -60,6 +63,33 @@ $(function() {
         }
     };
 });
+
+function ClearFile(str,labelId){
+    console.log('magic!');
+    var input = document.getElementById(str);
+    var label = document.getElementById(labelId);
+    input.value = '';
+    label.innerHTML = "";
+}
+
+function GetFileName(str,id){
+    if (str.lastIndexOf('\\')){
+        var i = str.lastIndexOf('\\')+1;
+    } else{
+        var i = str.lastIndexOf('/')+1;
+    }
+
+    var filename = str.slice(i);
+    var uploaded = document.getElementById(id);
+
+    if (filename !== ''){
+        uploaded.innerHTML = filename + ` <a class="red-button-custom">(Delete)</a>`;
+    }else{
+        uploaded.innerHTML = '';
+    }
+
+}
+
 $(function() {
     //меню бургер
     var menuBtn = $(".top-nav_btn");

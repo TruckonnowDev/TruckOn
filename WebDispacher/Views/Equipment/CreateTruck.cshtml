@@ -1,21 +1,26 @@
 ﻿<body>
-    <div class="admin truc">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="tabContent">
-                        <h2>Add truck</h2>
-                        <form action="" method="post" enctype="multipart/form-data">
-                            <label for="">
-                                Name Truck
-                                <input type="text" name="nameTruk" required>
-                            </label>
-                            <label for="">
-                                Type Truck <br />
-                                <select name="typeTruk" onchange="SelectTruck(this.options[this.selectedIndex].value)" required style="width:500px;">
-                                    <option value="">Choose a truck type</option>
-                                    <option value="PickUpDually4TiresInTheBackMustHave4Door">Pick up Dually (4 tires in the bacK) must have 4 door</option>
-                                    @*<option value="PickupFourWheel">Four-wheel pickup dually</option>
+<div class="admin truc">
+<div class="container">
+<div class="row">
+<div class="col-md-12">
+    <div class="tabContent">
+        <div class="title">
+            <a href="#" onclick="history.back();">Back to Equipment</a>
+        </div>
+        <div class="title">
+            <h1 class="text-info-header-1">Add New Truck</h1>
+        </div>
+        <form action="" method="post" enctype="multipart/form-data">
+            <label class="big-label" for="">
+                Name Truck
+                <input class="height-input" type="text" name="nameTruk" required>
+            </label>
+            <label class="big-label" for="">
+                Type Truck <br/>
+                <select class="height-input" name="typeTruk" onchange="SelectTruck(this.options[this.selectedIndex].value)" required style="color:#000000;width:100%;border:1px solid #c4c9d5">
+                    <option value="">Choose a truck type</option>
+                    <option value="PickUpDually4TiresInTheBackMustHave4Door">Pick up Dually (4 tires in the bacK) must have 4 door</option>
+                    @*<option value="PickupFourWheel">Four-wheel pickup dually</option>
                                     <option value="FourDoorTruckChassisOpenFrame">Four-door truck with double chassis and open frame</option>
                                     <option value="BoxTruckSingleWheel">Box Truck Single Wheel</option>
                                     <option value="BoxTruckWheelDually">Box Truck Wheel Dually</option>
@@ -26,144 +31,229 @@
                                     <option value="PickUpDuallyChassisMustHave4Door">Pick Up Dually Chassis Must Have 4 Door</option>
                                     <option value="PickUpDuallyFlatbed4Door">Pick Up Dually Flatbed 4 Door</option>
                                     <option value="PickUpDuallyFlatbedMustHave2Door">Pick Up Dually Flatbed Must Have 2 Door</option>*@
-                                </select>
-                            </label>
-                            <label for="">
-                                Year
-                                <input type="text" name="yera">
-                            </label>
-                            <label for="">
-                                Make
-                                <input type="text" name="make">
-                            </label>
-                            <label for="">
-                                Model
-                                <input type="text" name="model">
-                            </label>
-                            <label for="">
-                                State
-                                <input type="text" name="state">
-                            </label>
-                            <label for="">
-                                Plate Exp
-                                <input type="text" name="exp">
-                            </label>
-                            <label for="">
-                                Vin#
-                                <input type="text" name="vin">
-                            </label>
-                            <label for="">
-                                Owner
-                                <input type="text" name="owner">
-                            </label>
-                            <label for="">
-                                Plate Truck
-                                <input type="text" name="plateTruk" required>
-                            </label>
-                            <label for="">
-                                Color
-                                <input type="text" name="color">
-                            </label>
-                            <label for="">
-                                Truck registration
-                                <input type="file" name="truckRegistrationDoc" accept="application/pdf, image/jpeg, image/jpg" required><p>You can upload files only in pdf, jpg and jepg</p>
-                            </label>
-                            <label for="">
-                                Truck lease agreement
-                                <input type="file" name="truckLeaseAgreementDoc" accept="application/pdf, image/jpeg, image/jpg" required><p>You can upload files only in pdf, jpg and jepg</p>
-                            </label>
-                            <label for="">
-                                Truck annual inspection
-                                <input type="file" name="truckAnnualInspection" accept="application/pdf, image/jpeg, image/jpg" required><p>You can upload files only in pdf, jpg and jepg</p>
-                            </label>
-                            <label for="">
-                                Bob tail physical damage (optional)
-                                <input type="file" name="bobTailPhysicalDamage" accept="application/pdf, image/jpeg, image/jpg"><p>You can upload files only in pdf, jpg and jepg</p>
-                            </label>
-                            <label for="">
-                                NY HUT (optional for NY rolling)
-                                <input type="file" accept="application/pdf, image/jpeg, image/jpg" name="nYHUTDoc"><p>You can upload files only in pdf, jpg and jepg</p>
-                            </label>
-                            <button class="btn1">Save Info</button>
-                        </form>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div id="PickUpDually4TiresInTheBackMustHave4Door" class="row" style="display:none;">
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door1.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door2.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door3.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door4.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door5.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door6.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door7.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door8.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door9.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door10.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door11.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door12.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door13.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door14.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door15.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door16.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door17.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door18.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door19.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door20.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door21.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door22.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door23.png&type=png" alt="">
+                </select>
+            </label>
+            <label class="big-label" for="">
+                Year
+                <input class="height-input" type="text" name="yera">
+            </label>
+            <label class="big-label" for="">
+                Make
+                <input class="height-input" type="text" name="make">
+            </label>
+            <label class="big-label" for="">
+                Model
+                <input class="height-input" type="text" name="model">
+            </label>
+            <label class="big-label" for="">
+                State
+                <input class="height-input" type="text" name="state">
+            </label>
+            <label class="big-label" for="">
+                Plate Exp
+                <input class="height-input" type="text" name="exp">
+            </label>
+            <label class="big-label" for="">
+                Vin#
+                <input class="height-input" type="text" name="vin">
+            </label>
+            <label class="big-label" for="">
+                Owner
+                <input class="height-input" type="text" name="owner">
+            </label>
+            <label class="big-label" for="">
+                Plate Truck
+                <input class="height-input" type="text" name="plateTruk" required>
+            </label>
+            <label class="big-label" for="">
+                Color
+                <input class="height-input" type="text" name="color">
+            </label>
+            <div class="full-label">
+                <a class="a-label">Truck registration</a>
+                <div class="d-flex align-items-center">
+                    <div class="file-group big-label">
+                        <div class="row">
+                            <div class="col-md-8 label-input d-flex align-items-center">
+                                <div onclick="ClearFile(`fi1`, 'fl1');" class="fi" id="fl1"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="select-button-1 d-flex justify-content-end">
+                                    <label>
+                                        Select document
+                                        <input class="height-input" id="fi1" onchange="GetFileName(this.value, 'fl1');" type="file" name="truckRegistrationDoc" accept="application/pdf, image/jpeg, image/jpg" required>
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    <a class="pl-2">You can upload files only in pdf, jpg and jpeg</a>
                 </div>
             </div>
+            <div class="full-label">
+                <a class="a-label">Truck lease agreement</a>
+                <div class="d-flex align-items-center">
+                    <div class="file-group big-label">
+                        <div class="row">
+                            <div class="col-md-8 label-input d-flex align-items-center">
+                                <div onclick="ClearFile(`fi2`, 'fl2');" class="fi" id="fl2"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="select-button-1 d-flex justify-content-end">
+                                    <label>
+                                        Select document
+                                        <input class="height-input" id="fi2" onchange="GetFileName(this.value, 'fl2');" type="file" name="truckLeaseAgreementDoc" accept="application/pdf, image/jpeg, image/jpg" required>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <a class="pl-2">You can upload files only in pdf, jpg and jpeg</a>
+                </div>
+            </div>
+            <div class="full-label">
+                <a class="a-label">Truck annual inspection</a>
+                <div class="d-flex align-items-center">
+                    <div class="file-group big-label">
+                        <div class="row">
+                            <div class="col-md-8 label-input d-flex align-items-center">
+                                <div onclick="ClearFile(`fi3`, 'fl3');" class="fi" id="fl3"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="select-button-1 d-flex justify-content-end">
+                                    <label>
+                                        Select document
+                                        <input class="height-input" id="fi3" onchange="GetFileName(this.value, 'fl3');" type="file" name="truckAnnualInspection" accept="application/pdf, image/jpeg, image/jpg" required>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <a class="pl-2">You can upload files only in pdf, jpg and jpeg</a>
+                </div>
+            </div>
+            <div class="full-label">
+                <a class="a-label">Bob tail physical damage (optional)</a>
+                <div class="d-flex align-items-center">
+                    <div class="file-group big-label">
+                        <div class="row">
+                            <div class="col-md-8 label-input d-flex align-items-center">
+                                <div onclick="ClearFile(`fi4`, 'fl4');" class="fi" id="fl4"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="select-button-1 d-flex justify-content-end">
+                                    <label>
+                                        Select document
+                                        <input class="height-input" id="fi4" onchange="GetFileName(this.value, 'fl4');" type="file" name="bobTailPhysicalDamage" accept="application/pdf, image/jpeg, image/jpg">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <a class="pl-2">You can upload files only in pdf, jpg and jpeg</a>
+                </div>
+            </div>
+            <div class="full-label">
+                <a class="a-label">NY HUT (optional for NY rolling)</a>
+                <div class="d-flex align-items-center">
+                    <div class="file-group big-label">
+                        <div class="row">
+                            <div class="col-md-8 label-input d-flex align-items-center">
+                                <div onclick="ClearFile(`fi5`, 'fl5');" class="fi" id="fl5"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="select-button-1 d-flex justify-content-end">
+                                    <label>
+                                        Select document
+                                        <input class="height-input" id="fi5" onchange="GetFileName(this.value, 'fl5');" type="file" accept="application/pdf, image/jpeg, image/jpg" name="nYHUTDoc">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <a class="pl-2">You can upload files only in pdf, jpg and jpeg</a>
+                </div>
+            </div>
+            <button class="btn1 big-label height-input big-font-size">Save Info</button>
+        </form>
+    </div>
+</div>
+<div class="col-md-6 image-col-place">
+    <div id="PickUpDually4TiresInTheBackMustHave4Door" class="row" style="display:none;">
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door1.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door2.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door3.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door4.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door5.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door6.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door7.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door8.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door9.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door10.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door11.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door12.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door13.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door14.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door15.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door16.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door17.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door18.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door19.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door20.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door21.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door22.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door23.png&type=png" alt="">
         </div>
     </div>
+</div>
+</div>
+</div>
+</div>
 </body>
 
 <script>

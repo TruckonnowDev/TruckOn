@@ -1,36 +1,45 @@
 ﻿<body>
-    <div class="admin">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="title">
-                        <h1>Contacts</h1>
-                        <button class="btn1" onclick="window.location.href='@Url.Action("CreateContact", "Contact")';" >Add Contact</button>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    @for (int i = 0; i < ViewBag.Contacts.Count; i++)
-                    {
-                        <div class="one-line">
-                            <div class="top-line">
-                                <div class="left">
-                                    <div class="contact">
-                                        <p><strong>@ViewBag.Contacts[i].Name</strong></p>
-                                        <p>Email: <a href="@ViewBag.Contacts[i].Email"> @ViewBag.Contacts[i].Email</a></p>
-                                        <p>Phone: <a href="tel:@ViewBag.Contacts[i].Phone">@ViewBag.Contacts[i].Phone</a></p>
-                                    </div>
-                                </div>
-                                <div class="right">
-                                    <a class="btn3" href="@ViewBag.BaseUrl/Contact/Edit?id=@ViewBag.Contacts[i].ID">Edit</a>
-                                    <a class="btn3" href="@ViewBag.BaseUrl/Contact/Delete?id=@ViewBag.Contacts[i].ID">Delete</a>
-                                </div>
-                            </div>
-                        </div> 
-                    }
+<div class="admin">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="title">
+                    <h1>Contacts</h1>
+                    <button class="btn1" onclick="window.location.href='@Url.Action("CreateContact", "Contact")';" >Add Contact</button>
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-12">
+                @for (int i = 0; i < ViewBag.Contacts.Count; i++)
+                {
+                    <div class="one-line">
+                        <div class="top-line">
+                            <div class="left">
+                                <div class="contact">
+                                    <p class="text-p"><strong>@ViewBag.Contacts[i].Name</strong></p>
+                                    <p class="text-p"><b>Email: </b><a class="font-weight-medium" href="@ViewBag.Contacts[i].Email"> @ViewBag.Contacts[i].Email</a></p>
+                                    <p class="text-p"><b>Phone:  </b><a class="font-weight-medium" href="tel:@ViewBag.Contacts[i].Phone">@ViewBag.Contacts[i].Phone</a></p>
+                                </div>
+                            </div>
+                            <div class="right">
+                                <a class="btn3" href="@ViewBag.BaseUrl/Contact/Edit?id=@ViewBag.Contacts[i].ID">Edit</a>
+                                <a class="btn3" href="@ViewBag.BaseUrl/Contact/Delete?id=@ViewBag.Contacts[i].ID">Delete</a>
+                            </div>
+                        </div>
+                    </div> 
+                }
+            </div>
+        </div>
     </div>
+</div>
 </body>
+
+<style>
+    .font-weight-normal{
+        font-weight: 500;
+    }
+    .text-p{
+            font-size: 20px;
+    }
+</style>

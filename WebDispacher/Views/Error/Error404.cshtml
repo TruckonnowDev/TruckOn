@@ -1,23 +1,38 @@
 ﻿<body>
-    <div class="for-ty-for">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="for">
-                        <img src="~/img/404.svg" alt="">
-                    </div>
+<div class="for-ty-for">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 mt-5">
+                <div class="for">
+                    <img src="~/img/404.svg" alt="">
                 </div>
-                <div class="col-md-12">
-                    <h2>Page not found</h2>
-                    <h3>Sorry, we couldn’t find the page you are looking for</h3>
-                </div>
-                <div class="col-md-12">
-                    <div class="button">
-                        <button class="btn3" onclick="window.history.back()">Back to Previous Page</button>
-                        <button class="btn1" onclick="window.location.href = '@ViewBag.BaseUrl'">Home Page</button>
-                    </div>
+            </div>
+            <div class="col-md-12">
+                <h2>Page not found</h2>
+                <h3>Sorry, we couldn’t find the page you are looking for</h3>
+            </div>
+            <div class="col-md-12">
+                <div class="button">
+                    <button class="btn3 bolt-button" onclick="window.history.back()">Back to Previous Page</button>
+                    <button class="btn1 bolt-button" onclick="window.location.href = '@ViewBag.BaseUrl'">Home Page</button>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </body>
+
+<style>
+    h2{
+    font-size: 68px!important;
+    }
+    h3{
+    font-size: 36px!important;
+    }
+    .btn3{
+    margin-right: 2%;
+    }
+    .bolt-button{
+        font-size: 24px;
+    }
+</style>

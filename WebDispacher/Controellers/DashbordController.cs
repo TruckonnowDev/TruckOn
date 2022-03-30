@@ -22,7 +22,7 @@ namespace WebDispacher.Controellers
         {
             string urlPage = linck.Remove(0, linck.IndexOf("'") + 1);
             urlPage = urlPage.Remove(urlPage.IndexOf("'"));
-            urlPage = $"https://www.centraldispatch.com/{urlPage}";
+            urlPage = $"https://www.centraldispatch.com{urlPage}";
             string actionResult = null;
             try
             {

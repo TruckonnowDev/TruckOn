@@ -32,6 +32,7 @@
                                 <tr>
                                     <td>@ViewBag.Dispatchers[i].Login</td>
                                     <td>@ViewBag.Dispatchers[i].Password</td>
+                                    <td>@ViewBag.Dispatchers[i].Type</td>
                                     <td ondblclick="RefreshToken(@ViewBag.Dispatchers[i].Id, this, '@ViewBag.BaseUrl')">@ViewBag.Dispatchers[i].key</td>
                                     <td>
                                         <img src="~/img/pen.svg" alt="" onclick="document.location.href='@ViewBag.BaseUrl/Settings/Extension/EditDicpatch?idDispatch=@ViewBag.Dispatchers[i].Id'">

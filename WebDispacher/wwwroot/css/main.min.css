@@ -778,3 +778,26 @@ input[type="file"] {
     color:#686f7c;
     margin-top:6px;
 }
+
+.type-button {
+    min-width: 140px;
+    width:15%;
+    height:54px;
+    background:#fff;
+    border:1px solid #c4c9d5;
+    border-radius:10px;
+    padding:0 15px;
+    font-family:Montserrat;
+    font-style:normal;
+    font-weight:400;
+    font-size:20px;
+    line-height:1.2;
+    color:#c4c9d5;
+    margin-top:6px;
+    margin-right:1%;
+}
+
+.border {
+    border: none!important;
+    padding-left: 0!important;
+}

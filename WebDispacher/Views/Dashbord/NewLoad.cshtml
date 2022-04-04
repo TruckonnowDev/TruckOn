@@ -4,7 +4,21 @@
             <div class="col-md-12">
                 <div class="title">
                     <h1>Orders</h1>
-                    <button class="btn1" onClick='location.href="/Dashbord/Order/Creat"'>Create Order</button>
+                    <button class="btn1 mr-3" onClick='location.href="/Dashbord/Order/Creat"'>Create Order</button>
+                    <a style="background-color: white;color:#686F7C;" data-toggle="collapse" href="#search-form" role="button" aria-expanded="false" aria-controls="search-form">Search Orders
+                        <span>&#709;</span></a>
+                </div>
+                <div class="collapse multi-collapse" id="search-form">
+                    <div style="margin-top: 15px;" class="card border card-body">
+                        <form method="get" action="/Dashbord/Order/NewLoad">
+                            <input class="type-button" type="text" value="@ViewBag.Name" id="name-input" name="name" placeholder="Name">
+                            <input class="type-button" type="text" value="@ViewBag.Address" id="address-input" name="address" placeholder="Address">
+                            <input class="type-button" type="text" value="@ViewBag.Phone" id="phone-input" name="phone" placeholder="Phone number">
+                            <input class="type-button" type="text" value="@ViewBag.Email" id="email-input" name="email" placeholder="Email">
+                            <input class="type-button" type="text" value="@ViewBag.price" id="price-input" name="price" placeholder="Price">
+                            <button type="submit" class="btn1 btn-modal">Search</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -77,3 +91,27 @@
     </div>
 
 </div>
+
+<script>
+ $(document).ready(function() {
+     var name= $('#name-input').val();
+     var address= $('#address-input').val();
+     var phone= $('#phone-input').val();
+     var email= $('#email-input').val();
+     var price= $('#price-input').val();
+     
+     if (name !== "" || address !== "" 
+        || phone !== "" || email !== "" 
+        || price !== "")
+     {
+            $("#search-form").addClass('show')
+     }
+ });
+</script>
+
+<style>
+    input::placeholder {
+        color: #c4c9d5;
+        font-size: 16px;
+    }
+</style>

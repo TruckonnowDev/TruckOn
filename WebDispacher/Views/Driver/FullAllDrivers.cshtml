@@ -72,7 +72,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form asp-action="RemoveDriver">
+                        <input style="display:none;" name="experience" id="experienceInp" /><br />
                             <div class="form-group">
                                 <label for>
                                     Number Of Accidents
@@ -167,17 +167,22 @@
                                         <p>Good</p></div>
                                 </label>
                             </div>
-                            <div class="form-group">
-                                <label for="">
+                            <div class="form-group mb-0">
+                                <label class="mb-0" for="">
                                     Terminated <span>(boxes FIRED, Contract expiration, left truck without notice, disappeared)</span>
+                                    <label style="display:none;" value="Yes" id="terminatedInp">Yes</label><br />
                                     <div class="value-elem">
                                         <input class="validation" checked required type="radio" name="terminated" onclick="terminatedInp.value='Yes'"/>
                                         <span style="text-align:center;">Yes</span>
                                     </div>
+                                    <div class="value-elem">
+                                        <input class="validation" checked required type="radio" name="terminated" onclick="terminatedInp.value='No'"/>
+                                        <span style="text-align:center;">No</span>
+                                    </div>
                                 </label>
                             </div>
-                            <div class="form-group">
-                                <label for="">
+                            <div class="form-group mb-0">
+                                <label class="mb-0" for="">
                                     Experience with
                                     <div class="value-elem">
                                         <input class="validation" type="checkbox" value="Boxes" onclick="SelectExperience(this.value, this.checked)"/>
@@ -209,7 +214,7 @@
                                     </div>
                                 </label>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group mb-0">
                                 <label for>
                                     Description
                                     <div class="value-elem">
@@ -217,9 +222,8 @@
                                     </div>
                                 </label>
                             </div>
-                            <button type="submit" onclick="Remove()" class="btn1-spec big-label">Add Report Driver</button>
+                            <button onclick="Remove()" class="btn1-spec btn-blue big-label">Add Report Driver</button>
                             <button class="btn3 btn3-spec" type="button" data-dismiss="modal">Close</button>
-                        </form>
                     </div>
                 </div>
             </div>
@@ -297,6 +301,7 @@
                 let descriptionTA = document.getElementById("descriptionTA");
                 descriptionTA.validity.valid
                 if (descriptionTA.validity.valid) {
+                    
                     let body = "id=" + encodeURIComponent(IdDriver)
                         + "&numberOfAccidents=" + encodeURIComponent(numberOfAccidentsInp.value)
                         + "&english=" + encodeURIComponent(englishSpn.innerHTML)
@@ -316,10 +321,19 @@
             }
 </script>
 <style>
-    .btn-green{
-    background:0 0;
-    color:#4fc941;
-    border:1px solid #4fc941;
+
+    label {
+        padding-left: 0px!important;
+        padding-right: 0px!important;
+    }
+    span {
+     font-weight: 400;
+     color: #686F7C;
+    }
+    .btn-blue{
+    background:#2C5DEB;
+    color:#f9f9f9;
+    border:1px solid #2C5DEB;
     font-style:normal;
     font-weight:700;
     font-size:16px;
@@ -332,10 +346,10 @@
     transition:.3s all
     }
     
-    .btn-green:hover{
-    background:#4fc941;
-    border:1px solid #4fc941;
-    color:#f9f9f9;
+    .btn-blue:hover{
+    background:0 0;
+    border:1px solid #2C5DEB;
+    color:#2C5DEB;
     -webkit-transition:.3s all;
     -o-transition:.3s all;
     transition:.3s all
@@ -508,7 +522,7 @@
     }
     
     .modal-body {
-        padding: 30px;
+        padding: 0px 30px 30px 30px;
     }
     
     .strong-a {

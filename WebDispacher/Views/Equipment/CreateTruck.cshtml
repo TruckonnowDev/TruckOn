@@ -174,7 +174,7 @@
                     <a class="pl-2">You can upload files only in pdf, jpg and jpeg</a>
                 </div>
             </div>
-            <button class="btn1 big-label height-input big-font-size">Save Info</button>
+            <button id="button-save" class="btn1 big-label height-input big-font-size">Save Info</button>
         </form>
     </div>
 </div>
@@ -257,6 +257,23 @@
 </body>
 
 <script>
+$("#fi3").change(function() {
+    CheckValid('fl3','fi3');
+});
+
+$("#fi2").change(function() {
+    CheckValid('fl2','fi2');
+});
+
+$("#fi1").change(function() {
+    CheckValid('fl1','fi1');
+});
+
+ $("#button-save").on('click', function (){
+     CheckValid('fl1','fi1');
+     CheckValid('fl2','fi2');
+     CheckValid('fl3','fi3');
+ })
     var curentSelectPattern;
 
     function SelectTruck(value) {

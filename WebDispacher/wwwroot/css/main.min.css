@@ -801,3 +801,11 @@ input[type="file"] {
     border: none!important;
     padding-left: 0!important;
 }
+
+.red-valid {
+    border: 1px solid red;
+}
+
+.green-valid {
+    border: 1px solid green;
+}

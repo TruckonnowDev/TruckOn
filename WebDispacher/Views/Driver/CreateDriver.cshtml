@@ -192,3 +192,43 @@
     </div>
 </div>
 </body>
+
+<script>
+$("#fi1").change(function() {
+    CheckValid('fl1','fi1');
+});
+ 
+$("#fi2").change(function() {
+    CheckValid('fl2','fi2');
+});
+
+$("#fi3").change(function() {
+    CheckValid('fl3','fi3');
+});
+
+$("#fi4").change(function() {
+    CheckValid('fl4','fi4');
+});
+
+$("#fi5").change(function() {
+    CheckValid('fl5','fi5');
+});
+
+$("#fi6").change(function() {
+    CheckValid('fl6','fi6');
+});
+
+$("#fi7").change(function() {
+    CheckValid('fl7','fi7');
+});
+
+ $("input[type=submit]").on('click', function (){
+     CheckValid('fl1','fi1');
+     CheckValid('fl2','fi2');
+     CheckValid('fl3','fi3');
+     CheckValid('fl4','fi4');
+     CheckValid('fl5','fi5');
+     CheckValid('fl6','fi6');
+     CheckValid('fl7','fi7');
+ })
+</script>

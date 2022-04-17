@@ -96,7 +96,7 @@ namespace MDispatch.Helpers.Language
         public string TitleAskQuestionPage => "Вопросы осмотра";
         public string ItemNextPage => "Следующий";
 
-        public string AskBlockWeatherTitle => "Погодные условияx";
+        public string AskBlockWeatherTitle => "Погодные условия";
         public string ClearAnswer => "Солнечно";
         public string RainAnswer => "Дождь";
         public string SnowAnswer => "Снег";
@@ -318,7 +318,7 @@ namespace MDispatch.Helpers.Language
 
         public string AskBlockRateDriverTitle => "Оценить водителя";
 
-        public string VehicleInspectionPikedUp => "Техосмотр автомобиля: Piked Up";
+        public string VehicleInspectionPikedUp => "Начать Осмотр на Получении";
         public string VehicleInspectionDelivery => "Техосмотр автомобил: Delivery";
         public string ThereAreNoVehiclesInThisOrder => "В этом заказе нет транспортных средств";
 

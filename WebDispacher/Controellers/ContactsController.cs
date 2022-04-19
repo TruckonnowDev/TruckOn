@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
+using WebDispacher.Business.Interfaces;
 using WebDispacher.Service;
 
 namespace WebDispacher.Controellers
@@ -7,6 +8,16 @@ namespace WebDispacher.Controellers
     public class ContactsController : Controller
     {
         ManagerDispatch managerDispatch = new ManagerDispatch();
+        private readonly IUserService userService;
+        private readonly ICompanyService companyService;
+
+        public ContactsController(
+            IUserService userService,
+            ICompanyService companyService)
+        {
+            this.companyService = companyService;
+            this.userService = userService;
+        }
 
         [Route("Contact/Contacts")]
         public IActionResult Contacts(int page)
@@ -21,16 +32,16 @@ namespace WebDispacher.Controellers
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Contact"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Contact"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
-                    ViewBag.Contacts = managerDispatch.GetContacts(idCompany);
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                    ViewBag.Contacts = companyService.GetContacts(idCompany);
                     actionResult = View("FullContacts");
                 }
                 else
@@ -66,15 +77,15 @@ namespace WebDispacher.Controellers
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Contact"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Contact"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
                     actionResult = View("CreateContact");
                 }
                 else
@@ -106,12 +117,12 @@ namespace WebDispacher.Controellers
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Contact"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Contact"))
                 {
                     if ((fullName != null && fullName != "") && (emailAddress != null && emailAddress != "") && (emailAddress != null && emailAddress != "")
                        && (fullName != null && fullName != ""))
                     {
-                        managerDispatch.CreateContact(fullName, emailAddress, phoneNumbe, idCompany);
+                        companyService.CreateContact(fullName, emailAddress, phoneNumbe, idCompany);
                         actionResult = Redirect($"{Config.BaseReqvesteUrl}/Contact/Contacts");
                     }
                     else
@@ -149,16 +160,16 @@ namespace WebDispacher.Controellers
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Contact"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Contact"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
-                    ViewBag.Contact = managerDispatch.GetContact(id);
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                    ViewBag.Contact = companyService.GetContact(id);
                     actionResult = View("EditContact");
                 }
                 else
@@ -191,11 +202,11 @@ namespace WebDispacher.Controellers
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Contact"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Contact"))
                 {
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
-                    managerDispatch.EditContact(id, fullName, emailAddress, phoneNumbe);
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                    companyService.EditContact(id, fullName, emailAddress, phoneNumbe);
                     actionResult = Redirect($"{Config.BaseReqvesteUrl}/Contact/Contacts");
                 }
                 else
@@ -228,11 +239,11 @@ namespace WebDispacher.Controellers
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Contact"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Contact"))
                 {
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
-                    managerDispatch.DeleteContact(id);
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                    companyService.DeleteContactById(id);
                     actionResult = Redirect($"{Config.BaseReqvesteUrl}/Contact/Contacts");
                 }
                 else

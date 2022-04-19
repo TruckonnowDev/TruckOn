@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using WebDispacher.Business.Interfaces;
 using WebDispacher.Service;
 
 namespace WebDispacher.Controellers
@@ -13,6 +14,22 @@ namespace WebDispacher.Controellers
     public class BolInspectionController : Controller
     {
         ManagerDispatch managerDispatch = new ManagerDispatch();
+        private readonly ITruckAndTrailerService truckAndTrailerService;
+        private readonly IUserService userService;
+        private readonly ICompanyService companyService;
+        private readonly IOrderService orderService;
+
+        public BolInspectionController(
+            ITruckAndTrailerService truckAndTrailerService,
+            IUserService userService,
+            IOrderService orderService,
+            ICompanyService companyService)
+        {
+            this.orderService = orderService;
+            this.companyService = companyService;
+            this.userService = userService;
+            this.truckAndTrailerService = truckAndTrailerService;
+        }
 
         [Route("Photo/BOL/{idVech}")]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
@@ -26,19 +43,19 @@ namespace WebDispacher.Controellers
             Request.Cookies.TryGetValue("KeyAvtho", out key);
             Request.Cookies.TryGetValue("CommpanyId", out idCompany);
             Request.Cookies.TryGetValue("CommpanyName", out companyName);
-            if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "BOL"))
+            if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "BOL"))
             {
-                bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                 if (isCancelSubscribe)
                 {
                     return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
-                Shipping shipping = managerDispatch.GetShipingCurrentVehiclwIn(idVech.ToString());
+                Shipping shipping = orderService.GetShippingCurrentVehiclwIn(idVech.ToString());
                 VehiclwInformation vehiclwInformation = shipping.VehiclwInformations.FirstOrDefault(v => v.Id == idVech);
                 if (shipping != null)
                 {
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                     ViewBag.Shipp = shipping;
                     ViewBag.Vehiclw = vehiclwInformation;
@@ -62,7 +79,7 @@ namespace WebDispacher.Controellers
         {
             IActionResult actionResult = null;
             ViewData["TypeNavBar"] = "BaseAllUsers";
-            Shipping shipping = managerDispatch.GetShipingCurrentVehiclwIn(idVech.ToString());
+            Shipping shipping = orderService.GetShippingCurrentVehiclwIn(idVech.ToString());
             VehiclwInformation vehiclwInformation = shipping.VehiclwInformations.FirstOrDefault(v => v.Id == idVech);
             if (shipping != null)
             {
@@ -87,15 +104,15 @@ namespace WebDispacher.Controellers
             await Task.WhenAll(
             Task.Run(async() => 
             {
-                truck = await managerDispatch.GetTruck(idDriver); 
+                truck = await truckAndTrailerService.GetTruck(idDriver); 
                 ViewBag.Truck = truck;
-                ViewBag.TruckDoc = await managerDispatch.GetTruckDoc((truck != null ? truck.Id : 0).ToString());
+                ViewBag.TruckDoc = await truckAndTrailerService.GetTruckDoc((truck != null ? truck.Id : 0).ToString());
             }),
             Task.Run(async() =>
             {
-                trailer = await managerDispatch.GetTrailer(idDriver);
+                trailer = await truckAndTrailerService.GetTrailer(idDriver);
                 ViewBag.Trailer = trailer;
-                ViewBag.TrailerDoc = await managerDispatch.GetTraileDoc((trailer != null ? trailer.Id : 0).ToString());
+                ViewBag.TrailerDoc = await truckAndTrailerService.GetTraileDoc((trailer != null ? trailer.Id : 0).ToString());
             }));
 
             actionResult = View($"DocDriver");
@@ -116,15 +133,15 @@ namespace WebDispacher.Controellers
             await Task.WhenAll(
             Task.Run(async () =>
             {
-                truck = await managerDispatch.GetTruckByPlate(truckPlate);
+                truck = await truckAndTrailerService.GetTruckByPlate(truckPlate);
                 ViewBag.Truck = truck;
-                ViewBag.TruckDoc = await managerDispatch.GetTruckDoc((truck != null ? truck.Id : 0).ToString());
+                ViewBag.TruckDoc = await truckAndTrailerService.GetTruckDoc((truck != null ? truck.Id : 0).ToString());
             }),
             Task.Run(async () =>
             {
-                trailer = await managerDispatch.GetTrailerkByPlate(trailerPlate);
+                trailer = await truckAndTrailerService.GetTrailerkByPlate(trailerPlate);
                 ViewBag.Trailer = trailer;
-                ViewBag.TrailerDoc = await managerDispatch.GetTraileDoc((trailer != null ? trailer.Id : 0).ToString());
+                ViewBag.TrailerDoc = await truckAndTrailerService.GetTraileDoc((trailer != null ? trailer.Id : 0).ToString());
             }));
 
             actionResult = View($"DocDriver");

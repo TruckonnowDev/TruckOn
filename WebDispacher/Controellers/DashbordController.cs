@@ -6,6 +6,7 @@ using DaoModels.DAO.DTO;
 using DaoModels.DAO.Models;
 using MDispatch.View.GlobalDialogView;
 using Microsoft.AspNetCore.Mvc;
+using WebDispacher.Business.Interfaces;
 using WebDispacher.Models;
 using WebDispacher.Service;
 
@@ -14,6 +15,22 @@ namespace WebDispacher.Controellers
     public class DashbordController : Controller
     {
         ManagerDispatch managerDispatch = new ManagerDispatch();
+        private readonly IUserService userService;
+        private readonly ICompanyService companyService;
+        private readonly IDriverService driverService;
+        private readonly IOrderService orderService;
+
+        public DashbordController(
+            IOrderService orderService,
+            IUserService userService,
+            ICompanyService companyService,
+            IDriverService driverService)
+        {
+            this.orderService = orderService;
+            this.driverService = driverService;
+            this.userService = userService;
+            this.companyService = companyService;
+        }
         private string Status { get; set; }
 
         [HttpPost]
@@ -26,10 +43,10 @@ namespace WebDispacher.Controellers
             string actionResult = null;
             try
             {
-                Dispatcher dispatcher = managerDispatch.CheckKeyDispatcher(key);
+                Dispatcher dispatcher = companyService.CheckKeyDispatcher(key);
                 if (dispatcher != null)
                 {
-                    Shipping shipping = await managerDispatch.AddNewOrder(urlPage, dispatcher);
+                    Shipping shipping = await orderService.AddNewOrder(urlPage, dispatcher);
                 }
             }
             catch (Exception)
@@ -51,27 +68,27 @@ namespace WebDispacher.Controellers
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Dashbord"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     if(isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
                     await Task.WhenAll(
                     Task.Run(async() =>
                     {
-                        ViewBag.Orders = await managerDispatch.GetOrders("NewLoad", page, name, address, phone, email, price);
+                        ViewBag.Orders = await orderService.GetOrders("NewLoad", page, name, address, phone, email, price);
                     }),
                     Task.Run(async() =>
                     {
-                        ViewBag.Drivers = await managerDispatch.GetDrivers(idCompany);
+                        ViewBag.Drivers = await driverService.GetDrivers(idCompany);
                     }),
                     Task.Run(async() =>
                     {
-                        ViewBag.count = await managerDispatch.GetCountPage("NewLoad", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage("NewLoad", name, address, phone, email, price);
                     }));
                     ViewBag.Name = name;
                     ViewBag.Address = address;
@@ -111,14 +128,14 @@ namespace WebDispacher.Controellers
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Dashbord"))
                 {
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
                     if ((idDriver != null && idDriver != "") && (idOrder != null && idOrder != ""))
                     {
-                        managerDispatch.Assign(idOrder, idDriver);
-                        Task.Run(() => managerDispatch.AddHistory(key, "0", idOrder, "0",  idDriver, "Assign"));
+                        orderService.Assign(idOrder, idDriver);
+                        Task.Run(() => orderService.AddHistory(key, "0", idOrder, "0",  idDriver, "Assign"));
                         actionResult = true;
                     }
                     else
@@ -154,12 +171,12 @@ namespace WebDispacher.Controellers
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Dashbord"))
                 {
                     if (idOrder != null && idOrder != "")
                     {
-                        managerDispatch.AddHistory(key, "0", idOrder, "0", "0", "Unassign");
-                        managerDispatch.Unassign(idOrder);
+                        orderService.AddHistory(key, "0", idOrder, "0", "0", "Unassign");
+                        orderService.Unassign(idOrder);
                         actionResult = true;
                     }
                     else
@@ -196,10 +213,10 @@ namespace WebDispacher.Controellers
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Dashbord"))
                 {
-                    managerDispatch.Solved(id);
-                    Task.Run(() => managerDispatch.AddHistory(key, "0", id, "0", "0", "Solved"));
+                    orderService.Solved(id);
+                    Task.Run(() => orderService.AddHistory(key, "0", id, "0", "0", "Solved"));
                     actionResult = Redirect($"{page}");
                 }
                 else
@@ -233,42 +250,42 @@ namespace WebDispacher.Controellers
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Dashbord"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
                     await Task.WhenAll(
                     Task.Run(async () =>
                     {
-                        shippings = await managerDispatch.GetOrders("Archived,Billed", page, name, address, phone, email, price);
+                        shippings = await orderService.GetOrders("Archived,Billed", page, name, address, phone, email, price);
                         if (shippings.Count < 20)
                         {
-                            shippings.AddRange(await managerDispatch.GetOrders("Archived,Paid", page, name, address, phone, email, price));
+                            shippings.AddRange(await orderService.GetOrders("Archived,Paid", page, name, address, phone, email, price));
                         }
                         if (shippings.Count < 20)
                         {
-                            shippings.AddRange(await managerDispatch.GetOrders("Archived", page, name, address, phone, email, price));
+                            shippings.AddRange(await orderService.GetOrders("Archived", page, name, address, phone, email, price));
                         }
-                        List<Driver> drivers = await managerDispatch.GetDrivers(idCompany);
+                        List<Driver> drivers = await driverService.GetDrivers(idCompany);
                         ViewBag.Drivers = drivers;
                         ViewBag.Orders = GetShippingDTOs(shippings, drivers);
                     }),
                     Task.Run(async () =>
                     {
-                        ViewBag.count = await managerDispatch.GetCountPage("Archived", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage("Archived", name, address, phone, email, price);
                     }),
                     Task.Run(async () =>
                     {
-                        ViewBag.count = await managerDispatch.GetCountPage("Archived,Billed", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage("Archived,Billed", name, address, phone, email, price);
                     }),
                     Task.Run(async () =>
                     {
-                        ViewBag.count = await managerDispatch.GetCountPage("Archived,Paid", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage("Archived,Paid", name, address, phone, email, price);
                     }));
                     ViewBag.Name = name;
                     ViewBag.Address = address;
@@ -307,26 +324,26 @@ namespace WebDispacher.Controellers
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Dashbord"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
                     await Task.WhenAll(
                     Task.Run(async () =>
                     {
-                        List<Shipping> shippings = await managerDispatch.GetOrders("Assigned", page, name, address, phone, email, price);
-                        List<Driver> drivers = await managerDispatch.GetDrivers(idCompany);
+                        List<Shipping> shippings = await orderService.GetOrders("Assigned", page, name, address, phone, email, price);
+                        List<Driver> drivers = await driverService.GetDrivers(idCompany);
                         ViewBag.Orders = GetShippingDTOs(shippings, drivers);
                         ViewBag.Drivers = drivers;
                     }),
                     Task.Run(async () =>
                     {
-                        ViewBag.count = await managerDispatch.GetCountPage("Assigned", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage("Assigned", name, address, phone, email, price);
                     }));
                     ViewBag.Name = name;
                     ViewBag.Address = address;
@@ -364,26 +381,26 @@ namespace WebDispacher.Controellers
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Dashbord"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
                     await Task.WhenAll(
                     Task.Run(async () =>
                     {
-                        List<Shipping> shippings = await managerDispatch.GetOrders("Delivered,Billed", page, name, address, phone, email, price);
-                        List<Driver> drivers = await managerDispatch.GetDrivers(idCompany);
+                        List<Shipping> shippings = await orderService.GetOrders("Delivered,Billed", page, name, address, phone, email, price);
+                        List<Driver> drivers = await driverService.GetDrivers(idCompany);
                         ViewBag.Orders = GetShippingDTOs(shippings, drivers);
                         ViewBag.Drivers = drivers;
                     }),
                     Task.Run(async () =>
                     {
-                        ViewBag.count = await managerDispatch.GetCountPage("Delivered,Billed", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage("Delivered,Billed", name, address, phone, email, price);
                     }));
                     ViewBag.Name = name;
                     ViewBag.Address = address;
@@ -421,43 +438,43 @@ namespace WebDispacher.Controellers
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Dashbord"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
                     List<Shipping> shippings = null;
                     await Task.WhenAll(
                     Task.Run(async () =>
                     {
-                        shippings = await managerDispatch.GetOrders("Deleted,Billed", page, name, address, phone, email, price);
+                        shippings = await orderService.GetOrders("Deleted,Billed", page, name, address, phone, email, price);
                         if (shippings.Count < 20)
                         {
-                            shippings.AddRange(await managerDispatch.GetOrders("Deleted,Paid", page, name, address, phone, email, price));
+                            shippings.AddRange(await orderService.GetOrders("Deleted,Paid", page, name, address, phone, email, price));
                         }
                         if (shippings.Count < 20)
                         {
-                            shippings.AddRange(await managerDispatch.GetOrders("Deleted", page, name, address, phone, email, price));
+                            shippings.AddRange(await orderService.GetOrders("Deleted", page, name, address, phone, email, price));
                         }
-                        List<Driver> drivers = await managerDispatch.GetDrivers(idCompany);
+                        List<Driver> drivers = await driverService.GetDrivers(idCompany);
                         ViewBag.Orders = GetShippingDTOs(shippings, drivers);
                         ViewBag.Drivers = drivers;
                     }),
                     Task.Run(async() =>
                     {
-                        ViewBag.count = await managerDispatch.GetCountPage("Deleted", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage("Deleted", name, address, phone, email, price);
                     }),
                     Task.Run(async() =>
                     {
-                        ViewBag.count = await managerDispatch.GetCountPage("Deleted,Billed", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage("Deleted,Billed", name, address, phone, email, price);
                     }),
                     Task.Run(async() =>
                     {
-                        ViewBag.count = await managerDispatch.GetCountPage("Deleted,Paid", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage("Deleted,Paid", name, address, phone, email, price);
                     }));
                     ViewBag.Name = name;
                     ViewBag.Address = address;
@@ -495,35 +512,35 @@ namespace WebDispacher.Controellers
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Dashbord"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
                     List<Shipping> shippings = new List<Shipping>();
                     await Task.WhenAll(
                     Task.Run(async () =>
                     {
-                        shippings.AddRange(await managerDispatch.GetOrders("Delivered,Paid", page, name, address, phone, email, price));
+                        shippings.AddRange(await orderService.GetOrders("Delivered,Paid", page, name, address, phone, email, price));
                         if (shippings.Count < 20)
                         {
-                            shippings.AddRange(await managerDispatch.GetOrders("Delivered,Billed", page, name, address, phone, email, price));
+                            shippings.AddRange(await orderService.GetOrders("Delivered,Billed", page, name, address, phone, email, price));
                         }
-                        List<Driver> drivers = await managerDispatch.GetDrivers(idCompany);
+                        List<Driver> drivers = await driverService.GetDrivers(idCompany);
                         ViewBag.Orders = GetShippingDTOs(shippings, drivers);
                         ViewBag.Drivers = drivers;
                     }),
                     Task.Run(async() =>
                     {
-                        ViewBag.count = await managerDispatch.GetCountPage("Delivered,Billed", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage("Delivered,Billed", name, address, phone, email, price);
                     }),
                     Task.Run(async() =>
                     {
-                        ViewBag.count = await managerDispatch.GetCountPage("Delivered,Paid", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage("Delivered,Paid", name, address, phone, email, price);
                     }));
                     ViewBag.Name = name;
                     ViewBag.Address = address;
@@ -560,26 +577,26 @@ namespace WebDispacher.Controellers
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Dashbord"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
                     await Task.WhenAll(
                     Task.Run(async () =>
                     {
-                        List<Shipping> shippings = await managerDispatch.GetOrders("Delivered,Paid", page, name, address, phone, email, price);
-                        List<Driver> drivers = await managerDispatch.GetDrivers(idCompany);
+                        List<Shipping> shippings = await orderService.GetOrders("Delivered,Paid", page, name, address, phone, email, price);
+                        List<Driver> drivers = await driverService.GetDrivers(idCompany);
                         ViewBag.Orders = GetShippingDTOs(shippings, drivers);
                         ViewBag.Drivers = drivers;
                     }),
                     Task.Run(async () =>
                     {
-                        ViewBag.count = await managerDispatch.GetCountPage("Delivered,Paid", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage("Delivered,Paid", name, address, phone, email, price);
                     }));
                     ViewBag.Name = name;
                     ViewBag.Address = address;
@@ -617,26 +634,26 @@ namespace WebDispacher.Controellers
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Dashbord"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
                     await Task.WhenAll(
                     Task.Run(async () =>
                     {
-                        List<Shipping> shippings = await managerDispatch.GetOrders("Picked up", page, name, address, phone, email, price);
-                        List<Driver> drivers = await managerDispatch.GetDrivers(idCompany);
+                        List<Shipping> shippings = await orderService.GetOrders("Picked up", page, name, address, phone, email, price);
+                        List<Driver> drivers = await driverService.GetDrivers(idCompany);
                         ViewBag.Orders = GetShippingDTOs(shippings, drivers);
                         ViewBag.Drivers = drivers;
                     }),
                     Task.Run(async () =>
                     {
-                        ViewBag.count = await managerDispatch.GetCountPage("Picked up", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage("Picked up", name, address, phone, email, price);
                     }));
                     ViewBag.Name = name;
                     ViewBag.Address = address;
@@ -673,10 +690,10 @@ namespace WebDispacher.Controellers
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Dashbord"))
                 {
-                    managerDispatch.ArchvedOrder(id);
-                    Task.Run(() => managerDispatch.AddHistory(key, "0", id, "0", "0", "ArchivedOrder"));
+                    orderService.ArchiveOrder(id);
+                    Task.Run(() => orderService.AddHistory(key, "0", id, "0", "0", "ArchivedOrder"));
                     actionResult = Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/NewLoad");
                 }
                 else
@@ -706,10 +723,10 @@ namespace WebDispacher.Controellers
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Dashbord"))
                 {
-                    managerDispatch.DeletedOrder(id);
-                    Task.Run(() => managerDispatch.AddHistory(key, "0", id, "0", "0", "DeletedOrder"));
+                    orderService.DeleteOrder(id);
+                    Task.Run(() => orderService.AddHistory(key, "0", id, "0", "0", "DeletedOrder"));
                     actionResult = Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{status}");
                 }
                 else
@@ -742,21 +759,21 @@ namespace WebDispacher.Controellers
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Dashbord"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
                     if (id != "" && id != null)
                     {
-                        ViewBag.Order = managerDispatch.GetOrder(id);
-                        ViewBag.Historys = managerDispatch.GetHistoryOrder(id).Select(x => new HistoryOrder()
+                        ViewBag.Order = orderService.GetOrder(id);
+                        ViewBag.Historys = orderService.GetHistoryOrder(id).Select(x => new HistoryOrder()
                         {
-                            Action = managerDispatch.GetStrAction(key, x.IdConmpany.ToString(), x.IdOreder.ToString(), x.IdVech.ToString(), x.IdDriver.ToString(), x.TypeAction),
+                            Action = orderService.GetStrAction(key, x.IdConmpany.ToString(), x.IdOreder.ToString(), x.IdVech.ToString(), x.IdDriver.ToString(), x.TypeAction),
                             DateAction = x.DateAction
                         })
                         .ToList();
@@ -797,13 +814,13 @@ namespace WebDispacher.Controellers
                  Request.Cookies.TryGetValue("KeyAvtho", out key);
                  Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                  Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                 if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                 if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Dashbord"))
                  {
                      ViewBag.NameCompany = companyName;
-                     ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
+                     ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
                      if (id != "" && id != null)
                      {
-                         ViewBag.Order = managerDispatch.GetOrder(id);
+                         ViewBag.Order = orderService.GetOrder(id);
                          actionResult = View("EditOrder");
                          Status = stasus;
                      }
@@ -842,13 +859,13 @@ namespace WebDispacher.Controellers
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Dashbord"))
                 {
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
                     if (id != "" && id != null)
                     {
-                        var searchOrder = managerDispatch.GetOrder(id);
+                        var searchOrder = orderService.GetOrder(id);
                         
                         ViewBag.Order = searchOrder == null ? new Shipping() : searchOrder;
                         
@@ -914,12 +931,12 @@ namespace WebDispacher.Controellers
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Dashbord"))
                 {
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
-                    Shipping shipping = await managerDispatch.CreateShiping();
-                    Task.Run(() => managerDispatch.AddHistory(key, "0", shipping.Id, "0", "0", "Creat"));
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                    Shipping shipping = await orderService.CreateShipping();
+                    Task.Run(() => orderService.AddHistory(key, "0", shipping.Id, "0", "0", "Creat"));
                     actionResult = Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/Edit?id={shipping.Id}&stasus=NewLoad");
                 }
                 else
@@ -953,12 +970,12 @@ namespace WebDispacher.Controellers
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Dashbord"))
                 {
-                    managerDispatch.Updateorder(idOrder, idLoad, internalLoadID, driver, status, instructions, nameP, contactP, addressP, cityP, stateP, zipP,
+                    orderService.UpdateOrder(idOrder, idLoad, internalLoadID, driver, status, instructions, nameP, contactP, addressP, cityP, stateP, zipP,
                         phoneP, emailP, scheduledPickupDateP, nameD, contactD, addressD, cityD, stateD, zipD, phoneD, emailD, ScheduledPickupDateD, paymentMethod,
                         price, paymentTerms, brokerFee, contactId, phoneC, faxC, iccmcC);
-                    Task.Run(() => managerDispatch.AddHistory(key, "0", idOrder, "0", "0", "SavaOrder"));
+                    Task.Run(() => orderService.AddHistory(key, "0", idOrder, "0", "0", "SavaOrder"));
                     actionResult = Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/NewLoad");
                 }
                 else
@@ -988,10 +1005,10 @@ namespace WebDispacher.Controellers
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Dashbord"))
                 {
-                    managerDispatch.SaveVechi(idVech, VIN, Year, Make, Model, Type,  Color, LotNumber);
-                    Task.Run(() => managerDispatch.AddHistory(key, "0", "0", idVech, "0", "SavaVech"));
+                    orderService.SaveVechi(idVech, VIN, Year, Make, Model, Type,  Color, LotNumber);
+                    Task.Run(() => orderService.AddHistory(key, "0", "0", idVech, "0", "SavaVech"));
                     actionResult = Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/Edit?id={idOrder}&stasus=NewLoad");
                 }
                 else
@@ -1021,10 +1038,10 @@ namespace WebDispacher.Controellers
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Dashbord"))
                 {
-                    managerDispatch.AddHistory(key, "0", "0", idVech, "0", "RemoveVech");
-                    managerDispatch.RemoveVechi(idVech);
+                    orderService.AddHistory(key, "0", "0", idVech, "0", "RemoveVech");
+                    orderService.RemoveVechi(idVech);
                     actionResult = "Vehicle information removed successfully";
                 }
                 else
@@ -1054,10 +1071,10 @@ namespace WebDispacher.Controellers
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Dashbord"))
                 {
-                    VehiclwInformation vehiclwInformation = await managerDispatch.AddVechi(idOrder);
-                    Task.Run(() => managerDispatch.AddHistory(key, "0", idOrder, vehiclwInformation.Id.ToString(), "0", "AddVech"));
+                    VehiclwInformation vehiclwInformation = await orderService.AddVechi(idOrder);
+                    Task.Run(() => orderService.AddHistory(key, "0", idOrder, vehiclwInformation.Id.ToString(), "0", "AddVech"));
                     ViewBag.Vech = vehiclwInformation;
                     actionResult = "Vehicle information Added successfully";
                 }

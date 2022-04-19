@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DaoModels.DAO.Models;
 using Microsoft.AspNetCore.Mvc;
+using WebDispacher.Business.Interfaces;
 using WebDispacher.Service;
 
 namespace WebDispacher.Controellers
@@ -11,6 +12,16 @@ namespace WebDispacher.Controellers
     public class RAController : Controller
     {
         ManagerDispatch managerDispatch = new ManagerDispatch();
+        private readonly IUserService userService;
+        private readonly IDriverService driverService;
+
+        public RAController(
+            IUserService userService, 
+            IDriverService driverService)
+        {
+            this.driverService = driverService;
+            this.userService = userService;
+        }
         public IActionResult Index()
         {
             IActionResult actionResult = null;
@@ -156,7 +167,7 @@ namespace WebDispacher.Controellers
             IActionResult actionResult = null;
             ViewData["TextError"] = "";
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-            bool isEmail = managerDispatch.CheckEmail(email);
+            bool isEmail = userService.CheckEmail(email);
             if(isEmail)
             {
                 actionResult = Redirect(Config.BaseReqvesteUrl);
@@ -180,12 +191,12 @@ namespace WebDispacher.Controellers
                 if (Email == null || Password == null)
                     throw new Exception();
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                if (managerDispatch.Avthorization(Email, Password))
+                if (userService.Authorization(Email, Password))
                 {
                     ViewData["hidden"] = "";
                     actionResult = Redirect("/Dashbord/Order/NewLoad");
-                    int key = managerDispatch.Createkey(Email, Password);
-                    Commpany Commpany = managerDispatch.GetUserByKeyUser(key);
+                    int key = userService.Createkey(Email, Password);
+                    Commpany Commpany = userService.GetUserByKeyUser(key);
                     Response.Cookies.Append("KeyAvtho", key.ToString());
                     Response.Cookies.Append("CommpanyId", Commpany.Id.ToString());
                     Response.Cookies.Append("CommpanyName", Commpany.Name);
@@ -229,9 +240,9 @@ namespace WebDispacher.Controellers
             {
                 if (Email == null || Password == null)
                     throw new Exception();
-                if (managerDispatch.Avthorization(Email, Password))
+                if (userService.Authorization(Email, Password))
                 {
-                    Users users = managerDispatch.GetUserByEmailAndPasswrod(Email, Password);
+                    Users users = userService.GetUserByEmailAndPasswrod(Email, Password);
                     if(users != null && users.KeyAuthorized != null && users.KeyAuthorized != "")
                     {
                         actionResult = users.KeyAuthorized;
@@ -266,7 +277,7 @@ namespace WebDispacher.Controellers
                 ViewBag.IdDriver = idDriver;
                 ViewBag.IdUser = idUser;
                 ViewBag.Token = token;
-                ViewBag.isStateActual = idDriver != null ? managerDispatch.CheckTokenFoDriver(idDriver, token) : managerDispatch.CheckTokenFoUser(idUser, token);
+                ViewBag.isStateActual = idDriver != null ? driverService.CheckTokenFoDriver(idDriver, token) : userService.CheckTokenFoUser(idUser, token);
                 ViewData["hidden"] = "hidden";
                 actionResult = View("RecoveryPassword");
             }
@@ -287,7 +298,7 @@ namespace WebDispacher.Controellers
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 ViewBag.IdDriver = idDriver;
                 ViewBag.Token = token;
-                ViewBag.isStateActual = idDriver != null ? await managerDispatch.ResetPasswordFoDriver(newPassword, idDriver, token) : await managerDispatch.ResetPasswordFoUser(newPassword, idUser, token);
+                ViewBag.isStateActual = idDriver != null ? await driverService.ResetPasswordFoDriver(newPassword, idDriver, token) : await userService.ResetPasswordFoUser(newPassword, idUser, token);
                 ViewData["hidden"] = "hidden";
                 actionResult = View("RecoveryPassword");
             }

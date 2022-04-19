@@ -1,5 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using DaoModels.DAO.DTO;
+using DaoModels.DAO.Models;
 using Microsoft.AspNetCore.Mvc;
+using WebDispacher.Business.Interfaces;
 using WebDispacher.Service;
 
 namespace WebDispacher.Controellers.Settings
@@ -8,6 +13,16 @@ namespace WebDispacher.Controellers.Settings
     public class UserController : Controller
     {
         ManagerDispatch managerDispatch = new ManagerDispatch();
+        private readonly IUserService userService;
+        private readonly ICompanyService companyService;
+
+        public UserController(
+            IUserService userService,
+            ICompanyService companyService)
+        {
+            this.companyService = companyService;
+            this.userService = userService;
+        }
 
         [Route("Users")]
         public IActionResult GetUsers()
@@ -22,16 +37,16 @@ namespace WebDispacher.Controellers.Settings
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Setings/User"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Setings/User"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     ViewBag.NameCompany = companyName;
-                    ViewBag.Users = managerDispatch.GetUsers(Convert.ToInt32(idCompany));
+                    ViewBag.Users = companyService.GetUsers(Convert.ToInt32(idCompany));
                     actionResult = View("~/Views/Settings/CompanyUsers.cshtml");
                 }
                 else
@@ -65,14 +80,14 @@ namespace WebDispacher.Controellers.Settings
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Setings/User"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Setings/User"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     ViewBag.NameCompany = companyName;
                     actionResult = View("~/Views/Settings/CreateUser.cshtml");
                 }
@@ -107,11 +122,11 @@ namespace WebDispacher.Controellers.Settings
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Setings/User"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Setings/User"))
                 {
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     ViewBag.NameCompany = companyName;
-                    managerDispatch.AddUser(idCompany, login, password);
+                    userService.AddUser(idCompany, login, password);
                     actionResult = Redirect($"{Config.BaseReqvesteUrl}/Settings/User/Users");
                 }
                 else
@@ -144,11 +159,11 @@ namespace WebDispacher.Controellers.Settings
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Setings/User"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Setings/User"))
                 {
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     ViewBag.NameCompany = companyName;
-                    managerDispatch.RemoveUserById(idUser);
+                    userService.RemoveUserById(idUser);
                     actionResult = Redirect($"{Config.BaseReqvesteUrl}/Settings/User/Users");
                 }
                 else

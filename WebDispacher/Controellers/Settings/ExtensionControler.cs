@@ -3,6 +3,7 @@ using iTextSharp.text;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using WebDispacher.Business.Interfaces;
 using WebDispacher.Service;
 
 namespace WebDispacher.Controellers.Settings
@@ -11,6 +12,16 @@ namespace WebDispacher.Controellers.Settings
     public class ExtensionControler : Controller
     {
         ManagerDispatch managerDispatch = new ManagerDispatch();
+        private readonly IUserService userService;
+        private readonly ICompanyService companyService;
+
+        public ExtensionControler(
+            IUserService userService,
+            ICompanyService companyService)
+        {
+            this.userService = userService;
+            this.companyService = companyService;
+        }
 
         [Route("Dicpatchs")]
         public IActionResult GetUsers()
@@ -25,16 +36,16 @@ namespace WebDispacher.Controellers.Settings
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Setings/Extension"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Setings/Extension"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     ViewBag.NameCompany = companyName;
-                    List<Dispatcher> dispatchers = managerDispatch.GetDispatchers(Convert.ToInt32(idCompany));
+                    List<Dispatcher> dispatchers = companyService.GetDispatchers(Convert.ToInt32(idCompany));
                     ViewBag.Dispatchers = dispatchers;
                     actionResult = View("~/Views/Settings/Extension/AllDispatch.cshtml");
                 }
@@ -68,14 +79,14 @@ namespace WebDispacher.Controellers.Settings
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Setings/Extension"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Setings/Extension"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     ViewBag.NameCompany = companyName;
                     actionResult = View("~/Views/Settings/Extension/AddDispatch.cshtml");
                 }
@@ -109,11 +120,11 @@ namespace WebDispacher.Controellers.Settings
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Setings/Extension"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Setings/Extension"))
                 {
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     ViewBag.NameCompany = companyName;
-                    actionResult = managerDispatch.RefreshTokenDispatch(idDispatch);
+                    actionResult = companyService.RefreshTokenDispatch(idDispatch);
                 }
                 else
                 {
@@ -144,11 +155,11 @@ namespace WebDispacher.Controellers.Settings
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Setings/Extension"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Setings/Extension"))
                 {
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     ViewBag.NameCompany = companyName;
-                    managerDispatch.CreateDispatch(typeDispatcher, login, password, Convert.ToInt32(idCompany));
+                    companyService.CreateDispatch(typeDispatcher, login, password, Convert.ToInt32(idCompany));
                     actionResult = Redirect($"{Config.BaseReqvesteUrl}/Settings/Extension/Dicpatchs");
                 }
                 else
@@ -181,16 +192,16 @@ namespace WebDispacher.Controellers.Settings
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Setings/Extension"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Setings/Extension"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     ViewBag.NameCompany = companyName;
-                    Dispatcher dispatcher = managerDispatch.GetDispatcher(idDispatch);
+                    Dispatcher dispatcher = companyService.GetDispatcherById(idDispatch);
                     ViewBag.Dispatcher = dispatcher;
                     actionResult = View("~/Views/Settings/Extension/EditDispatch.cshtml");
                 }
@@ -224,11 +235,11 @@ namespace WebDispacher.Controellers.Settings
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Setings/Extension"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Setings/Extension"))
                 {
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     ViewBag.NameCompany = companyName;
-                    managerDispatch.EditDispatch(idDispatch, typeDispatcher, login, password);
+                    companyService.EditDispatch(idDispatch, typeDispatcher, login, password);
                     actionResult = Redirect($"{Config.BaseReqvesteUrl}/Settings/Extension/Dicpatchs");
                 }
                 else
@@ -261,11 +272,11 @@ namespace WebDispacher.Controellers.Settings
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Setings/Extension"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Setings/Extension"))
                 {
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     ViewBag.NameCompany = companyName;
-                    managerDispatch.RemoveDispatch(idDispatch);
+                    companyService.RemoveDispatchById(idDispatch);
                     actionResult = Redirect($"{Config.BaseReqvesteUrl}/Settings/Extension/Dicpatchs");
                 }
                 else

@@ -2,7 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using DaoModels.DAO.DTO;
+using DaoModels.DAO.Models;
+using WebDispacher.Business.Interfaces;
 using WebDispacher.Service;
 
 namespace WebDispacher.Controellers
@@ -11,6 +15,19 @@ namespace WebDispacher.Controellers
     public class CommpanyController : Controller
     {
         ManagerDispatch managerDispatch = new ManagerDispatch();
+        private readonly IUserService userService;
+        private readonly ICompanyService companyService;
+        private readonly IDriverService driverService;
+
+        public CommpanyController(
+            IUserService userService,
+            IDriverService driverService,
+            ICompanyService companyService)
+        {
+            this.driverService = driverService;
+            this.companyService = companyService;
+            this.userService = userService;
+        }
 
         [HttpGet]
         [Route("Companies")]
@@ -26,16 +43,16 @@ namespace WebDispacher.Controellers
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Company"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Company"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
-                    ViewBag.Companies = managerDispatch.GetCompanies();
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                    ViewBag.Companies = companyService.GetCompaniesDTO();
                     actionResult = View("Companies");
                 }
                 else
@@ -69,16 +86,16 @@ namespace WebDispacher.Controellers
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Company"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Company"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
-                    //ViewBag.Subscriptions = managerDispatch.GetSubscriptions();
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                    //ViewBag.Subscriptions = companyService.GetSubscriptions();
                     actionResult = View("CreateCommpany");
                 }
                 else
@@ -111,9 +128,9 @@ namespace WebDispacher.Controellers
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Company"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Company"))
                 {
-                    managerDispatch.AddCommpany(nameCommpany, emailCommpany, MCNumberConfirmation[0], IFTA, KYU, logbookPapers, COI, permits);
+                    companyService.AddCompany(nameCommpany, emailCommpany, MCNumberConfirmation[0], IFTA, KYU, logbookPapers, COI, permits);
                     actionResult = Redirect($"{Config.BaseReqvesteUrl}/Company/Companies");
                 }
                 else
@@ -144,9 +161,9 @@ namespace WebDispacher.Controellers
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Company"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Company"))
                 {
-                    managerDispatch.RemoveCompany(id);
+                    driverService.RemoveCompany(id);
                     actionResult = Redirect($"{Config.BaseReqvesteUrl}/Company/Companies");
                 }
                 else
@@ -179,16 +196,16 @@ namespace WebDispacher.Controellers
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Company"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Company"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
-                    ViewBag.CompanyDoc = await managerDispatch.GetCompanyDoc(id);
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                    ViewBag.CompanyDoc = await companyService.GetCompanyDoc(id);
                     ViewBag.CompanyId = id;
                     actionResult = View("CompanyDocuments");
                 }
@@ -218,9 +235,9 @@ namespace WebDispacher.Controellers
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Company"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Company"))
                 {
-                    managerDispatch.SaveDocCpmmpany(uploadedFile, nameDoc, id);
+                    companyService.SaveDocCompany(uploadedFile, nameDoc, id);
                 }
                 else
                 {
@@ -248,9 +265,9 @@ namespace WebDispacher.Controellers
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Company"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Company"))
                 {
-                    managerDispatch.RemoveDocCompany(idDock);
+                    companyService.RemoveDocCompany(idDock);
                     actionResult = Redirect($"{Config.BaseReqvesteUrl}/Company/Doc?id={id}");
                 }
                 else
@@ -294,16 +311,16 @@ namespace WebDispacher.Controellers
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Company"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Company"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
-                    ViewBag.Users = managerDispatch.GetUsers(idCompanySelect);
-                    ViewBag.Companies = managerDispatch.GetCompanies();
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                    ViewBag.Users = companyService.GetUsers(idCompanySelect);
+                    ViewBag.Companies = companyService.GetCompaniesDTO();
                     ViewBag.IdCompanySelect = idCompanySelect;
                     actionResult = View("AllUsers");
                 }

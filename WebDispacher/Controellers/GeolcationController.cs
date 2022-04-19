@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using WebDispacher.Business.Interfaces;
 using WebDispacher.Service;
 
 namespace WebDispacher.Controellers
@@ -9,6 +10,19 @@ namespace WebDispacher.Controellers
     public class GeolcationController : Controller
     {
         ManagerDispatch managerDispatch = new ManagerDispatch();
+        private readonly IUserService userService;
+        private readonly IDriverService driverService;
+        private readonly ICompanyService companyService;
+
+        public GeolcationController(
+            IUserService userService,
+            IDriverService driverService,
+            ICompanyService companyService)
+        {
+            this.companyService = companyService;
+            this.driverService = driverService;
+            this.userService = userService;
+        }
 
         [Route("Map")]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
@@ -24,16 +38,16 @@ namespace WebDispacher.Controellers
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Geolcation"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Geolcation"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
-                    ViewBag.Drivers = await managerDispatch.GetDrivers(idCompany);
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                    ViewBag.Drivers = await driverService.GetDrivers(idCompany);
                     actionResult = View("MapsGeoDriver");
                 }
                 else

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
+using WebDispacher.Business.Interfaces;
 using WebDispacher.Service;
 
 namespace WebDispacher.Controellers.Settings
@@ -8,7 +9,23 @@ namespace WebDispacher.Controellers.Settings
     public class SettingController : Controller
     {
         ManagerDispatch managerDispatch = new ManagerDispatch();
+        private readonly ITruckAndTrailerService truckAndTrailerService;
+        private readonly IUserService userService;
+        private readonly IDriverService driverService;
+        private readonly ICompanyService companyService;
 
+        public SettingController(
+            ITruckAndTrailerService truckAndTrailerService,
+            IUserService userService,
+            ICompanyService companyService,
+            IDriverService driverService)
+        {
+            this.companyService = companyService;
+            this.driverService = driverService;
+            this.userService = userService;
+            this.truckAndTrailerService = truckAndTrailerService;
+        }
+        
         public IActionResult Get(int idTr, int idProfile, string typeTransport)
         {
             IActionResult actionResult = null;
@@ -21,17 +38,17 @@ namespace WebDispacher.Controellers.Settings
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Setings"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Setings"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
-                    ViewData["TypeNavBar"]  = managerDispatch.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData["TypeNavBar"]  = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     ViewBag.NameCompany = companyName;
-                    ViewBag.SelectSetingTruck = managerDispatch.GetSelectSetingTruck(idCompany, idProfile, idTr, typeTransport);
-                    ViewBag.SetingsTruck = managerDispatch.GetSetingsTruck(idCompany, idProfile, idTr, typeTransport);
+                    ViewBag.SelectSetingTruck = driverService.GetSelectSetingTruck(idCompany, idProfile, idTr, typeTransport);
+                    ViewBag.SetingsTruck = driverService.GetSetingsTruck(idCompany, idProfile, idTr, typeTransport);
                     ViewBag.IdProfile = idProfile;
                     ViewBag.IdTr = idTr;
                     ViewBag.TypeTransport = typeTransport;
@@ -68,16 +85,16 @@ namespace WebDispacher.Controellers.Settings
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Setings"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Setings"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     ViewBag.NameCompany = companyName;
-                    ViewBag.Trucks = managerDispatch.GetTrucks(idCompany);
+                    ViewBag.Trucks = truckAndTrailerService.GetTrucks(idCompany);
                     actionResult = View("~/Views/Settings/Trucks.cshtml");
                 }
                 else
@@ -110,16 +127,16 @@ namespace WebDispacher.Controellers.Settings
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Setings"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Setings"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     ViewBag.NameCompany = companyName;
-                    ViewBag.Trailers = managerDispatch.GetTrailers(idCompany);
+                    ViewBag.Trailers = truckAndTrailerService.GetTrailers(idCompany);
                     actionResult = View("~/Views/Settings/Trailers.cshtml");
                 }
                 else
@@ -152,11 +169,11 @@ namespace WebDispacher.Controellers.Settings
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Setings"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Setings"))
                 {
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     ViewBag.NameCompany = companyName;
-                    int id = managerDispatch.AddProfile(idCompany, idTr, typeTransport);
+                    int id = truckAndTrailerService.AddProfile(idCompany, idTr, typeTransport);
                     actionResult = Redirect($"{Config.BaseReqvesteUrl}/Settings?idTr={idTr}&page=s&idProfile={id}&typeTransport={typeTransport}");
                 }
                 else
@@ -189,11 +206,11 @@ namespace WebDispacher.Controellers.Settings
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Setings"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Setings"))
                 {
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     ViewBag.NameCompany = companyName;
-                    managerDispatch.RemoveProfile(idCompany, idProfile);
+                    driverService.RemoveProfile(idCompany, idProfile);
                     actionResult = Redirect($"{Config.BaseReqvesteUrl}/Settings?idTr={idTr}&idProfile={0}&typeTransport={typeTransport}");
                 }
                 else
@@ -226,11 +243,11 @@ namespace WebDispacher.Controellers.Settings
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Setings"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Setings"))
                 {
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     ViewBag.NameCompany = companyName;
-                    managerDispatch.SelectLayout(idLayout);
+                    driverService.SelectLayout(idLayout);
                     actionResult = "";
                 }
                 else
@@ -263,11 +280,11 @@ namespace WebDispacher.Controellers.Settings
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Setings"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Setings"))
                 {
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     ViewBag.NameCompany = companyName;
-                    managerDispatch.SelectProfile(idProfile, typeTransport, idTr, idCompany);
+                    driverService.SelectProfile(idProfile, typeTransport, idTr, idCompany);
                     actionResult = "";
                 }
                 else
@@ -300,11 +317,11 @@ namespace WebDispacher.Controellers.Settings
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Setings"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Setings"))
                 {
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     ViewBag.NameCompany = companyName;
-                    managerDispatch.UnSelectLayout(idLayout);
+                    driverService.UnSelectLayout(idLayout);
                     actionResult = "";
                 }
                 else
@@ -337,11 +354,11 @@ namespace WebDispacher.Controellers.Settings
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Setings"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Setings"))
                 {
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     ViewBag.NameCompany = companyName;
-                    managerDispatch.LayoutUP(idLayout, idTransported);
+                    driverService.LayoutUp(idLayout, idTransported);
                     actionResult = "";
                 }
                 else
@@ -374,11 +391,11 @@ namespace WebDispacher.Controellers.Settings
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Setings"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Setings"))
                 {
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     ViewBag.NameCompany = companyName;
-                    managerDispatch.LayoutDown(idLayout, idTransported);
+                    driverService.LayoutDown(idLayout, idTransported);
                     actionResult = "";
                 }
                 else

@@ -7,6 +7,7 @@ using DaoModels.DAO.Models;
 using iTextSharp.text;
 using Microsoft.AspNetCore.Mvc;
 using Stripe;
+using WebDispacher.Business.Interfaces;
 using WebDispacher.Mosels;
 using WebDispacher.Service;
 
@@ -16,6 +17,16 @@ namespace WebDispacher.Controellers.Biling
     public class PaymentMethodController : Controller
     {
         ManagerDispatch managerDispatch = new ManagerDispatch();
+        private readonly IUserService userService;
+        private readonly ICompanyService companyService;
+
+        public PaymentMethodController(
+            IUserService userService,
+            ICompanyService companyService)
+        {
+            this.companyService = companyService;
+            this.userService = userService;
+        }
 
         [HttpGet]
         [Route("PaymentMethod")]
@@ -31,11 +42,11 @@ namespace WebDispacher.Controellers.Biling
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "PaymentMethod"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "PaymentMethod"))
                 {
                     ViewBag.NameCompany = companyName;
-                    List<PaymentMethod> paymentMethods = managerDispatch.GetpaymentMethod(idCompany);
-                    List<PaymentMethod_ST> paymentMethod_STs = managerDispatch.GetpaymentMethodsST(idCompany);
+                    List<PaymentMethod> paymentMethods = companyService.GetpaymentMethod(idCompany);
+                    List<PaymentMethod_ST> paymentMethod_STs = companyService.GetpaymentMethodsST(idCompany);
                     List<PaymentMethodDTO> paymentMethodDTOs = paymentMethods.Select(z => new PaymentMethodDTO()
                     {
                         Id = z.Id,
@@ -49,7 +60,7 @@ namespace WebDispacher.Controellers.Biling
                         IsDefault = paymentMethod_STs.FirstOrDefault(pm => pm.IdPaymentMethod_ST == z.Id) != null ? paymentMethod_STs.FirstOrDefault(pm => pm.IdPaymentMethod_ST == z.Id).IsDefault : false
                     }).ToList();
                     ViewBag.PaymentMethods = paymentMethodDTOs;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     actionResult = View("~/Views/Settings/Biling/PaymentMethod.cshtml");
                 }
                 else
@@ -82,10 +93,10 @@ namespace WebDispacher.Controellers.Biling
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "PaymentMethod"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "PaymentMethod"))
                 {
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     ViewBag.TxtError = "";
                     ViewBag.Numbercard = "";
                     ViewBag.FullName = "";
@@ -123,11 +134,11 @@ namespace WebDispacher.Controellers.Biling
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "PaymentMethod"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "PaymentMethod"))
                 {
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany, "Settings");
-                    WebDispacher.Models.ResponseStripe responseStripe =  managerDispatch.AddPaymentCard(idCompany, number, name, expiry, cvc);
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
+                    WebDispacher.Models.ResponseStripe responseStripe =  companyService.AddPaymentCard(idCompany, number, name, expiry, cvc);
                     if(responseStripe.IsError)
                     {
                         ViewBag.TxtError = responseStripe.Message;
@@ -172,11 +183,11 @@ namespace WebDispacher.Controellers.Biling
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "PaymentMethod"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "PaymentMethod"))
                 {
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany, "Settings");
-                    managerDispatch.SelectDefaultPaymentMethod(idPayment, idCompany);
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
+                    companyService.SelectDefaultPaymentMethod(idPayment, idCompany);
                     actionResult = Redirect($"{Config.BaseReqvesteUrl}/Settings/Biling/PaymentMethod");
                 }
                 else
@@ -209,11 +220,11 @@ namespace WebDispacher.Controellers.Biling
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "PaymentMethod"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "PaymentMethod"))
                 {
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany, "Settings");
-                    managerDispatch.DeletePaymentMethod(idPayment, idCompany);
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
+                    companyService.DeletePaymentMethod(idPayment, idCompany);
                     //List<PaymentMethod> paymentMethods = managerDispatch.GetpaymentMethod(idCompany);
                     //ViewBag.PaymentMethods = paymentMethods;
                     actionResult = Redirect($"{Config.BaseReqvesteUrl}/Settings/Biling/PaymentMethod");

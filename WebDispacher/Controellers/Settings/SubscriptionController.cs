@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
+using WebDispacher.Business.Interfaces;
 using WebDispacher.Models.Subscription;
 using WebDispacher.Service;
 
@@ -9,6 +10,16 @@ namespace WebDispacher.Controellers.Settings
     public class SubscriptionController : Controller
     {
         ManagerDispatch managerDispatch = new ManagerDispatch();
+        private readonly IUserService userService;
+        private readonly ICompanyService companyService;
+
+        public SubscriptionController(
+            IUserService userService,
+            ICompanyService companyService)
+        {
+            this.companyService = companyService;
+            this.userService = userService;
+        }
 
         [Route("Subscriptions")]
         public IActionResult GetSubscription(string errorText)
@@ -23,12 +34,12 @@ namespace WebDispacher.Controellers.Settings
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Subscription"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Subscription"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany, isCancelSubscribe ? "Cancel" : "Settings");
+                    bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, isCancelSubscribe ? "Cancel" : "Settings");
                     ViewData["TextErrorSub"] = errorText;
-                    ViewBag.Subscription = managerDispatch.GetSubscription(idCompany);
+                    ViewBag.Subscription = companyService.GetSubscription(idCompany);
                     actionResult = View("~/Views/Settings/Subscription/Subscription.cshtml");
                 }
                 else
@@ -60,10 +71,10 @@ namespace WebDispacher.Controellers.Settings
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Subscription"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Subscription"))
                 {
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany, "Settings");
-                    ViewBag.Subscriptions = managerDispatch.GetSubscriptions();
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewBag.Subscriptions = companyService.GetSubscriptions();
                     actionResult = View("~/Views/Settings/Subscription/AllSubscriptions.cshtml");
                 }
                 else
@@ -95,10 +106,10 @@ namespace WebDispacher.Controellers.Settings
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Subscription"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Subscription"))
                 {
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany, "Settings");
-                    string errorText = managerDispatch.SelectSub(idPrice, idCompany, priodDays);
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
+                    string errorText = companyService.SelectSub(idPrice, idCompany, priodDays);
                     actionResult = Redirect($"~/Settings/Subscription/Subscriptions?errorText={errorText.Replace("customer", "Company")}");
                 }
                 else
@@ -130,10 +141,10 @@ namespace WebDispacher.Controellers.Settings
                 Request.Cookies.TryGetValue("KeyAvtho", out key);
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Subscription"))
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Subscription"))
                 {
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany, "Settings");
-                    managerDispatch.CancelSubscriptionsNext(idCompany);
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
+                    companyService.CancelSubscriptionsNext(idCompany);
                     actionResult = Redirect("~/Settings/Subscription/Subscriptions");
                 }
                 else

@@ -4,25 +4,30 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="tabContent">
-                        <h2>Add New Dispatcher</h2>
+                        <div class="title">
+                            <a href="#" onclick="history.back();">Back to Dispatcher</a>
+                        </div>
+                        <div class="title">
+                            <h1 class="text-info-header-1">Add New Dispatcher</h1>
+                        </div>
                         <form action="" method="post" enctype="multipart/form-data">
                             <label for="">
                                 Type Dispatcher
-                                <select name="typeDispatcher" required style="width:500px;">
+                                <select name="Type" class="height-input input-select" required>
                                     <option value="">Choose a dispatcher type</option>
                                     <option value="Central Dispatch">Central Dispatch</option>
                                 </select>
                             </label>
                             <label for="">
                                 Login Dispatch
-                                <input type="text" name="login" >
+                                <input type="text" name="Login">
                             </label>
                             <label for="">
                                 Password Dispatch
-                                <input type="text" name="password">
+                                <input type="text" name="Password">
                             </label>
 
-                            <input type="submit" value="Save Info" class="btn1" />
+                            <input type="submit" value="Save Info" class="btn1"/>
                         </form>
                     </div>
                 </div>

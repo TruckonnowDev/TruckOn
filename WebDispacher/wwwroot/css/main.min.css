@@ -809,3 +809,13 @@ input[type="file"] {
 .green-valid {
     border: 1px solid green;
 }
+
+.textarea-resize-none {
+    resize: none;
+}
+
+.input-select {
+    color:#000000;
+    width:100% !important;
+    border:1px solid #c4c9d5
+}

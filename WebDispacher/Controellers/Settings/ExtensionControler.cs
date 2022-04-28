@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using WebDispacher.Business.Interfaces;
 using WebDispacher.Service;
+using WebDispacher.ViewModels.Dispatcher;
 
 namespace WebDispacher.Controellers.Settings
 {
@@ -23,7 +24,7 @@ namespace WebDispacher.Controellers.Settings
             this.companyService = companyService;
         }
 
-        [Route("Dicpatchs")]
+        [Route("Dispatchs")]
         public IActionResult GetUsers()
         {
             IActionResult actionResult = null;
@@ -43,6 +44,7 @@ namespace WebDispacher.Controellers.Settings
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
+
                     ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     ViewBag.NameCompany = companyName;
                     List<Dispatcher> dispatchers = companyService.GetDispatchers(Convert.ToInt32(idCompany));
@@ -55,13 +57,14 @@ namespace WebDispacher.Controellers.Settings
                     {
                         Response.Cookies.Delete("KeyAvtho");
                     }
+
                     actionResult = Redirect(Config.BaseReqvesteUrl);
                 }
             }
             catch (Exception e)
             {
-
             }
+
             return actionResult;
         }
 
@@ -86,6 +89,7 @@ namespace WebDispacher.Controellers.Settings
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
+
                     ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     ViewBag.NameCompany = companyName;
                     actionResult = View("~/Views/Settings/Extension/AddDispatch.cshtml");
@@ -96,13 +100,14 @@ namespace WebDispacher.Controellers.Settings
                     {
                         Response.Cookies.Delete("KeyAvtho");
                     }
+
                     actionResult = Redirect(Config.BaseReqvesteUrl);
                 }
             }
             catch (Exception e)
             {
-
             }
+
             return actionResult;
         }
 
@@ -136,14 +141,14 @@ namespace WebDispacher.Controellers.Settings
             }
             catch (Exception e)
             {
-
             }
+
             return actionResult;
         }
 
         [HttpPost]
         [Route("CreateDispatch")]
-        public IActionResult AddDicpatch(string typeDispatcher, string login, string password)
+        public IActionResult AddDispatch(DispatcherViewModel dispatcher)
         {
             IActionResult actionResult = null;
             try
@@ -159,8 +164,8 @@ namespace WebDispacher.Controellers.Settings
                 {
                     ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     ViewBag.NameCompany = companyName;
-                    companyService.CreateDispatch(typeDispatcher, login, password, Convert.ToInt32(idCompany));
-                    actionResult = Redirect($"{Config.BaseReqvesteUrl}/Settings/Extension/Dicpatchs");
+                    companyService.CreateDispatch(dispatcher, Convert.ToInt32(idCompany));
+                    actionResult = Redirect($"{Config.BaseReqvesteUrl}/Settings/Extension/Dispatchs");
                 }
                 else
                 {
@@ -168,19 +173,20 @@ namespace WebDispacher.Controellers.Settings
                     {
                         Response.Cookies.Delete("KeyAvtho");
                     }
+
                     actionResult = Redirect(Config.BaseReqvesteUrl);
                 }
             }
             catch (Exception e)
             {
-
             }
+
             return actionResult;
         }
 
         [HttpGet]
-        [Route("EditDicpatch")]
-        public IActionResult EditDicpatch(int idDispatch)
+        [Route("EditDispatch")]
+        public IActionResult EditDispatch(int idDispatch)
         {
             IActionResult actionResult = null;
             try
@@ -194,36 +200,39 @@ namespace WebDispacher.Controellers.Settings
                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
                 if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Setings/Extension"))
                 {
-                    bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                    
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
+
                     ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     ViewBag.NameCompany = companyName;
-                    Dispatcher dispatcher = companyService.GetDispatcherById(idDispatch);
-                    ViewBag.Dispatcher = dispatcher;
-                    actionResult = View("~/Views/Settings/Extension/EditDispatch.cshtml");
+                    
+                    var dispatcher = companyService.GetDispatcherById(idDispatch);
+
+                    return View("~/Views/Settings/Extension/EditDispatch.cshtml", dispatcher);
                 }
-                else
+
+                if (Request.Cookies.ContainsKey("KeyAvtho"))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
+                    Response.Cookies.Delete("KeyAvtho");
                 }
+
+                actionResult = Redirect(Config.BaseReqvesteUrl);
             }
             catch (Exception e)
             {
-
             }
+
             return actionResult;
         }
 
         [HttpPost]
-        [Route("EditDicpatch")]
-        public IActionResult EditDicpatch(int idDispatch, string typeDispatcher, string login, string password)
+        [Route("EditDispatch")]
+        //public IActionResult EditDicpatch(int idDispatch, string typeDispatcher, string login, string password)
+        public IActionResult EditDispatch(DispatcherViewModel dispatcher)
         {
             IActionResult actionResult = null;
             try
@@ -239,8 +248,8 @@ namespace WebDispacher.Controellers.Settings
                 {
                     ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     ViewBag.NameCompany = companyName;
-                    companyService.EditDispatch(idDispatch, typeDispatcher, login, password);
-                    actionResult = Redirect($"{Config.BaseReqvesteUrl}/Settings/Extension/Dicpatchs");
+                    companyService.EditDispatch(dispatcher);
+                    actionResult = Redirect($"{Config.BaseReqvesteUrl}/Settings/Extension/Dispatchs");
                 }
                 else
                 {
@@ -248,13 +257,14 @@ namespace WebDispacher.Controellers.Settings
                     {
                         Response.Cookies.Delete("KeyAvtho");
                     }
+
                     actionResult = Redirect(Config.BaseReqvesteUrl);
                 }
             }
             catch (Exception e)
             {
-
             }
+
             return actionResult;
         }
 
@@ -277,7 +287,7 @@ namespace WebDispacher.Controellers.Settings
                     ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     ViewBag.NameCompany = companyName;
                     companyService.RemoveDispatchById(idDispatch);
-                    actionResult = Redirect($"{Config.BaseReqvesteUrl}/Settings/Extension/Dicpatchs");
+                    actionResult = Redirect($"{Config.BaseReqvesteUrl}/Settings/Extension/Dispatchs");
                 }
                 else
                 {
@@ -285,13 +295,14 @@ namespace WebDispacher.Controellers.Settings
                     {
                         Response.Cookies.Delete("KeyAvtho");
                     }
+
                     actionResult = Redirect(Config.BaseReqvesteUrl);
                 }
             }
             catch (Exception e)
             {
-
             }
+
             return actionResult;
         }
     }

@@ -112,7 +112,7 @@ namespace WebDispacher.Controellers
             {
                 trailer = await truckAndTrailerService.GetTrailer(idDriver);
                 ViewBag.Trailer = trailer;
-                ViewBag.TrailerDoc = await truckAndTrailerService.GetTraileDoc((trailer != null ? trailer.Id : 0).ToString());
+                ViewBag.TrailerDoc = await truckAndTrailerService.GetTrailerDoc((trailer != null ? trailer.Id : 0).ToString());
             }));
 
             actionResult = View($"DocDriver");
@@ -139,9 +139,9 @@ namespace WebDispacher.Controellers
             }),
             Task.Run(async () =>
             {
-                trailer = await truckAndTrailerService.GetTrailerkByPlate(trailerPlate);
+                trailer = await truckAndTrailerService.GetTrailerByPlate(trailerPlate);
                 ViewBag.Trailer = trailer;
-                ViewBag.TrailerDoc = await truckAndTrailerService.GetTraileDoc((trailer != null ? trailer.Id : 0).ToString());
+                ViewBag.TrailerDoc = await truckAndTrailerService.GetTrailerDoc((trailer != null ? trailer.Id : 0).ToString());
             }));
 
             actionResult = View($"DocDriver");

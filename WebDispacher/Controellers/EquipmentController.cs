@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using DaoModels.DAO.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebDispacher.Business.Interfaces;
 using WebDispacher.Service;
+using WebDispacher.ViewModels.Trailer;
+using WebDispacher.ViewModels.Truck;
 
 namespace WebDispacher.Controellers
 {
@@ -189,8 +192,9 @@ namespace WebDispacher.Controellers
         [HttpPost]
         [Route("CreateTruck")]
         [DisableRequestSizeLimit]
-        public IActionResult CreateDriver(string nameTruk, string yera, string make, string model, string typeTruk, string state, string exp, string vin, string owner, string plateTruk, string color, 
-            IFormFile truckRegistrationDoc, IFormFile truckLeaseAgreementDoc, IFormFile truckAnnualInspection, IFormFile bobTailPhysicalDamage, IFormFile nYHUTDoc)
+        public IActionResult CreateDriver(TruckViewModel truck, IFormFile truckRegistrationDoc, 
+            IFormFile truckLeaseAgreementDoc, IFormFile truckAnnualInspection, IFormFile bobTailPhysicalDamage, 
+            IFormFile nYHUTDoc)
         {
             IActionResult actionResult = null;
             try
@@ -202,7 +206,7 @@ namespace WebDispacher.Controellers
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Equipment"))
                 {
-                    truckAndTrailerService.CreateTruk(nameTruk, yera, make, model, typeTruk, state, exp, vin, owner, plateTruk, color, idCompany, truckRegistrationDoc, truckLeaseAgreementDoc, truckAnnualInspection, bobTailPhysicalDamage, nYHUTDoc);
+                    truckAndTrailerService.CreateTruck(truck,idCompany, truckRegistrationDoc, truckLeaseAgreementDoc, truckAnnualInspection, bobTailPhysicalDamage, nYHUTDoc);
                     actionResult = Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trucks");
                 }
                 else
@@ -298,7 +302,8 @@ namespace WebDispacher.Controellers
         [HttpPost]
         [Route("CreateTrailer")]
         [DisableRequestSizeLimit]
-        public IActionResult CreateTrailer(string name, string typeTrailer, string year, string make, string howLong, string vin, string owner, string color, string plate, string exp, string annualIns, 
+        public IActionResult CreateTrailer(TrailerViewModel trailer,
+        //public IActionResult CreateTrailer(string name, string typeTrailer, string year, string make, string howLong, string vin, string owner, string color, string plate, string exp, string annualIns, 
             IFormFile trailerRegistrationDoc, IFormFile trailerAnnualInspectionDoc, IFormFile leaseAgreementDoc)
         {
             IActionResult actionResult = null;
@@ -311,8 +316,7 @@ namespace WebDispacher.Controellers
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Equipment"))
                 {
-
-                    truckAndTrailerService.CreateTrailer(name, typeTrailer, year, make, howLong, vin, owner, color, plate, exp, annualIns, idCompany, trailerRegistrationDoc, trailerAnnualInspectionDoc, leaseAgreementDoc);
+                    truckAndTrailerService.CreateTrailer(trailer,idCompany, trailerRegistrationDoc, trailerAnnualInspectionDoc, leaseAgreementDoc);
                     actionResult = Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trailers");
                 }
                 else
@@ -354,8 +358,10 @@ namespace WebDispacher.Controellers
                     }
                     ViewBag.NameCompany = companyName;
                     ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
-                    ViewBag.Truck = truckAndTrailerService.GetTruckById(idTruck);
-                    actionResult = View("EditTruck");
+                    
+                    var truck = truckAndTrailerService.GetTruckById(idTruck);
+                    
+                    return View(truck);
                 }
                 else
                 {
@@ -376,7 +382,7 @@ namespace WebDispacher.Controellers
         [HttpPost]
         [Route("EditTruck")]
         [DisableRequestSizeLimit]
-        public IActionResult EditTruck(int idTruck, string nameTruk, string yera, string make, string model, string typeTruk, string state, string exp, string vin, string owner, string plateTruk, string color)
+        public IActionResult EditTruck(TruckViewModel truck)
         {
             IActionResult actionResult = null;
             try
@@ -388,7 +394,7 @@ namespace WebDispacher.Controellers
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Equipment"))
                 {
-                    truckAndTrailerService.EditTruck(idTruck, nameTruk, yera, make, model, typeTruk, state, exp, vin, owner, plateTruk, color);
+                    truckAndTrailerService.EditTruck(truck);
                     actionResult = Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trucks");
                 }
                 else
@@ -430,8 +436,10 @@ namespace WebDispacher.Controellers
                     }
                     ViewBag.NameCompany = companyName;
                     ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
-                    ViewBag.Trailer = truckAndTrailerService.GetTrailerById(idTrailer);
-                    actionResult = View("EditTrailer");
+                    
+                    var model = truckAndTrailerService.GetTrailerById(idTrailer);
+                    
+                    return View(model);
                 }
                 else
                 {
@@ -452,7 +460,7 @@ namespace WebDispacher.Controellers
         [HttpPost]
         [Route("EditTrailer")]
         [DisableRequestSizeLimit]
-        public IActionResult EditTrailer(int idTrailer, string name, string typeTrailer, string year, string make, string howLong, string vin, string owner, string color, string plate, string exp, string annualIns)
+        public IActionResult EditTrailer(TrailerViewModel trailer)
         {
             IActionResult actionResult = null;
             try
@@ -464,8 +472,7 @@ namespace WebDispacher.Controellers
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Equipment"))
                 {
-
-                    truckAndTrailerService.EditTrailer(idTrailer, name, typeTrailer, year, make, howLong, vin, owner, color, plate, exp, annualIns);
+                    truckAndTrailerService.EditTrailer(trailer);
                     actionResult = Redirect($"{Config.BaseReqvesteUrl}/Equipment/trailers");
                 }
                 else
@@ -606,7 +613,7 @@ namespace WebDispacher.Controellers
                     }
                     ViewBag.NameCompany = companyName;
                     ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
-                    ViewBag.TrailerDoc = await truckAndTrailerService.GetTraileDoc(id);
+                    ViewBag.TrailerDoc = await truckAndTrailerService.GetTrailerDoc(id);
                     ViewBag.TrailerId = id;
                     actionResult = View("DocTrailer");
                 }

@@ -1,4 +1,7 @@
-﻿namespace WebDispacher.ViewModels
+﻿using System.Collections.Generic;
+using DaoModels.DAO.Models;
+
+namespace WebDispacher.ViewModels
 {
     public class ShippingViewModel
     {
@@ -53,19 +56,19 @@
         public string PhoneD { get; set; }
         public string EmailD { get; set; }
 
-        /*      DISPATCH INSTRUCTIONS       
+             //DISPATCH INSTRUCTIONS       
 
         public string Titl1DI { get; set; }
         public List<VehiclwInformation> VehiclwInformations { get; set; }
-        
+        /*
 
 
         public AskFromUser AskFromUser { get; set; }
         public Ask2 Ask2 { get; set; }
         public AskForUserDelyveryM askForUserDelyveryM { get; set; }
         public List<DamageForUser> DamageForUsers { get; set; }
-
-              */
+*/
+              
 
         public int IdDriver { get; set; }
 

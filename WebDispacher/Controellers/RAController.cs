@@ -195,7 +195,7 @@ namespace WebDispacher.Controellers
                 {
                     ViewData["hidden"] = "";
                     actionResult = Redirect("/Dashbord/Order/NewLoad");
-                    int key = userService.Createkey(Email, Password);
+                    int key = userService.CreateKey(Email, Password);
                     Commpany Commpany = userService.GetUserByKeyUser(key);
                     Response.Cookies.Append("KeyAvtho", key.ToString());
                     Response.Cookies.Append("CommpanyId", Commpany.Id.ToString());

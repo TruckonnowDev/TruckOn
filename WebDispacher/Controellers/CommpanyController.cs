@@ -116,7 +116,7 @@ namespace WebDispacher.Controellers
 
         [HttpPost]
         [Route("CreateCompany")]
-        public IActionResult CreateCompany(string nameCommpany, string emailCommpany, List<IFormFile> MCNumberConfirmation, IFormFile IFTA, IFormFile KYU,
+        public IActionResult CreateCompany(string nameCompany, string emailCompany, List<IFormFile> MCNumberConfirmation, IFormFile IFTA, IFormFile KYU,
             IFormFile logbookPapers, IFormFile COI, IFormFile permits)
         {
             IActionResult actionResult = null;
@@ -130,7 +130,7 @@ namespace WebDispacher.Controellers
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Company"))
                 {
-                    companyService.AddCompany(nameCommpany, emailCommpany, MCNumberConfirmation[0], IFTA, KYU, logbookPapers, COI, permits);
+                    companyService.AddCompany(nameCompany, emailCompany, MCNumberConfirmation[0], IFTA, KYU, logbookPapers, COI, permits);
                     actionResult = Redirect($"{Config.BaseReqvesteUrl}/Company/Companies");
                 }
                 else

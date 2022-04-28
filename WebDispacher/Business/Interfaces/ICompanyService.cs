@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Http;
 using Stripe;
 using WebDispacher.Models;
 using WebDispacher.Models.Subscription;
+using WebDispacher.ViewModels.Contact;
+using WebDispacher.ViewModels.Dispatcher;
 
 namespace WebDispacher.Business.Interfaces
 {
@@ -16,13 +18,13 @@ namespace WebDispacher.Business.Interfaces
         List<Dispatcher> GetDispatchers(int idCompany);
         List<Commpany> GetCompanies();
         List<CompanyDTO> GetCompaniesDTO();
-        Contact GetContact(int id);
+        ContactViewModel GetContact(int id);
         string RefreshTokenDispatch(string idDispatch);
-        void CreateDispatch(string typeDispatcher, string login, string password, int idCompany);
-        void EditContact(int id, string fullName, string emailAddress, string phoneNumber);
-        void EditDispatch(int idDispatch, string typeDispatcher, string login, string password);
+        void CreateDispatch(DispatcherViewModel dispatcher, int idCompany);
+        void EditContact(ContactViewModel contact);
+        void EditDispatch(DispatcherViewModel dispatcher);
         void DeleteContactById(int id);
-        Dispatcher GetDispatcherById(int idDispatch);
+        DispatcherViewModel GetDispatcherById(int idDispatch);
         void RemoveDispatchById(int idDispatch);
         ResponseStripe AddPaymentCard(string idCompany, string number, string name, string expiry, string cvc);
         void DeletePaymentMethod(string idPayment, string idCompany);
@@ -30,13 +32,13 @@ namespace WebDispacher.Business.Interfaces
         ResponseStripe SelectDefaultPaymentMethod(string idPayment, string idCompany = null,
             Customer_ST customer_ST = null);
 
-        List<PaymentMethod> GetpaymentMethod(string idCompany);
-        List<PaymentMethod_ST> GetpaymentMethodsST(string idCompany);
+        List<PaymentMethod> GetPaymentMethod(string idCompany);
+        List<PaymentMethod_ST> GetPaymentMethodsST(string idCompany);
         void RemoveDocCompany(string idDock);
         Task<List<DucumentCompany>> GetCompanyDoc(string id);
-        void CreateContact(string fullName, string emailAddress, string phoneNumber, string idCompany);
+        void CreateContact(ContactViewModel contact, string idCompany);
 
-        void AddCompany(string nameCommpany, string emailCommpany, IFormFile MCNumberConfirmation, IFormFile IFTA,
+        Task AddCompany(string nameCompany, string emailCompany, IFormFile MCNumberConfirmation, IFormFile IFTA,
             IFormFile KYU, IFormFile logbookPapers, IFormFile COI, IFormFile permits);
 
         List<Contact> GetContacts(string idCompany);

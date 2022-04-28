@@ -1,6 +1,10 @@
 ﻿using AutoMapper;
 using DaoModels.DAO.Models;
 using WebDispacher.Models;
+using WebDispacher.ViewModels.Contact;
+using WebDispacher.ViewModels.Dispatcher;
+using WebDispacher.ViewModels.Trailer;
+using WebDispacher.ViewModels.Truck;
 
 namespace WebDispacher.ViewModels.Mappings
 {
@@ -23,7 +27,55 @@ namespace WebDispacher.ViewModels.Mappings
                 .ForMember(x => x.DotViolations, opt => opt.MapFrom(dr => dr.DotViolations))
                 .ForMember(x => x.NumberOfAccidents, opt => opt.MapFrom(dr => dr.NumberOfAccidents))
                 .ReverseMap();
-            
+            CreateMap<TrailerViewModel, DaoModels.DAO.Models.Trailer>()
+                .ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id))
+                .ForMember(x => x.CompanyId, opt => opt.MapFrom(t => t.CompanyId))
+                .ForMember(x => x.Name, opt => opt.MapFrom(t => t.Name))
+                .ForMember(x => x.Year, opt => opt.MapFrom(t => t.Year))
+                .ForMember(x => x.Make, opt => opt.MapFrom(t => t.Make))
+                .ForMember(x => x.HowLong, opt => opt.MapFrom(t => t.HowLong))
+                .ForMember(x => x.Vin, opt => opt.MapFrom(t => t.Vin))
+                .ForMember(x => x.Owner, opt => opt.MapFrom(t => t.Owner))
+                .ForMember(x => x.Color, opt => opt.MapFrom(t => t.Color))
+                .ForMember(x => x.Plate, opt => opt.MapFrom(t => t.Plate))
+                .ForMember(x => x.Exp, opt => opt.MapFrom(t => t.Exp))
+                .ForMember(x => x.AnnualIns, opt => opt.MapFrom(t => t.AnnualIns))
+                .ForMember(x => x.Type, opt => opt.MapFrom(t => t.Type))
+                .ReverseMap();
+            CreateMap<TruckViewModel, DaoModels.DAO.Models.Truck>()
+                .ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id))
+                .ForMember(x => x.CompanyId, opt => opt.MapFrom(t => t.CompanyId))
+                .ForMember(x => x.NameTruk, opt => opt.MapFrom(t => t.NameTruck))
+                .ForMember(x => x.Yera, opt => opt.MapFrom(t => t.Year))
+                .ForMember(x => x.Make, opt => opt.MapFrom(t => t.Make))
+                .ForMember(x => x.Model, opt => opt.MapFrom(t => t.Model))
+                .ForMember(x => x.Satet, opt => opt.MapFrom(t => t.State))
+                .ForMember(x => x.Exp, opt => opt.MapFrom(t => t.Exp))
+                .ForMember(x => x.Vin, opt => opt.MapFrom(t => t.Vin))
+                .ForMember(x => x.Owner, opt => opt.MapFrom(t => t.Owner))
+                .ForMember(x => x.PlateTruk, opt => opt.MapFrom(t => t.PlateTruck))
+                .ForMember(x => x.ColorTruk, opt => opt.MapFrom(t => t.ColorTruck))
+                .ForMember(x => x.Type, opt => opt.MapFrom(t => t.Type))
+                .ReverseMap();
+            CreateMap<ContactViewModel, DaoModels.DAO.Models.Contact>()
+                .ForMember(x => x.ID, opt => opt.MapFrom(c => c.Id))
+                .ForMember(x => x.Email, opt => opt.MapFrom(c => c.Email))
+                .ForMember(x => x.Name, opt => opt.MapFrom(c => c.Name))
+                .ForMember(x => x.Phone, opt => opt.MapFrom(c => c.Phone))
+                .ForMember(x => x.CompanyId, opt => opt.MapFrom(c => c.CompanyId))
+                .ReverseMap();
+            CreateMap<DispatcherViewModel, DaoModels.DAO.Models.Dispatcher>()
+                .ForMember(x => x.Id, opt => opt.MapFrom(d => d.Id))
+                .ForMember(x => x.Login, opt => opt.MapFrom(d => d.Login))
+                .ForMember(x => x.Password, opt => opt.MapFrom(d => d.Password))
+                .ForMember(x => x.Type, opt => opt.MapFrom(d => d.Type))
+                .ForMember(x => x.key, opt => opt.MapFrom(d => d.Key))
+                .ForMember(x => x.IdCompany, opt => opt.MapFrom(d => d.IdCompany))
+                .ReverseMap();
+            CreateMap<ShippingViewModel, Shipping>()
+                .ForMember(x => x.Id, opt => opt.MapFrom(s => s.Id))
+                .ForMember(x => x.idOrder, opt => opt.MapFrom(s => s.IdOrder))
+                .ReverseMap();
         }
     }
 }

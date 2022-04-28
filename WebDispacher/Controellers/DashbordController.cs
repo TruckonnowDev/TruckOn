@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebDispacher.Business.Interfaces;
 using WebDispacher.Models;
 using WebDispacher.Service;
+using WebDispacher.ViewModels;
 
 namespace WebDispacher.Controellers
 {
@@ -768,16 +769,16 @@ namespace WebDispacher.Controellers
                     }
                     ViewBag.NameCompany = companyName;
                     ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
-                    if (id != "" && id != null)
+                    if (!string.IsNullOrEmpty(id))
                     {
-                        ViewBag.Order = orderService.GetOrder(id);
+                        var order = orderService.GetOrder(id);
                         ViewBag.Historys = orderService.GetHistoryOrder(id).Select(x => new HistoryOrder()
                         {
                             Action = orderService.GetStrAction(key, x.IdConmpany.ToString(), x.IdOreder.ToString(), x.IdVech.ToString(), x.IdDriver.ToString(), x.TypeAction),
                             DateAction = x.DateAction
                         })
                         .ToList();
-                        actionResult = View("FullInfoOrder");
+                        actionResult = View("FullInfoOrder", order);
                     }
                     else
                     {
@@ -818,10 +819,10 @@ namespace WebDispacher.Controellers
                  {
                      ViewBag.NameCompany = companyName;
                      ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
-                     if (id != "" && id != null)
+                     if (!string.IsNullOrEmpty(id))
                      {
-                         ViewBag.Order = orderService.GetOrder(id);
-                         actionResult = View("EditOrder");
+                         var order = orderService.GetOrder(id);
+                         actionResult = View("EditOrder", order);
                          Status = stasus;
                      }
                      else
@@ -847,7 +848,7 @@ namespace WebDispacher.Controellers
          
         [Route("Dashbord/Order/EditReload")]
         [ResponseCache(Location = ResponseCacheLocation.None, Duration = 300)]
-        public IActionResult EditReload(string id, string stasus, OrderModel model)
+        public IActionResult EditReload(string id, string stasus, ShippingViewModel model)
         {
             IActionResult actionResult = null;
             try
@@ -863,37 +864,41 @@ namespace WebDispacher.Controellers
                 {
                     ViewBag.NameCompany = companyName;
                     ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
-                    if (id != "" && id != null)
+                    if (!string.IsNullOrEmpty(id))
                     {
                         var searchOrder = orderService.GetOrder(id);
                         
-                        ViewBag.Order = searchOrder == null ? new Shipping() : searchOrder;
+                        var order = searchOrder ?? new ShippingViewModel();
                         
-                        ViewBag.Order.NameP = model.NameP;
-                        ViewBag.Order.ContactNameP = model.ContactNameP;
-                        ViewBag.Order.CurrentStatus = model.CurrentStatus;
-                        ViewBag.Order.AddresP = model.Address;
-                        ViewBag.Order.CityP = model.CityP;
-                        ViewBag.Order.StateP = model.StateP;
-                        ViewBag.Order.idOrder = model.idOrder;
-                        ViewBag.Order.ZipP = model.ZipP;
-                        ViewBag.Order.PhoneP = model.PhoneP;
-                        ViewBag.Order.EmailP = model.EmailP;
-                        ViewBag.Order.PickupExactly = model.PickupExactly;
-                        ViewBag.Order.Titl1DI = model.Instructions;
-                        ViewBag.Order.NameD = model.NameD;
-                        ViewBag.Order.ContactNameD = model.ContactNameD;
-                        ViewBag.Order.AddresD = model.AddressD;
-                        ViewBag.Order.CityD = model.CityD;
-                        ViewBag.Order.StateD = model.StateD;
-                        ViewBag.Order.ZipD = model.ZipD;
-                        ViewBag.Order.PhoneD = model.PhoneD;
-                        ViewBag.Order.EmailD = model.EmailD;
-                        ViewBag.Order.TotalPaymentToCarrier = model.TotalPaymentToCarrier;
-                        ViewBag.Order.PriceListed = model.PriceListed;
-                        ViewBag.Order.BrokerFee = model.BrokerFee;
+                        order.NameP = model.NameP;
+                        order.ContactNameP = model.ContactNameP;
+                        order.CurrentStatus = model.CurrentStatus;
+                        order.AddresP = model.AddresP;
+                        order.CityP = model.CityP;
+                        order.StateP = model.StateP;
+                        order.IdOrder = model.IdOrder;
+                        order.ZipP = model.ZipP;
+                        order.PhoneP = model.PhoneP;
+                        order.EmailP = model.EmailP;
+                        order.PickupExactly = model.PickupExactly;
+                        order.Titl1DI = model.Titl1DI;
+                        order.NameD = model.NameD;
+                        order.ContactNameD = model.ContactNameD;
+                        order.AddresD = model.AddresD;
+                        order.CityD = model.CityD;
+                        order.StateD = model.StateD;
+                        order.ZipD = model.ZipD;
+                        order.PhoneD = model.PhoneD;
+                        order.EmailD = model.EmailD;
+                        order.TotalPaymentToCarrier = model.TotalPaymentToCarrier;
+                        order.PriceListed = model.PriceListed;
+                        order.BrokerFee = model.BrokerFee;
+                        order.ContactC = model.ContactC;
+                        order.FaxC = model.FaxC;
+                        order.PhoneC = model.PhoneC;
+                        order.IccmcC = model.IccmcC;
                         
-                        actionResult = View("EditOrder");
+                        actionResult = View("EditOrder", order);
                         Status = stasus;
                     }
                     else
@@ -956,10 +961,7 @@ namespace WebDispacher.Controellers
         }
 
         [Route("Dashbord/Order/SavaOrder")]
-        public IActionResult SaveOrder(string idOrder, string idLoad, string internalLoadID, string driver, string status, string instructions, string nameP, string contactP,
-            string addressP, string cityP, string stateP, string zipP, string phoneP, string emailP, string scheduledPickupDateP, string nameD, string contactD, string addressD,
-            string cityD, string stateD, string zipD, string phoneD, string emailD, string ScheduledPickupDateD, string paymentMethod, string price, string paymentTerms, string brokerFee,
-            string contactId, string phoneC, string faxC, string iccmcC)
+        public IActionResult SaveOrder(ShippingViewModel shipping)
         {
             IActionResult actionResult = null;
             ViewData["TypeNavBar"] = "BaseCommpany";
@@ -972,10 +974,8 @@ namespace WebDispacher.Controellers
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Dashbord"))
                 {
-                    orderService.UpdateOrder(idOrder, idLoad, internalLoadID, driver, status, instructions, nameP, contactP, addressP, cityP, stateP, zipP,
-                        phoneP, emailP, scheduledPickupDateP, nameD, contactD, addressD, cityD, stateD, zipD, phoneD, emailD, ScheduledPickupDateD, paymentMethod,
-                        price, paymentTerms, brokerFee, contactId, phoneC, faxC, iccmcC);
-                    Task.Run(() => orderService.AddHistory(key, "0", idOrder, "0", "0", "SavaOrder"));
+                    orderService.UpdateOrder(shipping);
+                    Task.Run(() => orderService.AddHistory(key, "0", shipping.Id, "0", "0", "SavaOrder"));
                     actionResult = Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/NewLoad");
                 }
                 else

@@ -2,6 +2,7 @@
 using System;
 using WebDispacher.Business.Interfaces;
 using WebDispacher.Service;
+using WebDispacher.ViewModels.Contact;
 
 namespace WebDispacher.Controellers
 {
@@ -106,7 +107,7 @@ namespace WebDispacher.Controellers
 
         [HttpPost]
         [Route("Contact/CreateContact")]
-        public IActionResult CreateDriver(string fullName, string emailAddress, string phoneNumbe)
+        public IActionResult CreateDriver(ContactViewModel model)
         {
             IActionResult actionResult = null;
             ViewData["TypeNavBar"] = "BaseCommpany";
@@ -119,10 +120,9 @@ namespace WebDispacher.Controellers
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Contact"))
                 {
-                    if ((fullName != null && fullName != "") && (emailAddress != null && emailAddress != "") && (emailAddress != null && emailAddress != "")
-                       && (fullName != null && fullName != ""))
+                    if (ModelState.IsValid)
                     {
-                        companyService.CreateContact(fullName, emailAddress, phoneNumbe, idCompany);
+                        companyService.CreateContact(model, idCompany);
                         actionResult = Redirect($"{Config.BaseReqvesteUrl}/Contact/Contacts");
                     }
                     else
@@ -143,12 +143,13 @@ namespace WebDispacher.Controellers
             {
 
             }
+            
             return actionResult;
         }
 
         [HttpGet]
         [Route("Contact/Edit")]
-        public IActionResult EditeContact(int id)
+        public IActionResult EditContact(int id)
         {
             IActionResult actionResult = null;
             try
@@ -169,8 +170,9 @@ namespace WebDispacher.Controellers
                     }
                     ViewBag.NameCompany = companyName;
                     ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
-                    ViewBag.Contact = companyService.GetContact(id);
-                    actionResult = View("EditContact");
+                    var contact = companyService.GetContact(id);
+                    
+                    return View("EditContact", contact);
                 }
                 else
                 {
@@ -190,7 +192,7 @@ namespace WebDispacher.Controellers
 
         [HttpPost]
         [Route("Contact/Edit")]
-        public IActionResult EditeContact(int id, string fullName, string emailAddress, string phoneNumbe)
+        public IActionResult EditContact(ContactViewModel contact)
         {
             IActionResult actionResult = null;
             try
@@ -206,7 +208,7 @@ namespace WebDispacher.Controellers
                 {
                     ViewBag.NameCompany = companyName;
                     ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
-                    companyService.EditContact(id, fullName, emailAddress, phoneNumbe);
+                    companyService.EditContact(contact);
                     actionResult = Redirect($"{Config.BaseReqvesteUrl}/Contact/Contacts");
                 }
                 else

@@ -1,20 +1,22 @@
-﻿<body>
+﻿@model WebDispacher.ViewModels.Trailer.TrailerViewModel
+
+<body>
     <div class="admin truc">
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
                     <div class="tabContent">
                         <h2>Edit trailer</h2>
-                        <input type="text" name="idTruck" required value="@ViewBag.Trailer.Id" style="display:none;" />
                         <form action="" method="post" enctype="multipart/form-data">
-                            <label for="">
+                        <input type="text" name="Id" required value="@Model.Id" style="display:none;" />
+                            <label class="big-label" for="">
                                 Name Trailer
-                                <input type="text" name="name" required value="@ViewBag.Trailer.Name" />
+                                <input type="text" class="height-input" name="Name" required value="@Model.Name" />
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Type Trailer <br />
-                                <select name="typeTrailer" onchange="SelectTrailer(this.options[this.selectedIndex].value)" required style="width:500px;">
-                                    <option value="@ViewBag.Trailer.Type">@ViewBag.Trailer.Type</option>
+                                <select class="height-input input-select" name="Type" onchange="SelectTrailer(this.options[this.selectedIndex].value)" required>
+                                    <option value="@Model.Type">@Model.Type</option>
                                     <option value="Bumperpool2CarEeclosedTraile">Bumper pool 2 Car Enclosed Trailer</option>
                                     @*<option value="GooseneckTrailerTwoVehicles">Gooseneck trailer for two vehicles</option>
                                         <option value="EnclosedTrailerTwoVehicles">Enclosed trailer for two vehicles</option>
@@ -33,47 +35,48 @@
                                         <option value="BumperPool2CarTrailer">Bumper Pool 2 Car Trailer</option>*@
                                 </select>
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Year
-                                <input type="text" name="year" value="@ViewBag.Trailer.Year" />
+                                <input class="height-input" type="text" name="Year" value="@Model.Year" />
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Make
-                                <input type="text" name="make" value="@ViewBag.Trailer.Make" />
+                                <input class="height-input" type="text" name="Make" value="@Model.Make" />
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Model
-                                <input type="text" name="model">
+                                <input class="height-input" type="text" name="model">
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 How Long
-                                <input type="text" name="howLong" value="@ViewBag.Trailer.HowLong" />
+                                <input class="height-input" type="text" name="HowLong" value="@Model.HowLong" />
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Vin#
-                                <input type="text" name="vin" value="@ViewBag.Trailer.Vin" />
+                                <input class="height-input" type="text" name="Vin" value="@Model.Vin" />
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Owner
-                                <input type="text" name="owner" value="@ViewBag.Trailer.Owner" />
+                                @* @Html.TextBoxFor(x => x.Owner, new { value="@Model.Owner"}) *@
+                                <input class="height-input" type="text" name="Owner" value="@Model.Owner" />
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Color
-                                <input type="text" name="color" value="@ViewBag.Trailer.Color" />
+                                <input class="height-input" type="text" name="Color" value="@Model.Color" />
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Plate Trailer
-                                <input type="text" name="plate" required value="@ViewBag.Trailer.Plate" />
+                                <input class="height-input" type="text" name="Plate" required value="@Model.Plate" />
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Plate Exp Trailer
-                                <input type="text" name="exp" value="@ViewBag.Trailer.Exp" />
+                                <input class="height-input" type="text" name="Exp" value="@Model.Exp" />
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 ANNUAL INS
-                                <input type="text" name="annualIns" value="@ViewBag.Trailer.AnnualIns" />
+                                <input class="height-input" type="text" name="AnnualIns" value="@Model.AnnualIns" />
                             </label>
-                            <button class="btn1">Save Info</button>
+                            <button class="height-input btn1 big-label big-font-size">Save Info</button>
                         </form>
                     </div>
                 </div>

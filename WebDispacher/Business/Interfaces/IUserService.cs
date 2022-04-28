@@ -20,7 +20,7 @@ namespace WebDispacher.Business.Interfaces
         void AddUser(string idCompany, string login, string password);
         void RemoveUserById(string idUser);
         bool Authorization(string login, string password);
-        int Createkey(string login, string password);
+        int CreateKey(string login, string password);
         bool CheckKey(string key);
         Commpany GetCompanyById(string idCompany);
         int CheckTokenFoUser(string idUser, string token);

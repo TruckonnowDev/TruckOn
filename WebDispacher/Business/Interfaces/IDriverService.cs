@@ -6,6 +6,7 @@ using DaoModels.DAO.Models;
 using DaoModels.DAO.Models.Settings;
 using Microsoft.AspNetCore.Http;
 using WebDispacher.Models;
+using WebDispacher.ViewModels.Driver;
 
 namespace WebDispacher.Business.Interfaces
 {
@@ -19,7 +20,7 @@ namespace WebDispacher.Business.Interfaces
         void EditDrive(int id, string fullName, string emailAddress,
             string password, string phoneNumber, string trailerCapacity, string driversLicenseNumber);
 
-        void CreateDriver(string fullName, string emailAddress, string password, string phoneNumbe,
+        Task CreateDriver(string fullName, string emailAddress, string password, string phoneNumbe,
             string trailerCapacity, string driversLicenseNumber, string idCompany,
             IFormFile dLDoc, IFormFile medicalCardDoc, IFormFile sSNDoc, IFormFile proofOfWorkAuthorizationOrGCDoc,
             IFormFile dQLDoc, IFormFile contractDoc, IFormFile drugTestResultsDo);
@@ -30,10 +31,7 @@ namespace WebDispacher.Business.Interfaces
         List<Driver> GetDrivers(int pag, string idCompany);
         Task<List<Driver>> GetDrivers(string idCompany);
 
-        void AddNewReportDriver(string fullName, string driversLicenseNumber, string numberOfAccidents, string english,
-            string returnedEquipmen, string workingEfficiency, string eldKnowledge, string drivingSkills,
-            string paymentHandling, string alcoholTendency, string drugTendency, string terminated, string experience,
-            string dotViolations, string description);
+        void AddNewReportDriver(DriverReportViewModel driverReport);
 
         List<DriverReport> GetDriversReport(string nameDriver, string driversLicense);
         int CheckReportDriver(string fullName, string driversLicenseNumber);
@@ -47,7 +45,7 @@ namespace WebDispacher.Business.Interfaces
         void SelectLayout(int idLayout);
         ProfileSettingsDTO GetSelectSetingTruck(string idCompany, int idProfile, int idTr, string typeTransport);
         List<ProfileSettingsDTO> GetSetingsTruck(string idCompany, int idProfile, int idTr, string typeTransport);
-        void RemoveCompany(string idCompany);
+        Task RemoveCompany(string idCompany);
         Task SaveDocDriver(IFormFile uploadedFile, string nameDoc, string id);
     }
 }

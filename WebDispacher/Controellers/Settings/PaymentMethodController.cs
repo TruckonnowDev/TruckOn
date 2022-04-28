@@ -47,8 +47,8 @@ namespace WebDispacher.Controellers.Settings
                     bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, isCancelSubscribe ? "Cancel" : "Settings");
                     ViewBag.NameCompany = companyName;
-                    List<PaymentMethod> paymentMethods = companyService.GetpaymentMethod(idCompany);
-                    List<PaymentMethod_ST> paymentMethod_STs = companyService.GetpaymentMethodsST(idCompany);
+                    List<PaymentMethod> paymentMethods = companyService.GetPaymentMethod(idCompany);
+                    List<PaymentMethod_ST> paymentMethod_STs = companyService.GetPaymentMethodsST(idCompany);
                     List<PaymentMethodDTO> paymentMethodDTOs = paymentMethods.Select(z => new PaymentMethodDTO()
                     {
                         Id = z.Id,

@@ -9,6 +9,7 @@ using WebDispacher.Business.Interfaces;
 using WebDispacher.Models;
 using WebDispacher.Models.Driver;
 using WebDispacher.Service;
+using WebDispacher.ViewModels.Driver;
 
 namespace WebDispacher.Controellers
 {
@@ -217,8 +218,7 @@ namespace WebDispacher.Controellers
         [HttpPost]
         [Route("Driver/AddReport")]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
-        public IActionResult AddReport(string fullName, string driversLicenseNumber, string numberOfAccidents, string english, string returnedEquipmen, string workingEfficiency, string eldKnowledge, string drivingSkills,
-            string paymentHandling, string alcoholTendency, string drugTendency, string terminated, string experience, string dotViolations, string description)
+        public IActionResult AddReport(DriverReportViewModel driverReport)
         {
             IActionResult actionResult = null;
             ViewData["TypeNavBar"] = "BaseCommpany";
@@ -231,19 +231,31 @@ namespace WebDispacher.Controellers
                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
                 if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Driver"))
                 {
-                    if (terminated == "undefined")
+                    if (driverReport.Terminated == "undefined")
                     {
-                        terminated = "Yes";
+                        driverReport.Terminated = "Yes";
                     }
-                    if (experience == "undefined")
+                    if (driverReport.Experience == "undefined")
                     {
-                        experience = "";
+                        driverReport.Experience = "";
                     }
-                    if (experience != null && experience != "" && experience != "undefined" && experience.LastIndexOf(',') == experience.Length - 2)
+                    if (!string.IsNullOrEmpty(driverReport.Experience) 
+                        && driverReport.Experience  != "undefined" 
+                        && driverReport.Experience.LastIndexOf(',') == driverReport.Experience .Length - 2)
                     {
-                        experience = experience.Remove(experience.Length - 2);
+                        driverReport.Experience  = driverReport.Experience.Remove(driverReport.Experience.Length - 2);
                     }
-                    driverService.AddNewReportDriver(fullName, driversLicenseNumber, numberOfAccidents, GetLevel(english), GetLevel(returnedEquipmen), GetLevel(workingEfficiency), GetLevel(eldKnowledge), GetLevel(drivingSkills), GetLevel(paymentHandling), GetLevel(alcoholTendency), GetLevel(drugTendency), terminated, experience, GetLevel(dotViolations), description);
+                    driverReport.English = GetLevel(driverReport.English); 
+                    driverReport.ReturnedEquipmen = GetLevel(driverReport.ReturnedEquipmen); 
+                    driverReport.WorkingEfficiency = GetLevel(driverReport.WorkingEfficiency); 
+                    driverReport.EldKnowledge = GetLevel(driverReport.EldKnowledge); 
+                    driverReport.DrivingSkills = GetLevel(driverReport.DrivingSkills); 
+                    driverReport.PaymentHandling = GetLevel(driverReport.PaymentHandling); 
+                    driverReport.AlcoholTendency = GetLevel(driverReport.AlcoholTendency); 
+                    driverReport.DrugTendency = GetLevel(driverReport.DrugTendency); 
+                    driverReport.DotViolations = GetLevel(driverReport.DotViolations);
+                    
+                    driverService.AddNewReportDriver(driverReport);
                     actionResult = Redirect("Check");
                 }
                 else
@@ -284,8 +296,7 @@ namespace WebDispacher.Controellers
 
         [HttpPost]
         [Route("Welcome/AddReport")]
-        public IActionResult WelcomeAddReport(string fullName, string driversLicenseNumber, string numberOfAccidents, string english, string returnedEquipmen, string workingEfficiency, string eldKnowledge, string drivingSkills,
-            string paymentHandling , string alcoholTendency, string drugTendency, string terminated, string experience, string dotViolations, string description)
+        public IActionResult WelcomeAddReport(DriverReportViewModel driverReport)
         {
             IActionResult actionResult = null;
             ViewData["TypeNavBar"] = "BaseAllUsers";
@@ -293,20 +304,20 @@ namespace WebDispacher.Controellers
             {
                 ViewData["hidden"] = "hidden";
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                int s = experience.LastIndexOf(',');
-                if (terminated == "undefined")
+                int s = driverReport.Experience.LastIndexOf(',');
+                if (driverReport.Terminated == "undefined")
                 {
-                    terminated = "";
+                    driverReport.Terminated = "";
                 }
-                if (experience == "undefined")
+                if (driverReport.Experience == "undefined")
                 {
-                    experience = "";
+                    driverReport.Experience = "";
                 }
-                if (experience != null && experience != "" && experience != "undefined" && experience.LastIndexOf(',') == experience.Length - 2)
+                if (!string.IsNullOrEmpty(driverReport.Experience) && driverReport.Experience != "undefined" && driverReport.Experience.LastIndexOf(',') == driverReport.Experience.Length - 2)
                 {
-                    experience = experience.Remove(experience.Length - 2);
+                    driverReport.Experience = driverReport.Experience.Remove(driverReport.Experience.Length - 2);
                 }
-                driverService.AddNewReportDriver(fullName, driversLicenseNumber, numberOfAccidents, english, returnedEquipmen, workingEfficiency, eldKnowledge, drivingSkills, paymentHandling, alcoholTendency, drugTendency, terminated, experience, dotViolations, description);
+                driverService.AddNewReportDriver(driverReport);
                 actionResult = Redirect(Config.BaseReqvesteUrl);
             }
             catch (Exception)
@@ -425,11 +436,13 @@ namespace WebDispacher.Controellers
                     {
                         model.Experience = "";
                     }
-                    if (model.Experience != null && model.Experience != "" && model.Experience != "undefined" && model.Experience.LastIndexOf(',') == model.Experience.Length - 2)
+                    if (!string.IsNullOrEmpty(model.Experience) && model.Experience != "undefined" && model.Experience.LastIndexOf(',') == model.Experience.Length - 2)
                     {
                         model.Experience = model.Experience.Remove(model.Experience.Length - 2);
                     }
+                    
                     driverService.RemoveDrive(idCompany, model);
+                    
                     actionResult = Redirect($"{Config.BaseReqvesteUrl}/Driver/Drivers");
                 }
                 else
@@ -822,23 +835,24 @@ namespace WebDispacher.Controellers
 
         private string GetLevel(string value)
         {
-            string level = "Noen";
-            if (value == "0")
+            var level = "None";
+            
+            switch (value)
             {
-                level = "None";
+                case "0":
+                    level = "None";
+                    break;
+                case "1":
+                    level = "Poor";
+                    break;
+                case "2":
+                    level = "Middle";
+                    break;
+                case "3":
+                    level = "Good";
+                    break;
             }
-            else if (value == "1")
-            {
-                level = "Poor";
-            }
-            else if (value == "2")
-            {
-                level = "Middle";
-            }
-            else if (value == "3")
-            {
-                level = "Good";
-            }
+            
             return level;
         }
     }

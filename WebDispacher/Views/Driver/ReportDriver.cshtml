@@ -12,69 +12,69 @@
                     <div class="tab whiteborder" onclick="window.location.href='@Url.Action("AddReport", "Driver")';">Report driver</div>
                     <div class="tabContent">
                         <form action="" method="post">
-                            <input style="display:none;" name="experience" id="experienceInp" /><br />
+                            <input style="display:none;" name="Experience" id="experienceInp" /><br />
                             <label class="big-label" for="">
                                 Name Driver
-                                <input class="height-input" name="fullName" type="text" required>
+                                <input class="height-input" name="FullName" type="text" required>
                             </label>
                             <label class="big-label" for="">
                                 Driver's License Number
-                                <input class="height-input" name="driversLicenseNumber" type="text" required>
+                                <input class="height-input" name="DriversLicenseNumber" type="text" required>
                             </label>
                             <label class="big-label" for="">
                                 Number Of Accidents
-                                <input class="height-input" name="numberOfAccidents" type="text" required>
+                                <input class="height-input" name="NumberOfAccidents" type="text" required>
                             </label>
                             <label class="big-label" for="">
                                 Dot Violations
-                                <input class="height-input" name="dotViolations" type="text" required>
+                                <input class="height-input" name="DotViolations" type="text" required>
                             </label>
                             <label class="big-label" for="">
                                 English Poor <span>(Drag the car to the right)</span>
-                                <input type="range" name="english" min="1" max="3" step="1" list="range-list">
+                                <input type="range" name="English" min="1" max="3" step="1" list="range-list">
                                 <div class="value"><p>Poor</p> <p>Middle</p> <p>Good</p></div>
                             </label>
                             <label class="big-label" for="">
                                 Returned equipmen
-                                <input type="range" name="returnedEquipmen" min="1" max="3" step="1" list="range-list">
+                                <input type="range" name="ReturnedEquipmen" min="1" max="3" step="1" list="range-list">
                                 <div class="value"><p>Poor</p> <p>Middle</p> <p>Good</p></div>
                             </label>
                             <label class="big-label" for="">
                                 Working efficiency
-                                <input type="range" name="workingEfficiency" min="1" max="3" step="1" list="range-list">
+                                <input type="range" name="WorkingEfficiency" min="1" max="3" step="1" list="range-list">
                                 <div class="value"><p>Poor</p> <p>Middle</p> <p>Good</p></div>
                             </label>
                             <label class="big-label" for="">
                                 Eld knowledge
-                                <input type="range" name="eldKnowledge" min="1" max="3" step="1" list="range-list">
+                                <input type="range" name="EldKnowledge" min="1" max="3" step="1" list="range-list">
                                 <div class="value"><p>Poor</p> <p>Middle</p> <p>Good</p></div>
                             </label>
                             <label class="big-label" for="">
                                 Driving skills
-                                <input type="range" name="drivingSkills" min="1" max="3" step="1" list="range-list">
+                                <input type="range" name="DrivingSkills" min="1" max="3" step="1" list="range-list">
                                 <div class="value"><p>Poor</p> <p>Middle</p> <p>Good</p></div>
                             </label>
                             <label class="big-label" for="">
                                 Payment handling
-                                <input type="range" name="paymentHandling" min="1" max="3" step="1" list="range-list">
+                                <input type="range" name="PaymentHandling" min="1" max="3" step="1" list="range-list">
                                 <div class="value"><p>Poor</p> <p>Middle</p> <p>Good</p></div>
                             </label>
                             <label class="big-label" for="">
                                 Alcohol tendency
-                                <input type="range" name="alcoholTendency" min="0" max="3" step="1" list="range-list">
+                                <input type="range" name="AlcoholTendency" min="0" max="3" step="1" list="range-list">
                                 <div class="value"><p>None</p> <p>Poor</p> <p>Middle</p> <p>Good</p></div>
                             </label>
                             <label class="big-label" for="">
                                 Drug tendency
-                                <input type="range" name="drugTendency" min="0" max="3" step="1" list="range-list">
+                                <input type="range" name="DrugTendency" min="0" max="3" step="1" list="range-list">
                                 <div class="value"><p>None</p> <p>Poor</p> <p>Middle</p> <p>Good</p></div>
                             </label>
                             <label class="big-label" for="">
                                 Terminated <span class="text-gray">(boxes FIRED, Contract expiration, left truck without notice, disappeared)</span>
                             </label>
                             <div class="cheked">
-                                <label for=""><input type="radio" name="terminated" required id="">Yes</label>
-                                <label for=""><input type="radio" name="terminated" required id="">No</label>
+                                <label for=""><input type="radio" name="Terminated" required id="">Yes</label>
+                                <label for=""><input type="radio" name="Terminated" required id="">No</label>
                             </div>
                             <label for="">Experience with</label>
                             <div class="cheked">
@@ -88,7 +88,7 @@
                             </div>
                             <label class="big-label" for="">
                                 Description
-                                <textarea name="description" cols="5" rows="10" required></textarea>
+                                <textarea name="Comment" cols="5" rows="10" required></textarea>
                             </label>
                             <input type="submit" value="Add Report Driver" class="btn1 big-label">
                         </form>
@@ -99,7 +99,20 @@
     </div>
 </div>
 </body>
-
+<script>
+function SelectExperience(value, Checked) {
+                if (Checked) {
+                    if (experienceInp.value === undefined) {
+                        experienceInp.value = "";
+                    }
+                    experienceInp.value +=  value + ", ";
+                }
+                else
+                {
+                    experienceInp.value = experienceInp.value.replace(value + ", ", "");
+                }
+            }
+</script>
 <style>
     .text-gray{
      color: #686f7c;

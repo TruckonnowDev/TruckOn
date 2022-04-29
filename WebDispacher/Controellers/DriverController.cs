@@ -252,10 +252,10 @@ namespace WebDispacher.Controellers
                     driverReport.DrivingSkills = GetLevel(driverReport.DrivingSkills); 
                     driverReport.PaymentHandling = GetLevel(driverReport.PaymentHandling); 
                     driverReport.AlcoholTendency = GetLevel(driverReport.AlcoholTendency); 
-                    driverReport.DrugTendency = GetLevel(driverReport.DrugTendency); 
-                    driverReport.DotViolations = GetLevel(driverReport.DotViolations);
+                    driverReport.DrugTendency = GetLevel(driverReport.DrugTendency);
                     
                     driverService.AddNewReportDriver(driverReport);
+                    
                     actionResult = Redirect("Check");
                 }
                 else
@@ -304,7 +304,7 @@ namespace WebDispacher.Controellers
             {
                 ViewData["hidden"] = "hidden";
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                int s = driverReport.Experience.LastIndexOf(',');
+                var s = driverReport.Experience.LastIndexOf(',');
                 if (driverReport.Terminated == "undefined")
                 {
                     driverReport.Terminated = "";
@@ -313,11 +313,15 @@ namespace WebDispacher.Controellers
                 {
                     driverReport.Experience = "";
                 }
-                if (!string.IsNullOrEmpty(driverReport.Experience) && driverReport.Experience != "undefined" && driverReport.Experience.LastIndexOf(',') == driverReport.Experience.Length - 2)
+                if (!string.IsNullOrEmpty(driverReport.Experience) 
+                    && driverReport.Experience != "undefined" 
+                    && driverReport.Experience.LastIndexOf(',') == driverReport.Experience.Length - 2)
                 {
                     driverReport.Experience = driverReport.Experience.Remove(driverReport.Experience.Length - 2);
                 }
+                
                 driverService.AddNewReportDriver(driverReport);
+                
                 actionResult = Redirect(Config.BaseReqvesteUrl);
             }
             catch (Exception)

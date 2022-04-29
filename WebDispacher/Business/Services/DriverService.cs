@@ -509,30 +509,6 @@ namespace WebDispacher.Business.Services
             return await db.DucumentDrivers.Where(d => d.IdDriver.ToString() == id).ToListAsync();
         }
 
-        private void AddNewReportDriverDb(DriverReportViewModel driverReport)
-        {
-            var idDriver = 0;
-            var idCompany = 0;
-            var dateRegistration = "";
-            var driver = db.Drivers.LastOrDefault(d => d.DriversLicenseNumber == driverReport.DriversLicenseNumber);
-            
-            if(driver == null) return;
-
-            idDriver = driver.Id;
-            dateRegistration = driver.DateRegistration;
-            idCompany = db.Commpanies.FirstOrDefault(c => c.Id == driver.CompanyId).Id;
-            
-        
-            driverReport.DateFired = DateTime.Now.ToString();
-            driverReport.IdDriver = idDriver;
-            driverReport.DateRegistration = dateRegistration;
-            driverReport.IdCompany = idCompany;
-        
-            db.DriverReports.Add(mapper.Map<DriverReport>(driverReport));
-
-            db.SaveChanges();
-        }
-        
         private async Task<List<Driver>> GetDriversInDb(string idCommpany)
         {
             List<Driver> drivers = null;
@@ -624,11 +600,50 @@ namespace WebDispacher.Business.Services
             return driver.Id;
         }
 
+        private void AddNewReportDriverDb(DriverReportViewModel driverReport)
+        {
+            var driver = db.Drivers.FirstOrDefault(d => d.DriversLicenseNumber == driverReport.DriversLicenseNumber);
+            
+            if(driver == null) return;
+
+            driver.IsFired = true;
+
+            var driverReportReport = new DriverReport()
+            {
+                Comment = driverReport.Comment,
+                DriversLicenseNumber = driverReport.DriversLicenseNumber,
+                IdDriver =  driver.Id,
+                FullName = driver.FullName,
+                DateRegistration = driver.DateRegistration,
+                DateFired = DateTime.Now.ToString(),
+                AlcoholTendency = driverReport.AlcoholTendency,
+                DrivingSkills = driverReport.DrivingSkills,
+                DrugTendency = driverReport.DrugTendency,
+                EldKnowledge = driverReport.EldKnowledge,
+                English = driverReport.English,
+                Experience = driverReport.Experience,
+                IdCompany = driver.CompanyId,
+                PaymentHandling = driverReport.PaymentHandling,
+                ReturnedEquipmen = driverReport.ReturnedEquipmen,
+                Terminated = driverReport.Terminated,
+                WorkingEfficiency = driverReport.WorkingEfficiency,
+                DotViolations = driverReport.DotViolations,
+                NumberOfAccidents = driverReport.NumberOfAccidents
+                
+            };
+            
+            db.DriverReports.Add(driverReportReport);
+
+            db.SaveChanges();
+        }
+        
         private void RemoveDriveInDb(DriverReportModel model)
         {
             var driver = db.Drivers
                 .FirstOrDefault(d => d.Id == model.Id);
 
+            if(driver == null) return;
+            
             driver.IsFired = true;
 
             var driverReport = new DriverReport()

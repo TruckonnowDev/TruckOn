@@ -21,14 +21,14 @@ namespace WebDispacher
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<Context>();
+            services.AddAutoMapper(typeof(MappingProfile));
             services.AddScoped<ITruckAndTrailerService, TruckAndTrailerService>();
             services.AddScoped<IDriverService, DriverService>();
             services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IOrderService, Business.Services.OrderService>();
-            services.AddDbContext<Context>();
-            services.AddAutoMapper(typeof(MappingProfile));
-            
+
             StripeConfiguration.ApiKey = "sk_test_51GuYHUKfezfzRoxlAPF3ieVKcPe9Ost93jouMwF6nT0mFCh59qDBdUEN3E23nYx3gBUGmDpTo8NfJnw6unSie3NV00UcJWHAXu";
 
             services.Configure<FormOptions>(options =>

@@ -3,6 +3,7 @@ using DaoModels.DAO.Models;
 using WebDispacher.Models;
 using WebDispacher.ViewModels.Contact;
 using WebDispacher.ViewModels.Dispatcher;
+using WebDispacher.ViewModels.Driver;
 using WebDispacher.ViewModels.Trailer;
 using WebDispacher.ViewModels.Truck;
 
@@ -13,6 +14,7 @@ namespace WebDispacher.ViewModels.Mappings
         public MappingProfile()
         {
             CreateMap<DriverReportModel, DriverReport>()
+                .ForMember(x => x.Id, opt => opt.MapFrom(dr => dr.Id))
                 .ForMember(x => x.Comment, opt => opt.MapFrom(dr => dr.Description))
                 .ForMember(x => x.AlcoholTendency, opt => opt.MapFrom(dr => dr.AlcoholTendency))
                 .ForMember(x => x.DrivingSkills, opt => opt.MapFrom(dr => dr.DrivingSkills))
@@ -26,6 +28,13 @@ namespace WebDispacher.ViewModels.Mappings
                 .ForMember(x => x.WorkingEfficiency, opt => opt.MapFrom(dr => dr.WorkingEfficiency))
                 .ForMember(x => x.DotViolations, opt => opt.MapFrom(dr => dr.DotViolations))
                 .ForMember(x => x.NumberOfAccidents, opt => opt.MapFrom(dr => dr.NumberOfAccidents))
+                .ReverseMap();
+            CreateMap<DriverReportViewModel, DriverReport>()
+                .ForMember(x => x.Id, opt => opt.MapFrom(d => d.Id))
+                .ForMember(x => x.IdCompany, opt => opt.MapFrom(d => d.IdCompany))
+                .ForMember(x => x.Comment, opt => opt.MapFrom(d => d.Comment))
+                .ForMember(x => x.English, opt => opt.MapFrom(d => d.English))
+                .ForMember(x => x.Experience, opt => opt.MapFrom(d => d.Experience))
                 .ReverseMap();
             CreateMap<TrailerViewModel, DaoModels.DAO.Models.Trailer>()
                 .ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id))

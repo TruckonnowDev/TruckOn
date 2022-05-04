@@ -165,42 +165,29 @@ namespace WebDispacher.Business.Services
             Task.Run(() => UpdatePlanSubscribe(idCompany));
         }
 
-        public void EditDrive(int id, string fullName, string emailAddress,
-            string password, string phoneNumber, string trailerCapacity, string driversLicenseNumber)
+        public void EditDriver(DriverViewModel driver)
         {
-            var driver = db.Drivers.FirstOrDefault(d => d.Id == id);
+            var driverEdit = db.Drivers.FirstOrDefault(d => d.Id == driver.Id);
 
-            if (driver == null) return;
+            if (driverEdit == null) return;
             
-                driver.FullName = fullName;
-                driver.EmailAddress = emailAddress;
-                driver.Password = password;
-                driver.PhoneNumber = phoneNumber;
-                driver.TrailerCapacity = trailerCapacity;
-                driver.DriversLicenseNumber = driversLicenseNumber;
+            driverEdit.FullName = driver.FullName;
+            driverEdit.EmailAddress = driver.EmailAddress;
+            driverEdit.Password = driver.Password;
+            driverEdit.PhoneNumber = driver.PhoneNumber;
+            driverEdit.TrailerCapacity = driver.TrailerCapacity;
+            driverEdit.DriversLicenseNumber = driver.DriversLicenseNumber;
             
-
             db.SaveChanges();
         }
 
-        public async Task CreateDriver(string fullName, string emailAddress, string password, string phoneNumbe,
-            string trailerCapacity, string driversLicenseNumber, string idCompany,
+        public async Task CreateDriver(DriverViewModel driver,
             IFormFile dLDoc, IFormFile medicalCardDoc, IFormFile sSNDoc, IFormFile proofOfWorkAuthorizationOrGCDoc,
             IFormFile dQLDoc, IFormFile contractDoc, IFormFile drugTestResultsDo)
         {
-            var driver = new Driver
-            {
-                FullName = fullName,
-                EmailAddress = emailAddress,
-                Password = password,
-                PhoneNumber = phoneNumbe,
-                TrailerCapacity = trailerCapacity,
-                DriversLicenseNumber = driversLicenseNumber,
-                DateRegistration = DateTime.Now.ToString(),
-                CompanyId = Convert.ToInt32(idCompany)
-            };
+            driver.DateRegistration = DateTime.Now.ToString();
 
-            var id = AddDriver(driver);
+            var id = AddDriver(mapper.Map<Driver>(driver));
             
             await SaveDocDriver(dLDoc, "DL", id.ToString());
             await SaveDocDriver(medicalCardDoc, "Medical card", id.ToString());
@@ -214,7 +201,7 @@ namespace WebDispacher.Business.Services
                 await SaveDocDriver(drugTestResultsDo, "Drug test results", id.ToString());
             }
 
-            await Task.Run(() => UpdatePlanSubscribe(idCompany));
+            await Task.Run(() => UpdatePlanSubscribe(driver.CompanyId.ToString()));
         }
 
         public Driver GetDriver(string idInspection)

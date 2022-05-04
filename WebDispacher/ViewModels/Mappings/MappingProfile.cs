@@ -36,6 +36,17 @@ namespace WebDispacher.ViewModels.Mappings
                 .ForMember(x => x.English, opt => opt.MapFrom(d => d.English))
                 .ForMember(x => x.Experience, opt => opt.MapFrom(d => d.Experience))
                 .ReverseMap();
+            CreateMap<DriverViewModel, DaoModels.DAO.Models.Driver>()
+                .ForMember(x => x.Id, opt => opt.MapFrom(cd => cd.Id))
+                .ForMember(x => x.Password, opt => opt.MapFrom(cd => cd.Password))
+                .ForMember(x => x.FullName, opt => opt.MapFrom(cd => cd.FullName))
+                .ForMember(x => x.EmailAddress, opt => opt.MapFrom(cd => cd.EmailAddress))
+                .ForMember(x => x.PhoneNumber, opt => opt.MapFrom(cd => cd.PhoneNumber))
+                .ForMember(x => x.TrailerCapacity, opt => opt.MapFrom(cd => cd.TrailerCapacity))
+                .ForMember(x => x.DriversLicenseNumber, opt => opt.MapFrom(cd => cd.DriversLicenseNumber))
+                .ForMember(x => x.DateRegistration, opt => opt.MapFrom(cd => cd.DateRegistration))
+                .ForMember(x => x.CompanyId, opt => opt.MapFrom(cd => cd.CompanyId))
+                .ReverseMap();
             CreateMap<TrailerViewModel, DaoModels.DAO.Models.Trailer>()
                 .ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id))
                 .ForMember(x => x.CompanyId, opt => opt.MapFrom(t => t.CompanyId))

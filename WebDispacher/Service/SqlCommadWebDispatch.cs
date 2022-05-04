@@ -437,7 +437,6 @@ namespace WebDispacher.Dao
 
         internal int AddCommpany(Commpany commpany)
         {
-            ;
             context.Commpanies.Add(commpany);
             context.SaveChanges();
             return commpany.Id;
@@ -844,7 +843,7 @@ namespace WebDispacher.Dao
         {
             List<Driver> drivers = null;
             drivers = await context.Drivers
-                .Where(d => !d.IsFired && d .CompanyId.ToString() == idCommpany)
+                .Where(d => !d.IsFired && d.CompanyId.ToString() == idCommpany)
                 .Include(d => d.InspectionDrivers)
                 .Include(d => d.geolocations)
                 .ToListAsync();

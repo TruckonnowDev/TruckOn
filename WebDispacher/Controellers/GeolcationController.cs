@@ -9,7 +9,6 @@ namespace WebDispacher.Controellers
     [Route("Geolcation")]
     public class GeolcationController : Controller
     {
-        ManagerDispatch managerDispatch = new ManagerDispatch();
         private readonly IUserService userService;
         private readonly IDriverService driverService;
         private readonly ICompanyService companyService;
@@ -28,42 +27,38 @@ namespace WebDispacher.Controellers
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public async Task<IActionResult> GeolocationPageGet()
         {
-            IActionResult actionResult = null;
             try
             {
-                string key = null;
-                string idCompany = null;
-                string companyName = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Geolcation"))
+                Request.Cookies.TryGetValue("KeyAvtho", out var key);
+                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                if (userService.CheckPermissions(key, idCompany, "Geolcation"))
                 {
-                    bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                    
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
+                    
                     ViewBag.NameCompany = companyName;
                     ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
                     ViewBag.Drivers = await driverService.GetDrivers(idCompany);
-                    actionResult = View("MapsGeoDriver");
+                    
+                    return View("MapsGeoDriver");
                 }
-                else
+
+                if (Request.Cookies.ContainsKey("KeyAvtho"))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
+                    Response.Cookies.Delete("KeyAvtho");
                 }
             }
             catch (Exception)
             {
 
             }
-            return actionResult;
+            return Redirect(Config.BaseReqvesteUrl);;
         }
     }
 }

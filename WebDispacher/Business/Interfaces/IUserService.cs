@@ -9,6 +9,7 @@ namespace WebDispacher.Business.Interfaces
 {
     public interface IUserService
     {
+        bool CheckPermissions(string key, string idCompany, string route);
         Users GetUserByEmailAndPasswrod(string email, string password);
         bool IsPermission(string key, string idCompany, string route);
         Commpany GetUserByKeyUser(int key);

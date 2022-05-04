@@ -32,6 +32,11 @@ namespace WebDispacher.Business.Services
             this.db = db;
         }
         
+        public bool CheckPermissions(string key, string idCompany, string route)
+        {
+            return CheckKey(key) && IsPermission(key, idCompany, route);
+        }
+        
         public Users GetUserByEmailAndPasswrod(string email, string password)
         {
             var users = GetUserByEmailAndPasswordDb(email, password);

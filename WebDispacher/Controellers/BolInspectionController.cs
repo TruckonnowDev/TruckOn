@@ -13,7 +13,6 @@ namespace WebDispacher.Controellers
 {
     public class BolInspectionController : Controller
     {
-        ManagerDispatch managerDispatch = new ManagerDispatch();
         private readonly ITruckAndTrailerService truckAndTrailerService;
         private readonly IUserService userService;
         private readonly ICompanyService companyService;
@@ -35,14 +34,11 @@ namespace WebDispacher.Controellers
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public IActionResult GetPhotoInspection(int idVech)
         {
-            IActionResult actionResult = null; 
-            string key = null;
-            string idCompany = null;
-            string companyName = null;
+            IActionResult actionResult = null;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-            Request.Cookies.TryGetValue("KeyAvtho", out key);
-            Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-            Request.Cookies.TryGetValue("CommpanyName", out companyName);
+            Request.Cookies.TryGetValue("KeyAvtho", out var key);
+            Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+            Request.Cookies.TryGetValue("CommpanyName", out var companyName);
             if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "BOL"))
             {
                 bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);

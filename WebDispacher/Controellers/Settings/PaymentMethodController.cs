@@ -16,7 +16,6 @@ namespace WebDispacher.Controellers.Settings
     [Route("Settings/Biling")]
     public class PaymentMethodController : Controller
     {
-        ManagerDispatch managerDispatch = new ManagerDispatch();
         private readonly IUserService userService;
         private readonly ICompanyService companyService;
         
@@ -32,24 +31,21 @@ namespace WebDispacher.Controellers.Settings
         [Route("PaymentMethod")]
         public IActionResult PaymentMethod()
         {
-            IActionResult actionResult = null;
             try
             {
-                string key = null;
-                string idCompany = null;
-                string companyName = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "PaymentMethod"))
+                Request.Cookies.TryGetValue("KeyAvtho", out var key);
+                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                
+                if (userService.CheckPermissions(key, idCompany, "PaymentMethod"))
                 {
-                    bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, isCancelSubscribe ? "Cancel" : "Settings");
                     ViewBag.NameCompany = companyName;
-                    List<PaymentMethod> paymentMethods = companyService.GetPaymentMethod(idCompany);
-                    List<PaymentMethod_ST> paymentMethod_STs = companyService.GetPaymentMethodsST(idCompany);
-                    List<PaymentMethodDTO> paymentMethodDTOs = paymentMethods.Select(z => new PaymentMethodDTO()
+                    var paymentMethods = companyService.GetPaymentMethod(idCompany);
+                    var paymentMethodSTs = companyService.GetPaymentMethodsST(idCompany);
+                    var paymentMethodDTOs = paymentMethods.Select(z => new PaymentMethodDTO()
                     {
                         Id = z.Id,
                         Brand = z.Card.Brand,
@@ -59,192 +55,174 @@ namespace WebDispacher.Controellers.Settings
                         ExpYear = z.Card.ExpYear.ToString(),
                         Last4 = z.Card.Last4,
                         Name = z.Metadata["name"],
-                        IsDefault = paymentMethod_STs.FirstOrDefault(pm => pm.IdPaymentMethod_ST == z.Id) != null ? paymentMethod_STs.FirstOrDefault(pm => pm.IdPaymentMethod_ST == z.Id).IsDefault : false
+                        IsDefault = paymentMethodSTs.FirstOrDefault(pm => pm.IdPaymentMethod_ST == z.Id) != null 
+                            ? paymentMethodSTs.FirstOrDefault(pm => pm.IdPaymentMethod_ST == z.Id).IsDefault : false
                     }).ToList();
+                    
                     ViewBag.PaymentMethods = paymentMethodDTOs;
-                    actionResult = View("~/Views/Settings/Biling/PaymentMethod.cshtml");
+                    
+                    return View("~/Views/Settings/Biling/PaymentMethod.cshtml");
                 }
-                else
+
+                if (Request.Cookies.ContainsKey("KeyAvtho"))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
+                    Response.Cookies.Delete("KeyAvtho");
                 }
             }
             catch (Exception e)
             {
 
             }
-            return actionResult;
+            
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [HttpGet]
         [Route("AddPaymentMethod")]
         public IActionResult AddPaymentMethod()
         {
-            IActionResult actionResult = null;
             try
             {
-                string key = null;
-                string idCompany = null;
-                string companyName = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "PaymentMethod"))
+                Request.Cookies.TryGetValue("KeyAvtho", out var key);
+                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                
+                if (userService.CheckPermissions(key, idCompany, "PaymentMethod"))
                 {
-                    bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, isCancelSubscribe ? "Cancel" : "Settings");
+                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, isCancelSubscribe 
+                        ? "Cancel" : "Settings");
+                    
                     ViewBag.NameCompany = companyName;
                     ViewBag.TxtError = "";
                     ViewBag.Numbercard = "";
                     ViewBag.FullName = "";
                     ViewBag.Expire = "";
                     ViewBag.Cvv = "";
-                    actionResult = View("~/Views/Settings/Biling/AddPaymentMethod.cshtml");
+                    
+                    return View("~/Views/Settings/Biling/AddPaymentMethod.cshtml");
                 }
-                else
+
+                if (Request.Cookies.ContainsKey("KeyAvtho"))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
+                    Response.Cookies.Delete("KeyAvtho");
                 }
             }
             catch (Exception e)
             {
 
             }
-            return actionResult;
+            
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [HttpPost]
         [Route("AddPaymentMethod")]
         public IActionResult AddPaymentMethod(string number, string name, string expiry, string cvc)
         {
-            IActionResult actionResult = null;
             try
             {
-                string key = null;
-                string idCompany = null;
-                string companyName = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "PaymentMethod"))
+                Request.Cookies.TryGetValue("KeyAvtho", out var key);
+                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                
+                if (userService.CheckPermissions(key, idCompany, "PaymentMethod"))
                 {
                     ViewBag.NameCompany = companyName;
                     ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
-                    ResponseStripe responseStripe =  companyService.AddPaymentCard(idCompany, number, name, expiry, cvc);
-                    if(responseStripe.IsError)
-                    {
-                        ViewBag.TxtError = responseStripe.Message;
-                        ViewBag.Numbercard = number;
-                        ViewBag.FullName = name;
-                        ViewBag.Expire = expiry;
-                        ViewBag.Cvv = cvc;
-                        actionResult = View("~/Views/Settings/Biling/AddPaymentMethod.cshtml");
-                    }
-                    else
-                    {
-                        actionResult = Redirect($"{Config.BaseReqvesteUrl}/Settings/Biling/PaymentMethod");
-                    }
+                    var responseStripe =  companyService.AddPaymentCard(idCompany, number, name, expiry, cvc);
+
+                    if (!responseStripe.IsError)
+                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Biling/PaymentMethod");
+                    
+                    ViewBag.TxtError = responseStripe.Message;
+                    ViewBag.Numbercard = number;
+                    ViewBag.FullName = name;
+                    ViewBag.Expire = expiry;
+                    ViewBag.Cvv = cvc;
+                    return View("~/Views/Settings/Biling/AddPaymentMethod.cshtml");
+
                 }
-                else
+
+                if (Request.Cookies.ContainsKey("KeyAvtho"))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
+                    Response.Cookies.Delete("KeyAvtho");
                 }
             }
             catch (Exception e)
             {
 
             }
-            return actionResult;
+            
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [HttpPost]
         [Route("SelectDefauldPaymentMethod")]
         public IActionResult SelectDefault(string idPayment)
         {
-            IActionResult actionResult = null;
             try
             {
-                string key = null;
-                string idCompany = null;
-                string companyName = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "PaymentMethod"))
+                Request.Cookies.TryGetValue("KeyAvtho", out var key);
+                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                
+                if (userService.CheckPermissions(key, idCompany, "PaymentMethod"))
                 {
                     ViewBag.NameCompany = companyName;
                     ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     companyService.SelectDefaultPaymentMethod(idPayment, idCompany);
-                    actionResult = Redirect($"{Config.BaseReqvesteUrl}/Settings/Biling/PaymentMethod");
+                    
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Biling/PaymentMethod");
                 }
-                else
+
+                if (Request.Cookies.ContainsKey("KeyAvtho"))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
+                    Response.Cookies.Delete("KeyAvtho");
                 }
             }
             catch (Exception e)
             {
 
             }
-            return actionResult;
+            
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [HttpGet]
         [Route("DeletePaymentMethod")]
         public IActionResult DeletePaymentMethod(string idPayment)
         {
-            IActionResult actionResult = null;
             try
             {
-                string key = null;
-                string idCompany = null;
-                string companyName = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "PaymentMethod"))
+                Request.Cookies.TryGetValue("KeyAvtho", out var key);
+                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                
+                if (userService.CheckPermissions(key, idCompany, "PaymentMethod"))
                 {
                     ViewBag.NameCompany = companyName;
                     ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     companyService.DeletePaymentMethod(idPayment, idCompany);
-                    //List<PaymentMethod> paymentMethods = managerDispatch.GetpaymentMethod(idCompany);
-                    //ViewBag.PaymentMethods = paymentMethods;
-                    actionResult = Redirect($"{Config.BaseReqvesteUrl}/Settings/Biling/PaymentMethod");
+                    
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Biling/PaymentMethod");
                 }
-                else
+
+                if (Request.Cookies.ContainsKey("KeyAvtho"))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
+                    Response.Cookies.Delete("KeyAvtho");
                 }
             }
             catch (Exception e)
             {
 
             }
-            return actionResult;
+            
+            return Redirect(Config.BaseReqvesteUrl);
         }
     }
 }

@@ -17,11 +17,9 @@ namespace WebDispacher.Business.Interfaces
         int CheckTokenFoDriver(string idDriver, string token);
         InspectionDriver GetInspectionTruck(string idInspection);
 
-        void EditDrive(int id, string fullName, string emailAddress,
-            string password, string phoneNumber, string trailerCapacity, string driversLicenseNumber);
+        void EditDriver(DriverViewModel driver);
 
-        Task CreateDriver(string fullName, string emailAddress, string password, string phoneNumbe,
-            string trailerCapacity, string driversLicenseNumber, string idCompany,
+        Task CreateDriver(DriverViewModel driver,
             IFormFile dLDoc, IFormFile medicalCardDoc, IFormFile sSNDoc, IFormFile proofOfWorkAuthorizationOrGCDoc,
             IFormFile dQLDoc, IFormFile contractDoc, IFormFile drugTestResultsDo);
 

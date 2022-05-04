@@ -12,7 +12,6 @@ namespace WebDispacher.Controellers.Settings
     [Route("Settings/User")]
     public class UserController : Controller
     {
-        ManagerDispatch managerDispatch = new ManagerDispatch();
         private readonly IUserService userService;
         private readonly ICompanyService companyService;
 
@@ -27,42 +26,40 @@ namespace WebDispacher.Controellers.Settings
         [Route("Users")]
         public IActionResult GetUsers()
         {
-            IActionResult actionResult = null;
             try
             {
-                string key = null;
-                string idCompany = null;
-                string companyName = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Setings/User"))
+                Request.Cookies.TryGetValue("KeyAvtho", out var key);
+                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                
+                if (userService.CheckPermissions(key, idCompany, "Setings/User"))
                 {
-                    bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                    
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
+                    
                     ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     ViewBag.NameCompany = companyName;
                     ViewBag.Users = companyService.GetUsers(Convert.ToInt32(idCompany));
-                    actionResult = View("~/Views/Settings/CompanyUsers.cshtml");
+                    
+                    return View("~/Views/Settings/CompanyUsers.cshtml");
                 }
-                else
+
+                if (Request.Cookies.ContainsKey("KeyAvtho"))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
+                    Response.Cookies.Delete("KeyAvtho");
                 }
             }
             catch (Exception e)
             {
 
             }
-            return actionResult;
+            
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [HttpGet]
@@ -70,41 +67,39 @@ namespace WebDispacher.Controellers.Settings
         [ResponseCache(Location = ResponseCacheLocation.None, Duration = 300)]
         public IActionResult CreateUsers()
         {
-            IActionResult actionResult = null;
             try
             {
-                string key = null;
-                string idCompany = null;
-                string companyName = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Setings/User"))
+                Request.Cookies.TryGetValue("KeyAvtho", out var key);
+                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                
+                if (userService.CheckPermissions(key, idCompany, "Setings/User"))
                 {
-                    bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                    
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
+                    
                     ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     ViewBag.NameCompany = companyName;
-                    actionResult = View("~/Views/Settings/CreateUser.cshtml");
+                    
+                    return View("~/Views/Settings/CreateUser.cshtml");
                 }
-                else
+
+                if (Request.Cookies.ContainsKey("KeyAvtho"))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
+                    Response.Cookies.Delete("KeyAvtho");
                 }
             }
             catch (Exception e)
             {
 
             }
-            return actionResult;
+            
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [HttpPost]
@@ -112,74 +107,66 @@ namespace WebDispacher.Controellers.Settings
         [ResponseCache(Location = ResponseCacheLocation.None, Duration = 300)]
         public IActionResult CreateUsers(string login, string password)
         {
-            IActionResult actionResult = null;
             try
             {
-                string key = null;
-                string idCompany = null;
-                string companyName = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Setings/User"))
+                Request.Cookies.TryGetValue("KeyAvtho", out var key);
+                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                
+                if (userService.CheckPermissions(key, idCompany, "Setings/User"))
                 {
                     ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     ViewBag.NameCompany = companyName;
                     userService.AddUser(idCompany, login, password);
-                    actionResult = Redirect($"{Config.BaseReqvesteUrl}/Settings/User/Users");
+                    
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/User/Users");
                 }
-                else
+
+                if (Request.Cookies.ContainsKey("KeyAvtho"))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
+                    Response.Cookies.Delete("KeyAvtho");
                 }
             }
             catch (Exception e)
             {
 
             }
-            return actionResult;
+            
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [HttpGet]
         [Route("Remove")]
         public IActionResult CreateUsers(string idUser)
         {
-            IActionResult actionResult = null;
             try
             {
-                string key = null;
-                string idCompany = null;
-                string companyName = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Setings/User"))
+                Request.Cookies.TryGetValue("KeyAvtho", out var key);
+                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                
+                if (userService.CheckPermissions(key, idCompany, "Setings/User"))
                 {
                     ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
                     ViewBag.NameCompany = companyName;
                     userService.RemoveUserById(idUser);
-                    actionResult = Redirect($"{Config.BaseReqvesteUrl}/Settings/User/Users");
+                    
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/User/Users");
                 }
-                else
+
+                if (Request.Cookies.ContainsKey("KeyAvtho"))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
+                    Response.Cookies.Delete("KeyAvtho");
                 }
             }
             catch (Exception e)
             {
 
             }
-            return actionResult;
+            
+            return Redirect(Config.BaseReqvesteUrl);
         }
     }
 }

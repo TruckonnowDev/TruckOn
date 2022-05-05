@@ -93,8 +93,8 @@
     </div>
 <script>
     function SelectAssining(idOrderAndIdDriver) {
-        var statusResponse;
-        if (idOrderAndIdDriver.split(',')[1] == "Unassign") {
+        let statusResponse;
+        if (idOrderAndIdDriver.split(',')[1] === "Unassign") {
             let url = "@ViewBag.BaseUrl/Dashbord/Unassign";
             let xmlHttp = new XMLHttpRequest();
             let idOrder = idOrderAndIdDriver.split(',')[0];
@@ -105,7 +105,7 @@
             xmlHttp.send(body);
             statusResponse = xmlHttp.responseText;
         }
-        else if (idOrderAndIdDriver != "") {
+        else if (idOrderAndIdDriver !== "") {
             let idOrder = idOrderAndIdDriver.split(',')[0];
             let idDriver = idOrderAndIdDriver.split(',')[1];
             let url = "@ViewBag.BaseUrl/Dashbord/Assign";

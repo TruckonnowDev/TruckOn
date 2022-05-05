@@ -6,124 +6,136 @@ using DaoModels.DAO.DTO;
 using DaoModels.DAO.Models;
 using MDispatch.View.GlobalDialogView;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using WebDispacher.Business.Interfaces;
 using WebDispacher.Models;
 using WebDispacher.Service;
+using WebDispacher.ViewModels;
 
 namespace WebDispacher.Controellers
 {
     public class DashbordController : Controller
     {
-        ManagerDispatch managerDispatch = new ManagerDispatch();
+        private readonly IUserService userService;
+        private readonly ICompanyService companyService;
+        private readonly IDriverService driverService;
+        private readonly IOrderService orderService;
+
+        public DashbordController(
+            IOrderService orderService,
+            IUserService userService,
+            ICompanyService companyService,
+            IDriverService driverService)
+        {
+            this.orderService = orderService;
+            this.driverService = driverService;
+            this.userService = userService;
+            this.companyService = companyService;
+        }
         private string Status { get; set; }
 
         [HttpPost]
         [Route("New")]
         public async Task<string> New(string linck, string key)
         {
-            string urlPage = linck.Remove(0, linck.IndexOf("'") + 1);
+            var urlPage = linck.Remove(0, linck.IndexOf("'") + 1);
+            
             urlPage = urlPage.Remove(urlPage.IndexOf("'"));
             urlPage = $"https://www.centraldispatch.com{urlPage}";
-            string actionResult = null;
+            
             try
             {
-                Dispatcher dispatcher = managerDispatch.CheckKeyDispatcher(key);
+                var dispatcher = companyService.CheckKeyDispatcher(key);
+                
                 if (dispatcher != null)
                 {
-                    Shipping shipping = await managerDispatch.AddNewOrder(urlPage, dispatcher);
+                    var shipping = await orderService.AddNewOrder(urlPage, dispatcher);
                 }
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                // ignored
             }
-            return actionResult;
+
+            return null;
         }
 
         [Route("Dashbord/Order/NewLoad")]
         public async Task<IActionResult> NewLoad(int page, string name, string address, string phone, string email, string price)
         {
-            IActionResult actionResult = null;
             try
             {
-                string key = null;
-                string idCompany = null;
-                string companyName = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                Request.Cookies.TryGetValue("KeyAvtho", out var key);
+                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Dashbord"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     if(isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
+                    
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
                     await Task.WhenAll(
                     Task.Run(async() =>
                     {
-                        ViewBag.Orders = await managerDispatch.GetOrders("NewLoad", page, name, address, phone, email, price);
+                        ViewBag.Orders = await orderService.GetOrders("NewLoad", page, name, address, phone, email, price);
                     }),
                     Task.Run(async() =>
                     {
-                        ViewBag.Drivers = await managerDispatch.GetDrivers(idCompany);
+                        ViewBag.Drivers = await driverService.GetDrivers(idCompany);
                     }),
                     Task.Run(async() =>
                     {
-                        ViewBag.count = await managerDispatch.GetCountPage("NewLoad", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage("NewLoad", name, address, phone, email, price);
                     }));
+                    
                     ViewBag.Name = name;
                     ViewBag.Address = address;
                     ViewBag.Phone = phone;
                     ViewBag.Email = email;
                     ViewBag.price = price;
-                    actionResult = View("NewLoad");
+                    
+                    return View("NewLoad");
                 }
-                else
+                if (Request.Cookies.ContainsKey("KeyAvtho"))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
+                    Response.Cookies.Delete("KeyAvtho");
                 }
             }
-            catch (Exception)
+            catch (Exception exception)
             {
 
             }
 
-            return actionResult;
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [Route("Dashbord/Assign")]
         [HttpPost]
         public string DriverSelect(string idOrder, string idDriver)
         {
-            bool actionResult = false;
+            var actionResult = false;
             try
             {
-                string key = null;
-                string idCompany = null;
-                string companyName = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                Request.Cookies.TryGetValue("KeyAvtho", out var key);
+                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                
+                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
                 {
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
-                    if ((idDriver != null && idDriver != "") && (idOrder != null && idOrder != ""))
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                    if (!string.IsNullOrEmpty(idDriver) && !string.IsNullOrEmpty(idOrder))
                     {
-                        managerDispatch.Assign(idOrder, idDriver);
-                        Task.Run(() => managerDispatch.AddHistory(key, "0", idOrder, "0",  idDriver, "Assign"));
+                        orderService.Assign(idOrder, idDriver);
+                        Task.Run(() => orderService.AddHistory(key, "0", idOrder, "0",  idDriver, "Assign"));
                         actionResult = true;
-                    }
-                    else
-                    {
-                        actionResult = false;
                     }
                 }
                 else
@@ -132,13 +144,13 @@ namespace WebDispacher.Controellers
                     {
                         Response.Cookies.Delete("KeyAvtho");
                     }
-                    actionResult = false;
                 }
             }
-            catch (Exception)
+            catch (Exception exception)
             {
 
             }
+            
             return actionResult.ToString();
         }
 
@@ -146,27 +158,21 @@ namespace WebDispacher.Controellers
         [HttpPost]
         public string DriverUnSelect(string idOrder)
         {
-            bool actionResult = false;
+            var actionResult = false;
             try
             {
-                string key = null;
-                string idCompany = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                Request.Cookies.TryGetValue("KeyAvtho", out var key);
+                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                
+                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Dashbord"))
                 {
-                    if (idOrder != null && idOrder != "")
+                    if (!string.IsNullOrEmpty(idOrder))
                     {
-                        managerDispatch.AddHistory(key, "0", idOrder, "0", "0", "Unassign");
-                        managerDispatch.Unassign(idOrder);
+                        orderService.AddHistory(key, "0", idOrder, "0", "0", "Unassign");
+                        orderService.Unassign(idOrder);
                         actionResult = true;
                     }
-                    else
-                    {
-                        actionResult = false;
-                    }
-
                 }
                 else
                 {
@@ -174,13 +180,12 @@ namespace WebDispacher.Controellers
                     {
                         Response.Cookies.Delete("KeyAvtho");
                     }
-                    actionResult = false;
                 }
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-
             }
+            
             return actionResult.ToString();
         }
 
@@ -188,893 +193,838 @@ namespace WebDispacher.Controellers
         [HttpGet]
         public IActionResult Solved(string id, string page)
         {
-            IActionResult actionResult = null;
             try
             {
-                string key = null;
-                string idCompany = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                Request.Cookies.TryGetValue("KeyAvtho", out var key);
+                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                
+                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
                 {
-                    managerDispatch.Solved(id);
-                    Task.Run(() => managerDispatch.AddHistory(key, "0", id, "0", "0", "Solved"));
-                    actionResult = Redirect($"{page}");
+                    orderService.Solved(id);
+                    Task.Run(() => orderService.AddHistory(key, "0", id, "0", "0", "Solved"));
+                    
+                    return Redirect($"{page}");
                 }
-                else
+
+                if (Request.Cookies.ContainsKey("KeyAvtho"))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
+                    Response.Cookies.Delete("KeyAvtho");
                 }
             }
-            catch (Exception)
+            catch (Exception exception)
             {
 
             }
-            return actionResult;
+            
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [Route("Dashbord/Order/Archived")]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public async Task<IActionResult> Archived(int page, string name, string address, string phone, string email, string price)
         {
-            IActionResult actionResult = null;
             try
             {
-                string key = null;
-                string idCompany = null;
-                string companyName = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                List<Shipping> shippings = null;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                Request.Cookies.TryGetValue("KeyAvtho", out var key);
+                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                
+                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
+                    
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                    
+                    List<Shipping> shippings = null;
+                    
                     await Task.WhenAll(
                     Task.Run(async () =>
                     {
-                        shippings = await managerDispatch.GetOrders("Archived,Billed", page, name, address, phone, email, price);
+                        shippings = await orderService.GetOrders("Archived,Billed", page, name, address, phone, email, price);
                         if (shippings.Count < 20)
                         {
-                            shippings.AddRange(await managerDispatch.GetOrders("Archived,Paid", page, name, address, phone, email, price));
+                            shippings.AddRange(await orderService.GetOrders("Archived,Paid", page, name, address, phone, email, price));
                         }
                         if (shippings.Count < 20)
                         {
-                            shippings.AddRange(await managerDispatch.GetOrders("Archived", page, name, address, phone, email, price));
+                            shippings.AddRange(await orderService.GetOrders("Archived", page, name, address, phone, email, price));
                         }
-                        List<Driver> drivers = await managerDispatch.GetDrivers(idCompany);
+                        var drivers = await driverService.GetDrivers(idCompany);
                         ViewBag.Drivers = drivers;
                         ViewBag.Orders = GetShippingDTOs(shippings, drivers);
                     }),
                     Task.Run(async () =>
                     {
-                        ViewBag.count = await managerDispatch.GetCountPage("Archived", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage("Archived", name, address, phone, email, price);
                     }),
                     Task.Run(async () =>
                     {
-                        ViewBag.count = await managerDispatch.GetCountPage("Archived,Billed", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage("Archived,Billed", name, address, phone, email, price);
                     }),
                     Task.Run(async () =>
                     {
-                        ViewBag.count = await managerDispatch.GetCountPage("Archived,Paid", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage("Archived,Paid", name, address, phone, email, price);
                     }));
+                    
                     ViewBag.Name = name;
                     ViewBag.Address = address;
                     ViewBag.Phone = phone;
                     ViewBag.Email = email;
                     ViewBag.price = price;
-                    actionResult = View("Archived");
+                    
+                    return View("Archived");
                 }
-                else
-                {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
-                }
-            }
-            catch (Exception)
-            {
 
+                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                {
+                    Response.Cookies.Delete("KeyAvtho");
+                }
             }
-            return actionResult;
+            catch (Exception exception)
+            {
+                
+            }
+
+            return Redirect(Config.BaseReqvesteUrl);
         }
         
 
         [Route("Dashbord/Order/Assigned")]
         public async Task<IActionResult> Assigned(int page, string name, string address, string phone, string email, string price)
         {
-            IActionResult actionResult = null;
             try
             {
-                string key = null;
-                string idCompany = null;
-                string companyName = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                Request.Cookies.TryGetValue("KeyAvtho", out var key);
+                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                
+                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                    
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
+                    
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
+                    
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                    
                     await Task.WhenAll(
                     Task.Run(async () =>
                     {
-                        List<Shipping> shippings = await managerDispatch.GetOrders("Assigned", page, name, address, phone, email, price);
-                        List<Driver> drivers = await managerDispatch.GetDrivers(idCompany);
+                        var shippings = await orderService.GetOrders("Assigned", page, name, address, phone, email, price);
+                        var drivers = await driverService.GetDrivers(idCompany);
+                        
                         ViewBag.Orders = GetShippingDTOs(shippings, drivers);
                         ViewBag.Drivers = drivers;
                     }),
                     Task.Run(async () =>
                     {
-                        ViewBag.count = await managerDispatch.GetCountPage("Assigned", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage("Assigned", name, address, phone, email, price);
                     }));
                     ViewBag.Name = name;
                     ViewBag.Address = address;
                     ViewBag.Phone = phone;
                     ViewBag.Email = email;
                     ViewBag.price = price;
-                    actionResult = View("Assigned");
+                    
+                    return View("Assigned");
                 }
-                else
+
+                if (Request.Cookies.ContainsKey("KeyAvtho"))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
+                    Response.Cookies.Delete("KeyAvtho");
                 }
             }
             catch (Exception)
             {
 
             }
-            return actionResult;
+            
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [Route("Dashbord/Order/Billed")]
         public async Task<IActionResult> Billed(int page, string name, string address, string phone, string email, string price)
         {
-            IActionResult actionResult = null;
             try
             {
-                string key = null;
-                string idCompany = null;
-                string companyName = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                Request.Cookies.TryGetValue("KeyAvtho", out var key);
+                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                
+                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                    
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
+                    
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
-                    await Task.WhenAll(
-                    Task.Run(async () =>
-                    {
-                        List<Shipping> shippings = await managerDispatch.GetOrders("Delivered,Billed", page, name, address, phone, email, price);
-                        List<Driver> drivers = await managerDispatch.GetDrivers(idCompany);
-                        ViewBag.Orders = GetShippingDTOs(shippings, drivers);
-                        ViewBag.Drivers = drivers;
-                    }),
-                    Task.Run(async () =>
-                    {
-                        ViewBag.count = await managerDispatch.GetCountPage("Delivered,Billed", name, address, phone, email, price);
-                    }));
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany); 
+                    // await Task.WhenAll(
+                    // Task.Run(async () =>
+                    // {
+                    //     var shippings = await orderService.GetOrders("Delivered,Billed", page, name, address, phone, email, price);
+                    //     var drivers = await driverService.GetDrivers(idCompany);
+                    //     ViewBag.Orders = GetShippingDTOs(shippings, drivers);
+                    //     ViewBag.Drivers = drivers;
+                    // }),
+                    // Task.Run(async () =>
+                    // {
+                    //     ViewBag.count = await orderService.GetCountPage("Delivered,Billed", name, address, phone, email, price);
+                    // }));
+
+                    var shippings = await orderService.GetOrders("Delivered,Billed", page, name, address, phone, email, price);
+                    ViewBag.Drivers = await driverService.GetDrivers(idCompany);;
+                    ViewBag.Orders = GetShippingDTOs(shippings, ViewBag.Drivers);
+                    ViewBag.count = await orderService.GetCountPage("Delivered,Billed", name, address, phone, email, price);
+                    
                     ViewBag.Name = name;
                     ViewBag.Address = address;
                     ViewBag.Phone = phone;
                     ViewBag.Email = email;
                     ViewBag.price = price;
-                    actionResult = View("Billed");
+                    
+                    return View("Billed");
                 }
-                else
+
+                if (Request.Cookies.ContainsKey("KeyAvtho"))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
+                    Response.Cookies.Delete("KeyAvtho");
                 }
             }
-            catch (Exception)
+            catch (Exception exception)
             {
 
             }
-            return actionResult;
+            
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [Route("Dashbord/Order/Deleted")]
         public async Task<IActionResult> Deleted(int page, string name, string address, string phone, string email, string price)
         {
-            IActionResult actionResult = null;
             try
             {
-                string key = null;
-                string idCompany = null;
-                string companyName = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                Request.Cookies.TryGetValue("KeyAvtho", out var key);
+                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                
+                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                    
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
+                    
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
                     List<Shipping> shippings = null;
                     await Task.WhenAll(
                     Task.Run(async () =>
                     {
-                        shippings = await managerDispatch.GetOrders("Deleted,Billed", page, name, address, phone, email, price);
+                        shippings = await orderService.GetOrders("Deleted,Billed", page, name, address, phone, email, price);
                         if (shippings.Count < 20)
                         {
-                            shippings.AddRange(await managerDispatch.GetOrders("Deleted,Paid", page, name, address, phone, email, price));
+                            shippings.AddRange(await orderService.GetOrders("Deleted,Paid", page, name, address, phone, email, price));
                         }
                         if (shippings.Count < 20)
                         {
-                            shippings.AddRange(await managerDispatch.GetOrders("Deleted", page, name, address, phone, email, price));
+                            shippings.AddRange(await orderService.GetOrders("Deleted", page, name, address, phone, email, price));
                         }
-                        List<Driver> drivers = await managerDispatch.GetDrivers(idCompany);
+                        var drivers = await driverService.GetDrivers(idCompany);
                         ViewBag.Orders = GetShippingDTOs(shippings, drivers);
                         ViewBag.Drivers = drivers;
                     }),
                     Task.Run(async() =>
                     {
-                        ViewBag.count = await managerDispatch.GetCountPage("Deleted", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage("Deleted", name, address, phone, email, price);
                     }),
                     Task.Run(async() =>
                     {
-                        ViewBag.count = await managerDispatch.GetCountPage("Deleted,Billed", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage("Deleted,Billed", name, address, phone, email, price);
                     }),
                     Task.Run(async() =>
                     {
-                        ViewBag.count = await managerDispatch.GetCountPage("Deleted,Paid", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage("Deleted,Paid", name, address, phone, email, price);
                     }));
                     ViewBag.Name = name;
                     ViewBag.Address = address;
                     ViewBag.Phone = phone;
                     ViewBag.Email = email;
                     ViewBag.price = price;
-                    actionResult = View("Deleted");
+                    
+                    return View("Deleted");
                 }
-                else
+
+                if (Request.Cookies.ContainsKey("KeyAvtho"))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
+                    Response.Cookies.Delete("KeyAvtho");
                 }
             }
             catch (Exception)
             {
 
             }
-            return actionResult;
+            
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [Route("Dashbord/Order/Delivered")]
         public async Task<IActionResult> Delivered(int page, string name, string address, string phone, string email, string price)
         {
-            IActionResult actionResult = null;
             try
             {
-                string key = null;
-                string idCompany = null;
-                string companyName = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                Request.Cookies.TryGetValue("KeyAvtho", out var key);
+                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                    
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
+                    
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
-                    List<Shipping> shippings = new List<Shipping>();
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                    
+                    var shippings = new List<Shipping>();
+                    
                     await Task.WhenAll(
                     Task.Run(async () =>
                     {
-                        shippings.AddRange(await managerDispatch.GetOrders("Delivered,Paid", page, name, address, phone, email, price));
+                        shippings.AddRange(await orderService.GetOrders("Delivered,Paid", page, name, address, phone, email, price));
                         if (shippings.Count < 20)
                         {
-                            shippings.AddRange(await managerDispatch.GetOrders("Delivered,Billed", page, name, address, phone, email, price));
+                            shippings.AddRange(await orderService.GetOrders("Delivered,Billed", page, name, address, phone, email, price));
                         }
-                        List<Driver> drivers = await managerDispatch.GetDrivers(idCompany);
+                        var drivers = await driverService.GetDrivers(idCompany);
                         ViewBag.Orders = GetShippingDTOs(shippings, drivers);
                         ViewBag.Drivers = drivers;
                     }),
                     Task.Run(async() =>
                     {
-                        ViewBag.count = await managerDispatch.GetCountPage("Delivered,Billed", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage("Delivered,Billed", name, address, phone, email, price);
                     }),
                     Task.Run(async() =>
                     {
-                        ViewBag.count = await managerDispatch.GetCountPage("Delivered,Paid", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage("Delivered,Paid", name, address, phone, email, price);
                     }));
                     ViewBag.Name = name;
                     ViewBag.Address = address;
                     ViewBag.Phone = phone;
                     ViewBag.Email = email;
                     ViewBag.price = price;
-                    actionResult = View("Delivered");
+                    return View("Delivered");
                 }
-                else
+
+                if (Request.Cookies.ContainsKey("KeyAvtho"))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
+                    Response.Cookies.Delete("KeyAvtho");
                 }
             }
             catch (Exception)
             {
 
             }
-            return actionResult;
+            
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         public async Task<IActionResult> Paid(int page, string name, string address, string phone, string email, string price)
         {
-            IActionResult actionResult = null;
             try
             {
-                string key = null;
-                string idCompany = null;
-                string companyName = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                Request.Cookies.TryGetValue("KeyAvtho", out var key);
+                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                
+                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                    
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
+                    
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
                     await Task.WhenAll(
                     Task.Run(async () =>
                     {
-                        List<Shipping> shippings = await managerDispatch.GetOrders("Delivered,Paid", page, name, address, phone, email, price);
-                        List<Driver> drivers = await managerDispatch.GetDrivers(idCompany);
+                        var shippings = await orderService.GetOrders("Delivered,Paid", page, name, address, phone, email, price);
+                        var drivers = await driverService.GetDrivers(idCompany);
                         ViewBag.Orders = GetShippingDTOs(shippings, drivers);
                         ViewBag.Drivers = drivers;
                     }),
                     Task.Run(async () =>
                     {
-                        ViewBag.count = await managerDispatch.GetCountPage("Delivered,Paid", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage("Delivered,Paid", name, address, phone, email, price);
                     }));
+                    
                     ViewBag.Name = name;
                     ViewBag.Address = address;
                     ViewBag.Phone = phone;
                     ViewBag.Email = email;
                     ViewBag.price = price;
-                    actionResult = View("Paid");
+                    return View("Paid");
                 }
-                else
+
+                if (Request.Cookies.ContainsKey("KeyAvtho"))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
+                    Response.Cookies.Delete("KeyAvtho");
                 }
             }
             catch (Exception)
             {
 
             }
-            return actionResult;
+            
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [Route("Dashbord/Order/Pickedup")]
         public async Task<IActionResult> Pickedup(int page, string name, string address, string phone, string email, string price)
         {
-            IActionResult actionResult = null;
             try
             {
-                string key = null;
-                string idCompany = null;
-                string companyName = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                Request.Cookies.TryGetValue("KeyAvtho", out var key);
+                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                
+                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                    
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
+                    
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
                     await Task.WhenAll(
                     Task.Run(async () =>
                     {
-                        List<Shipping> shippings = await managerDispatch.GetOrders("Picked up", page, name, address, phone, email, price);
-                        List<Driver> drivers = await managerDispatch.GetDrivers(idCompany);
+                        var shippings = await orderService.GetOrders("Picked up", page, name, address, phone, email, price);
+                        var drivers = await driverService.GetDrivers(idCompany);
                         ViewBag.Orders = GetShippingDTOs(shippings, drivers);
                         ViewBag.Drivers = drivers;
                     }),
                     Task.Run(async () =>
                     {
-                        ViewBag.count = await managerDispatch.GetCountPage("Picked up", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage("Picked up", name, address, phone, email, price);
                     }));
                     ViewBag.Name = name;
                     ViewBag.Address = address;
                     ViewBag.Phone = phone;
                     ViewBag.Email = email;
                     ViewBag.price = price;
-                    actionResult = View("Pickedup");
+                    return View("Pickedup");
                 }
-                else
+
+                if (Request.Cookies.ContainsKey("KeyAvtho"))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
+                    Response.Cookies.Delete("KeyAvtho");
                 }
             }
             catch (Exception)
             {
 
             }
-            return actionResult;
+            
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [Route("Dashbord/Order/ArchivedOrder")]
         [ResponseCache(Location = ResponseCacheLocation.None, Duration = 300)]
         public IActionResult DeletedOrder(string id)
         {
-            IActionResult actionResult = null;
             try
             {
-                string key = null;
-                string idCompany = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                Request.Cookies.TryGetValue("KeyAvtho", out var key);
+                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                
+                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
                 {
-                    managerDispatch.ArchvedOrder(id);
-                    Task.Run(() => managerDispatch.AddHistory(key, "0", id, "0", "0", "ArchivedOrder"));
-                    actionResult = Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/NewLoad");
+                    orderService.ArchiveOrder(id);
+                    Task.Run(() => orderService.AddHistory(key, "0", id, "0", "0", "ArchivedOrder"));
+                    return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/NewLoad");
                 }
-                else
+
+                if (Request.Cookies.ContainsKey("KeyAvtho"))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
+                    Response.Cookies.Delete("KeyAvtho");
                 }
             }
             catch (Exception)
             {
 
             }
-            return actionResult;
+            
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [Route("Dashbord/Order/DeletedOrder")]
         public IActionResult DeletedOrder(string id, string status)
         {
-            IActionResult actionResult = null;
             try
             {
-                string key = null;
-                string idCompany = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                Request.Cookies.TryGetValue("KeyAvtho", out var key);
+                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                
+                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
                 {
-                    managerDispatch.DeletedOrder(id);
-                    Task.Run(() => managerDispatch.AddHistory(key, "0", id, "0", "0", "DeletedOrder"));
-                    actionResult = Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{status}");
+                    orderService.DeleteOrder(id);
+                    Task.Run(() => orderService.AddHistory(key, "0", id, "0", "0", "DeletedOrder"));
+                    
+                    return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{status}");
                 }
-                else
+
+                if (Request.Cookies.ContainsKey("KeyAvtho"))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
+                    Response.Cookies.Delete("KeyAvtho");
                 }
             }
             catch (Exception)
             {
 
             }
-            return actionResult;
+            
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [Route("Dashbord/Order/FullInfoOrder")]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public IActionResult FullInfoOrder(string id, string stasus)
         {
-            IActionResult actionResult = null;
             try
             {
-                string key = null;
-                string idCompany = null;
-                string companyName = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                Request.Cookies.TryGetValue("KeyAvtho", out var key);
+                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                
+                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                    
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
+                    
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
-                    if (id != "" && id != null)
-                    {
-                        ViewBag.Order = managerDispatch.GetOrder(id);
-                        ViewBag.Historys = managerDispatch.GetHistoryOrder(id).Select(x => new HistoryOrder()
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+
+                    if (string.IsNullOrEmpty(id)) return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{stasus}");
+                    var order = orderService.GetOrder(id);
+                    ViewBag.Historys = orderService.GetHistoryOrder(id).Select(x => new HistoryOrder()
                         {
-                            Action = managerDispatch.GetStrAction(key, x.IdConmpany.ToString(), x.IdOreder.ToString(), x.IdVech.ToString(), x.IdDriver.ToString(), x.TypeAction),
+                            Action = orderService.GetStrAction(key, x.IdConmpany.ToString(), x.IdOreder.ToString(), x.IdVech.ToString(), x.IdDriver.ToString(), x.TypeAction),
                             DateAction = x.DateAction
                         })
                         .ToList();
-                        actionResult = View("FullInfoOrder");
-                    }
-                    else
-                    {
-                        actionResult = Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{stasus}");
-                    }
+                    
+                    return View("FullInfoOrder", order);
                 }
-                else
+
+                if (Request.Cookies.ContainsKey("KeyAvtho"))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
+                    Response.Cookies.Delete("KeyAvtho");
                 }
             }
             catch (Exception)
             {
 
             }
-            return actionResult;
+            
+            return Redirect(Config.BaseReqvesteUrl);
         }
         
          [Route("Dashbord/Order/Edit")]
          [ResponseCache(Location = ResponseCacheLocation.None, Duration = 300)]
          public IActionResult EditOrder(string id, string stasus)
          {
-             IActionResult actionResult = null;
              try
              {
-                 string key = null;
-                 string idCompany = null;
-                 string companyName = null;
                  ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                 Request.Cookies.TryGetValue("KeyAvtho", out key);
-                 Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                 Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                 if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                 Request.Cookies.TryGetValue("KeyAvtho", out var key);
+                 Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                 Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                 
+                 if (userService.CheckPermissions(key, idCompany, "Dashbord"))
                  {
                      ViewBag.NameCompany = companyName;
-                     ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
-                     if (id != "" && id != null)
-                     {
-                         ViewBag.Order = managerDispatch.GetOrder(id);
-                         actionResult = View("EditOrder");
-                         Status = stasus;
-                     }
-                     else
-                     {
-                         actionResult = Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{stasus}");
-                     }
+                     ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+
+                     if (string.IsNullOrEmpty(id)) return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{stasus}");
+                     
+                     var order = orderService.GetOrder(id);
+                     Status = stasus;
+                         
+                     return View("EditOrder", order);
+
                  }
-                 else
+
+                 if (Request.Cookies.ContainsKey("KeyAvtho"))
                  {
-                     if (Request.Cookies.ContainsKey("KeyAvtho"))
-                     {
-                         Response.Cookies.Delete("KeyAvtho");
-                     }
-                     actionResult = Redirect(Config.BaseReqvesteUrl);
+                     Response.Cookies.Delete("KeyAvtho");
                  }
              }
              catch (Exception)
              {
          
              }
-             return actionResult;
+             
+             return Redirect(Config.BaseReqvesteUrl);
          }
          
         [Route("Dashbord/Order/EditReload")]
         [ResponseCache(Location = ResponseCacheLocation.None, Duration = 300)]
-        public IActionResult EditReload(string id, string stasus, OrderModel model)
+        public IActionResult EditReload(string id, string stasus, ShippingViewModel model)
         {
-            IActionResult actionResult = null;
             try
             {
-                string key = null;
-                string idCompany = null;
-                string companyName = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                Request.Cookies.TryGetValue("KeyAvtho", out var key);
+                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                
+                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
                 {
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
-                    if (id != "" && id != null)
-                    {
-                        var searchOrder = managerDispatch.GetOrder(id);
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+
+                    if (string.IsNullOrEmpty(id)) return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{stasus}");
+                    var searchOrder = orderService.GetOrder(id);
                         
-                        ViewBag.Order = searchOrder == null ? new Shipping() : searchOrder;
+                    var order = searchOrder ?? new ShippingViewModel();
                         
-                        ViewBag.Order.NameP = model.NameP;
-                        ViewBag.Order.ContactNameP = model.ContactNameP;
-                        ViewBag.Order.CurrentStatus = model.CurrentStatus;
-                        ViewBag.Order.AddresP = model.Address;
-                        ViewBag.Order.CityP = model.CityP;
-                        ViewBag.Order.StateP = model.StateP;
-                        ViewBag.Order.idOrder = model.idOrder;
-                        ViewBag.Order.ZipP = model.ZipP;
-                        ViewBag.Order.PhoneP = model.PhoneP;
-                        ViewBag.Order.EmailP = model.EmailP;
-                        ViewBag.Order.PickupExactly = model.PickupExactly;
-                        ViewBag.Order.Titl1DI = model.Instructions;
-                        ViewBag.Order.NameD = model.NameD;
-                        ViewBag.Order.ContactNameD = model.ContactNameD;
-                        ViewBag.Order.AddresD = model.AddressD;
-                        ViewBag.Order.CityD = model.CityD;
-                        ViewBag.Order.StateD = model.StateD;
-                        ViewBag.Order.ZipD = model.ZipD;
-                        ViewBag.Order.PhoneD = model.PhoneD;
-                        ViewBag.Order.EmailD = model.EmailD;
-                        ViewBag.Order.TotalPaymentToCarrier = model.TotalPaymentToCarrier;
-                        ViewBag.Order.PriceListed = model.PriceListed;
-                        ViewBag.Order.BrokerFee = model.BrokerFee;
+                    order.NameP = model.NameP;
+                    order.ContactNameP = model.ContactNameP;
+                    order.CurrentStatus = model.CurrentStatus;
+                    order.AddresP = model.AddresP;
+                    order.CityP = model.CityP;
+                    order.StateP = model.StateP;
+                    order.IdOrder = model.IdOrder;
+                    order.ZipP = model.ZipP;
+                    order.PhoneP = model.PhoneP;
+                    order.EmailP = model.EmailP;
+                    order.PickupExactly = model.PickupExactly;
+                    order.Titl1DI = model.Titl1DI;
+                    order.NameD = model.NameD;
+                    order.ContactNameD = model.ContactNameD;
+                    order.AddresD = model.AddresD;
+                    order.CityD = model.CityD;
+                    order.StateD = model.StateD;
+                    order.ZipD = model.ZipD;
+                    order.PhoneD = model.PhoneD;
+                    order.EmailD = model.EmailD;
+                    order.TotalPaymentToCarrier = model.TotalPaymentToCarrier;
+                    order.PriceListed = model.PriceListed;
+                    order.BrokerFee = model.BrokerFee;
+                    order.ContactC = model.ContactC;
+                    order.FaxC = model.FaxC;
+                    order.PhoneC = model.PhoneC;
+                    order.IccmcC = model.IccmcC;
                         
-                        actionResult = View("EditOrder");
-                        Status = stasus;
-                    }
-                    else
-                    {
-                        actionResult = Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{stasus}");
-                    }
+                    Status = stasus;
+                        
+                    return View("EditOrder", order);
+
                 }
-                else
+
+                if (Request.Cookies.ContainsKey("KeyAvtho"))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
+                    Response.Cookies.Delete("KeyAvtho");
                 }
             }
             catch (Exception)
             {
 
             }
-            return actionResult;
+            return Redirect(Config.BaseReqvesteUrl);
         }
         
         [Route("Dashbord/Order/Creat")]
         [ResponseCache(Location = ResponseCacheLocation.None, Duration = 300)]
         public async Task<IActionResult> CreatOrderpage()
         {
-            IActionResult actionResult = null;
             try
             {
-                string key = null;
-                string idCompany = null;
-                string companyName = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                Request.Cookies.TryGetValue("KeyAvtho", out var key);
+                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                
+                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
                 {
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
-                    Shipping shipping = await managerDispatch.CreateShiping();
-                    Task.Run(() => managerDispatch.AddHistory(key, "0", shipping.Id, "0", "0", "Creat"));
-                    actionResult = Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/Edit?id={shipping.Id}&stasus=NewLoad");
+                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                    var shipping = await orderService.CreateShipping();
+                    await Task.Run(() => orderService.AddHistory(key, "0", shipping.Id, "0", "0", "Creat"));
+                    
+                    return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/Edit?id={shipping.Id}&stasus=NewLoad");
                 }
-                else
+
+                if (Request.Cookies.ContainsKey("KeyAvtho"))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
+                    Response.Cookies.Delete("KeyAvtho");
                 }
             }
             catch (Exception)
             {
 
             }
-            return actionResult;
+            
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [Route("Dashbord/Order/SavaOrder")]
-        public IActionResult SaveOrder(string idOrder, string idLoad, string internalLoadID, string driver, string status, string instructions, string nameP, string contactP,
-            string addressP, string cityP, string stateP, string zipP, string phoneP, string emailP, string scheduledPickupDateP, string nameD, string contactD, string addressD,
-            string cityD, string stateD, string zipD, string phoneD, string emailD, string ScheduledPickupDateD, string paymentMethod, string price, string paymentTerms, string brokerFee,
-            string contactId, string phoneC, string faxC, string iccmcC)
+        public IActionResult SaveOrder(ShippingViewModel shipping)
         {
-            IActionResult actionResult = null;
             ViewData["TypeNavBar"] = "BaseCommpany";
             try
             {
-                string key = null;
-                string idCompany = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                Request.Cookies.TryGetValue("KeyAvtho", out var key);
+                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                
+                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
                 {
-                    managerDispatch.Updateorder(idOrder, idLoad, internalLoadID, driver, status, instructions, nameP, contactP, addressP, cityP, stateP, zipP,
-                        phoneP, emailP, scheduledPickupDateP, nameD, contactD, addressD, cityD, stateD, zipD, phoneD, emailD, ScheduledPickupDateD, paymentMethod,
-                        price, paymentTerms, brokerFee, contactId, phoneC, faxC, iccmcC);
-                    Task.Run(() => managerDispatch.AddHistory(key, "0", idOrder, "0", "0", "SavaOrder"));
-                    actionResult = Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/NewLoad");
+                    orderService.UpdateOrder(shipping);
+                    Task.Run(() => orderService.AddHistory(key, "0", shipping.Id, "0", "0", "SavaOrder"));
+                    return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/NewLoad");
                 }
-                else
+
+                if (Request.Cookies.ContainsKey("KeyAvtho"))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
+                    Response.Cookies.Delete("KeyAvtho");
                 }
+                
             }
             catch (Exception)
             {
 
             }
-            return actionResult;
+            
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [Route("Dashbord/Order/SavaVech")]
-        public IActionResult SavaVech(string idOrder, string idVech, string VIN, string Year, string Make, string Model, string Type, string Color, string LotNumber)
+        public IActionResult SavaVech(string idOrder, string idVech, string VIN, string Year,
+            string Make, string Model, string Type, string Color, string LotNumber)
         {
-            IActionResult actionResult = null;
             try
             {
-                string key = null;
-                string idCompany = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                Request.Cookies.TryGetValue("KeyAvtho", out var key);
+                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                
+                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
                 {
-                    managerDispatch.SaveVechi(idVech, VIN, Year, Make, Model, Type,  Color, LotNumber);
-                    Task.Run(() => managerDispatch.AddHistory(key, "0", "0", idVech, "0", "SavaVech"));
-                    actionResult = Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/Edit?id={idOrder}&stasus=NewLoad");
+                    orderService.SaveVechi(idVech, VIN, Year, Make, Model, Type,  Color, LotNumber);
+                    Task.Run(() => orderService.AddHistory(key, "0", "0", idVech, "0", "SavaVech"));
+                    return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/Edit?id={idOrder}&stasus=NewLoad");
                 }
-                else
+
+                if (Request.Cookies.ContainsKey("KeyAvtho"))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/Edit?id={idOrder}&stasus=NewLoad");
+                    Response.Cookies.Delete("KeyAvtho");
                 }
             }
             catch (Exception)
             {
-                actionResult = null;
+                return null;
             }
-            return actionResult;
+            
+            return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/Edit?id={idOrder}&stasus=NewLoad");
         }
 
         [Route("Dashbord/Order/RemoveVech")]
         public string RemoveVech(string idVech)
         {
-            string actionResult = null;
             try
             {
-                string key = null;
-                string idCompany = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                Request.Cookies.TryGetValue("KeyAvtho", out var key);
+                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                
+                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
                 {
-                    managerDispatch.AddHistory(key, "0", "0", idVech, "0", "RemoveVech");
-                    managerDispatch.RemoveVechi(idVech);
-                    actionResult = "Vehicle information removed successfully";
+                    orderService.AddHistory(key, "0", "0", idVech, "0", "RemoveVech");
+                    orderService.RemoveVechi(idVech);
+                    
+                    return "Vehicle information removed successfully";
                 }
-                else
+
+                if (Request.Cookies.ContainsKey("KeyAvtho"))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = "Unauthorized user cannot change order";
+                    Response.Cookies.Delete("KeyAvtho");
                 }
+                return "Unauthorized user cannot change order";
             }
             catch (Exception)
             {
-                actionResult = "Vehicle information not removed (ERROR)";
+                return "Vehicle information not removed (ERROR)";
             }
-            return actionResult;
         }
 
         [Route("Dashbord/Order/AddVech")]
         public async Task<string> AddVech(string idOrder)
         {
-            string actionResult = null;
             try
             {
-                string key = null;
-                string idCompany = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Dashbord"))
+                Request.Cookies.TryGetValue("KeyAvtho", out var key);
+                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                
+                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
                 {
-                    VehiclwInformation vehiclwInformation = await managerDispatch.AddVechi(idOrder);
-                    Task.Run(() => managerDispatch.AddHistory(key, "0", idOrder, vehiclwInformation.Id.ToString(), "0", "AddVech"));
+                    var vehiclwInformation = await orderService.AddVechi(idOrder);
+                    
+                    await Task.Run(() => orderService.AddHistory(key, "0", idOrder, vehiclwInformation.Id.ToString(), "0", "AddVech"));
                     ViewBag.Vech = vehiclwInformation;
-                    actionResult = "Vehicle information Added successfully";
+                    return "Vehicle information Added successfully";
                 }
-                else
+
+                if (Request.Cookies.ContainsKey("KeyAvtho"))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = "Unauthorized user cannot change order";
+                    Response.Cookies.Delete("KeyAvtho");
                 }
+                
+                return "Unauthorized user cannot change order";
             }
             catch (Exception)
             {
-                actionResult = "Vehicle information not Added (ERROR)";
+                return "Vehicle information not Added (ERROR)";
             }
-            return actionResult;
         }
 
         [HttpGet]

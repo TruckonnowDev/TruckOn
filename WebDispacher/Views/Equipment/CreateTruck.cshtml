@@ -2,7 +2,7 @@
 <div class="admin truc">
 <div class="container">
 <div class="row">
-<div class="col-md-12">
+<div class="col-md-6">
     <div class="tabContent">
         <div class="title">
             <a href="#" onclick="history.back();">Back to Equipment</a>
@@ -13,11 +13,11 @@
         <form action="" method="post" enctype="multipart/form-data">
             <label class="big-label" for="">
                 Name Truck
-                <input class="height-input" type="text" name="nameTruk" required>
+                <input class="height-input" type="text" name="NameTruck" required>
             </label>
             <label class="big-label" for="">
                 Type Truck <br/>
-                <select class="height-input" name="typeTruk" onchange="SelectTruck(this.options[this.selectedIndex].value)" required style="color:#000000;width:100%;border:1px solid #c4c9d5">
+                <select class="height-input input-select" name="Type" onchange="SelectTruck(this.options[this.selectedIndex].value)" required>
                     <option value="">Choose a truck type</option>
                     <option value="PickUpDually4TiresInTheBackMustHave4Door">Pick up Dually (4 tires in the bacK) must have 4 door</option>
                     @*<option value="PickupFourWheel">Four-wheel pickup dually</option>
@@ -35,43 +35,44 @@
             </label>
             <label class="big-label" for="">
                 Year
-                <input class="height-input" type="text" name="yera">
+                <input class="height-input" type="text" name="Year">
             </label>
             <label class="big-label" for="">
                 Make
-                <input class="height-input" type="text" name="make">
+                <input class="height-input" type="text" name="Make">
             </label>
             <label class="big-label" for="">
                 Model
-                <input class="height-input" type="text" name="model">
+                <input class="height-input" type="text" name="Model">
             </label>
             <label class="big-label" for="">
                 State
-                <input class="height-input" type="text" name="state">
+                <input class="height-input" type="text" name="State">
             </label>
             <label class="big-label" for="">
                 Plate Exp
-                <input class="height-input" type="text" name="exp">
+                <input class="height-input" type="text" name="Exp">
             </label>
             <label class="big-label" for="">
                 Vin#
-                <input class="height-input" type="text" name="vin">
+                <input class="height-input" type="text" name="Vin">
             </label>
             <label class="big-label" for="">
                 Owner
-                <input class="height-input" type="text" name="owner">
+                <input class="height-input" type="text" name="Owner">
             </label>
             <label class="big-label" for="">
                 Plate Truck
-                <input class="height-input" type="text" name="plateTruk" required>
+                <input class="height-input" type="text" name="PlateTruck" required>
             </label>
             <label class="big-label" for="">
                 Color
-                <input class="height-input" type="text" name="color">
+                <input class="height-input" type="text" name="ColorTruck">
             </label>
             <div class="full-label">
-                <a class="a-label">Truck registration</a>
-                <div class="d-flex align-items-center">
+                <p class="a-label">Truck registration</p>
+                <a class="pt-1 pb-1">You can upload files only in pdf, jpg and jpeg</a>
+                <div>
                     <div class="file-group big-label">
                         <div class="row">
                             <div class="col-md-8 label-input d-flex align-items-center">
@@ -87,12 +88,12 @@
                             </div>
                         </div>
                     </div>
-                    <a class="pl-2">You can upload files only in pdf, jpg and jpeg</a>
                 </div>
             </div>
             <div class="full-label">
-                <a class="a-label">Truck lease agreement</a>
-                <div class="d-flex align-items-center">
+                <p class="a-label">Truck lease agreement</p>
+                <a class="pt-1 pb-1">You can upload files only in pdf, jpg and jpeg</a>
+                <div>
                     <div class="file-group big-label">
                         <div class="row">
                             <div class="col-md-8 label-input d-flex align-items-center">
@@ -108,12 +109,12 @@
                             </div>
                         </div>
                     </div>
-                    <a class="pl-2">You can upload files only in pdf, jpg and jpeg</a>
                 </div>
             </div>
             <div class="full-label">
-                <a class="a-label">Truck annual inspection</a>
-                <div class="d-flex align-items-center">
+                <p class="a-label">Truck annual inspection</p>
+                <a class="pt-1 pb-1">You can upload files only in pdf, jpg and jpeg</a>
+                <div>
                     <div class="file-group big-label">
                         <div class="row">
                             <div class="col-md-8 label-input d-flex align-items-center">
@@ -129,12 +130,12 @@
                             </div>
                         </div>
                     </div>
-                    <a class="pl-2">You can upload files only in pdf, jpg and jpeg</a>
                 </div>
             </div>
             <div class="full-label">
-                <a class="a-label">Bob tail physical damage (optional)</a>
-                <div class="d-flex align-items-center">
+                <p class="a-label">Bob tail physical damage (optional)</p>
+                <a class="pt-1 pb-1">You can upload files only in pdf, jpg and jpeg</a>
+                <div>
                     <div class="file-group big-label">
                         <div class="row">
                             <div class="col-md-8 label-input d-flex align-items-center">
@@ -150,12 +151,12 @@
                             </div>
                         </div>
                     </div>
-                    <a class="pl-2">You can upload files only in pdf, jpg and jpeg</a>
                 </div>
             </div>
             <div class="full-label">
-                <a class="a-label">NY HUT (optional for NY rolling)</a>
-                <div class="d-flex align-items-center">
+                <p class="a-label">NY HUT (optional for NY rolling)</p>
+                <a class="pt-1 pb-1">You can upload files only in pdf, jpg and jpeg</a>
+                <div>
                     <div class="file-group big-label">
                         <div class="row">
                             <div class="col-md-8 label-input d-flex align-items-center">
@@ -171,7 +172,6 @@
                             </div>
                         </div>
                     </div>
-                    <a class="pl-2">You can upload files only in pdf, jpg and jpeg</a>
                 </div>
             </div>
             <button id="button-save" class="btn1 big-label height-input big-font-size">Save Info</button>

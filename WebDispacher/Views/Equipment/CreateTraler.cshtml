@@ -4,15 +4,20 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="tabContent">
-                        <h2>Add trailer</h2>
+                        <div class="title">
+                                    <a href="#" onclick="history.back();">Back to Equipment</a>
+                                </div>
+                        <div class="title">
+                            <h1 class="text-info-header-1">Add New Trailer</h1>
+                        </div>
                         <form action="" method="post" enctype="multipart/form-data">
-                            <label for="">
+                            <label class="big-label" for="">
                                 Name Trailer
-                                <input type="text" name="name" required>
+                                <input type="text" class="height-input" name="Name" required>
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Type Trailer <br />
-                                <select name="typeTrailer" onchange="SelectTrailer(this.options[this.selectedIndex].value)" required style="width:500px;">
+                                <select class="height-input input-select" name="Type" onchange="SelectTrailer(this.options[this.selectedIndex].value)" required>
                                     <option value="">Choose a trailer type</option>
                                     <option value="Bumperpool2CarEeclosedTraile">Bumperpool 2 Car Eeclosed Traile</option>
                                     @*<option value="GooseneckTrailerTwoVehicles">Gooseneck trailer for two vehicles</option>
@@ -32,59 +37,112 @@
                                     <option value="BumperPool2CarTrailer">Bumper Pool 2 Car Trailer</option>*@
                                 </select>
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Year
-                                <input type="text" name="year">
+                                <input type="text" class="height-input" name="Year">
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Make
-                                <input type="text" name="make">
+                                <input type="text" class="height-input" name="Make">
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Model
-                                <input type="text" name="model">
+                                <input type="text" class="height-input" name="Model">
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 How Long
-                                <input type="text" name="howLong">
+                                <input type="text" class="height-input" name="HowLong">
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Vin#
-                                <input type="text" name="vin">
+                                <input type="text" class="height-input" name="Vin">
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Owner
-                                <input type="text" name="owner">
+                                <input type="text" class="height-input" name="Owner">
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Color
-                                <input type="text" name="color">
+                                <input type="text" class="height-input" name="Color">
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Plate Trailer
-                                <input type="text" name="plate" required>
+                                <input type="text" class="height-input" name="Plate" required>
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Plate Exp Trailer
-                                <input type="text" name="exp">
+                                <input type="text" class="height-input" name="Exp">
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 ANNUAL INS
-                                <input type="text" name="annualIns">
+                                <input type="text" class="height-input" name="AnnualIns">
                             </label>
-                            <label for="">
-                                Document Trailer registration
-                                <input type="file" name="trailerRegistrationDoc" accept="application/pdf, image/jpeg, image/jpg" required><p>You can upload files only in pdf, jpg and jepg</p>
-                            </label>
-                            <label for="">
-                                Document Trailer annual inspection
-                                <input type="file" name="trailerAnnualInspectionDoc" accept="application/pdf, image/jpeg, image/jpg" required><p>You can upload files only in pdf, jpg and jepg</p>
-                            </label>
-                            <label for="">
-                                Document Lease agreement (optional)
-                                <input type="file" name="leaseAgreementDoc" accept="application/pdf, image/jpeg, image/jpg"><p>You can upload files only in pdf, jpg and jepg</p>
-                            </label>
-                            <button class="btn1">Save Info</button>
+                            <div class="full-label">
+                                <p class="a-label">Document Trailer registration</p>
+                                <a class="pt-1 pb-1">You can upload files only in pdf, jpg and jpeg</a>
+                                <div>
+                                    <div class="file-group big-label">
+                                        <div class="row">
+                                            <div class="col-md-8 label-input d-flex align-items-center">
+                                                <div onclick="ClearFile(`fi1`, 'fl1');" class="fi" id="fl1"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                            
+                                                <div class="select-button-1 d-flex justify-content-end">
+                                                    <label>
+                                                        Select document
+                                                        <input class="height-input" id="fi1" type="file" onchange="GetFileName(this.value, 'fl1');" name="trailerRegistrationDoc" accept="application/pdf, image/jpeg, image/jpg" required>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="full-label">
+                                <p class="a-label">Document Trailer annual inspection</p>
+                                <a class="pt-1 pb-1">You can upload files only in pdf, jpg and jpeg</a>
+                                <div>
+                                    <div class="file-group big-label">
+                                        <div class="row">
+                                            <div class="col-md-8 label-input d-flex align-items-center">
+                                                <div onclick="ClearFile(`fi2`, 'fl2');" class="fi" id="fl2"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                            
+                                                <div class="select-button-1 d-flex justify-content-end">
+                                                    <label>
+                                                        Select document
+                                                        <input class="height-input" id="fi2" type="file" onchange="GetFileName(this.value, 'fl2');" name="trailerAnnualInspectionDoc" accept="application/pdf, image/jpeg, image/jpg" required>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="full-label">
+                                <p class="a-label">Document Lease agreement (optional)</p>
+                                <a class="pt-1 pb-1">You can upload files only in pdf, jpg and jpeg</a>
+                                <div>
+                                    <div class="file-group big-label">
+                                        <div class="row">
+                                            <div class="col-md-8 label-input d-flex align-items-center">
+                                                <div onclick="ClearFile(`fi3`, 'fl3');" class="fi" id="fl3"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="select-button-1 d-flex justify-content-end">
+                                                    <label>
+                                                        Select document
+                                                        <input class="height-input" id="fi3" type="file" onchange="GetFileName(this.value, 'fl3');" name="leaseAgreementDoc" accept="application/pdf, image/jpeg, image/jpg">
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="height-input btn1 big-label big-font-size">Save Info</button>
                         </form>
                     </div>
                 </div>

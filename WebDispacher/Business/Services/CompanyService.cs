@@ -297,7 +297,7 @@ namespace WebDispacher.Business.Services
 
         public string GetTypeNavBar(string key, string idCompany, string typeNav = "Work")
         {
-            var typeNavBar = "";
+            var typeNavBar = string.Empty;
             var users = userService.GetUserByKey(key);
             var company = userService.GetCompanyById(idCompany);
 

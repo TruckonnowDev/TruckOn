@@ -8,6 +8,7 @@ using iTextSharp.text;
 using Microsoft.AspNetCore.Mvc;
 using Stripe;
 using WebDispacher.Business.Interfaces;
+using WebDispacher.Constants;
 using WebDispacher.Models;
 using WebDispacher.Service;
 
@@ -34,14 +35,17 @@ namespace WebDispacher.Controellers.Settings
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "PaymentMethod"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.PaymentMethod))
                 {
                     var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, isCancelSubscribe ? "Cancel" : "Settings");
+                    ViewData[NavConstants.TypeNavBar] = 
+                        companyService.GetTypeNavBar(key, idCompany, isCancelSubscribe
+                            ? NavConstants.TypeNavCancel : NavConstants.TypeNavSettings);
+                    
                     ViewBag.NameCompany = companyName;
                     var paymentMethods = companyService.GetPaymentMethod(idCompany);
                     var paymentMethodSTs = companyService.GetPaymentMethodsST(idCompany);
@@ -55,7 +59,7 @@ namespace WebDispacher.Controellers.Settings
                         ExpYear = z.Card.ExpYear.ToString(),
                         Last4 = z.Card.Last4,
                         Name = z.Metadata["name"],
-                        IsDefault = paymentMethodSTs.FirstOrDefault(pm => pm.IdPaymentMethod_ST == z.Id) != null 
+                        IsDefault = paymentMethodSTs.FirstOrDefault(pm => pm.IdPaymentMethod_ST == z.Id) != null
                             ? paymentMethodSTs.FirstOrDefault(pm => pm.IdPaymentMethod_ST == z.Id).IsDefault : false
                     }).ToList();
                     
@@ -64,9 +68,9 @@ namespace WebDispacher.Controellers.Settings
                     return View("~/Views/Settings/Biling/PaymentMethod.cshtml");
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception e)
@@ -84,29 +88,30 @@ namespace WebDispacher.Controellers.Settings
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "PaymentMethod"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.PaymentMethod))
                 {
                     var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, isCancelSubscribe 
-                        ? "Cancel" : "Settings");
+                    
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany, isCancelSubscribe
+                        ? NavConstants.TypeNavCancel : NavConstants.TypeNavSettings);
                     
                     ViewBag.NameCompany = companyName;
-                    ViewBag.TxtError = "";
-                    ViewBag.Numbercard = "";
-                    ViewBag.FullName = "";
-                    ViewBag.Expire = "";
-                    ViewBag.Cvv = "";
+                    ViewBag.TxtError = string.Empty;
+                    ViewBag.Numbercard = string.Empty;
+                    ViewBag.FullName = string.Empty;
+                    ViewBag.Expire = string.Empty;
+                    ViewBag.Cvv = string.Empty;
                     
                     return View("~/Views/Settings/Biling/AddPaymentMethod.cshtml");
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception e)
@@ -124,14 +129,17 @@ namespace WebDispacher.Controellers.Settings
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "PaymentMethod"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.PaymentMethod))
                 {
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
+                    
+                    ViewData[NavConstants.TypeNavBar] = 
+                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+                    
                     var responseStripe =  companyService.AddPaymentCard(idCompany, number, name, expiry, cvc);
 
                     if (!responseStripe.IsError)
@@ -142,13 +150,13 @@ namespace WebDispacher.Controellers.Settings
                     ViewBag.FullName = name;
                     ViewBag.Expire = expiry;
                     ViewBag.Cvv = cvc;
+                    
                     return View("~/Views/Settings/Biling/AddPaymentMethod.cshtml");
-
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception e)
@@ -166,22 +174,25 @@ namespace WebDispacher.Controellers.Settings
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "PaymentMethod"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.PaymentMethod))
                 {
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
+                    
+                    ViewData[NavConstants.TypeNavBar] = 
+                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+                    
                     companyService.SelectDefaultPaymentMethod(idPayment, idCompany);
                     
                     return Redirect($"{Config.BaseReqvesteUrl}/Settings/Biling/PaymentMethod");
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception e)
@@ -199,22 +210,25 @@ namespace WebDispacher.Controellers.Settings
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "PaymentMethod"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.PaymentMethod))
                 {
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
+                    
+                    ViewData[NavConstants.TypeNavBar] = 
+                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+                    
                     companyService.DeletePaymentMethod(idPayment, idCompany);
                     
                     return Redirect($"{Config.BaseReqvesteUrl}/Settings/Biling/PaymentMethod");
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception e)

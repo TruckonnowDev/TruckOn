@@ -10,6 +10,7 @@ using DaoModels.DAO.Enum;
 using DaoModels.DAO.Interface;
 using DaoModels.DAO.Models;
 using DaoModels.DAO.Models.Settings;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Stripe;
 using WebDispacher.Business.Interfaces;
@@ -158,7 +159,7 @@ namespace WebDispacher.Business.Services
             
             return key;
         }
-        
+
         public bool CheckKey(string key)
         {
             return key != null && CheckKeyDb(key);

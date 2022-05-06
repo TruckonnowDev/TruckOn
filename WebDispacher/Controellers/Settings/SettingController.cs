@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using WebDispacher.Business.Interfaces;
+using WebDispacher.Constants;
 using WebDispacher.Service;
 
 namespace WebDispacher.Controellers.Settings
@@ -30,11 +31,11 @@ namespace WebDispacher.Controellers.Settings
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "Setings"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Settings))
                 {
                     var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     
@@ -43,9 +44,13 @@ namespace WebDispacher.Controellers.Settings
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
                     
-                    ViewData["TypeNavBar"]  = companyService.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData[NavConstants.TypeNavBar]  =
+                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+                    
                     ViewBag.NameCompany = companyName;
-                    ViewBag.SelectSetingTruck = driverService.GetSelectSetingTruck(idCompany, idProfile, idTr, typeTransport);
+                    ViewBag.SelectSetingTruck = 
+                        driverService.GetSelectSetingTruck(idCompany, idProfile, idTr, typeTransport);
+                    
                     ViewBag.SetingsTruck = driverService.GetSetingsTruck(idCompany, idProfile, idTr, typeTransport);
                     ViewBag.IdProfile = idProfile;
                     ViewBag.IdTr = idTr;
@@ -55,9 +60,9 @@ namespace WebDispacher.Controellers.Settings
                     return View("~/Views/Settings/TrSettings.cshtml");
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception e)
@@ -75,11 +80,11 @@ namespace WebDispacher.Controellers.Settings
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "Setings"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Settings))
                 {
                     var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     
@@ -88,16 +93,18 @@ namespace WebDispacher.Controellers.Settings
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
                     
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData[NavConstants.TypeNavBar] = 
+                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+                    
                     ViewBag.NameCompany = companyName;
                     ViewBag.Trucks = truckAndTrailerService.GetTrucks(idCompany);
                     
                     return View("~/Views/Settings/Trucks.cshtml");
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception e)
@@ -115,11 +122,11 @@ namespace WebDispacher.Controellers.Settings
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "Setings"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Settings))
                 {
                     var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     
@@ -128,16 +135,16 @@ namespace WebDispacher.Controellers.Settings
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
                     
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
                     ViewBag.NameCompany = companyName;
                     ViewBag.Trailers = truckAndTrailerService.GetTrailers(idCompany);
                     
                     return View("~/Views/Settings/Trailers.cshtml");
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception e)
@@ -155,22 +162,24 @@ namespace WebDispacher.Controellers.Settings
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "Setings"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Settings))
                 {
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData[NavConstants.TypeNavBar] = 
+                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+                    
                     ViewBag.NameCompany = companyName;
                     var id = truckAndTrailerService.AddProfile(idCompany, idTr, typeTransport);
                     
                     return Redirect($"{Config.BaseReqvesteUrl}/Settings?idTr={idTr}&page=s&idProfile={id}&typeTransport={typeTransport}");
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception e)
@@ -188,22 +197,24 @@ namespace WebDispacher.Controellers.Settings
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "Setings"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Settings))
                 {
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData[NavConstants.TypeNavBar] = 
+                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+                    
                     ViewBag.NameCompany = companyName;
                     driverService.RemoveProfile(idCompany, idProfile);
                     
                     return Redirect($"{Config.BaseReqvesteUrl}/Settings?idTr={idTr}&idProfile={0}&typeTransport={typeTransport}");
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception e)
@@ -221,22 +232,24 @@ namespace WebDispacher.Controellers.Settings
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "Setings"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Settings))
                 {
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData[NavConstants.TypeNavBar] = 
+                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+                    
                     ViewBag.NameCompany = companyName;
                     driverService.SelectLayout(idLayout);
                     
-                    return "";
+                    return string.Empty;
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception e)
@@ -254,22 +267,24 @@ namespace WebDispacher.Controellers.Settings
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "Setings"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Settings))
                 {
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData[NavConstants.TypeNavBar] =
+                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+                    
                     ViewBag.NameCompany = companyName;
                     driverService.SelectProfile(idProfile, typeTransport, idTr, idCompany);
                     
-                    return "";
+                    return string.Empty;
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception e)
@@ -287,22 +302,22 @@ namespace WebDispacher.Controellers.Settings
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "Setings"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Settings))
                 {
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
                     ViewBag.NameCompany = companyName;
                     driverService.UnSelectLayout(idLayout);
                     
-                    return "";
+                    return string.Empty;
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception e)
@@ -320,22 +335,24 @@ namespace WebDispacher.Controellers.Settings
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "Setings"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Settings))
                 {
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData[NavConstants.TypeNavBar] = 
+                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+                    
                     ViewBag.NameCompany = companyName;
                     driverService.LayoutUp(idLayout, idTransported);
                     
-                    return "";
+                    return string.Empty;
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception e)
@@ -353,22 +370,24 @@ namespace WebDispacher.Controellers.Settings
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "Setings"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Settings))
                 {
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData[NavConstants.TypeNavBar] = 
+                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+                    
                     ViewBag.NameCompany = companyName;
                     driverService.LayoutDown(idLayout, idTransported);
                     
-                    return "";
+                    return string.Empty;
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception e)

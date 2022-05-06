@@ -7,5 +7,6 @@
         public const string SettingsUser = "Setings/User";
         public const string Settings = "Setings";
         public const string Subscription = "Subscription";
+        public const string Bol = "BOL";
     }
 }

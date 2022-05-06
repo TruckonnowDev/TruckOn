@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using WebDispacher.Business.Interfaces;
+using WebDispacher.Constants;
 using WebDispacher.Service;
 
 namespace WebDispacher.Controellers
@@ -34,85 +35,82 @@ namespace WebDispacher.Controellers
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public IActionResult GetPhotoInspection(int idVech)
         {
-            IActionResult actionResult = null;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-            Request.Cookies.TryGetValue("KeyAvtho", out var key);
-            Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-            Request.Cookies.TryGetValue("CommpanyName", out var companyName);
-            if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "BOL"))
+            Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+            Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+            Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
+            
+            if (userService.CheckPermissions(key, idCompany, RouteConstants.Bol))
             {
-                bool isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                
                 if (isCancelSubscribe)
                 {
                     return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
-                Shipping shipping = orderService.GetShippingCurrentVehiclwIn(idVech.ToString());
-                VehiclwInformation vehiclwInformation = shipping.VehiclwInformations.FirstOrDefault(v => v.Id == idVech);
+                
+                var shipping = orderService.GetShippingCurrentVehiclwIn(idVech.ToString());
+                
+                var vehiclwInformation = shipping.VehiclwInformations.FirstOrDefault(v => v.Id == idVech);
+                
                 if (shipping != null)
                 {
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                     ViewBag.Shipp = shipping;
                     ViewBag.Vehiclw = vehiclwInformation;
-                    actionResult = View("InspectionVech");
+                    
+                    return View("InspectionVech");
                 }
             }
             else
             {
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
-                actionResult = Redirect(Config.BaseReqvesteUrl);
             }
-            return actionResult;
+            
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [Route("Welcome/Photo/BOL/{idVech}")]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public IActionResult GetWelcomePhotoInspection(int idVech)
         {
-            IActionResult actionResult = null;
-            ViewData["TypeNavBar"] = "BaseAllUsers";
-            Shipping shipping = orderService.GetShippingCurrentVehiclwIn(idVech.ToString());
-            VehiclwInformation vehiclwInformation = shipping.VehiclwInformations.FirstOrDefault(v => v.Id == idVech);
+            ViewData[NavConstants.TypeNavBar] = NavConstants.BaseAllUsers;
+            
+            var shipping = orderService.GetShippingCurrentVehiclwIn(idVech.ToString());
+            var vehiclwInformation = shipping.VehiclwInformations.FirstOrDefault(v => v.Id == idVech);
+            
             if (shipping != null)
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 ViewBag.Shipp = shipping;
                 ViewBag.Vehiclw = vehiclwInformation;
-                actionResult = View("WelcomeInspectionVech");
+                
+                return View("WelcomeInspectionVech");
             }
-            return actionResult;
+            
+            return null;
         }
 
         [Route("Doc/{idDriver}")]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public async Task<IActionResult> GoToViewTruckDoc(string idDriver)
         {
-            IActionResult actionResult = null;
-            ViewData["TypeNavBar"] = "BaseAllUsers";
+            ViewData[NavConstants.TypeNavBar] = NavConstants.BaseAllUsers;
 
-            Truck truck = null;
-            Trailer trailer = null;
+            var truck = await truckAndTrailerService.GetTruck(idDriver);
+            ViewBag.Truck = truck;
+            ViewBag.TruckDoc = await truckAndTrailerService.GetTruckDoc((truck?.Id ?? 0).ToString());
 
-            await Task.WhenAll(
-            Task.Run(async() => 
-            {
-                truck = await truckAndTrailerService.GetTruck(idDriver); 
-                ViewBag.Truck = truck;
-                ViewBag.TruckDoc = await truckAndTrailerService.GetTruckDoc((truck != null ? truck.Id : 0).ToString());
-            }),
-            Task.Run(async() =>
-            {
-                trailer = await truckAndTrailerService.GetTrailer(idDriver);
-                ViewBag.Trailer = trailer;
-                ViewBag.TrailerDoc = await truckAndTrailerService.GetTrailerDoc((trailer != null ? trailer.Id : 0).ToString());
-            }));
+            var trailer = await truckAndTrailerService.GetTrailer(idDriver);
+            ViewBag.Trailer = trailer;
+            ViewBag.TrailerDoc = await truckAndTrailerService.GetTrailerDoc((trailer?.Id ?? 0).ToString());
 
-            actionResult = View($"DocDriver");
-            return actionResult;
+            return View($"DocDriver");
         }
 
         [Route("Doc")]
@@ -120,129 +118,125 @@ namespace WebDispacher.Controellers
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public async Task<IActionResult> GoToViewTruckDoc(string truckPlate, string trailerPlate)
         {
-            IActionResult actionResult = null;
-            ViewData["TypeNavBar"] = "BaseAllUsers";
+            ViewData[NavConstants.TypeNavBar] = NavConstants.BaseAllUsers;
 
-            Truck truck = null;
-            Trailer trailer = null;
+            var truck = await truckAndTrailerService.GetTruckByPlate(truckPlate);
+            ViewBag.Truck = truck;
+            ViewBag.TruckDoc = await truckAndTrailerService.GetTruckDoc((truck?.Id ?? 0).ToString());
 
-            await Task.WhenAll(
-            Task.Run(async () =>
-            {
-                truck = await truckAndTrailerService.GetTruckByPlate(truckPlate);
-                ViewBag.Truck = truck;
-                ViewBag.TruckDoc = await truckAndTrailerService.GetTruckDoc((truck != null ? truck.Id : 0).ToString());
-            }),
-            Task.Run(async () =>
-            {
-                trailer = await truckAndTrailerService.GetTrailerByPlate(trailerPlate);
-                ViewBag.Trailer = trailer;
-                ViewBag.TrailerDoc = await truckAndTrailerService.GetTrailerDoc((trailer != null ? trailer.Id : 0).ToString());
-            }));
-
-            actionResult = View($"DocDriver");
-            return actionResult;
+            var trailer = await truckAndTrailerService.GetTrailerByPlate(trailerPlate);
+            ViewBag.Trailer = trailer;
+            ViewBag.TrailerDoc = await truckAndTrailerService.GetTrailerDoc((trailer?.Id ?? 0).ToString());
+            
+            return View($"DocDriver");
         }
 
         [HttpGet]
         [Route(".well-known/acme-challenge/{file}")]
         public string GetWellKnownFile(string file)
         {
-            string actionResult = "";
             if (System.IO.File.Exists($"../Root/{file}"))
             {
                 var imageFileStream = System.IO.File.OpenRead($"../Root/{file}");
-                actionResult = System.IO.File.ReadAllText($"../Root/{file}");
+                
+                return System.IO.File.ReadAllText($"../Root/{file}");
             }
-            else if (System.IO.Directory.Exists($"../Root/{file}"))
+
+            if (!System.IO.Directory.Exists($"../Root/{file}")) return "No such file exists";
+            
+            var files = System.IO.Directory.GetFiles($"../Root/{file}").ToList();
+            files.AddRange(System.IO.Directory.GetDirectories($"../Root/{file}").ToList());
+                
+            var returnString = string.Empty;
+            foreach (var file1 in files)
             {
-                List<string> files = System.IO.Directory.GetFiles($"../Root/{file}").ToList();
-                files.AddRange(System.IO.Directory.GetDirectories($"../Root/{file}").ToList());
-                foreach (string file1 in files)
-                {
-                    actionResult += file1.Remove(0, file1.LastIndexOf(@"\") + 1) + "\n";
-                }
+                returnString += file1.Remove(0, file1.LastIndexOf(@"\") + 1) + "\n";
             }
-            else
-            {
-                actionResult = "No such file exists";
-            }
-            return actionResult;
+
+            return returnString;
+
         }
 
         [HttpGet]
         [Route(".well-known/acme-challenge")]
         public string GetWellKnownOnlyFile()
         {
-            string actionResult = "";
-            List<string> files = System.IO.Directory.GetFiles(@"..\Root").ToList();
+            var stringReturn = string.Empty;
+            
+            var files = System.IO.Directory.GetFiles(@"..\Root").ToList();
             files.AddRange(System.IO.Directory.GetDirectories(@"..\Root").ToList());
-            foreach (string file1 in files)
+            
+            foreach (var file1 in files)
             {
-                actionResult += file1.Remove(0, file1.LastIndexOf(@"\")+1) + "\n";
+                stringReturn += file1.Remove(0, file1.LastIndexOf(@"\")+1) + "\n";
             }
-            return actionResult;
+            
+            return stringReturn;
         }
 
         [HttpGet]
         [Route("Root/{file}")]
         public string GetRootFile(string file)
         {
-            string actionResult = "";
             if (System.IO.File.Exists($"../Root/{file}"))
             {
                 var imageFileStream = System.IO.File.OpenRead($"../Root/{file}");
-                actionResult = System.IO.File.ReadAllText($"../Root/{file}");
+                
+                return System.IO.File.ReadAllText($"../Root/{file}");
             }
-            else if(System.IO.Directory.Exists($"../Root/{file}"))
+
+            if (!System.IO.Directory.Exists($"../Root/{file}")) return "No such file exists";
+            
+            var files = System.IO.Directory.GetFiles($"../Root/{file}").ToList();
+            files.AddRange(System.IO.Directory.GetDirectories($"../Root/{file}").ToList());
+            var returnString = string.Empty;
+                
+            foreach(var file1 in files)
             {
-                List<string> files = System.IO.Directory.GetFiles($"../Root/{file}").ToList();
-                files.AddRange(System.IO.Directory.GetDirectories($"../Root/{file}").ToList());
-                foreach(string file1 in files)
-                {
-                    actionResult += file1.Remove(0, file1.LastIndexOf(@"\") + 1) + "\n";
-                }
+                returnString += file1.Remove(0, file1.LastIndexOf(@"\") + 1) + "\n";
             }
-            else
-            {
-                actionResult = "No such file exists";
-            }
-            return actionResult;
+            
+            return returnString;
         }
 
         [HttpGet]
         [Route("Root/File/{file}")]
         public IActionResult GetRootFile(string file, string prefName)
         {
-            IActionResult actionResult = null;
             var stream = new FileStream($"../Root/{file}", FileMode.Open);
-            actionResult = new FileStreamResult(stream, $"application/{prefName}");
-            return actionResult;
+            
+            return new FileStreamResult(stream, $"application/{prefName}");
         }
 
         [HttpGet]
         [Route("Root")]
         public string GetRootOnlyFile()
         {
-            string actionResult = "";
-            List<string> files = System.IO.Directory.GetFiles(@"..\Root").ToList();
+            var files = System.IO.Directory.GetFiles(@"..\Root").ToList();
             files.AddRange(System.IO.Directory.GetDirectories(@"..\Root").ToList());
-            foreach (string file1 in files)
+            
+            var returnString = string.Empty;
+            
+            foreach (var file1 in files)
             {
-                actionResult += file1.Remove(0, file1.LastIndexOf(@"\") + 1) + "\n";
+                returnString += file1.Remove(0, file1.LastIndexOf(@"\") + 1) + "\n";
             }
-            return actionResult;
+            
+            return returnString;
         }
 
         private List<Photo> SortPhotoInspections(List<Photo> photos)
         {
-            List<Photo> photos1 = new List<Photo>();
+            var photos1 = new List<Photo>();
+            
             foreach (var photo in photos)
             {
-                byte[] image = Convert.FromBase64String(photo.Base64);
+                var image = Convert.FromBase64String(photo.Base64);
                 var ms = new MemoryStream(image);
-                Image img = Image.FromStream(ms);
+                
+                var img = Image.FromStream(ms);
             }
+            
             return photos1;
         }
     }

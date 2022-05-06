@@ -8,5 +8,6 @@
         public const string Settings = "Setings";
         public const string Subscription = "Subscription";
         public const string Bol = "BOL";
+        public const string Company = "Company";
     }
 }

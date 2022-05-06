@@ -7,5 +7,6 @@
         public const string BaseAllUsers = "BaseAllUsers";
         public const string TypeNavCancel = "Cancel";
         public const string TextErrorSub = "TextErrorSub";
+        public const string BaseCompany = "BaseCommpany";
     }
 }

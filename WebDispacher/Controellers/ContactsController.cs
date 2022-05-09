@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using WebDispacher.Business.Interfaces;
+using WebDispacher.Constants;
 using WebDispacher.Service;
 using WebDispacher.ViewModels.Contact;
 
@@ -25,11 +26,11 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "Contact"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Contact))
                 {
                     var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     
@@ -39,15 +40,15 @@ namespace WebDispacher.Controellers
                     }
                     
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     ViewBag.Contacts = companyService.GetContacts(idCompany);
                     
                     return View("FullContacts");
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception)
@@ -64,15 +65,15 @@ namespace WebDispacher.Controellers
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public IActionResult CreateContact()
         {
-            ViewData["TypeNavBar"] = "BaseCommpany";
+            ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "Contact"))
+                if (userService.CheckPermissions(key, idCompany,RouteConstants.Contact))
                 {
                     var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     
@@ -82,13 +83,14 @@ namespace WebDispacher.Controellers
                     }
                     
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
+                    
                     return View("CreateContact");
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception)
@@ -103,14 +105,14 @@ namespace WebDispacher.Controellers
         [Route("Contact/CreateContact")]
         public IActionResult CreateDriver(ContactViewModel model)
         {
-            ViewData["TypeNavBar"] = "BaseCommpany";
+            ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
                 
-                if (userService.CheckPermissions(key, idCompany, "Contact"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Contact))
                 {
                     if (!ModelState.IsValid) return View("CreateContact");
                     
@@ -119,9 +121,9 @@ namespace WebDispacher.Controellers
                     return Redirect($"{Config.BaseReqvesteUrl}/Contact/Contacts");
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception)
@@ -139,11 +141,11 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "Contact"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Contact))
                 {
                     var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     
@@ -153,15 +155,15 @@ namespace WebDispacher.Controellers
                     }
                     
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     var contact = companyService.GetContact(id);
                     
                     return View("EditContact", contact);
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception)
@@ -179,22 +181,22 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "Contact"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Contact))
                 {
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     companyService.EditContact(contact);
                     
                     return Redirect($"{Config.BaseReqvesteUrl}/Contact/Contacts");
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception)
@@ -212,22 +214,22 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "Contact"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Contact))
                 {
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     companyService.DeleteContactById(id);
                     
                     return Redirect($"{Config.BaseReqvesteUrl}/Contact/Contacts");
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception)

@@ -10,5 +10,6 @@
         public const string Bol = "BOL";
         public const string Company = "Company";
         public const string Contact = "Contact";
+        public const string Dashboard = "Dashbord";
     }
 }

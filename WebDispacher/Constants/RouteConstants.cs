@@ -11,5 +11,7 @@
         public const string Company = "Company";
         public const string Contact = "Contact";
         public const string Dashboard = "Dashbord";
+        public const string Geolocation = "Geolcation";
+        public const string Equipment = "Equipment";
     }
 }

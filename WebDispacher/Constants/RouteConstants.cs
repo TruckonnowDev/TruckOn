@@ -13,5 +13,6 @@
         public const string Dashboard = "Dashbord";
         public const string Geolocation = "Geolcation";
         public const string Equipment = "Equipment";
+        public const string Driver = "Driver";
     }
 }

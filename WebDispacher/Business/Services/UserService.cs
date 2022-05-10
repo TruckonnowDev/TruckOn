@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Stripe;
 using WebDispacher.Business.Interfaces;
+using WebDispacher.Constants;
 using WebDispacher.Models;
 using WebDispacher.Service;
 using WebDispacher.Service.EmailSmtp;
@@ -54,11 +55,11 @@ namespace WebDispacher.Business.Services
         {
             var isPermission = false;
             var users = GetUserByKey(key);
-            var commpany = GetCompanyById(idCompany);
+            var company = GetCompanyById(idCompany);
             
-            if(users != null && commpany != null)
+            if(users != null && company != null)
             {
-                isPermission = ValidCompanyRoute(commpany.Type, route);
+                isPermission = ValidCompanyRoute(company.Type, route);
             }
             
             return isPermission;
@@ -72,7 +73,6 @@ namespace WebDispacher.Business.Services
             return commpany;
         }
         
-        /* NOT WORK */
         public bool CheckEmail(string email)
         {
             var isEmail = CheckEmail(email);
@@ -83,7 +83,7 @@ namespace WebDispacher.Business.Services
                 var idUser = AddRecoveryPassword(email, token);
                 var pattern = new PaternSourse().GetPaternRecoveryPassword($"{Config.BaseReqvesteUrl}/Recovery/Password?idUser={idUser}&token={token}");
                 
-                Task.Run(async () => await new AuthMessageSender().Execute(email, "Password recovery", pattern));
+                Task.Run(async () => await new AuthMessageSender().Execute(email,  UserConstants.PasswordRecovery, pattern));
             }
             
             return isEmail;
@@ -97,13 +97,13 @@ namespace WebDispacher.Business.Services
             {
                 var emailUser = GetEmailUserDb(idUser);
                 var pattern = new PaternSourse().GetPaternDataAccountUser(emailUser, newPassword);
-                await new AuthMessageSender().Execute(emailUser, "Password changed successfully", pattern);
+                await new AuthMessageSender().Execute(emailUser, UserConstants.PasswordChanged, pattern);
             }
             else
             {
                 var emailDriver = GetEmailUserDb(idUser);
                 var pattern = new PaternSourse().GetPaternNoRestoreDataAccountUser();
-                await new AuthMessageSender().Execute(emailDriver, "Password reset attempt failed", pattern);
+                await new AuthMessageSender().Execute(emailDriver, UserConstants.PasswordResetFailed, pattern);
             }
             
             return isStateActual;
@@ -119,7 +119,7 @@ namespace WebDispacher.Business.Services
             db.User.Add(new Users()
             {
                 CompanyId = id,
-                Login = nameCompany + "Admin",
+                Login = nameCompany + UserConstants.Admin,
                 Password = password,
                 Date = DateTime.Now.ToString()
             });
@@ -268,7 +268,7 @@ namespace WebDispacher.Business.Services
         
         private string GetEmailUserDb(string idUser)
         {
-            var emailDriver = "";
+            var emailDriver = string.Empty;
             var users = db.User.FirstOrDefault(d => d.Id.ToString() == idUser);
             
             if (users != null)
@@ -309,7 +309,7 @@ namespace WebDispacher.Business.Services
         
         private string CreateToken(string email)
         {
-            var token = "";
+            var token = string.Empty;
             
             for (var i = 0; i < email.Length; i++)
             {
@@ -328,7 +328,7 @@ namespace WebDispacher.Business.Services
         {
             var validCompany = false;
             
-            if (route == "Company")
+            if (route == RouteConstants.Company)
             {
                 if (typeCompany == TypeCompany.BaseCommpany)
                 {

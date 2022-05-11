@@ -12,6 +12,13 @@
         public const string BobTailPhysicalDamage = "Bob tail physical damage";
         public const string NyHit = "NY HUT";
         public const string Kyu = "KYU";
+        public const string Dl = "DL";
+        public const string MedicalCard = "Medical card";
+        public const string Ssn = "SSN";
+        public const string Contract = "Contract (company and driver)";
+        public const string DrugTestResult = "Drug test results";
+        public const string ProofOfWork = "Proof of work Authorization or GC";
+        public const string Dql = "DQL (driver qualification file)";
         public const string Coi = "COI (certificate of insurance)";
         public const string Permits = "Permits (optional OR, FL, NM)";
         public const string LogbookPapers = "Logbook Papers (manual, certificate, malfunction letter)";

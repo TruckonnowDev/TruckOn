@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Stripe;
 using WebDispacher.Business.Interfaces;
+using WebDispacher.Constants;
 using WebDispacher.Models;
 using WebDispacher.Service;
 using WebDispacher.Service.EmailSmtp;
@@ -72,7 +73,7 @@ namespace WebDispacher.Business.Services
                         new DriverReportModel
                         {
                             Id = driver.Id,
-                            Description = "The site administration deleted the company in which this driver worked"
+                            Description = CompanyConstants.RemoveCompanyDescription
                         });
                 }
             });
@@ -111,7 +112,7 @@ namespace WebDispacher.Business.Services
 
             profileSettings.Add(new ProfileSettingsDTO()
             {
-                Name = "Standart",
+                Name = DriverConstants.StandartName,
                 TypeTransportVehikle = typeTransportVehikle.ToString(),
                 Id = 0,
                 IsSelect = 0 == idProfile,
@@ -189,16 +190,16 @@ namespace WebDispacher.Business.Services
 
             var id = AddDriver(mapper.Map<Driver>(driver));
             
-            await SaveDocDriver(dLDoc, "DL", id.ToString());
-            await SaveDocDriver(medicalCardDoc, "Medical card", id.ToString());
-            await SaveDocDriver(sSNDoc, "SSN", id.ToString());
-            await SaveDocDriver(proofOfWorkAuthorizationOrGCDoc, "Proof of work Authorization or GC", id.ToString());
-            await SaveDocDriver(dQLDoc, "DQL (driver qualification file)", id.ToString());
-            await SaveDocDriver(contractDoc, "Contract (company and driver)", id.ToString());
+            await SaveDocDriver(dLDoc, DocAndFileConstants.Dl, id.ToString());
+            await SaveDocDriver(medicalCardDoc, DocAndFileConstants.MedicalCard, id.ToString());
+            await SaveDocDriver(sSNDoc, DocAndFileConstants.Ssn, id.ToString());
+            await SaveDocDriver(proofOfWorkAuthorizationOrGCDoc,  DocAndFileConstants.ProofOfWork, id.ToString());
+            await SaveDocDriver(dQLDoc, DocAndFileConstants.Dql, id.ToString());
+            await SaveDocDriver(contractDoc, DocAndFileConstants.Contract, id.ToString());
 
             if (drugTestResultsDo != null)
             {
-                await SaveDocDriver(drugTestResultsDo, "Drug test results", id.ToString());
+                await SaveDocDriver(drugTestResultsDo, DocAndFileConstants.DrugTestResult, id.ToString());
             }
 
             await Task.Run(() => UpdatePlanSubscribe(driver.CompanyId.ToString()));
@@ -282,14 +283,14 @@ namespace WebDispacher.Business.Services
                 var emailDriver = GetEmailDriverDb(idDriver);
                 var patern = new PaternSourse().GetPaternDataAccountDriver(emailDriver, newPassword);
 
-                await new AuthMessageSender().Execute(emailDriver, "Password changed successfully", patern);
+                await new AuthMessageSender().Execute(emailDriver, DriverConstants.SuccessfullyChangedPassword, patern);
             }
             else
             {
                 var emailDriver = GetEmailDriverDb(idDriver);
                 var patern = new PaternSourse().GetPaternNoRestoreDataAccountDriver();
 
-                await new AuthMessageSender().Execute(emailDriver, "Password reset attempt failed", patern);
+                await new AuthMessageSender().Execute(emailDriver, DriverConstants.PasswordResetFailed, patern);
             }
 
             return isStateActual;
@@ -332,7 +333,7 @@ namespace WebDispacher.Business.Services
         public void SelectProfile(int idProfile, string typeTransport, int idTr, string idCompany)
         {
             var typeTransportVehikle =
-                typeTransport == "Truck" ? TypeTransportVehikle.Truck : TypeTransportVehikle.Trailer;
+                typeTransport == TruckAndTrailerConstants.Truck ? TypeTransportVehikle.Truck : TypeTransportVehikle.Trailer;
 
             var profileSettings = GetSetingsDb(idCompany, typeTransportVehikle, idTr);
             var profileSetting = profileSettings.FirstOrDefault(p => p.IsUsed);
@@ -401,6 +402,7 @@ namespace WebDispacher.Business.Services
         public ProfileSettingsDTO GetSelectSetingTruck(string idCompany, int idProfile, int idTr, string typeTransport)
         {
             ProfileSettingsDTO profileSetting = null;
+            
             if (idProfile != 0)
             {
                 var profileSetting1 = GetSelectSeting(idCompany, idProfile);
@@ -426,7 +428,7 @@ namespace WebDispacher.Business.Services
                 profileSetting = new ProfileSettingsDTO()
                 {
                     Id = 0,
-                    Name = "Standart",
+                    Name = DriverConstants.StandartName,
                     TransportVehicle = new TransportVehicle()
                     {
                         CountPhoto = transportVehicle.CountPhoto,
@@ -435,7 +437,7 @@ namespace WebDispacher.Business.Services
                         Type = transportVehicle.Type,
                         TypeTransportVehicle = transportVehicle.TypeTransportVehicle
                     },
-                    TypeTransportVehikle = "Truck",
+                    TypeTransportVehikle = TruckAndTrailerConstants.Truck,
                     IsChange = false,
                     IsUsed = true,
                     IdCompany = 0

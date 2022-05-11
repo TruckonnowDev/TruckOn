@@ -3,8 +3,11 @@
     public static class DriverConstants
     {
         public const string Undefined = "undefined";
+        public const string StandartName = "Standart";
         public const string Yes = "Yes";
         public const string Canceled = "canceled";
+        public const string SuccessfullyChangedPassword = "Password changed successfully";
+        public const string PasswordResetFailed = "Password reset attempt failed";
         public const string DriverSubscribe = "25$ from driver";
         public const string SubscriptionStIdDay = "price_1IPTehKfezfzRoxln6JFEbgG";
         public const string SubscriptionStIdWeek = "price_1IPTjVKfezfzRoxlgRaotwe3";

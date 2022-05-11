@@ -2,10 +2,12 @@
 {
     public static class OrderConstants
     {
+        public const string CentralDispatch = "Central Dispatch";
         public const string OrderStatusNewLoad = "NewLoad";
         public const string OrderStatusArchived = "Archived";
         public const string OrderStatusAssigned = "Assigned";
         public const string OrderStatusDeleted = "Deleted";
+        public const string OrderStatusDelivered = "Delivered";
         public const string OrderStatusPickedUp = "Picked up";
         public const string OrderStatusArchivedBilled = "Archived,Billed";
         public const string OrderStatusArchivedPaid = "Archived,Paid";
@@ -20,6 +22,7 @@
         public const string ActionSaveOrder = "SaveOrder";
         public const string ActionRemoveVech = "RemoveVech";
         public const string ActionAddVech = "AddVech";
+        public const string ActionSaveVech = "SaveVech";
         public const string ActionArchivedOrder = "ArchivedOrder";
         public const string ActionDeletedOrder = "DeletedOrder";
         public const string SuccessfullyRemovedVehicle = "Vehicle information removed successfully";

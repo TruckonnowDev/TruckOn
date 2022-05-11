@@ -7,6 +7,7 @@ using DaoModels.DAO;
 using DaoModels.DAO.Models;
 using Microsoft.EntityFrameworkCore;
 using WebDispacher.Business.Interfaces;
+using WebDispacher.Constants;
 using WebDispacher.Notify;
 using WebDispacher.Service;
 using WebDispacher.Service.TransportationManager;
@@ -34,13 +35,13 @@ namespace WebDispacher.Business.Services
             var shipping = await db.Shipping.FirstOrDefaultAsync(s => s.Id == id);
             if (shipping == null) return;
             
-            if (shipping.CurrentStatus == "Delivered,Billed" || shipping.CurrentStatus == "Delivered,Paid")
+            if (shipping.CurrentStatus == OrderConstants.OrderStatusDeliveredBilled || shipping.CurrentStatus == OrderConstants.OrderStatusDeliveredPaid)
             {
-                shipping.CurrentStatus = shipping.CurrentStatus.Replace("Delivered", "Deleted");
+                shipping.CurrentStatus = shipping.CurrentStatus.Replace(OrderConstants.OrderStatusDelivered, OrderConstants.OrderStatusDeleted);
             }
             else
             {
-                shipping.CurrentStatus = "Deleted";
+                shipping.CurrentStatus = OrderConstants.OrderStatusDeleted;
             }
 
             await db.SaveChangesAsync();
@@ -51,13 +52,15 @@ namespace WebDispacher.Business.Services
             var shipping = await db.Shipping.FirstOrDefaultAsync(s => s.Id == id);
             if (shipping == null) return;
             
-            if (shipping.CurrentStatus == "Delivered,Billed" || shipping.CurrentStatus == "Delivered,Paid")
+            if (shipping.CurrentStatus == OrderConstants.OrderStatusDeliveredBilled 
+                || shipping.CurrentStatus == OrderConstants.OrderStatusDeliveredPaid)
             {
-                shipping.CurrentStatus = shipping.CurrentStatus.Replace("Delivered", "Archived");
+                shipping.CurrentStatus = shipping.CurrentStatus
+                    .Replace(OrderConstants.OrderStatusDelivered, OrderConstants.OrderStatusArchived);
             }
             else
             {
-                shipping.CurrentStatus = "Archived";
+                shipping.CurrentStatus = OrderConstants.OrderStatusArchived;
             }
 
             await db.SaveChangesAsync();
@@ -101,38 +104,38 @@ namespace WebDispacher.Business.Services
             
             switch (action)
             {
-                case "Assign":
-                    historyOrder.TypeAction = "Assign";
+                case OrderConstants.ActionAssign:
+                    historyOrder.TypeAction = OrderConstants.ActionAssign;
                     break;
-                case "Unassign":
+                case OrderConstants.ActionUnAssign:
                     idDriver = GetDriverIdByIdOrder(idOrder);
-                    historyOrder.TypeAction = "Unassign";
+                    historyOrder.TypeAction = OrderConstants.ActionUnAssign;
                     break;
-                case "Solved":
-                    historyOrder.TypeAction = "Solved";
+                case OrderConstants.ActionSolved:
+                    historyOrder.TypeAction = OrderConstants.ActionSolved;
                     break;
-                case "ArchivedOrder":
-                    historyOrder.TypeAction = "ArchivedOrder";
+                case OrderConstants.ActionArchivedOrder:
+                    historyOrder.TypeAction = OrderConstants.ActionArchivedOrder;
                     break;
-                case "DeletedOrder":
-                    historyOrder.TypeAction = "DeletedOrder";
+                case OrderConstants.ActionDeletedOrder:
+                    historyOrder.TypeAction = OrderConstants.ActionDeletedOrder;
                     break;
-                case "Creat":
-                    historyOrder.TypeAction = "Creat";
+                case OrderConstants.ActionCreate:
+                    historyOrder.TypeAction = OrderConstants.ActionCreate;
                     break;
-                case "SavaOrder":
-                    historyOrder.TypeAction = "SavaOrder";
+                case OrderConstants.ActionSaveOrder:
+                    historyOrder.TypeAction = OrderConstants.ActionSaveOrder;
                     break;
-                case "SavaVech":
+                case OrderConstants.ActionSaveVech:
                     idOrder = GetIdOrderByIdVech(idVech);
-                    historyOrder.TypeAction = "SavaVech";
+                    historyOrder.TypeAction = OrderConstants.ActionSaveVech;
                     break;
-                case "RemoveVech":
+                case OrderConstants.ActionRemoveVech:
                     idOrder = GetIdOrderByIdVech(idVech);
-                    historyOrder.TypeAction = "RemoveVech";
+                    historyOrder.TypeAction = OrderConstants.ActionRemoveVech;
                     break;
-                case "AddVech":
-                    historyOrder.TypeAction = "AddVech";
+                case OrderConstants.ActionAddVech:
+                    historyOrder.TypeAction = OrderConstants.ActionAddVech;
                     break;
             }
 
@@ -148,69 +151,69 @@ namespace WebDispacher.Business.Services
         
         public string GetStrAction(string key, string idCompany, string idOrder, string idVech, string idDriver, string action)
         {
-            var strAction = "";
+            var strAction = string.Empty;
             switch (action)
             {
                 //int idUser = _sqlEntityFramworke.GetUserIdByKey(key);
-                case "Assign":
+                case OrderConstants.ActionAssign:
                 {
                     var fullNameUser = GetFullNameUserByKey(key);
                     var fullNameDriver = GetFullNameDriverById(idDriver);
                     strAction = $"{fullNameUser} assign the driver ordered {fullNameDriver}";
                     break;
                 }
-                case "Unassign":
+                case OrderConstants.ActionUnAssign:
                 {
                     var fullNameUser = GetFullNameUserByKey(key);
                     var fullNameDriver = GetFullNameDriverById(idDriver);
                     strAction = $"{fullNameUser} withdrew an order from {fullNameDriver} driver";
                     break;
                 }
-                case "Solved":
+                case OrderConstants.ActionSolved:
                 {
                     var fullNameUser = GetFullNameUserByKey(key);
                     strAction = $"{fullNameUser} clicked on the \"Solved\" button";
                     break;
                 }
-                case "ArchivedOrder":
+                case OrderConstants.ActionArchivedOrder:
                 {
                     var fullNameUser = GetFullNameUserByKey(key);
                     strAction = $"{fullNameUser} transferred the order to the archive";
                     break;
                 }
-                case "DeletedOrder":
+                case OrderConstants.ActionDeletedOrder:
                 {
                     var fullNameUser = GetFullNameUserByKey(key);
                     strAction = $"{fullNameUser} transferred the order to deleted orders";
                     break;
                 }
-                case "Creat":
+                case OrderConstants.ActionCreate:
                 {
                     var fullNameUser = GetFullNameUserByKey(key);
                     strAction = $"{fullNameUser} created an order";
                     break;
                 }
-                case "SavaOrder":
+                case OrderConstants.ActionSaveOrder:
                 {
                     var fullNameUser = GetFullNameUserByKey(key);
                     strAction = $"{fullNameUser} edited the order";
                     break;
                 }
-                case "SavaVech":
+                case OrderConstants.ActionSaveVech:
                 {
                     var fullNameUser = GetFullNameUserByKey(key);
                     var vehiclwInformation = GetVechById(idVech);
                     strAction = $"{fullNameUser} edited the vehicle {vehiclwInformation.Year} y. {vehiclwInformation.Make} {vehiclwInformation.Model}";
                     break;
                 }
-                case "RemoveVech":
+                case OrderConstants.ActionRemoveVech:
                 {
                     var fullNameUser = GetFullNameUserByKey(key);
                     var vehiclwInformation = GetVechById(idVech);
                     strAction = $"{fullNameUser} removed the vehicle {vehiclwInformation.Year} y. {vehiclwInformation.Make} {vehiclwInformation.Make}";
                     break;
                 }
-                case "AddVech":
+                case OrderConstants.ActionAddVech:
                 {
                     var fullNameUser = GetFullNameUserByKey(key);
                     strAction = $"{fullNameUser} created a vehicle";
@@ -256,7 +259,7 @@ namespace WebDispacher.Business.Services
             var shipping = new Shipping
             {
                 Id = CreateIdShipping().ToString(),
-                CurrentStatus = "NewLoad"
+                CurrentStatus = OrderConstants.OrderStatusNewLoad
             };
 
             db.Shipping.Add(shipping);
@@ -323,12 +326,14 @@ namespace WebDispacher.Business.Services
             db.SaveChanges();
         }
         
-        public async Task<int> GetCountPage(string status, string name, string address, string phone, string email, string price)
+        public async Task<int> GetCountPage(string status, string name, string address, string phone,
+            string email, string price)
         {
             return await GetCountPageInDb(status, name, address, phone, email, price);
         }
         
-        public async Task<List<Shipping>> GetOrders(string status, int page, string name, string address, string phone, string email, string price)
+        public async Task<List<Shipping>> GetOrders(string status, int page, string name, string address,
+            string phone, string email, string price)
         {
             return await GetShippings(status, page, name, address, phone, email, price);
         }
@@ -385,7 +390,8 @@ namespace WebDispacher.Business.Services
         private bool CheckInspactionDriverToDay(int idDriver)
         {
             var driver = db.Drivers.Include(d => d.InspectionDrivers).FirstOrDefault(d => d.Id == idDriver);
-            var inspectionDriver = driver.InspectionDrivers != null && driver.InspectionDrivers.Count != 0 ? driver.InspectionDrivers.Last() : null;
+            var inspectionDriver = driver.InspectionDrivers != null && driver.InspectionDrivers.Count != 0 
+                ? driver.InspectionDrivers.Last() : null;
             
             if (inspectionDriver == null)
             {
@@ -439,7 +445,7 @@ namespace WebDispacher.Business.Services
             //        pathDoc = truck.PathDoc;
             //    }
             //}
-            return "";
+            return string.Empty;
         }
         
         private void SavePathDb(string id, string path)
@@ -519,7 +525,7 @@ namespace WebDispacher.Business.Services
                 .FirstOrDefault(s => s.Id == idOrder);
             
             shipping.IdDriver = 0;
-            shipping.CurrentStatus = "NewLoad";
+            shipping.CurrentStatus = OrderConstants.OrderStatusNewLoad;
             
             await db.SaveChangesAsync();
             
@@ -543,7 +549,7 @@ namespace WebDispacher.Business.Services
             var driver = db.Drivers.FirstOrDefault(d => d.Id == Convert.ToInt32(idDriver));
             
             shipping.IdDriver = driver.Id;
-            shipping.CurrentStatus = "Assigned";
+            shipping.CurrentStatus = OrderConstants.OrderStatusAssigned;
             
             await db.SaveChangesAsync();
             
@@ -695,7 +701,7 @@ namespace WebDispacher.Business.Services
             
             switch (typeDispatch)
             {
-                case "Central Dispatch": transportationDispatch = new GetDataCentralDispatch(); break;
+                case  OrderConstants.CentralDispatch: transportationDispatch = new GetDataCentralDispatch(); break;
             }
             
             return transportationDispatch;
@@ -713,11 +719,13 @@ namespace WebDispacher.Business.Services
                 shippingEdit.InternalLoadID = shipping.InternalLoadID ?? shippingEdit.InternalLoadID;
                 switch (shipping.CurrentStatus)
                 {
-                    case "Delivered":
-                        shippingEdit.CurrentStatus = shippingEdit.CurrentStatus.Replace("Deleted", "Delivered");
+                    case OrderConstants.OrderStatusDelivered:
+                        shippingEdit.CurrentStatus = shippingEdit.CurrentStatus
+                            .Replace(OrderConstants.OrderStatusDeleted, OrderConstants.OrderStatusDelivered);
                         break;
-                    case "Archived":
-                        shippingEdit.CurrentStatus = shippingEdit.CurrentStatus.Replace("Archived", "Delivered");
+                    case OrderConstants.OrderStatusArchived:
+                        shippingEdit.CurrentStatus = shippingEdit.CurrentStatus
+                            .Replace(OrderConstants.OrderStatusArchived, OrderConstants.OrderStatusDelivered);
                         break;
                     default:
                         shippingEdit.CurrentStatus = shipping.CurrentStatus ?? shippingEdit.CurrentStatus;

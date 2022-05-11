@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Stripe;
 using WebDispacher.Business.Interfaces;
+using WebDispacher.Constants;
 using WebDispacher.Models;
 using WebDispacher.Models.Subscription;
 using WebDispacher.Service;
@@ -49,7 +50,8 @@ namespace WebDispacher.Business.Services
                 .Where(u => idCompanySelect == 0 || u.CompanyId == idCompanySelect)
                 .Select(z => new UserDTO()
                 {
-                    CompanyName = companies.FirstOrDefault(c => c.Id == z.CompanyId) != null ? companies.FirstOrDefault(c => c.Id == z.CompanyId).Name : "",
+                    CompanyName = companies.FirstOrDefault(c => c.Id == z.CompanyId) 
+                                  != null ? companies.FirstOrDefault(c => c.Id == z.CompanyId).Name : string.Empty,
                     Id = z.Id,
                     Login = z.Login,
                     Password = z.Password,
@@ -82,8 +84,11 @@ namespace WebDispacher.Business.Services
                     Id = z.Id,
                     Active = z.Active,
                     Name = z.Name,
-                    Type = z.Type == TypeCompany.BaseCommpany ? "Home Company" : z.Type == TypeCompany.NormalCompany ? "Regular company" : "Unknown",
+                    Type = z.Type == TypeCompany.BaseCommpany
+                        ? CompanyConstants.HomeCompany : z.Type == TypeCompany.NormalCompany 
+                            ? CompanyConstants.RegularCompany : CompanyConstants.Unknown,
                     DateRegistration = z.DateRegistration
+                    
                 }).ToList();
         }
         
@@ -277,17 +282,17 @@ namespace WebDispacher.Business.Services
             var id = AddCompanyDb(company);
             InitStripeForCompany(nameCompany, emailCompany, id);
             userService.CreateUserForCompanyId(id, nameCompany, CreateToken(nameCompany, new Random().Next(10, 1000).ToString()));
-            await SaveDocCompany(MCNumberConfirmation, "MC number confirmation", id.ToString());
+            await SaveDocCompany(MCNumberConfirmation, DocAndFileConstants.McNumber, id.ToString());
             
             if (IFTA != null)
             {
-                await SaveDocCompany(IFTA, "IFTA (optional for 26000+)", id.ToString());
+                await SaveDocCompany(IFTA, DocAndFileConstants.Ifta, id.ToString());
             }
             
-            await SaveDocCompany(KYU, "KYU", id.ToString());
-            await SaveDocCompany(logbookPapers, "Logbook Papers (manual, certificate, malfunction letter)", id.ToString());
-            await SaveDocCompany(COI, "COI (certificate of insurance)", id.ToString());
-            await SaveDocCompany(permits, "Permits (optional OR, FL, NM)", id.ToString());
+            await SaveDocCompany(KYU, DocAndFileConstants.Kyu, id.ToString());
+            await SaveDocCompany(logbookPapers, DocAndFileConstants.LogbookPapers, id.ToString());
+            await SaveDocCompany(COI, DocAndFileConstants.Coi, id.ToString());
+            await SaveDocCompany(permits, DocAndFileConstants.Permits, id.ToString());
         }
         
         public List<Contact> GetContacts(string idCompany)
@@ -295,7 +300,7 @@ namespace WebDispacher.Business.Services
             return db.Contacts.Where(c => c.CompanyId.ToString() == idCompany).ToList();
         }
 
-        public string GetTypeNavBar(string key, string idCompany, string typeNav = "Work")
+        public string GetTypeNavBar(string key, string idCompany, string typeNav = NavConstants.Work)
         {
             var typeNavBar = string.Empty;
             var users = userService.GetUserByKey(key);
@@ -305,35 +310,35 @@ namespace WebDispacher.Business.Services
             
             switch (typeNav)
             {
-                case "Cancel":
+                case NavConstants.TypeNavCancel:
                 {
                     if (company.Type == TypeCompany.NormalCompany)
                     {
-                        typeNavBar = "CancelSubscribe";
+                        typeNavBar = NavConstants.CancelSubscribe;
                     }
 
                     break;
                 }
-                case "Work" when company.Type == TypeCompany.BaseCommpany:
-                    typeNavBar = "BaseCommpany";
+                case NavConstants.Work when company.Type == TypeCompany.BaseCommpany:
+                    typeNavBar = NavConstants.BaseCompany;
                     break;
-                case "Work":
+                case NavConstants.Work:
                 {
                     if (company.Type == TypeCompany.NormalCompany)
                     {
-                        typeNavBar = "NormaCommpany";
+                        typeNavBar = NavConstants.NormalCompany;
                     }
 
                     break;
                 }
-                case "Settings" when company.Type == TypeCompany.BaseCommpany:
-                    typeNavBar = "BaseCommpanySettings";
+                case NavConstants.TypeNavSettings when company.Type == TypeCompany.BaseCommpany:
+                    typeNavBar = NavConstants.TypeNavBaseCompanySettings;
                     break;
-                case "Settings":
+                case NavConstants.TypeNavSettings:
                 {
                     if (company.Type == TypeCompany.NormalCompany)
                     {
-                        typeNavBar = "NormaCommpanySettings";
+                        typeNavBar = NavConstants.TypeNavNormalCompanySettings;
                     }
 
                     break;
@@ -350,26 +355,26 @@ namespace WebDispacher.Business.Services
                 new Models.Subscription.Subscription()
                 {
                     Id = 1,
-                    IdSubscriptionST = "price_1IPTehKfezfzRoxln6JFEbgG",
-                    Name = "One dollar a day",
+                    IdSubscriptionST = DriverConstants.SubscriptionStIdDay,
+                    Name = DriverConstants.SubscriptionNameDay,
                     PeriodDays = 1,
-                    Price = "$1",
+                    Price = DriverConstants.SubscriptionPrice,
                 },
                 new Models.Subscription.Subscription()
                 {
                     Id = 2,
-                    IdSubscriptionST = "price_1IPTjVKfezfzRoxlgRaotwe3",
-                    Name = "One dollar a week",
+                    IdSubscriptionST = DriverConstants.SubscriptionStIdWeek,
+                    Name = DriverConstants.SubscriptionNameWeek,
                     PeriodDays = 7,
-                    Price = "$1",
+                    Price = DriverConstants.SubscriptionPrice,
                 },
                 new Models.Subscription.Subscription()
                 {
                     Id = 3,
-                    IdSubscriptionST = "price_1H3j18KfezfzRoxlJ9Of1Urs",
-                    Name = "One dollar a month",
+                    IdSubscriptionST = DriverConstants.SubscriptionStIdMonth,
+                    Name = DriverConstants.SubscriptionNameMonth,
                     PeriodDays = DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month),
-                    Price = "$1",
+                    Price = DriverConstants.SubscriptionPrice,
                 }
             };
 
@@ -378,7 +383,7 @@ namespace WebDispacher.Business.Services
         
         public string SelectSub(string idPrice, string idCompany, string priodDays)
         {
-            var errorStr = "";
+            var errorStr = string.Empty;
             var customerSt = GetCustomer_STByIdCompany(idCompany);
             var subscribeSt = GetSubscriptionIdCompany(idCompany);
             var responseStripe = stripeApi.GetSubscriptionSTById(subscribeSt.IdSubscribeST);
@@ -387,7 +392,7 @@ namespace WebDispacher.Business.Services
             {
                 var subscription = responseStripe.Content as Stripe.Subscription;
                 
-                if(subscription.Status == "canceled")
+                if(subscription.Status == DriverConstants.Canceled)
                 {
                     responseStripe = stripeApi.CreateSupsctibe(idPrice, customerSt);
                     
@@ -463,7 +468,7 @@ namespace WebDispacher.Business.Services
             
             subscriptionCompanyDto.EndPeriod = subscriptions.CurrentPeriodEnd.ToShortDateString();
             subscriptionCompanyDto.StartPeriod = subscriptions.CurrentPeriodStart.ToShortDateString();
-            subscriptionCompanyDto.Name = "25$ from driver";
+            subscriptionCompanyDto.Name = DriverConstants.DriverSubscribe;
             subscriptionCompanyDto.NextInvoce = subscriptions.CurrentPeriodEnd.ToShortDateString();
             subscriptionCompanyDto.PeriodCount = (subscriptions.CurrentPeriodEnd - subscriptions.CurrentPeriodStart).Days.ToString();
             subscriptionCompanyDto.Price = (price.UnitAmount * subscriptions.Items.Data[0].Quantity / 100).ToString();
@@ -483,7 +488,7 @@ namespace WebDispacher.Business.Services
             
             var subscriptionCompanyDto = GetSubscription(idCompany);
             
-            return subscriptionCompanyDto.Status == "canceled";
+            return subscriptionCompanyDto.Status == DriverConstants.Canceled;
         }
         
         private void UpdateTypeActiveSubById(int idSub, ActiveType activeType)
@@ -513,7 +518,7 @@ namespace WebDispacher.Business.Services
         
         private string CreateToken(string login, string password)
         {
-            var token = new StringBuilder("");
+            var token = new StringBuilder(string.Empty);
 
             for (var i = 0; i < login.Length; i++)
             {

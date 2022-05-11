@@ -11,6 +11,12 @@
         public const string LeaseAgreement = "Lease agreement";
         public const string BobTailPhysicalDamage = "Bob tail physical damage";
         public const string NyHit = "NY HUT";
+        public const string Kyu = "KYU";
+        public const string Coi = "COI (certificate of insurance)";
+        public const string Permits = "Permits (optional OR, FL, NM)";
+        public const string LogbookPapers = "Logbook Papers (manual, certificate, malfunction letter)";
+        public const string McNumber = "MC number confirmation";
+        public const string Ifta = "IFTA (optional for 26000+)";
         public const string True = "true";
         public const string False = "false";
         public const string NoneLevel = "None";

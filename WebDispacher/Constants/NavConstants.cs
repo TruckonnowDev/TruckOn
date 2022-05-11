@@ -3,9 +3,14 @@
     public static class NavConstants
     {
         public const string TypeNavSettings = "Settings";
+        public const string TypeNavBaseCompanySettings = "BaseCommpanySettings";
+        public const string TypeNavNormalCompanySettings = "NormaCommpanySettings";
         public const string TypeNavBar = "TypeNavBar";
         public const string BaseAllUsers = "BaseAllUsers";
         public const string TypeNavCancel = "Cancel";
+        public const string CancelSubscribe = "CancelSubscribe";
+        public const string NormalCompany = "NormaCommpany";
+        public const string Work = "Work";
         public const string TextErrorSub = "TextErrorSub";
         public const string BaseCompany = "BaseCommpany";
         public const string AllUsers = "AllUsers";

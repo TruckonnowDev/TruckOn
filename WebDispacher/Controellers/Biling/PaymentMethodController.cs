@@ -8,6 +8,7 @@ using iTextSharp.text;
 using Microsoft.AspNetCore.Mvc;
 using Stripe;
 using WebDispacher.Business.Interfaces;
+using WebDispacher.Constants;
 using WebDispacher.Mosels;
 using WebDispacher.Service;
 
@@ -34,11 +35,11 @@ namespace WebDispacher.Controellers.Biling
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "PaymentMethod"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.PaymentMethod))
                 {
                     ViewBag.NameCompany = companyName;
                     
@@ -59,14 +60,14 @@ namespace WebDispacher.Controellers.Biling
                     }).ToList();
                     
                     ViewBag.PaymentMethods = paymentMethodDTOs;
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
                     
                     return View("~/Views/Settings/Biling/PaymentMethod.cshtml");
                 }
-
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception e)
@@ -84,26 +85,29 @@ namespace WebDispacher.Controellers.Biling
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "PaymentMethod"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.PaymentMethod))
                 {
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
-                    ViewBag.TxtError = "";
-                    ViewBag.Numbercard = "";
-                    ViewBag.FullName = "";
-                    ViewBag.Expire = "";
-                    ViewBag.Cvv = "";
+                    
+                    ViewData[NavConstants.TypeNavBar] =
+                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+                    
+                    ViewBag.TxtError = string.Empty;
+                    ViewBag.Numbercard = string.Empty;
+                    ViewBag.FullName = string.Empty;
+                    ViewBag.Expire = string.Empty;
+                    ViewBag.Cvv = string.Empty;
                     
                     return View("~/Views/Settings/Biling/AddPaymentMethod.cshtml");
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception e)
@@ -121,14 +125,16 @@ namespace WebDispacher.Controellers.Biling
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "PaymentMethod"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.PaymentMethod))
                 {
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
+                    ViewData[NavConstants.TypeNavBar] =
+                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+                    
                     var responseStripe =  companyService.AddPaymentCard(idCompany, number, name, expiry, cvc);
 
                     if (!responseStripe.IsError)
@@ -143,9 +149,9 @@ namespace WebDispacher.Controellers.Biling
                     return View("~/Views/Settings/Biling/AddPaymentMethod.cshtml");
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception e)
@@ -163,22 +169,25 @@ namespace WebDispacher.Controellers.Biling
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "PaymentMethod"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.PaymentMethod))
                 {
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
+                    
+                    ViewData[NavConstants.TypeNavBar] = 
+                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+                    
                     companyService.SelectDefaultPaymentMethod(idPayment, idCompany);
                     
                     return Redirect($"{Config.BaseReqvesteUrl}/Settings/Biling/PaymentMethod");
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception e)
@@ -196,22 +205,25 @@ namespace WebDispacher.Controellers.Biling
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "PaymentMethod"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.PaymentMethod))
                 {
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany, "Settings");
+                    
+                    ViewData[NavConstants.TypeNavBar] = 
+                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+                    
                     companyService.DeletePaymentMethod(idPayment, idCompany);
                     
                     return Redirect($"{Config.BaseReqvesteUrl}/Settings/Biling/PaymentMethod");
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception e)

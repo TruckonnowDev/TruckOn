@@ -8,6 +8,7 @@ using MDispatch.View.GlobalDialogView;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WebDispacher.Business.Interfaces;
+using WebDispacher.Constants;
 using WebDispacher.Models;
 using WebDispacher.Service;
 using WebDispacher.ViewModels;
@@ -66,11 +67,11 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Dashbord"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Dashboard))
                 {
                     var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     if(isCancelSubscribe)
@@ -79,11 +80,11 @@ namespace WebDispacher.Controellers
                     }
                     
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     await Task.WhenAll(
                     Task.Run(async() =>
                     {
-                        ViewBag.Orders = await orderService.GetOrders("NewLoad", page, name, address, phone, email, price);
+                        ViewBag.Orders = await orderService.GetOrders(OrderConstants.OrderStatusNewLoad, page, name, address, phone, email, price);
                     }),
                     Task.Run(async() =>
                     {
@@ -91,7 +92,7 @@ namespace WebDispacher.Controellers
                     }),
                     Task.Run(async() =>
                     {
-                        ViewBag.count = await orderService.GetCountPage("NewLoad", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage(OrderConstants.OrderStatusNewLoad, name, address, phone, email, price);
                     }));
                     
                     ViewBag.Name = name;
@@ -102,9 +103,9 @@ namespace WebDispacher.Controellers
                     
                     return View("NewLoad");
                 }
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception exception)
@@ -123,26 +124,28 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Dashboard))
                 {
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
+                    
                     if (!string.IsNullOrEmpty(idDriver) && !string.IsNullOrEmpty(idOrder))
                     {
                         orderService.Assign(idOrder, idDriver);
-                        Task.Run(() => orderService.AddHistory(key, "0", idOrder, "0",  idDriver, "Assign"));
+                        Task.Run(() => 
+                            orderService.AddHistory(key, "0", idOrder, "0",  idDriver, OrderConstants.ActionAssign));
                         actionResult = true;
                     }
                 }
                 else
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
+                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                     {
-                        Response.Cookies.Delete("KeyAvtho");
+                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                     }
                 }
             }
@@ -162,23 +165,23 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
                 
-                if (userService.CheckKey(key) && userService.IsPermission(key, idCompany, "Dashbord"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Dashboard))
                 {
                     if (!string.IsNullOrEmpty(idOrder))
                     {
-                        orderService.AddHistory(key, "0", idOrder, "0", "0", "Unassign");
+                        orderService.AddHistory(key, "0", idOrder, "0", "0", OrderConstants.ActionUnAssign);
                         orderService.Unassign(idOrder);
                         actionResult = true;
                     }
                 }
                 else
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
+                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                     {
-                        Response.Cookies.Delete("KeyAvtho");
+                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                     }
                 }
             }
@@ -196,20 +199,20 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
                 
-                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Dashboard))
                 {
                     orderService.Solved(id);
-                    Task.Run(() => orderService.AddHistory(key, "0", id, "0", "0", "Solved"));
+                    Task.Run(() => orderService.AddHistory(key, "0", id, "0", "0", OrderConstants.ActionSolved));
                     
                     return Redirect($"{page}");
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception exception)
@@ -227,11 +230,11 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Dashboard))
                 {
                     var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     if (isCancelSubscribe)
@@ -240,21 +243,21 @@ namespace WebDispacher.Controellers
                     }
                     
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     
                     List<Shipping> shippings = null;
                     
                     await Task.WhenAll(
                     Task.Run(async () =>
                     {
-                        shippings = await orderService.GetOrders("Archived,Billed", page, name, address, phone, email, price);
+                        shippings = await orderService.GetOrders(OrderConstants.OrderStatusArchivedBilled, page, name, address, phone, email, price);
                         if (shippings.Count < 20)
                         {
-                            shippings.AddRange(await orderService.GetOrders("Archived,Paid", page, name, address, phone, email, price));
+                            shippings.AddRange(await orderService.GetOrders(OrderConstants.OrderStatusArchivedPaid, page, name, address, phone, email, price));
                         }
                         if (shippings.Count < 20)
                         {
-                            shippings.AddRange(await orderService.GetOrders("Archived", page, name, address, phone, email, price));
+                            shippings.AddRange(await orderService.GetOrders(OrderConstants.OrderStatusArchived, page, name, address, phone, email, price));
                         }
                         var drivers = await driverService.GetDrivers(idCompany);
                         ViewBag.Drivers = drivers;
@@ -262,15 +265,15 @@ namespace WebDispacher.Controellers
                     }),
                     Task.Run(async () =>
                     {
-                        ViewBag.count = await orderService.GetCountPage("Archived", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage(OrderConstants.OrderStatusArchived, name, address, phone, email, price);
                     }),
                     Task.Run(async () =>
                     {
-                        ViewBag.count = await orderService.GetCountPage("Archived,Billed", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage(OrderConstants.OrderStatusArchivedBilled, name, address, phone, email, price);
                     }),
                     Task.Run(async () =>
                     {
-                        ViewBag.count = await orderService.GetCountPage("Archived,Paid", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage(OrderConstants.OrderStatusArchivedPaid, name, address, phone, email, price);
                     }));
                     
                     ViewBag.Name = name;
@@ -282,9 +285,9 @@ namespace WebDispacher.Controellers
                     return View("Archived");
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception exception)
@@ -302,11 +305,11 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Dashboard))
                 {
                     var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     
@@ -317,12 +320,13 @@ namespace WebDispacher.Controellers
                     
                     ViewBag.NameCompany = companyName;
                     
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     
                     await Task.WhenAll(
                     Task.Run(async () =>
                     {
-                        var shippings = await orderService.GetOrders("Assigned", page, name, address, phone, email, price);
+                        var shippings =
+                            await orderService.GetOrders(OrderConstants.OrderStatusAssigned, page, name, address, phone, email, price);
                         var drivers = await driverService.GetDrivers(idCompany);
                         
                         ViewBag.Orders = GetShippingDTOs(shippings, drivers);
@@ -330,7 +334,7 @@ namespace WebDispacher.Controellers
                     }),
                     Task.Run(async () =>
                     {
-                        ViewBag.count = await orderService.GetCountPage("Assigned", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage(OrderConstants.OrderStatusAssigned, name, address, phone, email, price);
                     }));
                     ViewBag.Name = name;
                     ViewBag.Address = address;
@@ -341,9 +345,9 @@ namespace WebDispacher.Controellers
                     return View("Assigned");
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception)
@@ -360,11 +364,11 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Dashboard))
                 {
                     var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     
@@ -374,7 +378,7 @@ namespace WebDispacher.Controellers
                     }
                     
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany); 
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany); 
                     // await Task.WhenAll(
                     // Task.Run(async () =>
                     // {
@@ -388,10 +392,11 @@ namespace WebDispacher.Controellers
                     //     ViewBag.count = await orderService.GetCountPage("Delivered,Billed", name, address, phone, email, price);
                     // }));
 
-                    var shippings = await orderService.GetOrders("Delivered,Billed", page, name, address, phone, email, price);
+                    var shippings =
+                        await orderService.GetOrders(OrderConstants.OrderStatusDeliveredBilled, page, name, address, phone, email, price);
                     ViewBag.Drivers = await driverService.GetDrivers(idCompany);;
                     ViewBag.Orders = GetShippingDTOs(shippings, ViewBag.Drivers);
-                    ViewBag.count = await orderService.GetCountPage("Delivered,Billed", name, address, phone, email, price);
+                    ViewBag.count = await orderService.GetCountPage(OrderConstants.OrderStatusDeliveredBilled, name, address, phone, email, price);
                     
                     ViewBag.Name = name;
                     ViewBag.Address = address;
@@ -402,9 +407,9 @@ namespace WebDispacher.Controellers
                     return View("Billed");
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception exception)
@@ -421,11 +426,11 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Dashboard))
                 {
                     var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     
@@ -435,19 +440,19 @@ namespace WebDispacher.Controellers
                     }
                     
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     List<Shipping> shippings = null;
                     await Task.WhenAll(
                     Task.Run(async () =>
                     {
-                        shippings = await orderService.GetOrders("Deleted,Billed", page, name, address, phone, email, price);
+                        shippings = await orderService.GetOrders(OrderConstants.OrderStatusDeletedBilled, page, name, address, phone, email, price);
                         if (shippings.Count < 20)
                         {
-                            shippings.AddRange(await orderService.GetOrders("Deleted,Paid", page, name, address, phone, email, price));
+                            shippings.AddRange(await orderService.GetOrders(OrderConstants.OrderStatusDeletedPaid, page, name, address, phone, email, price));
                         }
                         if (shippings.Count < 20)
                         {
-                            shippings.AddRange(await orderService.GetOrders("Deleted", page, name, address, phone, email, price));
+                            shippings.AddRange(await orderService.GetOrders(OrderConstants.OrderStatusDeleted, page, name, address, phone, email, price));
                         }
                         var drivers = await driverService.GetDrivers(idCompany);
                         ViewBag.Orders = GetShippingDTOs(shippings, drivers);
@@ -455,15 +460,15 @@ namespace WebDispacher.Controellers
                     }),
                     Task.Run(async() =>
                     {
-                        ViewBag.count = await orderService.GetCountPage("Deleted", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage(OrderConstants.OrderStatusDeleted, name, address, phone, email, price);
                     }),
                     Task.Run(async() =>
                     {
-                        ViewBag.count = await orderService.GetCountPage("Deleted,Billed", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage(OrderConstants.OrderStatusDeletedBilled, name, address, phone, email, price);
                     }),
                     Task.Run(async() =>
                     {
-                        ViewBag.count = await orderService.GetCountPage("Deleted,Paid", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage(OrderConstants.OrderStatusDeletedPaid, name, address, phone, email, price);
                     }));
                     ViewBag.Name = name;
                     ViewBag.Address = address;
@@ -474,9 +479,9 @@ namespace WebDispacher.Controellers
                     return View("Deleted");
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception)
@@ -493,10 +498,11 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
-                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
+                
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Dashboard))
                 {
                     var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     
@@ -506,17 +512,17 @@ namespace WebDispacher.Controellers
                     }
                     
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     
                     var shippings = new List<Shipping>();
                     
                     await Task.WhenAll(
                     Task.Run(async () =>
                     {
-                        shippings.AddRange(await orderService.GetOrders("Delivered,Paid", page, name, address, phone, email, price));
+                        shippings.AddRange(await orderService.GetOrders(OrderConstants.OrderStatusDeliveredPaid, page, name, address, phone, email, price));
                         if (shippings.Count < 20)
                         {
-                            shippings.AddRange(await orderService.GetOrders("Delivered,Billed", page, name, address, phone, email, price));
+                            shippings.AddRange(await orderService.GetOrders(OrderConstants.OrderStatusDeliveredBilled, page, name, address, phone, email, price));
                         }
                         var drivers = await driverService.GetDrivers(idCompany);
                         ViewBag.Orders = GetShippingDTOs(shippings, drivers);
@@ -524,23 +530,24 @@ namespace WebDispacher.Controellers
                     }),
                     Task.Run(async() =>
                     {
-                        ViewBag.count = await orderService.GetCountPage("Delivered,Billed", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage(OrderConstants.OrderStatusDeliveredBilled, name, address, phone, email, price);
                     }),
                     Task.Run(async() =>
                     {
-                        ViewBag.count = await orderService.GetCountPage("Delivered,Paid", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage(OrderConstants.OrderStatusDeliveredPaid, name, address, phone, email, price);
                     }));
                     ViewBag.Name = name;
                     ViewBag.Address = address;
                     ViewBag.Phone = phone;
                     ViewBag.Email = email;
                     ViewBag.price = price;
+                    
                     return View("Delivered");
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception)
@@ -556,11 +563,11 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
+                if (userService.CheckPermissions(key, idCompany,  RouteConstants.Dashboard))
                 {
                     var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     
@@ -570,18 +577,20 @@ namespace WebDispacher.Controellers
                     }
                     
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     await Task.WhenAll(
                     Task.Run(async () =>
                     {
-                        var shippings = await orderService.GetOrders("Delivered,Paid", page, name, address, phone, email, price);
+                        var shippings =
+                            await orderService.GetOrders(OrderConstants.OrderStatusDeliveredPaid, page, name, address, phone, email, price);
                         var drivers = await driverService.GetDrivers(idCompany);
                         ViewBag.Orders = GetShippingDTOs(shippings, drivers);
                         ViewBag.Drivers = drivers;
                     }),
                     Task.Run(async () =>
                     {
-                        ViewBag.count = await orderService.GetCountPage("Delivered,Paid", name, address, phone, email, price);
+                        ViewBag.count = await 
+                            orderService.GetCountPage(OrderConstants.OrderStatusDeliveredPaid, name, address, phone, email, price);
                     }));
                     
                     ViewBag.Name = name;
@@ -589,12 +598,13 @@ namespace WebDispacher.Controellers
                     ViewBag.Phone = phone;
                     ViewBag.Email = email;
                     ViewBag.price = price;
+                    
                     return View("Paid");
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception)
@@ -611,11 +621,11 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Dashboard))
                 {
                     var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     
@@ -625,30 +635,31 @@ namespace WebDispacher.Controellers
                     }
                     
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     await Task.WhenAll(
                     Task.Run(async () =>
                     {
-                        var shippings = await orderService.GetOrders("Picked up", page, name, address, phone, email, price);
+                        var shippings = await orderService.GetOrders(OrderConstants.OrderStatusPickedUp, page, name, address, phone, email, price);
                         var drivers = await driverService.GetDrivers(idCompany);
                         ViewBag.Orders = GetShippingDTOs(shippings, drivers);
                         ViewBag.Drivers = drivers;
                     }),
                     Task.Run(async () =>
                     {
-                        ViewBag.count = await orderService.GetCountPage("Picked up", name, address, phone, email, price);
+                        ViewBag.count = await orderService.GetCountPage(OrderConstants.OrderStatusPickedUp, name, address, phone, email, price);
                     }));
                     ViewBag.Name = name;
                     ViewBag.Address = address;
                     ViewBag.Phone = phone;
                     ViewBag.Email = email;
                     ViewBag.price = price;
+                    
                     return View("Pickedup");
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception)
@@ -666,19 +677,19 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
                 
-                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Dashboard))
                 {
                     orderService.ArchiveOrder(id);
-                    Task.Run(() => orderService.AddHistory(key, "0", id, "0", "0", "ArchivedOrder"));
+                    Task.Run(() => orderService.AddHistory(key, "0", id, "0", "0", OrderConstants.ActionArchivedOrder));
                     return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/NewLoad");
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception)
@@ -695,20 +706,20 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
                 
-                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Dashboard))
                 {
                     orderService.DeleteOrder(id);
-                    Task.Run(() => orderService.AddHistory(key, "0", id, "0", "0", "DeletedOrder"));
+                    Task.Run(() => orderService.AddHistory(key, "0", id, "0", "0", OrderConstants.ActionDeletedOrder));
                     
                     return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{status}");
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception)
@@ -726,11 +737,11 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Dashboard))
                 {
                     var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     
@@ -740,13 +751,14 @@ namespace WebDispacher.Controellers
                     }
                     
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
 
                     if (string.IsNullOrEmpty(id)) return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{stasus}");
                     var order = orderService.GetOrder(id);
                     ViewBag.Historys = orderService.GetHistoryOrder(id).Select(x => new HistoryOrder()
                         {
-                            Action = orderService.GetStrAction(key, x.IdConmpany.ToString(), x.IdOreder.ToString(), x.IdVech.ToString(), x.IdDriver.ToString(), x.TypeAction),
+                            Action = orderService.GetStrAction(key, x.IdConmpany.ToString(), x.IdOreder.ToString(),
+                                x.IdVech.ToString(), x.IdDriver.ToString(), x.TypeAction),
                             DateAction = x.DateAction
                         })
                         .ToList();
@@ -754,9 +766,9 @@ namespace WebDispacher.Controellers
                     return View("FullInfoOrder", order);
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception)
@@ -774,14 +786,14 @@ namespace WebDispacher.Controellers
              try
              {
                  ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                 Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                 Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                 Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                 Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                 Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                 Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                  
-                 if (userService.CheckPermissions(key, idCompany, "Dashbord"))
+                 if (userService.CheckPermissions(key, idCompany, RouteConstants.Dashboard))
                  {
                      ViewBag.NameCompany = companyName;
-                     ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
 
                      if (string.IsNullOrEmpty(id)) return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{stasus}");
                      
@@ -789,12 +801,11 @@ namespace WebDispacher.Controellers
                      Status = stasus;
                          
                      return View("EditOrder", order);
-
                  }
 
-                 if (Request.Cookies.ContainsKey("KeyAvtho"))
+                 if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                  {
-                     Response.Cookies.Delete("KeyAvtho");
+                     Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                  }
              }
              catch (Exception)
@@ -812,14 +823,14 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Dashboard))
                 {
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
 
                     if (string.IsNullOrEmpty(id)) return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{stasus}");
                     var searchOrder = orderService.GetOrder(id);
@@ -860,9 +871,9 @@ namespace WebDispacher.Controellers
 
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception)
@@ -879,23 +890,23 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out var companyName);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Dashboard))
                 {
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = companyService.GetTypeNavBar(key, idCompany);
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     var shipping = await orderService.CreateShipping();
-                    await Task.Run(() => orderService.AddHistory(key, "0", shipping.Id, "0", "0", "Creat"));
+                    await Task.Run(() => orderService.AddHistory(key, "0", shipping.Id, "0", "0", OrderConstants.ActionCreate));
                     
                     return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/Edit?id={shipping.Id}&stasus=NewLoad");
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception)
@@ -909,23 +920,23 @@ namespace WebDispacher.Controellers
         [Route("Dashbord/Order/SavaOrder")]
         public IActionResult SaveOrder(ShippingViewModel shipping)
         {
-            ViewData["TypeNavBar"] = "BaseCommpany";
+            ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
                 
-                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Dashboard))
                 {
                     orderService.UpdateOrder(shipping);
-                    Task.Run(() => orderService.AddHistory(key, "0", shipping.Id, "0", "0", "SavaOrder"));
+                    Task.Run(() => orderService.AddHistory(key, "0", shipping.Id, "0", "0", OrderConstants.ActionSaveOrder));
                     return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/NewLoad");
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
                 
             }
@@ -944,19 +955,20 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
                 
-                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Dashboard))
                 {
                     orderService.SaveVechi(idVech, VIN, Year, Make, Model, Type,  Color, LotNumber);
-                    Task.Run(() => orderService.AddHistory(key, "0", "0", idVech, "0", "SavaVech"));
+                    Task.Run(() => orderService.AddHistory(key, "0", "0", idVech, "0", OrderConstants.ActionSaveOrder));
+                    
                     return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/Edit?id={idOrder}&stasus=NewLoad");
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception)
@@ -973,26 +985,26 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
                 
-                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Dashboard))
                 {
-                    orderService.AddHistory(key, "0", "0", idVech, "0", "RemoveVech");
+                    orderService.AddHistory(key, "0", "0", idVech, "0", OrderConstants.ActionRemoveVech);
                     orderService.RemoveVechi(idVech);
                     
-                    return "Vehicle information removed successfully";
+                    return OrderConstants.SuccessfullyRemovedVehicle;
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
-                return "Unauthorized user cannot change order";
+                return OrderConstants.UnAuthorizedUserCannotChangeOrder;
             }
             catch (Exception)
             {
-                return "Vehicle information not removed (ERROR)";
+                return OrderConstants.ErrorRemovedVehicle;
             }
         }
 
@@ -1002,28 +1014,29 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out var key);
-                Request.Cookies.TryGetValue("CommpanyId", out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
                 
-                if (userService.CheckPermissions(key, idCompany, "Dashbord"))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Dashboard))
                 {
                     var vehiclwInformation = await orderService.AddVechi(idOrder);
                     
-                    await Task.Run(() => orderService.AddHistory(key, "0", idOrder, vehiclwInformation.Id.ToString(), "0", "AddVech"));
+                    await Task.Run(() => orderService.AddHistory(key, "0", idOrder, vehiclwInformation.Id.ToString(),
+                        "0", OrderConstants.ActionAddVech));
                     ViewBag.Vech = vehiclwInformation;
-                    return "Vehicle information Added successfully";
+                    return OrderConstants.SuccessfullyAddedVehicle;
                 }
 
-                if (Request.Cookies.ContainsKey("KeyAvtho"))
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    Response.Cookies.Delete("KeyAvtho");
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
                 
-                return "Unauthorized user cannot change order";
+                return OrderConstants.UnAuthorizedUserCannotChangeOrder;
             }
             catch (Exception)
             {
-                return "Vehicle information not Added (ERROR)";
+                return OrderConstants.ErrorAddedVehicle;
             }
         }
 

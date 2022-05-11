@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using DaoModels.DAO.Models;
 using Microsoft.AspNetCore.Mvc;
 using WebDispacher.Business.Interfaces;
+using WebDispacher.Constants;
 using WebDispacher.Service;
 
 namespace WebDispacher.Controellers
@@ -23,15 +24,15 @@ namespace WebDispacher.Controellers
         }
         public IActionResult Index()
         {
-            ViewData["TextError"] = "";
+            ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
             
-            if (Request.Cookies.ContainsKey("KeyAvtho"))
+            if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
             {
                 return Redirect("/Dashbord/Order/NewLoad");
             }
 
-            ViewData["TypeNavBar"] = "AllUsers";
+            ViewData[NavConstants.TypeNavBar] = NavConstants.AllUsers;
             
             return View("Index");
         }
@@ -40,15 +41,15 @@ namespace WebDispacher.Controellers
         [Route("try_for_free")]
         public IActionResult TryForFree()
         {
-            ViewData["TextError"] = "";
+            ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
             
-            if (Request.Cookies.ContainsKey("KeyAvtho"))
+            if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
             {
                 return Redirect("/Dashbord/Order/NewLoad");
             }
 
-            ViewData["TypeNavBar"] = "NavTry_for_free";
+            ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
             
             return View("try_for_free");
         }
@@ -57,17 +58,17 @@ namespace WebDispacher.Controellers
         [Route("carrier-login")]
         public IActionResult CarrierLogin(string error)
         {
-            ViewData["TextError"] = "";
+            ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
             
-            if (Request.Cookies.ContainsKey("KeyAvtho"))
+            if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
             {
                 return Redirect("/Dashbord/Order/NewLoad");
             }
 
-            ViewData["TypeNavBar"] = "NavTry_for_free";
-            ViewData["TextError"] = error;
-            ViewData["reg"] = "/carrier-reg";
+            ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
+            ViewData[NavConstants.TextError] = error;
+            ViewData[NavConstants.Reg] = NavConstants.CarrierReg;
             
             return View("carrier-login");
         }
@@ -76,17 +77,17 @@ namespace WebDispacher.Controellers
         [Route("shipper-login")]
         public IActionResult ShipperLogin(string error)
         {
-            ViewData["TextError"] = "";
+            ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
             
-            if (Request.Cookies.ContainsKey("KeyAvtho"))
+            if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
             {
                 return Redirect("/Dashbord/Order/NewLoad");
             }
 
-            ViewData["TypeNavBar"] = "NavTry_for_free";
-            ViewData["TextError"] = error;
-            ViewData["reg"] = "/shipper-reg";
+            ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
+            ViewData[NavConstants.TextError] = error;
+            ViewData[NavConstants.Reg] = NavConstants.ShipperReg;
             
             return View("shipper-login");
         }
@@ -95,16 +96,16 @@ namespace WebDispacher.Controellers
         [Route("carrier-reg")]
         public IActionResult CarrierReg(string error)
         {
-            ViewData["TextError"] = "";
+            ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
             
-            if (Request.Cookies.ContainsKey("KeyAvtho"))
+            if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
             {
                 return Redirect("/Dashbord/Order/NewLoad");
             }
 
-            ViewData["TypeNavBar"] = "NavTry_for_free";
-            ViewData["TextError"] = error;
+            ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
+            ViewData[NavConstants.TextError] = error;
             
             return View("carrier-reg");
         }
@@ -113,16 +114,16 @@ namespace WebDispacher.Controellers
         [Route("shipper-reg")]
         public IActionResult ShipperReg(string error)
         {
-            ViewData["TextError"] = "";
+            ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
             
-            if (Request.Cookies.ContainsKey("KeyAvtho"))
+            if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
             {
                 return Redirect("/Dashbord/Order/NewLoad");
             }
 
-            ViewData["TypeNavBar"] = "NavTry_for_free";
-            ViewData["TextError"] = error;
+            ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
+            ViewData[NavConstants.TextError] = error;
             
             return View("shipper-reg");
         }
@@ -131,16 +132,16 @@ namespace WebDispacher.Controellers
         [Route("recovery-password-send-mail")]
         public IActionResult RecoveryPasswordSendMail(string error)
         {
-            ViewData["TextError"] = "";
+            ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
             
-            if (Request.Cookies.ContainsKey("KeyAvtho"))
+            if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
             {
                 return Redirect("/Dashbord/Order/NewLoad");
             }
 
-            ViewData["TypeNavBar"] = "NavTry_for_free";
-            ViewData["TextError"] = error;
+            ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
+            ViewData[NavConstants.TextError] = error;
             
             return View("SendMailRecoveryPassword");
         }
@@ -149,7 +150,7 @@ namespace WebDispacher.Controellers
         [Route("recovery-password-send-mail")]
         public IActionResult RecoveryPasswordCheckkMail(string email)
         {
-            ViewData["TextError"] = "";
+            ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
             
             var isEmail = userService.CheckEmail(email);
@@ -161,7 +162,7 @@ namespace WebDispacher.Controellers
         public IActionResult Avthorization(string Email, string Password, string accept)
         {
             IActionResult actionResult = null;
-            ViewData["TypeNavBar"] = "NavTry_for_free";
+            ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
             try
             {
                 if (Email == null || Password == null)
@@ -169,29 +170,30 @@ namespace WebDispacher.Controellers
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 if (userService.Authorization(Email, Password))
                 {
-                    ViewData["hidden"] = "";
+                    ViewData[NavConstants.Hidden] = string.Empty;
 
                     var key = userService.CreateKey(Email, Password);
                     var Commpany = userService.GetUserByKeyUser(key);
                     
-                    Response.Cookies.Append("KeyAvtho", key.ToString());
-                    Response.Cookies.Append("CommpanyId", Commpany.Id.ToString());
-                    Response.Cookies.Append("CommpanyName", Commpany.Name);
+                    Response.Cookies.Append(CookiesKeysConstants.CarKey, key.ToString());
+                    Response.Cookies.Append(CookiesKeysConstants.CompanyIdKey, Commpany.Id.ToString());
+                    Response.Cookies.Append(CookiesKeysConstants.CompanyNameKey, Commpany.Name);
                     
                     return Redirect("/Dashbord/Order/NewLoad");
                 }
 
-                ViewData["hidden"] = "hidden";
-                ViewData["TextError"] = "Password or mail have been entered incorrectly";
-                var error = "Password or mail have been entered incorrectly";
+                ViewData[NavConstants.Hidden] = NavConstants.Hidden;
+                ViewData[NavConstants.TextError] = UserConstants.PasswordEmailIncorrectly;
+                var error = UserConstants.PasswordEmailIncorrectly;
                     
                 actionResult = Redirect($"/carrier-login?error={error}");
 
             }
             catch (Exception e)
             {
-                ViewData["hidden"] = "hidden";
-                var error = "Password or mail have been entered incorrectly";
+                ViewData[NavConstants.Hidden] = NavConstants.Hidden;
+                var error = UserConstants.PasswordEmailIncorrectly;
+                
                 return Redirect($"/carrier-login?error={error}");
             }
             
@@ -202,9 +204,9 @@ namespace WebDispacher.Controellers
         [Route("Exsit")]
         public IActionResult Exisit()
         {
-            Response.Cookies.Delete("KeyAvtho");
-            Response.Cookies.Delete("CommpanyId");
-            Response.Cookies.Delete("CommpanyName");
+            Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+            Response.Cookies.Delete(CookiesKeysConstants.CompanyIdKey);
+            Response.Cookies.Delete(CookiesKeysConstants.CompanyNameKey);
             
             return Redirect(Config.BaseReqvesteUrl);
         }
@@ -221,7 +223,7 @@ namespace WebDispacher.Controellers
                 if (userService.Authorization(Email, Password))
                 {
                     var users = userService.GetUserByEmailAndPasswrod(Email, Password);
-                    if(users?.KeyAuthorized != null && users.KeyAuthorized != "")
+                    if(users?.KeyAuthorized != null && users.KeyAuthorized != string.Empty)
                     {
                         return users.KeyAuthorized;
                     }
@@ -229,25 +231,26 @@ namespace WebDispacher.Controellers
             }
             catch (Exception e)
             {
-                return "";
+                return string.Empty;
             }
             
-            return "";
+            return string.Empty;
         }
 
         [HttpGet]
         [Route("Recovery/Password")]
         public IActionResult RecoveryPassword(string idDriver, string idUser, string token)
         {
-            ViewData["TypeNavBar"] = "AllUsers";
+            ViewData[NavConstants.TypeNavBar] = NavConstants.AllUsers;
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 ViewBag.IdDriver = idDriver;
                 ViewBag.IdUser = idUser;
                 ViewBag.Token = token;
-                ViewBag.isStateActual = idDriver != null ? driverService.CheckTokenFoDriver(idDriver, token) : userService.CheckTokenFoUser(idUser, token);
-                ViewData["hidden"] = "hidden";
+                ViewBag.isStateActual = idDriver != null 
+                    ? driverService.CheckTokenFoDriver(idDriver, token) : userService.CheckTokenFoUser(idUser, token);
+                ViewData[NavConstants.Hidden] = NavConstants.Hidden;
                 
                 return View("RecoveryPassword");
             }
@@ -262,14 +265,14 @@ namespace WebDispacher.Controellers
         [Route("Restore/Password")]
         public async Task<IActionResult> RestorePassword(string newPassword, string idDriver, string idUser, string token)
         {
-            ViewData["TypeNavBar"] = "AllUsers";
+            ViewData[NavConstants.TypeNavBar] = NavConstants.AllUsers;
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 ViewBag.IdDriver = idDriver;
                 ViewBag.Token = token;
                 ViewBag.isStateActual = idDriver != null ? await driverService.ResetPasswordFoDriver(newPassword, idDriver, token) : await userService.ResetPasswordFoUser(newPassword, idUser, token);
-                ViewData["hidden"] = "hidden";
+                ViewData[NavConstants.Hidden] = NavConstants.Hidden;
                 
                 return View("RecoveryPassword");
             }

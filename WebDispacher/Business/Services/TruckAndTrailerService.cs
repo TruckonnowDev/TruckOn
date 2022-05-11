@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Stripe;
 using WebDispacher.Business.Interfaces;
+using WebDispacher.Constants;
 using WebDispacher.Models;
 using WebDispacher.Service;
 using WebDispacher.ViewModels.Trailer;
@@ -53,7 +54,7 @@ namespace WebDispacher.Business.Services
                     TypeTransportVehicle = transportVehicle.TypeTransportVehicle
                 },
                 IdCompany = Convert.ToInt32(idCompany),
-                Name = "Custom",
+                Name = TruckAndTrailerConstants.Custom,
                 TypeTransportVehikle = GetTypeTransport(idTr, typeTransport),
                 IdTr = idTr
             };
@@ -165,10 +166,10 @@ namespace WebDispacher.Business.Services
             
             switch (typeTransport)
             {
-                case "Truck":
+                case TruckAndTrailerConstants.Truck:
                     tr = GetTruckById(idTr);
                     break;
-                case "Trailer":
+                case TruckAndTrailerConstants.Trailer:
                     tr = GetTrailerById(idTr);
                     break;
             }
@@ -179,7 +180,7 @@ namespace WebDispacher.Business.Services
         public async Task<List<DocumentTruckAndTrailers>> GetTrailerDoc(string id)
         {
             return await db.DocumentTruckAndTrailers
-                .Where(d => d.TypeTr == "Trailer" && d.IdTr.ToString() == id)
+                .Where(d => d.TypeTr == TruckAndTrailerConstants.Trailer && d.IdTr.ToString() == id)
                 .ToListAsync();
         }
         
@@ -194,12 +195,12 @@ namespace WebDispacher.Business.Services
             trailer.CompanyId = Convert.ToInt32(idCompany);
             var id = CreateTrailerDb(trailer);
             
-            await SaveDocTrailer(trailerRegistrationDoc, "Trailer registration", id.ToString());
-            await SaveDocTrailer(trailerAnnualInspectionDoc, "Trailer annual inspection", id.ToString());
+            await SaveDocTrailer(trailerRegistrationDoc, DocAndFileConstants.TrailerRegistration, id.ToString());
+            await SaveDocTrailer(trailerAnnualInspectionDoc, DocAndFileConstants.TrailerInspection, id.ToString());
             
             if (leaseAgreementDoc != null)
             {
-                await SaveDocTrailer(leaseAgreementDoc, "Lease agreement", id.ToString());
+                await SaveDocTrailer(leaseAgreementDoc, DocAndFileConstants.LeaseAgreement, id.ToString());
             }
         }
         
@@ -210,18 +211,18 @@ namespace WebDispacher.Business.Services
             truck.CompanyId = Convert.ToInt32(idCompany);
             var id = await CreateTruckDb(truck);
             
-            await SaveDocTruck(truckRegistrationDoc, "Truck registration", id.ToString());
-            await SaveDocTruck(truckLeaseAgreementDoc, "Truck lease agreement", id.ToString());
-            await SaveDocTruck(truckAnnualInspection, "Truck annual inspection", id.ToString());
+            await SaveDocTruck(truckRegistrationDoc, DocAndFileConstants.TruckRegistration, id.ToString());
+            await SaveDocTruck(truckLeaseAgreementDoc, DocAndFileConstants.TruckAgreement, id.ToString());
+            await SaveDocTruck(truckAnnualInspection, DocAndFileConstants.TruckInspection, id.ToString());
             
             if (bobTailPhysicalDamage != null)
             {
-                await SaveDocTruck(bobTailPhysicalDamage, "Bob tail physical damage", id.ToString());
+                await SaveDocTruck(bobTailPhysicalDamage, DocAndFileConstants.BobTailPhysicalDamage, id.ToString());
             }
             
             if (bobTailPhysicalDamage != null)
             {
-                await SaveDocTruck(bobTailPhysicalDamage, "NY HUT", id.ToString());
+                await SaveDocTruck(bobTailPhysicalDamage, DocAndFileConstants.NyHit, id.ToString());
             }
         }
         
@@ -277,7 +278,7 @@ namespace WebDispacher.Business.Services
                 DocPath = path,
                 IdTr = Convert.ToInt32(id),
                 NameDoc = nameDoc,
-                TypeTr = "Truck",
+                TypeTr = TruckAndTrailerConstants.Truck,
                 TypeDoc = pref
             };
             
@@ -314,14 +315,16 @@ namespace WebDispacher.Business.Services
             
             db.Drivers
                 .Include(d => d.InspectionDrivers).ToList()
-                .Where(d => idDriver == "0" || d.Id.ToString() == idDriver)
+                .Where(d => idDriver == DocAndFileConstants.ZeroLevel || d.Id.ToString() == idDriver)
                 .ToList()
                 .ForEach((item) =>
                 {
                     inspectionDrivers.AddRange(item.InspectionDrivers
-                        .Where(iD => (date == "0" || (Convert.ToDateTime(iD.Date).Month == Convert.ToDateTime(date).Month && Convert.ToDateTime(iD.Date).Year == Convert.ToDateTime(date).Year))
-                                     && (idTruck == "0" || iD.IdITruck.ToString() == idTruck)
-                                     && (idTrailer == "0" || iD.IdITrailer.ToString() == idTrailer)));
+                        .Where(iD => (date == DocAndFileConstants.ZeroLevel || 
+                                      (Convert.ToDateTime(iD.Date).Month == Convert.ToDateTime(date).Month 
+                                       && Convert.ToDateTime(iD.Date).Year == Convert.ToDateTime(date).Year))
+                                     && (idTruck == DocAndFileConstants.ZeroLevel || iD.IdITruck.ToString() == idTruck)
+                                     && (idTrailer == DocAndFileConstants.ZeroLevel || iD.IdITrailer.ToString() == idTrailer)));
                 });
 
             return inspectionDrivers;
@@ -354,7 +357,7 @@ namespace WebDispacher.Business.Services
                 DocPath = path,
                 IdTr = Convert.ToInt32(id),
                 NameDoc = nameDoc,
-                TypeTr = "Trailer",
+                TypeTr = TruckAndTrailerConstants.Trailer,
                 TypeDoc = pref
             };
             
@@ -454,7 +457,7 @@ namespace WebDispacher.Business.Services
         private async Task<List<DocumentTruckAndTrailers>> GetTruckDocDb(string id)
         {
             return await db.DocumentTruckAndTrailers
-                .Where(d => d.TypeTr == "Truck" && d.IdTr.ToString() == id)
+                .Where(d => d.TypeTr == TruckAndTrailerConstants.Truck && d.IdTr.ToString() == id)
                 .ToListAsync();
         }
     }

@@ -388,7 +388,7 @@ namespace WebDispacher.Business.Services
         
         private List<Trailer> GetTrailersDb(string idCompany)
         {
-            return db.Trailers.Where(t => t.CompanyId.ToString() == idCompany).ToList();
+            return db.Trailers.Where(t => t.CompanyId.ToString() == idCompany).OrderByDescending(x => x.Id).ToList();
         }
         
         private async Task<Trailer> GetTrailerByPlateDb(string trailerPlate)
@@ -446,7 +446,7 @@ namespace WebDispacher.Business.Services
         
         private List<Truck> GetTrucksDb(string idCompany)
         {
-            return db.Trucks.Where(t => t.CompanyId.ToString() == idCompany).ToList();
+            return db.Trucks.Where(t => t.CompanyId.ToString() == idCompany).OrderByDescending(x => x.Id).ToList();
         }
 
         private async Task<Truck> GetTruckByPlateDb(string truckPlate)

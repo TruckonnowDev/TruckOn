@@ -148,9 +148,9 @@ namespace WebDispacher.Business.Services
             var contactEdit = db.Contacts.FirstOrDefault(c => c.ID == contact.Id);
             if (contactEdit == null) return;
             
-            contact.Email = contactEdit.Email;
-            contact.Name = contactEdit.Name;
-            contact.Phone = contactEdit.Phone;
+            contactEdit.Email = contact.Email;
+            contactEdit.Name = contact.Name;
+            contactEdit.Phone = contact.Phone;
             
             db.SaveChanges();
         }

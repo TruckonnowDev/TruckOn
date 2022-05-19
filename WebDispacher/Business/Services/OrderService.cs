@@ -427,6 +427,7 @@ namespace WebDispacher.Business.Services
         private void RemoveDocDb(string idDock)
         {
             db.DocumentTruckAndTrailers.Remove(db.DocumentTruckAndTrailers.First(d => d.Id.ToString() == idDock));
+            
             db.SaveChanges();
         }
         

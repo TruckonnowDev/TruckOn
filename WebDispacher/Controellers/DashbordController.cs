@@ -81,20 +81,13 @@ namespace WebDispacher.Controellers
                     
                     ViewBag.NameCompany = companyName;
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    await Task.WhenAll(
-                    Task.Run(async() =>
-                    {
-                        ViewBag.Orders = await orderService.GetOrders(OrderConstants.OrderStatusNewLoad, page, name, address, phone, email, price);
-                    }),
-                    Task.Run(async() =>
-                    {
-                        ViewBag.Drivers = await driverService.GetDrivers(idCompany);
-                    }),
-                    Task.Run(async() =>
-                    {
-                        ViewBag.count = await orderService.GetCountPage(OrderConstants.OrderStatusNewLoad, name, address, phone, email, price);
-                    }));
                     
+                    ViewBag.Orders = await orderService.GetOrders(OrderConstants.OrderStatusNewLoad, page, name, address, phone, email, price);
+
+                    ViewBag.Drivers = await driverService.GetDrivers(idCompany);
+
+                    ViewBag.count = await orderService.GetCountPage(OrderConstants.OrderStatusNewLoad, name, address, phone, email, price);
+
                     ViewBag.Name = name;
                     ViewBag.Address = address;
                     ViewBag.Phone = phone;
@@ -701,7 +694,7 @@ namespace WebDispacher.Controellers
         }
 
         [Route("Dashbord/Order/DeletedOrder")]
-        public IActionResult DeletedOrder(string id, string status)
+        public async Task<IActionResult> DeletedOrder(string id, string status)
         {
             try
             {
@@ -711,8 +704,8 @@ namespace WebDispacher.Controellers
                 
                 if (userService.CheckPermissions(key, idCompany, RouteConstants.Dashboard))
                 {
-                    orderService.DeleteOrder(id);
-                    Task.Run(() => orderService.AddHistory(key, "0", id, "0", "0", OrderConstants.ActionDeletedOrder));
+                    await orderService.DeleteOrder(id);
+                    await Task.Run(() => orderService.AddHistory(key, "0", id, "0", "0", OrderConstants.ActionDeletedOrder));
                     
                     return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{status}");
                 }

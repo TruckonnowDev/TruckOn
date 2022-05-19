@@ -600,7 +600,7 @@ namespace WebDispacher.Controellers
             
             return Redirect(Config.BaseReqvesteUrl);
         }
-
+        
         [Route("Truck/SaveDoc")]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public void SaveDocTruck(IFormFile uploadedFile, string nameDoc, string id)
@@ -627,6 +627,65 @@ namespace WebDispacher.Controellers
             {
 
             }
+        }
+        
+        [Route("Trailer/DocSaveById")]
+        public IActionResult TrailerDocSaveById(IFormFile uploadedFile, string nameDoc, string id)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                {
+                    truckAndTrailerService.SaveDocTrailer(uploadedFile, nameDoc, id);
+                    
+                    return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trailer/Doc?id={id}");
+                }
+
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                {
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+            
+            return Redirect(Config.BaseReqvesteUrl);
+        }
+        
+        [Route("Truck/DocSaveById")]
+        [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
+        public IActionResult DocSaveById(IFormFile uploadedFile, string nameDoc, string id)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                {
+                    truckAndTrailerService.SaveDocTruck(uploadedFile, nameDoc, id);
+
+                    return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Truck/Doc/?id={id}");
+                }
+
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                {
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+            
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [Route("Trailer/SaveDoc")]
@@ -670,7 +729,7 @@ namespace WebDispacher.Controellers
                 {
                     orderService.RemoveDoc(idDock);
                     
-                    return Redirect($"{type}/Doc?id={id}");
+                    return Redirect($"{Config.BaseReqvesteUrl}/Equipment/{type}/Doc?id={id}");
                 }
 
                 if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))

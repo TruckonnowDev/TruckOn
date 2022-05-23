@@ -4,6 +4,7 @@ using WebDispacher.Models;
 using WebDispacher.ViewModels.Contact;
 using WebDispacher.ViewModels.Dispatcher;
 using WebDispacher.ViewModels.Driver;
+using WebDispacher.ViewModels.Settings;
 using WebDispacher.ViewModels.Trailer;
 using WebDispacher.ViewModels.Truck;
 
@@ -28,6 +29,14 @@ namespace WebDispacher.ViewModels.Mappings
                 .ForMember(x => x.WorkingEfficiency, opt => opt.MapFrom(dr => dr.WorkingEfficiency))
                 .ForMember(x => x.DotViolations, opt => opt.MapFrom(dr => dr.DotViolations))
                 .ForMember(x => x.NumberOfAccidents, opt => opt.MapFrom(dr => dr.NumberOfAccidents))
+                .ReverseMap();
+            CreateMap<SettingsUserViewModel, Users>()
+                .ForMember(x => x.Id, opt => opt.MapFrom(s => s.Id))
+                .ForMember(x => x.Date, opt => opt.MapFrom(s => s.Date))
+                .ForMember(x => x.Login, opt => opt.MapFrom(s => s.Login))
+                .ForMember(x => x.Password, opt => opt.MapFrom(s => s.Password))
+                .ForMember(x => x.CompanyId, opt => opt.MapFrom(s => s.CompanyId))
+                .ForMember(x => x.KeyAuthorized, opt => opt.MapFrom(s => s.KeyAuthorized))
                 .ReverseMap();
             CreateMap<DriverReportViewModel, DriverReport>()
                 .ForMember(x => x.Id, opt => opt.MapFrom(d => d.Id))

@@ -942,7 +942,7 @@ namespace WebDispacher.Controellers
         }
 
         [Route("Dashbord/Order/SavaVech")]
-        public IActionResult SavaVech(string idOrder, string idVech, string VIN, string Year,
+        public async Task<IActionResult> SavaVech(string idOrder, string idVech, string VIN, string Year,
             string Make, string Model, string Type, string Color, string LotNumber)
         {
             try
@@ -953,10 +953,10 @@ namespace WebDispacher.Controellers
                 
                 if (userService.CheckPermissions(key, idCompany, RouteConstants.Dashboard))
                 {
-                    orderService.SaveVechi(idVech, VIN, Year, Make, Model, Type,  Color, LotNumber);
-                    Task.Run(() => orderService.AddHistory(key, "0", "0", idVech, "0", OrderConstants.ActionSaveOrder));
+                   await orderService.SaveVechi(idVech, VIN, Year, Make, Model, Type,  Color, LotNumber);
+                   await Task.Run(() => orderService.AddHistory(key, "0", "0", idVech, "0", OrderConstants.ActionSaveOrder));
                     
-                    return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/Edit?id={idOrder}&stasus=NewLoad");
+                   return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/Edit?id={idOrder}&stasus=NewLoad");
                 }
 
                 if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))

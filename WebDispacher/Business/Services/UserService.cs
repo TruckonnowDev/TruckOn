@@ -18,6 +18,7 @@ using WebDispacher.Constants;
 using WebDispacher.Models;
 using WebDispacher.Service;
 using WebDispacher.Service.EmailSmtp;
+using WebDispacher.ViewModels.Settings;
 
 namespace WebDispacher.Business.Services
 {
@@ -109,9 +110,27 @@ namespace WebDispacher.Business.Services
             return isStateActual;
         }
         
+        public void EditUser(SettingsUserViewModel user)
+        {
+            var userEdit = db.User.FirstOrDefault(c => c.Id == user.Id);
+            if (userEdit == null) return;
+            
+            userEdit.Login = user.Login;
+            userEdit.Password = user.Password;
+
+            db.SaveChanges();
+        }
+        
         public Commpany GetCompanyById(string idCompany)
         {
             return db.Commpanies.First(c => c.Id.ToString() == idCompany);
+        }
+        
+        public SettingsUserViewModel GetUserById(int id)
+        {
+            var user = db.User.FirstOrDefault(c => c.Id == id);
+
+            return mapper.Map<SettingsUserViewModel>(user);
         }
         
         public void CreateUserForCompanyId(int id, string nameCompany, string password)

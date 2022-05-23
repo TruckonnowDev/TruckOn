@@ -4,6 +4,7 @@ using BaceModel.ModelInspertionDriver;
 using DaoModels.DAO.DTO;
 using DaoModels.DAO.Models;
 using DaoModels.DAO.Models.Settings;
+using WebDispacher.ViewModels.Settings;
 
 namespace WebDispacher.Business.Interfaces
 {
@@ -18,6 +19,8 @@ namespace WebDispacher.Business.Interfaces
         bool CheckEmail(string email);
         Task<int> ResetPasswordFoUser(string newPassword, string idUser, string token);
         void CreateUserForCompanyId(int id, string nameCompany, string password);
+        void EditUser(SettingsUserViewModel user);
+        SettingsUserViewModel GetUserById(int id);
         void AddUser(string idCompany, string login, string password);
         void RemoveUserById(string idUser);
         bool Authorization(string login, string password);

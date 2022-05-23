@@ -244,16 +244,19 @@ namespace WebDispacher.Business.Services
 
         public List<DriverReport> GetDriversReport(string nameDriver, string driversLicense)
         {
-            var driverReports = new List<DriverReport>();
+            var driverReports = db.DriverReports.OrderBy(x => x.DateFired).AsQueryable();
 
-            if (nameDriver != null || driversLicense != null)
+            if (!string.IsNullOrEmpty(nameDriver))
             {
-                driverReports.AddRange(db.DriverReports.Where(d =>
-                    (nameDriver == d.FullName)
-                    && (driversLicense == d.DriversLicenseNumber)));
+                driverReports = db.DriverReports.Where(x => x.FullName == nameDriver);
             }
 
-            return driverReports;
+            if (!string.IsNullOrEmpty(driversLicense))
+            {
+                driverReports = db.DriverReports.Where(x => x.DriversLicenseNumber == driversLicense);
+            }
+
+            return driverReports.ToList();
         }
 
         public async Task<List<DucumentDriver>> GetDriverDoc(string id)

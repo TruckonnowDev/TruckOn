@@ -1,49 +1,63 @@
 ﻿<body>
-    <div class="admin">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="title">
-                        <h1>Companies</h1>
-                        <button class="btn1" onclick="window.location.href='@Url.Action("CreateCompany", "Company")';">Add Company</button>
-                    </div>
+<div class="admin">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="title">
+                    <h1>Companies</h1>
+                    <button class="btn1" onclick="window.location.href='@Url.Action("CreateCompany", "Company")';">Add Company</button>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div id="tabs">
-                        <div class="tab whiteborder" onclick="window.location.href='@Url.Action("Companies", "Company")';">Companies</div>
-                        <div class="tab" onclick="window.location.href='@Url.Action("Users", "Company")';">All Users</div>
-                        <div class="tabContent">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Registration</th>
-                                        <th>Type of company</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @for (int i = 0; i < ViewBag.Companies.Count; i++)
-                                    {
-                                        <tr>
-                                            <td>@ViewBag.Companies[i].Name</td>
-                                            <td>@ViewBag.Companies[i].DateRegistration</td>
-                                            <td>@ViewBag.Companies[i].Type</td>
-                                            <td>
-                                                <img src="~/img/arrow.svg" alt=""  onclick="window.location.href = 'Users?idCompanySelect=@ViewBag.Companies[i].Id';" />
-                                                <img src="~/img/doc.svg" alt=""  onclick="window.location.href = '@ViewBag.BaseUrl/Company/Doc?id=@ViewBag.Companies[i].Id';">
-                                                <img src="~/img/delet.svg" alt="" onclick="window.location.href='@ViewBag.BaseUrl/Company/Remove?id=@ViewBag.Companies[i].Id';">
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div id="tabs">
+                    <div class="tab whiteborder" onclick="window.location.href='@Url.Action("Companies", "Company")';">Companies</div>
+                    <div class="tab" onclick="window.location.href='@Url.Action("Users", "Company")';">All Users</div>
+                    <div class="tabContent">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Registration</th>
+                                <th>Type of company</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @for (int i = 0; i < ViewBag.Companies.Count; i++)
+                            {
+                                <tr>
+                                    <td>@ViewBag.Companies[i].Name</td>
+                                    <td>@ViewBag.Companies[i].DateRegistration</td>
+                                    <td>@ViewBag.Companies[i].Type</td>
+                                    <td>
+                                        <img src="~/img/arrow.svg" alt=""  onclick="window.location.href = 'Users?idCompanySelect=@ViewBag.Companies[i].Id';" />
+                                        <img src="~/img/doc.svg" alt=""  onclick="window.location.href = '@ViewBag.BaseUrl/Company/Doc?id=@ViewBag.Companies[i].Id';">
+                                        <img src="~/img/delet.svg" alt="" onclick="RemoveCompany(@ViewBag.Companies[i].Id)">
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </body>
+
+<script>
+ function RemoveCompany(id){
+     $.ajax({
+          type: "get",
+          url: `/Company/Remove?id=${id}`,
+          success: function () {
+              window.location.reload();
+          },
+          error: function (response) {
+          }
+      });
+    }
+</script>

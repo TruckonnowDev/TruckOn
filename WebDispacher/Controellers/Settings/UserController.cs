@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebDispacher.Business.Interfaces;
 using WebDispacher.Constants;
 using WebDispacher.Service;
+using WebDispacher.ViewModels.Settings;
 
 namespace WebDispacher.Controellers.Settings
 {
@@ -159,6 +160,74 @@ namespace WebDispacher.Controellers.Settings
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
                     ViewBag.NameCompany = companyName;
                     userService.RemoveUserById(idUser);
+                    
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/User/Users");
+                }
+
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                {
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+            
+            return Redirect(Config.BaseReqvesteUrl);
+        }
+        
+        [HttpGet]
+        [Route("Edit")]
+        public IActionResult EditUser(int id)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
+                
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.SettingsUser))
+                {
+                    ViewData[NavConstants.TypeNavBar] =
+                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+                    
+                    ViewBag.NameCompany = companyName;
+                    var user = userService.GetUserById(id);
+                    
+                    return View("~/Views/Settings/EditUser.cshtml", user);
+                }
+
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                {
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+            
+            return Redirect(Config.BaseReqvesteUrl);
+        }
+        
+        [HttpPost]
+        [Route("Edit")]
+        public IActionResult EditUser(SettingsUserViewModel user)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
+                
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.SettingsUser))
+                {
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+                    ViewBag.NameCompany = companyName;
+                    userService.EditUser(user);
                     
                     return Redirect($"{Config.BaseReqvesteUrl}/Settings/User/Users");
                 }

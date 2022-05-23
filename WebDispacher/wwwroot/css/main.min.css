@@ -833,3 +833,8 @@ input[type="file"] {
     padding-top:10px;
     overflow:hidden
 }
+
+.delete-border-cursor{
+    border:0!important;
+    cursor:pointer;
+}

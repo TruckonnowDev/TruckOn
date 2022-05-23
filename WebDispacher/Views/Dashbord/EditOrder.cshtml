@@ -196,8 +196,8 @@
                                     </div>
                                     <div class="td"><input type='text' name="Color" value="@Model.VehiclwInformations[i].Color" /></div>
                                     <div class="td"><input type='text' name="LotNumber" value="@Model.VehiclwInformations[i].Lot" /></div>
-                                    <div class="td"><input type='text' class="delete" /></div>
-                                    <div class="td"><input type='submit' value="Save" /></div>
+                                    <div class="td"><input type='text' class="delete delete-border-cursor" onclick="DeleteVech(@Model.VehiclwInformations[i].Id)"/></div>
+                                    <div class="td"><input type='submit' class="delete-border-cursor" value="Save" /></div>
                                     <input type="text" name="idVech" style="display:none;" value="@Model.VehiclwInformations[i].Id" />
                                     <input type="text" name="idOrder" style="display:none;" value="@Model.Id" />
                                 </form>
@@ -218,7 +218,7 @@ $(document).ready(function() {
     }
     if ("@Model.TotalPaymentToCarrier" != null)
     { 
-            $('#paymentMethod option[value="@Model.TotalPaymentToCarrier"]').prop('selected', true);
+        $('#paymentMethod option[value="@Model.TotalPaymentToCarrier"]').prop('selected', true);
     }
 });
 
@@ -251,13 +251,12 @@ $(document).ready(function() {
         const contactC = document.getElementById('contactId').value;
         const phoneC = document.getElementById('phoneC').value;
         
-       
         let idOrder = document.getElementById('idOrder').value;
-        console.log("idOrder: " + idOrder);
              var xhttp = new XMLHttpRequest();
              let Req = "idOrder=" + idOrder;
              xhttp.onreadystatechange = function (e) {
-                 if (this.readyState == 4 && this.status == 200) {
+                 console.log(this.readyState);
+                 if (this.readyState === 4 && this.status === 200) {
                      alert(this.responseText);
                      var url = `@ViewBag.BaseUrl/Dashbord/Order/EditReload?Id=${idOrder}&stasus=${status}&idOrder=${loadId}&NameP=${nameP}`+
                                                  `&ContactNameP=${contactNameP}&Address=${addressP}&CityP=${cityP}&StateP=${stateP}&CurrentStatus=${status}` +
@@ -273,4 +272,73 @@ $(document).ready(function() {
              xhttp.setRequestHeader('Accept-Encoding', 'br');
              xhttp.send(Req);
     }
+    
+    function DeleteVech(btnE) {
+        const loadId = document.getElementById('idLoad').value;
+                const status = document.getElementById('statusId').value;
+                const nameP = document.getElementById('nameP').value;
+                const contactNameP = document.getElementById('contactNameP').value;
+                const addressP = document.getElementById('addressP').value;
+                const cityP = document.getElementById('cityP').value;
+                const stateP = document.getElementById('stateP').value;
+                const zipP = document.getElementById('zipP').value;
+                const phoneP = document.getElementById('phoneP').value;
+                const emailP = document.getElementById('emailP').value;
+                const scheduledPickupDateP = document.getElementById('scheduledPickupDateP').value;
+                const instructions = document.getElementById('instructions').value;
+                const nameD = document.getElementById('nameD').value;
+                const contactD = document.getElementById('contactD').value;
+                const addressD = document.getElementById('addressD').value;
+                const cityD = document.getElementById('cityD').value;
+                const stateD = document.getElementById('stateD').value;
+                const zipD = document.getElementById('zipD').value;
+                const phoneD = document.getElementById('phoneD').value;
+                const emailD = document.getElementById('emailD').value;
+                const paymentMethod = document.getElementById('paymentMethod').value;
+                const price = document.getElementById('price').value;
+                const brokerFee = document.getElementById('brokerFee').value;
+                const faxC = document.getElementById('faxC').value;
+                const iccmcC = document.getElementById('iccmcC').value;
+                const contactC = document.getElementById('contactId').value;
+                const phoneC = document.getElementById('phoneC').value;
+                
+               
+                let idOrder = document.getElementById('idOrder').value;
+                
+            let Req = "idVech=" + btnE;
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function (e) {
+                if (this.readyState == 4 && this.status == 200) {
+                    alert(this.responseText);
+                     var url = `@ViewBag.BaseUrl/Dashbord/Order/EditReload?Id=${idOrder}&stasus=${status}&idOrder=${loadId}&NameP=${nameP}`+
+                                                 `&ContactNameP=${contactNameP}&Address=${addressP}&CityP=${cityP}&StateP=${stateP}&CurrentStatus=${status}` +
+                                                 `&ZipP=${zipP}&PhoneP=${phoneP}&EmailP=${emailP}&PickupExactly=${scheduledPickupDateP}&Titl1DI=${instructions}` +
+                                                 `&NameD=${nameD}&ContactNameD=${contactD}&AddressD=${addressD}&CityD=${cityD}&StateD=${stateD}&ZipD=${zipD}&PhoneD=${phoneD}` +
+                                                 `&EmailD=${emailD}&TotalPaymentToCarrier=${paymentMethod}&PriceListed=${price}&BrokerFee=${brokerFee}&FaxC=${faxC}` +
+                                                 `&IccmcC=${iccmcC}&ContactC=${contactC}&PhoneC=${phoneC}`;
+                    window.location.href = url;
+                                   
+                }
+            };
+            xhttp.open("POST", "@ViewBag.BaseUrl/Dashbord/Order/RemoveVech", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.setRequestHeader('Accept-Encoding', 'br');
+            xhttp.send(Req);
+            tdElms.removeChild(FindId(tdElms.children, idVech));
+        }
 </script>
+
+<style>
+    .Billing .table .td input,.Billing .table .td select{
+    text-align:center;
+    width:95%;
+    padding:6px 0;
+    border:1px solid #c4c9d5;
+    border-radius:10px!important;
+    background:#fff;
+    margin:0;
+    font-weight:400;
+    color:#007bff;
+    font-size:20px;
+    }
+</style>

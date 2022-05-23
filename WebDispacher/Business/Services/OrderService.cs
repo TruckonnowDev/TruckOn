@@ -74,6 +74,8 @@ namespace WebDispacher.Business.Services
             
             if (shipping != null)
             {
+                shipping.PriceListed = shipping.PriceListed.Replace("$", "");
+
                 await AddOrder(shipping);
             }
             

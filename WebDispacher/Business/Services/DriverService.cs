@@ -256,6 +256,8 @@ namespace WebDispacher.Business.Services
                 driverReports = db.DriverReports.Where(x => x.DriversLicenseNumber == driversLicense);
             }
 
+            driverReports = driverReports.OrderByDescending(x => x.Id);
+
             return driverReports.ToList();
         }
 

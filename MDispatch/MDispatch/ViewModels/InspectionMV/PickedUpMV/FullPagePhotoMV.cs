@@ -4,68 +4,99 @@ using MDispatch.Models.Enum;
 using MDispatch.Models.ModelDataBase;
 using MDispatch.NewElement;
 using MDispatch.NewElement.Directory;
-using MDispatch.Service.HelperView;
-using MDispatch.Service.ManagerDispatchMob;
+using MDispatch.NewElement.ResIzeImage;
+using MDispatch.NewElement.ToastNotify;
+using MDispatch.Service;
+using MDispatch.Service.Helpers;
+using MDispatch.Service.Net;
 using MDispatch.Service.RequestQueue;
+using MDispatch.Service.Tasks;
+using MDispatch.View;
+using MDispatch.View.GlobalDialogView;
 using MDispatch.View.Inspection;
+using MDispatch.View.Inspection.PickedUp;
 using MDispatch.View.PageApp;
+using MDispatch.ViewModels.AskPhoto;
 using MDispatch.ViewModels.InspectionMV.Servise.Models;
 using Newtonsoft.Json;
 using Plugin.Settings;
+using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using static MDispatch.Service.ManagerDispatchMob.ManagerDispatchMobService;
+using static MDispatch.Service.ManagerDispatchMob;
 
 namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
 {
-    public class FullPagePhotoMV : BaseViewModel
+    public class FullPagePhotoMV : BindableBase
     {
-        public readonly IManagerDispatchMobService managerDispatchMob;
+        public ManagerDispatchMob managerDispatchMob = null;
+        public INavigation Navigation { get; set; }
         public IVehicle Car = null;
         private InitDasbordDelegate initDasbordDelegate = null;
         private GetVechicleDelegate getVechicleDelegate = null;
         private FullPagePhoto fullPagePhoto = null;
-        private readonly IManagerQueueService _managerQueueService;
-        private readonly IHelperViewService _helperView;
 
-        public FullPagePhotoMV(
-            IManagerDispatchMobService managerDispatchMob, 
-            VehiclwInformation vehiclwInformation, 
-            string idShip, string typeCar, 
-            int inderxPhotoInspektion, INavigation navigation, 
-            InitDasbordDelegate initDasbordDelegate, 
-            GetVechicleDelegate getVechicleDelegate, 
-            string onDeliveryToCarrier, string totalPaymentToCarrier, 
-            FullPagePhoto fullPagePhoto)
-            : base(navigation)
+        public FullPagePhotoMV(ManagerDispatchMob managerDispatchMob, VehiclwInformation vehiclwInformation, string idShip, string typeCar, int inderxPhotoInspektion, INavigation navigation, InitDasbordDelegate initDasbordDelegate, 
+            GetVechicleDelegate getVechicleDelegate, string onDeliveryToCarrier, string totalPaymentToCarrier, FullPagePhoto fullPagePhoto)
         {
-            _managerQueueService = DependencyService.Get<IManagerQueueService>();
-            _helperView = DependencyService.Get<IHelperViewService>();
+            Navigation = navigation;
             this.getVechicleDelegate = getVechicleDelegate;
             this.initDasbordDelegate = initDasbordDelegate;
             this.managerDispatchMob = managerDispatchMob;
             VehiclwInformation = vehiclwInformation;
             InderxPhotoInspektion = inderxPhotoInspektion;
             Car = GetTypeCar(typeCar.Replace(" ", ""));
-            Init();
             IdShip = idShip;
             OnDeliveryToCarrier = onDeliveryToCarrier;
             TotalPaymentToCarrier = totalPaymentToCarrier;
             this.fullPagePhoto = fullPagePhoto;
+            Init();
         }
 
         private async void Init()
         {
             await Car.OrintableScreen(inderxPhotoInspektion);
+            FolderOffline folderOffline = await managerDispatchMob.GetPhotoInspectionByOptinsInDB(IdShip, VehiclwInformation.Id, FolderOflineType.PhotoInspaction, InspactionType.PikedUp, InderxPhotoInspektion);
+            if (folderOffline != null)
+            {
+                AllSourseImage = new ObservableCollection<ImageSource>();
+                IdFolderOffline = folderOffline.Id;
+                PhotoInspection = JsonConvert.DeserializeObject<PhotoInspection>(folderOffline.Json);
+                AddNewFotoSourse(ConvertBase64ToIByte(PhotoInspection.Photos[0].Base64));
+                fullPagePhoto.SetbtnVisable(true);
+                if (PhotoInspection.Damages != null && PhotoInspection.Damages.Count > 0)
+                {
+                    foreach (Damage damage in PhotoInspection.Damages)
+                    {
+                        byte[] damageImg = ConvertBase64ToIByte(damage.ImageBase64);
+                        ImageSource imageSource = AddNewFotoSourse(damageImg);
+                        damage.ImageSource = imageSource;
+                        damage.Image = new ImgResize()
+                        {
+                            Source = $"DamageP{damage.IndexDamage}.png",
+                            WidthRequest = damage.WidthDamage,
+                            HeightRequest = damage.HeightDamage,
+                        };
+                        fullPagePhoto.AddDamagCurrentLayut(damage.Image, damage.XInterest, damage.YInterest);
+                    }
+                }
+            }
+            else
+            {
+                await Navigation.PushAsync(new CameraPagePhoto($"{Car.TypeIndex.Replace(" ", "")}{InderxPhotoInspektion}.png", fullPagePhoto, "PhotoIspection"));
+            }
+
         }
 
         public string IdShip { get; set; }
         public string OnDeliveryToCarrier { get; set; }
         public string TotalPaymentToCarrier { get; set; }
+        public int IdFolderOffline { get; set; }
 
         private int inderxPhotoInspektion = 0;
         public int InderxPhotoInspektion
@@ -88,8 +119,8 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
             set => SetProperty(ref sourseImage, value);
         }
 
-        private List<ImageSource> allSourseImage = null;
-        public List<ImageSource> AllSourseImage
+        private ObservableCollection<ImageSource> allSourseImage = null;
+        public ObservableCollection<ImageSource> AllSourseImage
         {
             get => allSourseImage;
             set => SetProperty(ref allSourseImage, value);
@@ -155,10 +186,8 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
         {
             if (image != null && PhotoInspection.Damages != null && PhotoInspection.Damages.FirstOrDefault(d => d.Image == image) != null)
             {
-                List<ImageSource> imageSources2 = new List<ImageSource>(AllSourseImage); 
                 Damage damage = PhotoInspection.Damages.FirstOrDefault(d => d.Image == image);
-                imageSources2.Remove(imageSources2.FirstOrDefault(i => i == damage.ImageSource));
-                AllSourseImage = imageSources2;
+                AllSourseImage.Remove(AllSourseImage.FirstOrDefault(i => i == damage.ImageSource));
                 PhotoInspection.Damages.Remove(damage);
             }
         }
@@ -178,6 +207,7 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
             damage.HeightDamage = heightDamage;
             damage.TypeCurrentStatus = "P";
             damage.ImageSource = imageSource1;
+            damage.ImageBase64 = PhotoInspection.Photos.Last().Base64;
             if (PhotoInspection.Damages == null)
             {
                 PhotoInspection.Damages = new List<Damage>();
@@ -208,7 +238,6 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
 
         public void ReSetPhoto(byte[] newPhoto, byte[] oldPhoto)
         {
-            List<ImageSource> imageSources1 = new List<ImageSource>(AllSourseImage);
             Photo photo = new Photo();
             int Index = PhotoInspection.Photos.FindIndex(p => p.Base64 == Convert.ToBase64String(oldPhoto));
             Photo photoOld = PhotoInspection.Photos.FirstOrDefault(p => p.Base64 == Convert.ToBase64String(oldPhoto));
@@ -217,14 +246,13 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
             photo.Base64 = Convert.ToBase64String(newPhoto);
             PhotoInspection.Photos.RemoveAt(Index);
             PhotoInspection.Photos.Insert(Index, photo);
-            Index = imageSources1.FindIndex(a => Convert.ToBase64String(GetBytesInImageSourse(a)) == Convert.ToBase64String(oldPhoto));
-            imageSources1.RemoveAt(Index);
-            imageSources1.Insert(Index, ImageSource.FromStream(() => new MemoryStream(newPhoto)));
-            AllSourseImage = imageSources1;
+            Index = AllSourseImage.ToList().FindIndex(a => Convert.ToBase64String(GetBytesInImageSourse(a)) == Convert.ToBase64String(oldPhoto));
+            AllSourseImage.RemoveAt(Index);
+            AllSourseImage.Insert(Index, ImageSource.FromStream(() => new MemoryStream(newPhoto)));
             SourseImage = AllSourseImage[Index];
             if (PhotoInspection.Damages != null)
             {
-               PhotoInspection.Damages.FirstOrDefault(d => Convert.ToBase64String(GetBytesInImageSourse(d.ImageSource)) == Convert.ToBase64String(oldPhoto)).ImageSource = AllSourseImage[Index];
+                PhotoInspection.Damages.FirstOrDefault(d => Convert.ToBase64String(GetBytesInImageSourse(d.ImageSource)) == Convert.ToBase64String(oldPhoto)).ImageSource = AllSourseImage[Index];
             }
         }
 
@@ -242,15 +270,15 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
         }
 
 
-        public async Task AddNewFotoSourse(byte[] imageSorseByte)
+        public ImageSource AddNewFotoSourse(byte[] imageSorseByte)
         {
+            ImageSource imageSource = ImageSource.FromStream(() => new MemoryStream(imageSorseByte));
             if (AllSourseImage == null)
             {
-                AllSourseImage = new List<ImageSource>();
+                AllSourseImage = new ObservableCollection<ImageSource>();
             }
-            List<ImageSource> imageSources1 = new List<ImageSource>(AllSourseImage);
-            imageSources1.Add(ImageSource.FromStream(() => new MemoryStream(imageSorseByte)));
-            AllSourseImage = imageSources1;
+            AllSourseImage.Add(imageSource);
+            return imageSource;
         }
 
         public async Task SetPhoto(byte[] PhotoInArrayByte, double width = 0, double height = 0)
@@ -275,6 +303,7 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
             PhotoInspection.Photos.Add(photo);
         }
 
+        [System.Obsolete]
         public async void SavePhoto(bool isNavigWthDamag = false)
         {
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
@@ -282,28 +311,28 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
             {
                 Car.OrintableScreen(InderxPhotoInspektion);
                 FullPagePhoto fullPagePhoto = new FullPagePhoto(managerDispatchMob, VehiclwInformation, IdShip, $"{Car.TypeIndex.Replace(" ", "")}{InderxPhotoInspektion + 1}.png", Car.TypeIndex.Replace(" ", ""), InderxPhotoInspektion + 1, initDasbordDelegate, getVechicleDelegate, Car.GetNameLayout(InderxPhotoInspektion + 1), OnDeliveryToCarrier, TotalPaymentToCarrier);
-                await _navigation.PushAsync(fullPagePhoto);
-                await _navigation.PushAsync(new CameraPagePhoto($"{Car.TypeIndex.Replace(" ", "")}{InderxPhotoInspektion + 1}.png", fullPagePhoto, "PhotoIspection"));
+                await Navigation.PushAsync(fullPagePhoto);
+                //await Navigation.PushAsync(new CameraPagePhoto($"{Car.TypeIndex.Replace(" ", "")}{InderxPhotoInspektion + 1}.png", fullPagePhoto, "PhotoIspection"));
             }
             else
             {
                 DependencyService.Get<IOrientationHandler>().ForceSensor();
-                await _navigation.PushAsync(new Ask1Page(managerDispatchMob, VehiclwInformation, IdShip, initDasbordDelegate, getVechicleDelegate, Car.TypeIndex.Replace(" ", ""), OnDeliveryToCarrier, TotalPaymentToCarrier), true);
+                await Navigation.PushAsync(new Ask1Page(managerDispatchMob, VehiclwInformation, IdShip, initDasbordDelegate, getVechicleDelegate, Car.TypeIndex.Replace(" ", ""), OnDeliveryToCarrier, TotalPaymentToCarrier), true);
             }
-            await Task.Run(() => _utils.CheckNet(true, true));
+            await Task.Run(() => Utils.CheckNet(true, true));
             if (App.isNetwork)
             {
                 if (isNavigWthDamag)
                 {
-                    _navigation.RemovePage(_navigation.NavigationStack[2]);
+                    Navigation.RemovePage(Navigation.NavigationStack[2]);
                 }
-                if (_navigation.NavigationStack.Count > 1)
+                if (Navigation.NavigationStack.Count > 1)
                 {
-                    _navigation.RemovePage(_navigation.NavigationStack[1]);
+                    Navigation.RemovePage(Navigation.NavigationStack[1]);
                 }
                 await Task.Run(() =>
                 {
-                    _managerQueueService.AddRequest("SavePhoto", token, VehiclwInformation.Id, PhotoInspection);
+                    ManagerQueue.AddReqvest("SavePhoto", token, VehiclwInformation.Id, PhotoInspection);
                     initDasbordDelegate.Invoke();
                 });
             }
@@ -323,8 +352,8 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
         {
             if (actionSheet == LanguageHelper.SelectBackToRootBage)
             {
-                _helperView.ReSet();
-                _helperView.CallError(LanguageHelper.NotNetworkAlert);
+                HelpersView.ReSet();
+                HelpersView.CallError(LanguageHelper.NotNetworkAlert);
                 BackToRootPage();
             }
             else if (actionSheet == LanguageHelper.SelectLoadGalery)
@@ -348,11 +377,11 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
         private async Task NextInspectionPhotoPage()
         {
             FullPagePhoto fullPagePhoto = new FullPagePhoto(managerDispatchMob, VehiclwInformation, IdShip, $"{Car.TypeIndex.Replace(" ", "")}{InderxPhotoInspektion + 1}.png", Car.TypeIndex.Replace(" ", ""), InderxPhotoInspektion + 1, initDasbordDelegate, getVechicleDelegate, Car.GetNameLayout(InderxPhotoInspektion + 1), OnDeliveryToCarrier, TotalPaymentToCarrier);
-            await _navigation.PushAsync(fullPagePhoto);
-            await _navigation.PushAsync(new CameraPagePhoto($"{Car.TypeIndex.Replace(" ", "")}{InderxPhotoInspektion + 1}.png", fullPagePhoto, "PhotoIspection"));
-            if (_navigation.NavigationStack.Count > 1)
+            await Navigation.PushAsync(fullPagePhoto);
+            //await Navigation.PushAsync(new CameraPagePhoto($"{Car.TypeIndex.Replace(" ", "")}{InderxPhotoInspektion + 1}.png", fullPagePhoto, "PhotoIspection"));
+            if (Navigation.NavigationStack.Count > 1)
             {
-                _navigation.RemovePage(_navigation.NavigationStack[1]);
+                Navigation.RemovePage(Navigation.NavigationStack[1]);
             }
         }
 
@@ -365,7 +394,7 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
 
         private async Task SaveAllPhotoInspactionToOflineFolder()
         {
-            await managerDispatchMob.AddPhotoInspection(new FolderOffline()
+            await managerDispatchMob.dataBaseContext.AddPhotoInspection(new FolderOffline()
             {
                 IdShiping = IdShip,
                 IdVech = VehiclwInformation.Id,
@@ -392,16 +421,21 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
 
         public async Task ClosePageToFirstPageInspction()
         {
-            for(int i = 0; _navigation.NavigationStack.Count >= 3; i++)
+            for(int i = 0; Navigation.NavigationStack.Count >= 3; i++)
             {
-                await _navigation.PopAsync();
+                await Navigation.PopAsync();
             }
         }
 
         public async void BackToRootPage()
         {
             DependencyService.Get<IOrientationHandler>().ForceSensor();
-            await _navigation.PopToRootAsync();
+            await Navigation.PopToRootAsync();
+        }
+
+        public byte[] ConvertBase64ToIByte(string base64)
+        {
+            return Convert.FromBase64String(base64);
         }
     }
 }

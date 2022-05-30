@@ -45,11 +45,18 @@ namespace MDispatch.View.PageApp
             
         }
 
-        public async Task SetbtnVisable()
+        public async Task SetbtnVisable(bool isLoadFolderOffline = false)
         {
             if (fullPagePhotoMV.AllSourseImage != null && fullPagePhotoMV.AllSourseImage.Count != 0)
             {
-                Photos.SelectedItem = fullPagePhotoMV.AllSourseImage[0];
+                if (isLoadFolderOffline)
+                {
+                    Photos.SelectedItem = fullPagePhotoMV.AllSourseImage[0];
+                }
+                else
+                {
+                    fullPagePhotoMV.SourseImage = fullPagePhotoMV.AllSourseImage[0];
+                }
                 btnNext.IsVisible = true;
                 btnNext.HorizontalOptions = LayoutOptions.End;
                 btnAddPhoto.IsVisible = false;
@@ -58,8 +65,15 @@ namespace MDispatch.View.PageApp
             }
         }
 
-        public void AddDamagCurrentLayut(Xamarin.Forms.View view)
+        internal void AddDamagCurrentLayut(Xamarin.Forms.View view, double? xInterest = null, double? yInterest = null, int? width = null, int? height = null)
         {
+            if (xInterest != null && yInterest != null)
+            {
+                double x = (double)xInterest;
+                double y = (double)yInterest;
+                AbsoluteLayout.SetLayoutBounds(view, new Rectangle((double)xInterest, (double)yInterest, 30, 30));
+                AbsoluteLayout.SetLayoutFlags(view, AbsoluteLayoutFlags.PositionProportional);
+            }
             ((ImgResize)view).OneTabAction += SelectImageSourse;
             dmla.Children.Add(view);
         }
@@ -87,7 +101,7 @@ namespace MDispatch.View.PageApp
                 {
                     MemoryStream ms = new MemoryStream();
                     stream.CopyTo(ms);
-                    await fullPagePhotoMV.AddNewFotoSourse(ms.ToArray());
+                    fullPagePhotoMV.AddNewFotoSourse(ms.ToArray());
                     await fullPagePhotoMV.SetPhoto(ms.ToArray(), 0, 0);
                     await SetbtnVisable();
                 }
@@ -125,7 +139,7 @@ namespace MDispatch.View.PageApp
 
         private async void Button_Clicked_2(object sender, EventArgs e)
         {
-            if (fullPagePhotoMV.PhotoInspection != null && fullPagePhotoMV.AllSourseImage.FindIndex(a => a == fullPagePhotoMV.SourseImage) == 0)
+            if (fullPagePhotoMV.PhotoInspection != null)
             {
                 await Navigation.PushAsync(new PageAddDamage(fullPagePhotoMV, this, dmla.Children.ToList()));
             }

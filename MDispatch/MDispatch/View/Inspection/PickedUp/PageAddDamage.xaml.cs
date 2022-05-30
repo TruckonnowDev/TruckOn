@@ -70,7 +70,7 @@ namespace MDispatch.View.Inspection.PickedUp
                     {
                         MemoryStream msNewPhoto = new MemoryStream();
                         streamNewPhoto.CopyTo(msNewPhoto);
-                        await FullPagePhotoMV.AddNewFotoSourse(msNewPhoto.ToArray());
+                        FullPagePhotoMV.AddNewFotoSourse(msNewPhoto.ToArray());
                         await FullPagePhotoMV.SetPhoto(msNewPhoto.ToArray());
                         stateSelect = 0;
                     }

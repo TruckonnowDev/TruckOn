@@ -57,7 +57,7 @@
                                             <x:Array Type="{x:Type x:String}">
                                                 <x:String>Check</x:String>
                                                 <x:String>Cash</x:String>
-                                                <x:String>Cradit card</x:String>
+                                                <x:String>Electronic Money Transfer</x:String>
                                             </x:Array>
                                         </Picker.ItemsSource>
                                     </Picker>

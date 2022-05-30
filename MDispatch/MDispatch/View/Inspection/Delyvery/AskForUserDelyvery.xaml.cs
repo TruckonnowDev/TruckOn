@@ -166,7 +166,7 @@ namespace MDispatch.View.Inspection.Delyvery
                 case "Check":
                     paymmant = new CheckPaymmant(this);
                     break;
-                case "Cradit card":
+                case "Electronic Money Transfer":
                     paymmant = new CraditCardPaymant(this);
                     break;
             }

@@ -8,12 +8,10 @@ namespace MDispatch.ViewModels.Popups
 {
     public class WarningPopupPageViewModel : BasePopupViewModel
     {
-        private readonly IUtilsService _utilsService;
         public WarningPopupPageViewModel(
             INavigation navigation)
             : base(navigation)
         {
-            _utilsService = DependencyService.Get<IUtilsService>();
         }
 
         public ICommand OkCommand => new AsyncCommand(OnOkCommand);
@@ -21,7 +19,7 @@ namespace MDispatch.ViewModels.Popups
         private async Task OnOkCommand()
         {
             await OnGoBackPopupCommand();
-            await _utilsService.StartListening(true);
+            await _utils.StartListening(true);
         }
     }
 }

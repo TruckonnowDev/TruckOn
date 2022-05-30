@@ -20,14 +20,12 @@ namespace MDispatch.ViewModels
     public class AvtorizationMV : BaseViewModel
     {
         private readonly IManagerDispatchMobService managerDispatchMob;
-        private readonly IUtilsService _utilsService;
         public DelegateCommand AvtorizationCommand { get; set; }
 
         public AvtorizationMV(
             INavigation navigation)
             : base(navigation)
         {
-            _utilsService = DependencyService.Get<IUtilsService>();
             managerDispatchMob = DependencyService.Get<IManagerDispatchMobService>();
             AvtorizationCommand = new DelegateCommand(Avtorization);
         }
@@ -118,7 +116,7 @@ namespace MDispatch.ViewModels
                 await Task.Run(() =>
                 {
                     DependencyService.Get<IStore>().OnTokenRefresh();
-                    _utilsService.StartListening();
+                    _utils.StartListening();
                     TaskManager.CommandToDo("CheckTask");
                 });
 

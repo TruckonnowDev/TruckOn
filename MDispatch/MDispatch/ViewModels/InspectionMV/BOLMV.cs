@@ -21,7 +21,6 @@ namespace MDispatch.ViewModels.InspectionMV
     {
         private BOLPage bOLPage = null;
         public InitDasbordDelegate initDasbordDelegate = null;
-        private readonly IUtilsService _utils;
         private readonly IGlobalHelperService _globalHelpersService;
         private readonly IHelperViewService _helperView;
         private readonly IManagerDispatchMobService _managerDispatchMob;
@@ -32,7 +31,6 @@ namespace MDispatch.ViewModels.InspectionMV
             BOLPage bOLPage)
             : base(navigation)
         {
-            _utils = DependencyService.Get<IUtilsService>();
             _helperView = DependencyService.Get<IHelperViewService>();
             _globalHelpersService = DependencyService.Get<IGlobalHelperService>();
             managerDispatchMob = DependencyService.Get<IManagerDispatchMobService>();

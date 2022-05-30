@@ -21,7 +21,6 @@ namespace MDispatch.ViewModels.InspectionMV
     {
         public readonly IManagerDispatchMobService managerDispatchMob;
         private object paymmpayMVInspactionant = null;
-        private readonly IUtilsService _utils;
         private readonly IGlobalHelperService _globalHelper;
         private readonly IHelperViewService _helperView;
 
@@ -31,7 +30,6 @@ namespace MDispatch.ViewModels.InspectionMV
             INavigation navigation, object paymmpayMVInspactionant)
             :base(navigation)
         {
-            _utils = DependencyService.Get<IUtilsService>();
             _globalHelper = DependencyService.Get<IGlobalHelperService>();
             _helperView = DependencyService.Get<IHelperViewService>();
             this.paymmpayMVInspactionant = paymmpayMVInspactionant;

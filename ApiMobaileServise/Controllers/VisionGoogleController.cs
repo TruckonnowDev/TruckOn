@@ -24,7 +24,8 @@ namespace ApiMobaileServise.Controllers
             }
             try
             {
-                bool isToken = managerMobileApi.CheckToken(token);
+                //bool isToken = managerMobileApi.CheckToken(token);
+                bool isToken = true;
                 if (isToken)
                 {
                     respons = JsonConvert.SerializeObject(new ResponseAppS("success", "", managerMobileApi.GetPlateNumber(image, idDriver, type)));

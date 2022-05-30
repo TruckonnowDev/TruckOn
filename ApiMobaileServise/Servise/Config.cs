@@ -11,10 +11,11 @@ namespace ApiMobaileServise.Servise
 
         public static string UrlAdmin { get; set; } = "http://truckonnow.com";
        // public static string UrlAdmin { get; set; } = "http://dev.truckonnow.com";
-        public static string AuchGoogleCloud {
+        public static string AuchGoogleCloud 
+        {
             get
             {
-                string path = File.ReadAllText("../AuchConfig/json.txt");
+                string path = Path.GetFullPath("../AuchConfig/json.txt");
                 return path;
             }
         }

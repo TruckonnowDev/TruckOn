@@ -198,7 +198,7 @@ namespace MDispatch.Helpers.Language
         public string AskBlockAccountPasswordTitle => "Введите пароль своей учетной записи, чтобы продолжить";
         public string PlaceholderAccountPassword => "Введите пароль";
 
-        public string AskBlockDriverPayTitle => "Сделал плату водителя для перевозки?";
+        public string AskBlockDriverPayTitle => "Клиент оплатил перевозку?";
         public string DescriptionDriverPayTitle => "В ближайшее время диспетчер увидит проблему";
 
         public string TypeInfo => "Тип: ";
@@ -274,7 +274,7 @@ namespace MDispatch.Helpers.Language
 
         public string AskBlockTruckLockedTitle => "Машина заблокирована?";
 
-        public string AskBlockPictureIdPersonTitle => "Пожалуйста, сфотографируйте идентификатор человека, принимающего доставку";
+        public string AskBlockPictureIdPersonTitle => "Пожалуйста, сфотографируйте права человека принимающего доставку";
 
         public string AskBlockTrailerLockedTitle => "Все замки на прицепе заблокированы?";
 
@@ -286,21 +286,21 @@ namespace MDispatch.Helpers.Language
 
         public string AskBlockVehicleStartsTitle => "Автомобиль завелся?";
         public string AskBlockVehicleStarts1Title => "Как ты завел машину?";
-        public string JumpAnswer => "Прыгать";
+        public string JumpAnswer => "Портативный Аккумулятор";
         public string CablesAnswer => "Кабели";
         public string RolledOutAnswer => "Выкатил";
 
         public string AskBlockDoesVehicleDrivesTitle => "Автомобиль движется?";
 
-        public string AskBlockAnyoneHelpingUnloadTitle => "Кто-нибудь помогает тебе разгрузиться?";
-
-        public string AskBlockSomeoneElseUnloadedVehicleTitle => "Кто-то еще разгрузил автомобиль за вас?";
+        public string AskBlockAnyoneHelpingUnloadTitle => "Кто-то помогает вам разгрузиться?";
+        
+        public string AskBlockSomeoneElseUnloadedVehicleTitle => "Кто-то разгрузил авто за вас?";
 
         public string AskBlockVehicleParkedSafeLocationTitle => "Автомобиль припаркован в безопасном месте?";
 
         public string AskBlockTimeOfDeliveryTitle => "Время доставки";
 
-        public string InfoKeysGiveDriver => "Пожалуйста, удалите все предметы доставки и оставьте ключи при себе";
+        public string InfoKeysGiveDriver => "Пожалуйста, разгрузите авто и все предметы доставки, оставьте ключи при себе до оплаты!";
         public string AskBlockDeliveryCustomerInspectCarTitle => "Попросите клиента осмотреть машину";
         public string IConfirmTheInspectionBtnText => "Подтверждаю осмотр";
 

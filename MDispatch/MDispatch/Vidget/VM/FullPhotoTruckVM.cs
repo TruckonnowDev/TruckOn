@@ -1,41 +1,42 @@
 ﻿using MDispatch.Helpers;
 using MDispatch.Models;
 using MDispatch.NewElement;
-using MDispatch.NewElement.ToastNotify;
-using MDispatch.Service;
-using MDispatch.Service.Helpers;
-using MDispatch.Service.Net;
+using MDispatch.Service.HelperView;
+using MDispatch.Service.ManagerDispatchMob;
 using MDispatch.Service.RequestQueue;
-using MDispatch.Service.Tasks;
+using MDispatch.Service.Utils;
 using MDispatch.Vidget.View;
 using MDispatch.View;
 using MDispatch.View.GlobalDialogView;
+using MDispatch.View.Popups;
 using Plugin.Settings;
 using Prism.Commands;
 using Prism.Mvvm;
 using Rg.Plugins.Popup.Services;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using static MDispatch.Service.ManagerDispatchMob;
+using static MDispatch.Service.ManagerDispatchMob.ManagerDispatchMobService;
 
-namespace MDispatch.Vidget.VM   
+namespace MDispatch.Vidget.VM
 {
     public class FullPhotoTruckVM : BindableBase
     {
-        private ManagerDispatchMob managerDispatchMob = null;
         public INavigation Navigation = null;
         public DelegateCommand NextCommand { get; set; }
-
-       
-
         private InitDasbordDelegate initDasbordDelegate = null;
+        private readonly IManagerQueueService _managerQueueService;
+        private readonly IUtilsService _utils;
+        private readonly IHelperViewService _helperView;
+        private readonly IManagerDispatchMobService managerDispatchMob;
 
         [System.Obsolete]
-        public FullPhotoTruckVM(ManagerDispatchMob managerDispatchMob, string idDriver, int indexCurent, INavigation navigation, TruckCar truckCar, InitDasbordDelegate initDasbordDelegate = null)
+        public FullPhotoTruckVM(IManagerDispatchMobService managerDispatchMob, string idDriver, int indexCurent, INavigation navigation, TruckCar truckCar, InitDasbordDelegate initDasbordDelegate = null)
         {
+            _managerQueueService = DependencyService.Get<IManagerQueueService>();
+            _helperView = DependencyService.Get<IHelperViewService>();
+            _utils = DependencyService.Get<IUtilsService>();
             this.initDasbordDelegate = initDasbordDelegate;
             this.managerDispatchMob = managerDispatchMob;
             this.Navigation = navigation;
@@ -168,15 +169,15 @@ namespace MDispatch.Vidget.VM
                     UpdateInspectionDriver();
                 }
             }
-            await Task.Run(() => Utils.CheckNet(false, true));
+            await Task.Run(() => _utils.CheckNet(false, true));
             if (App.isNetwork)
             {
                 Navigation.RemovePage(Navigation.NavigationStack[1]);
-                Task.Run(() => ManagerQueue.AddReqvest("SaveInspactionDriver", token, IdDriver, Photo, IndexCurent, truckCar.TypeTransportVehicle));
+                Task.Run(() => _managerQueueService.AddRequest("SaveInspactionDriver", token, IdDriver, Photo, IndexCurent, truckCar.TypeTransportVehicle));
             }
             else
             {
-                HelpersView.CallError(LanguageHelper.NotNetworkAlert);
+                _helperView.CallError(LanguageHelper.NotNetworkAlert);
                 await Navigation.PopToRootAsync(true);
             }
         }
@@ -187,7 +188,7 @@ namespace MDispatch.Vidget.VM
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
             string description = null;
             int state = 0;
-            await Task.Run(() => Utils.CheckNet());
+            await Task.Run(() => _utils.CheckNet());
             if (App.isNetwork)
             {
                 await Task.Run(() =>
@@ -196,7 +197,7 @@ namespace MDispatch.Vidget.VM
                 });
                 if (state == 1)
                 {
-                    await PopupNavigation.PushAsync(new Alert(LanguageHelper.NotNetworkAlert, null));
+                    await Navigation.PushAsync(new Alert(LanguageHelper.NotNetworkAlert, null));
                 }
                 else if (state == 2)
                 {
@@ -214,13 +215,13 @@ namespace MDispatch.Vidget.VM
             }
             else
             {
-                HelpersView.CallError(LanguageHelper.NotNetworkAlert);
+                _helperView.CallError(LanguageHelper.NotNetworkAlert);
                 BackToRootPage();
             }
         }
 
         [System.Obsolete]
-        internal async void SetPlate(string nowCheck)
+        internal async Task SetPlate(string nowCheck)
         {
             await PopupNavigation.PushAsync(new LoadPage());
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
@@ -228,7 +229,7 @@ namespace MDispatch.Vidget.VM
             int state = 0;
             bool isPlate = false;
             TruckCar truckCar = null;
-            await Task.Run(() => Utils.CheckNet());
+            await Task.Run(() => _utils.CheckNet());
             if (App.isNetwork)
             {
                 await Task.Run(() =>
@@ -275,7 +276,7 @@ namespace MDispatch.Vidget.VM
             }
             else
             {
-                HelpersView.CallError(LanguageHelper.NotNetworkAlert);
+                _helperView.CallError(LanguageHelper.NotNetworkAlert);
                 BackToRootPage();
             }
         }
@@ -288,7 +289,7 @@ namespace MDispatch.Vidget.VM
             string description = null;
             int state = 0;
             string plateTruckAndTrailer = null;
-            await Task.Run(() => Utils.CheckNet());
+            await Task.Run(() => _utils.CheckNet());
             if (App.isNetwork)
             {
                 await Task.Run(() =>
@@ -324,12 +325,12 @@ namespace MDispatch.Vidget.VM
                         }
                         else if (TruckCar.TypeTransportVehicle == "Trailer")
                         {
-                            await PopupNavigation.PushAsync(new PlateTrailerWrite(this));
+                            await PopupNavigation.PushAsync(new PlateTrailerWritePopupView(this));
                         }
                     }
                     else if (TruckCar.IsNextInspection && TruckCar.CountPhoto + 1 == IndexCurent)
                     {
-                        await PopupNavigation.PushAsync(new PlateTrailerWrite(this));
+                        await PopupNavigation.PushAsync(new PlateTrailerWritePopupView(this));
                     }
                 }
                 else if (state == 4)
@@ -340,7 +341,7 @@ namespace MDispatch.Vidget.VM
             }
             else
             {
-                HelpersView.CallError(LanguageHelper.NotNetworkAlert);
+                _helperView.CallError(LanguageHelper.NotNetworkAlert);
                 BackToRootPage();
             }
         }
@@ -374,7 +375,7 @@ namespace MDispatch.Vidget.VM
             }
             else
             {
-                 HelpersView.CallError(LanguageHelper.NotNetworkAlert);
+                _helperView.CallError(LanguageHelper.NotNetworkAlert);
                 BackToRootPage();
             }
         }
@@ -382,17 +383,15 @@ namespace MDispatch.Vidget.VM
         [Obsolete]
         internal async void DetectText(byte[] result, string type)
         {
-            await PopupNavigation.PushAsync(new LoadPage());
+            //await PopupNavigation.PushAsync(new LoadPage());
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
             int state = 0;
             string plate = null;
-            await Task.Run(() => Utils.CheckNet());
+            await Task.Run(() => _utils.CheckNet());
             if (App.isNetwork)
             {
-                await Task.Run(() =>
-                {
-                    state = managerDispatchMob.DetectPlate(token, Convert.ToBase64String(result), IdDriver, type, ref plate);
-                });
+                state = managerDispatchMob.DetectPlate(token, Convert.ToBase64String(result), IdDriver, type, plate);
+
                 if (state == 1)
                 {
                     await PopupNavigation.PopAsync();
@@ -408,7 +407,7 @@ namespace MDispatch.Vidget.VM
                     }
                     else if(type == "trailer")
                     {
-                        await PopupNavigation.PushAsync(new PlateTrailerWrite(this));
+                        await PopupNavigation.PushAsync(new PlateTrailerWritePopupView(this));
                         PlateTrailer = plate;
                     }
                 }
@@ -420,7 +419,7 @@ namespace MDispatch.Vidget.VM
             }
             else
             {
-                HelpersView.CallError(LanguageHelper.NotNetworkAlert);
+                _helperView.CallError(LanguageHelper.NotNetworkAlert);
                 BackToRootPage();
             }
         }

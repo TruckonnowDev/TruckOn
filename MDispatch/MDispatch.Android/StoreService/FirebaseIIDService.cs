@@ -2,7 +2,9 @@
 using Android.Content;
 using Firebase.Iid;
 using MDispatch.Droid.StoreService;
-using MDispatch.StoreNotify;
+using MDispatch.Service.ManagerStore;
+using MDispatch.Service.StoreNotify;
+using Xamarin.Forms;
 
 [assembly: Xamarin.Forms.Dependency(typeof(FirebaseIIDService))]
 namespace MDispatch.Droid.StoreService
@@ -11,11 +13,15 @@ namespace MDispatch.Droid.StoreService
     [IntentFilter(new[] { "com.google.firebase.INSTANCE_ID_EVENT" })]
     public class FirebaseIIDService : FirebaseInstanceIdService, IStore
     {
+        private readonly IManagerStore _managerStore;
+        public FirebaseIIDService()
+        {
+            _managerStore = DependencyService.Get<IManagerStore>();
+        }
         public override void OnTokenRefresh()
         {
-            ManagerStore managerStore = new ManagerStore();
             var refreshedToken = FirebaseInstanceId.Instance.Token;
-            managerStore.SendTokenStore(refreshedToken);
+            _managerStore.SendTokenStore(refreshedToken);
         }
     }
 }

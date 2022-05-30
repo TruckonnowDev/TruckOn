@@ -2,7 +2,8 @@
 using MDispatch.Models;
 using MDispatch.NewElement.TouchCordinate;
 using MDispatch.Service;
-using MDispatch.Service.Helpers;
+using MDispatch.Service.HelperView;
+using MDispatch.Service.ManagerDispatchMob;
 using MDispatch.View.GlobalDialogView;
 using MDispatch.ViewModels.InspectionMV.PickedUpMV;
 using MDispatch.ViewModels.InspectionMV.Servise.Paymmant;
@@ -16,7 +17,7 @@ using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using static MDispatch.Service.ManagerDispatchMob;
+using static MDispatch.Service.ManagerDispatchMob.ManagerDispatchMobService;
 
 namespace MDispatch.View.Inspection.PickedUp
 {
@@ -26,10 +27,12 @@ namespace MDispatch.View.Inspection.PickedUp
         public LiabilityAndInsuranceMV liabilityAndInsuranceMV = null;
         private IPaymmant Paymmant = null;
         private Timer timer = null;
+        private readonly IHelperViewService _helperView;
 
         [Obsolete]
-        public LiabilityAndInsurance (ManagerDispatchMob managerDispatchMob, string idVech, string idShip, InitDasbordDelegate initDasbordDelegate, string OnDeliveryToCarrier, string totalPaymentToCarrier, bool isproplem)
+        public LiabilityAndInsurance (IManagerDispatchMobService managerDispatchMob, string idVech, string idShip, InitDasbordDelegate initDasbordDelegate, string OnDeliveryToCarrier, string totalPaymentToCarrier, bool isproplem)
 		{
+            _helperView = DependencyService.Get<IHelperViewService>();
             liabilityAndInsuranceMV = new LiabilityAndInsuranceMV(managerDispatchMob, idVech, idShip, Navigation, initDasbordDelegate, this);
             InitializeComponent ();
             BindingContext = liabilityAndInsuranceMV;
@@ -67,7 +70,6 @@ namespace MDispatch.View.Inspection.PickedUp
             return base.OnBackButtonPressed();
         }
 
-        [Obsolete]
         private async void Button_Clicked(object sender, EventArgs e)
         {
             if (Paymmant != null)
@@ -80,7 +82,7 @@ namespace MDispatch.View.Inspection.PickedUp
             }
             else
             {
-                await PopupNavigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
+                await Navigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
                 CheckAsk();
             }
         }
@@ -415,7 +417,6 @@ namespace MDispatch.View.Inspection.PickedUp
             //await PopupNavigation.PushAsync(new ContactInfo());
         }
 
-        [Obsolete]
         private async void Entry_TextChanged(object sender, TextChangedEventArgs e)
         {
             if(CrossSettings.Current.GetValueOrDefault("Password", "") == e.NewTextValue)
@@ -435,8 +436,8 @@ namespace MDispatch.View.Inspection.PickedUp
                         }
                         else
                         {
-                            await PopupNavigation.PopAllAsync(true);
-                            await PopupNavigation.PushAsync(new TempPageHint4());
+                            await Navigation.PopToRootAsync(true);
+                            await Navigation.PushAsync(new TempPageHint4());
                             if (liabilityAndInsuranceMV.What_form_of_payment_are_you_using_to_pay_for_transportation == "Cash")
                             {
                                 await Navigation.PushAsync(new VideoCameraPage(liabilityAndInsuranceMV, ""));
@@ -455,7 +456,7 @@ namespace MDispatch.View.Inspection.PickedUp
                     {
                         ((Entry)sender).Text = "";
                         blockAskPay.IsVisible = false;
-                        await PopupNavigation.PushAsync(new Alert(LanguageHelper.WithoutTranslationAskErrorAlert, null));
+                        await Navigation.PushAsync(new Alert(LanguageHelper.WithoutTranslationAskErrorAlert, null));
                         CheckAsk();
                     }
                 }
@@ -476,7 +477,6 @@ namespace MDispatch.View.Inspection.PickedUp
 
         bool isAsk3 = false;
 
-        [Obsolete]
         private async void Button_Clicked_1(object sender, EventArgs e)
         {
             isAsk3 = true;
@@ -489,12 +489,12 @@ namespace MDispatch.View.Inspection.PickedUp
                 btnSave.IsVisible = false;
                 bloclThank.IsVisible = true;
                 blockPsw.IsVisible = true;
-                await PopupNavigation.PushAsync(new CopyLibaryAndInsurance(liabilityAndInsuranceMV));
+                await Navigation.PushAsync(new CopyLibaryAndInsurance(liabilityAndInsuranceMV));
 
             }
             else
             {
-                await PopupNavigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
+                await Navigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
                 CheckAsk();
             }
 
@@ -522,7 +522,7 @@ namespace MDispatch.View.Inspection.PickedUp
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            HelpersView.InitAlert(body);
+            _helperView.InitAlert(body);
         }
 
         protected override void OnDisappearing()
@@ -532,7 +532,7 @@ namespace MDispatch.View.Inspection.PickedUp
             {
                 timer.Change(Timeout.Infinite, Timeout.Infinite);
             }
-            HelpersView.Hidden();
+            _helperView.Hidden();
         }
     }
 }

@@ -1,20 +1,24 @@
-﻿using Newtonsoft.Json;
+﻿using MDispatch.Service.Inspection;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Plugin.Settings;
 using RestSharp;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace MDispatch.Service.Tasks
 {
     public class SavePhoto : ITask
     {
-        private Inspection inspection = new Inspection(); 
+        private readonly IInspectionService _inspection;
+
+        public SavePhoto()
+        {
+            _inspection = DependencyService.Get<IInspectionService>(); 
+        }
 
         public void StartTask(params object[] task)
         {

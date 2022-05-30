@@ -1,33 +1,34 @@
 ﻿using MDispatch.Helpers;
 using MDispatch.Models;
 using MDispatch.NewElement.ToastNotify;
-using MDispatch.Service;
-using MDispatch.Service.Helpers;
-using MDispatch.Service.Net;
+using MDispatch.Service.HelperView;
+using MDispatch.Service.ManagerDispatchMob;
 using MDispatch.View;
 using MDispatch.View.GlobalDialogView;
 using Plugin.Settings;
-using Prism.Mvvm;
 using Rg.Plugins.Popup.Services;
 using System;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using static MDispatch.Service.ManagerDispatchMob;
+using static MDispatch.Service.ManagerDispatchMob.ManagerDispatchMobService;
 
 namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
 {
-    public class Ask2PageMW : BindableBase
+    public class Ask2PageMW : BaseViewModel
     {
 
-        public ManagerDispatchMob managerDispatchMob = null;
-        public INavigation Navigation { get; set; }
+        public readonly IManagerDispatchMobService managerDispatchMob;
         public InitDasbordDelegate initDasbordDelegate = null;
-
-        public Ask2PageMW(ManagerDispatchMob managerDispatchMob, string idVech, string idShip, INavigation navigation, InitDasbordDelegate initDasbordDelegate)
+        private readonly IHelperViewService _helperView;
+        public Ask2PageMW(
+            IManagerDispatchMobService managerDispatchMob, string idVech, 
+            string idShip, INavigation navigation, 
+            InitDasbordDelegate initDasbordDelegate)
+            :base(navigation)
         {
+            _helperView = DependencyService.Get<IHelperViewService>();
             this.initDasbordDelegate = initDasbordDelegate;
             this.managerDispatchMob = managerDispatchMob;
-            Navigation = navigation;
             IdShip = idShip;
             IdVech = idVech;
         }
@@ -42,14 +43,13 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
             set => SetProperty(ref ask2, value);
         }
 
-        [System.Obsolete]
         public async void Continue()
         {
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
             string description = null;
             int state = 0;
-            await PopupNavigation.PushAsync(new LoadPage());
-            await Task.Run(() => Utils.CheckNet());
+            await _navigation.PushAsync(new LoadPage());
+            await Task.Run(() => _utils.CheckNet());
             if (App.isNetwork)
             {
                 await Task.Run(() =>
@@ -59,36 +59,35 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 });
                 if (state == 1)
                 {
-                    await PopupNavigation.PopAsync();
-                    GlobalHelper.OutAccount();
-                    await PopupNavigation.PushAsync(new Alert(description, null));
+                    await _navigation.PopAsync();
+                    _globalHelperService.OutAccount();
+                    await _navigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
-                    await PopupNavigation.PopAsync();
-                    HelpersView.CallError(description);
+                    await _navigation.PopAsync();
+                    _helperView.CallError(description);
                 }
                 else if (state == 3)
                 {
-                    await PopupNavigation.PopAsync();
-                    await Navigation.PopToRootAsync();
+                    await _navigation.PopAsync();
+                    await _navigation.PopToRootAsync();
                     DependencyService.Get<IToast>().ShowMessage(LanguageHelper.AnswersSaved);
                 }
                 else if (state == 4)
                 {
-                    await PopupNavigation.PopAsync();
-                    HelpersView.CallError(LanguageHelper.TechnicalWorkServiceAlert);
+                    await _navigation.PopAsync();
+                    _helperView.CallError(LanguageHelper.TechnicalWorkServiceAlert);
                 }
             }
         }
 
-        [Obsolete]
         public async void SaveAsk()
         {
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
             string description = null;
             int state = 0;
-            await Task.Run(() => Utils.CheckNet());
+            await Task.Run(() => _utils.CheckNet());
             if (App.isNetwork)
             {
                 await Task.Run(() =>
@@ -98,12 +97,12 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 });
                 if (state == 1)
                 {
-                    GlobalHelper.OutAccount();
-                    await PopupNavigation.PushAsync(new Alert(description, null));
+                    _globalHelperService.OutAccount();
+                    await _navigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
-                    HelpersView.CallError(description);
+                    _helperView.CallError(description);
                 }
                 else if (state == 3)
                 {
@@ -111,7 +110,7 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 }
                 else if (state == 4)
                 {
-                    HelpersView.CallError(LanguageHelper.TechnicalWorkServiceAlert);
+                    _helperView.CallError(LanguageHelper.TechnicalWorkServiceAlert);
                 }
             }
         }

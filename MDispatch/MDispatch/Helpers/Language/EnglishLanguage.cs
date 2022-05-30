@@ -91,7 +91,7 @@
         public string HintPhotoInTruckPage => "Try to photograph the item exactly on the layout";
         public string HintPhotoSeatBeltsPage => "Take a picture of one of the safety belt, but the same one that has already been photographed";
 
-        public string TitleAskQuestionPage => "Question inspection";
+        public string TitleAskQuestionPage => "Customer Information";
         public string ItemNextPage => "Next";
 
         public string AskBlockWeatherTitle => "Weather conditions";

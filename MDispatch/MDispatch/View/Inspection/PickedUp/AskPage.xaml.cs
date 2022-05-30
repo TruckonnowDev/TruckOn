@@ -1,21 +1,19 @@
 ﻿using MDispatch.Helpers;
 using MDispatch.Models;
 using MDispatch.NewElement;
-using MDispatch.Service;
-using MDispatch.Service.Helpers;
+using MDispatch.Service.HelperView;
+using MDispatch.Service.ManagerDispatchMob;
 using MDispatch.View.AskPhoto.CameraPageFolder;
 using MDispatch.View.GlobalDialogView;
 using MDispatch.View.Inspection;
 using MDispatch.ViewModels.AskPhoto;
-using Newtonsoft.Json;
-using Plugin.InputKit.Shared.Controls;
 using Rg.Plugins.Popup.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using static MDispatch.Service.ManagerDispatchMob;
+using static MDispatch.Service.ManagerDispatchMob.ManagerDispatchMobService;
 
 namespace MDispatch.View.AskPhoto
 {
@@ -23,10 +21,12 @@ namespace MDispatch.View.AskPhoto
     public partial class AskPage : ContentPage
     {
         AskPageMV askPageMV = null;
+        private readonly IHelperViewService _helperView;
 
-        public AskPage(ManagerDispatchMob managerDispatchMob, VehiclwInformation vehiclwInformation, string idShip, InitDasbordDelegate initDasbordDelegate, GetVechicleDelegate getVechicleDelegate,
+        public AskPage(IManagerDispatchMobService managerDispatchMob, VehiclwInformation vehiclwInformation, string idShip, InitDasbordDelegate initDasbordDelegate, GetVechicleDelegate getVechicleDelegate,
             string onDeliveryToCarrier, string totalPaymentToCarrier)
         {
+            _helperView = DependencyService.Get<IHelperViewService>();
             askPageMV = new AskPageMV(managerDispatchMob, vehiclwInformation, idShip, Navigation, initDasbordDelegate, getVechicleDelegate, onDeliveryToCarrier, totalPaymentToCarrier);
             InitializeComponent();
             BindingContext = askPageMV;
@@ -221,7 +221,6 @@ namespace MDispatch.View.AskPhoto
         }
         #endregion
 
-        [Obsolete]
         private async void ToolbarItem_Clicked(object sender, EventArgs e)
         {
             if (isAsk1 && isAsk2 && isAsk12 && isAsk4 && isAsk13 && isAsk14 && isAsk7 && isAsk14 && isAsk9 && isAsk10 && isAsk11)
@@ -230,7 +229,7 @@ namespace MDispatch.View.AskPhoto
             }
             else
             {
-                await PopupNavigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
+                await Navigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
                 CheckAsk();
             }
         }
@@ -434,13 +433,13 @@ namespace MDispatch.View.AskPhoto
         {
             base.OnAppearing();
             DependencyService.Get<IOrientationHandler>().ForceSensor();
-            HelpersView.InitAlert(body);
+            _helperView.InitAlert(body);
         }
 
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            HelpersView.Hidden();
+            _helperView.Hidden();
         }
     }
 }

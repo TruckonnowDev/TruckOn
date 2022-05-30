@@ -2,29 +2,28 @@
 using MDispatch.Models;
 using MDispatch.NewElement.ToastNotify;
 using MDispatch.Service;
-using MDispatch.Service.Net;
+using MDispatch.Service.ManagerDispatchMob;
 using MDispatch.View;
 using MDispatch.View.GlobalDialogView;
 using Plugin.Settings;
 using Prism.Commands;
-using Prism.Mvvm;
 using Rg.Plugins.Popup.Services;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace MDispatch.ViewModels.PageAppMV
 {
-    public class EditPaymentInfoMV : BindableBase
+    public class EditPaymentInfoMV : BaseViewModel
     {
-        public ManagerDispatchMob managerDispatchMob = null;
+        public readonly IManagerDispatchMobService managerDispatchMob;
         public DelegateCommand SavePaymentUpCommand { get; set; }
-        public INavigation Navigationn { get; set; }
 
-        public EditPaymentInfoMV(ManagerDispatchMob managerDispatchMob, Shipping shipping)
+        public EditPaymentInfoMV(
+            IManagerDispatchMobService managerDispatchMob, 
+            Shipping shipping,
+            INavigation navigation)
+            :base(navigation)
         {
             this.managerDispatchMob = managerDispatchMob;
             Shipping = shipping;
@@ -58,29 +57,28 @@ namespace MDispatch.ViewModels.PageAppMV
             set => SetProperty(ref shipping, value);
         }
 
-        [Obsolete]
         private async void SavePayments()
         {
-            await PopupNavigation.PushAsync(new LoadPage(), true);
+            await _navigation.PushAsync(new LoadPage(), true);
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
             string description = null;
             int state = 0;
-            await Task.Run(() => Utils.CheckNet());
+            await Task.Run(() => _utils.CheckNet());
             if (App.isNetwork)
             {
                 await Task.Run(() =>
                 {
                     state = managerDispatchMob.OrderOneWork("Save", Shipping.Id, token, "Payment", Shipping.PriceListed, Shipping.TotalPaymentToCarrier, ref description);
                 });
-                await PopupNavigation.PopAllAsync(true);
+                await _navigation.PopToRootAsync(true);
                 if (state == 1)
                 {
-                    GlobalHelper.OutAccount();
-                    await PopupNavigation.PushAsync(new Alert(description, null));
+                    _globalHelperService.OutAccount();
+                    await _navigation.PushAsync(new Alert(description, null));
                 }
                 else if (state == 2)
                 {
-                    await PopupNavigation.PushAsync(new Alert(description, Navigationn));
+                    await _navigation.PushAsync(new Alert(description, _navigation));
                 }
                 else if (state == 3)
                 {
@@ -88,12 +86,12 @@ namespace MDispatch.ViewModels.PageAppMV
                 }
                 else if (state == 4)
                 {
-                    await PopupNavigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, Navigationn));
+                    await _navigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, _navigation));
                 }
             }
             else
             {
-                await PopupNavigation.PopAsync(true);
+                await _navigation.PopAsync(true);
             }
         }
     }

@@ -17,11 +17,10 @@ namespace MDispatch.View.Inspection.Delyvery
             this.askForUsersDelyveryMW = askForUsersDelyveryMW;
             InitializeComponent();
         }
-
-        [Obsolete]
+        
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            await PopupNavigation.PopAsync(true);
+            await Navigation.PopAsync(true);
             if (askForUsersDelyveryMW.Payment == "COD" || askForUsersDelyveryMW.Payment == "COP" || askForUsersDelyveryMW.Payment == "Biling")
             {
                 //askForUsersDelyveryMW.Continue();
@@ -33,11 +32,10 @@ namespace MDispatch.View.Inspection.Delyvery
             }
         }
 
-        [Obsolete]
         private async void Button_Clicked_1(object sender, EventArgs e)
         {
-            await PopupNavigation.PopAsync(true);
-            await PopupNavigation.PushAsync(new EvaluationAndSurveyDialog1(askForUsersDelyveryMW));
+            await Navigation.PopAsync(true);
+            await Navigation.PushAsync(new EvaluationAndSurveyDialog1(askForUsersDelyveryMW));
         }
     }
 }

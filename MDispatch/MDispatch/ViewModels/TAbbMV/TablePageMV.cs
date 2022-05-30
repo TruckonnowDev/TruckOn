@@ -1,12 +1,17 @@
 ﻿using MDispatch.Service;
+using MDispatch.Service.ManagerDispatchMob;
+using Xamarin.Forms;
 
 namespace MDispatch.ViewModels.TAbbPage
 {
-    public class TablePageMV
+    public class TablePageMV : BaseViewModel
     {
-        private ManagerDispatchMob managerDispatchMob = null;
+        private readonly IManagerDispatchMobService managerDispatchMob;
 
-        public TablePageMV(ManagerDispatchMob managerDispatchMob)
+        public TablePageMV(
+            IManagerDispatchMobService managerDispatchMob,
+            INavigation navigation)
+            :base(navigation)
         {
             this.managerDispatchMob = managerDispatchMob;
         }

@@ -28,10 +28,9 @@ namespace MDispatch.Vidget.View
             return false;
         }
 
-        [System.Obsolete]
         private async void TapGestureRecognizer_Tapped(object sender, System.EventArgs e)
         {
-            await PopupNavigation.PopAllAsync();
+            await Navigation.PopToRootAsync();
             fullPhotoTruckVM.BackToRootPage();
         }
 
@@ -43,7 +42,7 @@ namespace MDispatch.Vidget.View
 
         private async void Button_Clicked_1(object sender, System.EventArgs e)
         {
-            await PopupNavigation.PopAllAsync();
+            await Navigation.PopToRootAsync();
             await fullPhotoTruckVM.Navigation.PushAsync(new ScanCamera(fullPhotoTruckVM, "truck"));
         }
     }

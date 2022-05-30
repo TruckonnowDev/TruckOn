@@ -1,9 +1,8 @@
-﻿using System;
-using Foundation;
+﻿using Foundation;
 using LocalAuthentication;
 using MDispatch.iOS.NewRender.AuntificationID;
 using MDispatch.NewElement.AuntificationID;
-using MDispatch.Service;
+using MDispatch.Service.GlobalHelper;
 using UIKit;
 using Xamarin.Forms;
 
@@ -63,7 +62,8 @@ namespace MDispatch.iOS.NewRender.AuntificationID
                     IsCanceleUI = false;
                     if (!success && error.Code == -2)
                     {
-                        Device.BeginInvokeOnMainThread(() => { GlobalHelper.OutAccount(); });
+                        IGlobalHelperService globalHelperService = DependencyService.Get<IGlobalHelperService>();
+                        Device.BeginInvokeOnMainThread(() => { globalHelperService.OutAccount(); });
                     }
                     else if (!success && error.Code == -4)
                     {
@@ -93,7 +93,8 @@ namespace MDispatch.iOS.NewRender.AuntificationID
                 }
                 else if(!success && error.Code != -4)
                 {
-                    Device.BeginInvokeOnMainThread(() => { GlobalHelper.OutAccount(); });
+                    IGlobalHelperService globalHelperService = DependencyService.Get<IGlobalHelperService>();
+                    Device.BeginInvokeOnMainThread(() => { globalHelperService.OutAccount(); });
                 }
             });
             context.EvaluatePolicy(LAPolicy.DeviceOwnerAuthentication, localizedReason, replyHandler);

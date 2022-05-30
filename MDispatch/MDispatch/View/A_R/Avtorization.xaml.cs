@@ -14,7 +14,7 @@ namespace MDispatch.View.A_R
         public Avtorization ()
 		{
             InitializeComponent ();
-            avtorizationMV = new AvtorizationMV();
+            avtorizationMV = new AvtorizationMV(Navigation);
             NavigationPage.SetHasNavigationBar(this, false);
             BindingContext = avtorizationMV;
         }
@@ -51,10 +51,9 @@ namespace MDispatch.View.A_R
             }
         }
 
-        [System.Obsolete]
         private async void TapGestureRecognizer_Tapped(object sender, System.EventArgs e)
         {
-            await PopupNavigation.PushAsync(new ForgotPassword(avtorizationMV));
+            await Navigation.PushAsync(new ForgotPassword(avtorizationMV));
         }
 
         void TapGestureRecognizer_Tapped_1(System.Object sender, System.EventArgs e)

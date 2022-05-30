@@ -3,7 +3,7 @@ using MDispatch.Models;
 using MDispatch.NewElement;
 using MDispatch.NewElement.Directory;
 using MDispatch.NewElement.ResIzeImage;
-using MDispatch.Service;
+using MDispatch.Service.ManagerDispatchMob;
 using MDispatch.View.Inspection;
 using MDispatch.ViewModels.InspectionMV.DelyveryMV;
 using MDispatch.ViewModels.InspectionMV.Servise.Retake;
@@ -13,7 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using static MDispatch.Service.ManagerDispatchMob;
+using static MDispatch.Service.ManagerDispatchMob.ManagerDispatchMobService;
 
 namespace MDispatch.View.PageApp
 {
@@ -23,7 +23,7 @@ namespace MDispatch.View.PageApp
         public FullPagePhotoDelyveryMV fullPagePhotoDelyveryMV = null;
         private string pngPaternPhoto = null;
 
-        public FullPagePhotoDelyvery(ManagerDispatchMob managerDispatchMob, VehiclwInformation vehiclwInformation, string idShip, string pngPaternPhoto,
+        public FullPagePhotoDelyvery(IManagerDispatchMobService managerDispatchMob, VehiclwInformation vehiclwInformation, string idShip, string pngPaternPhoto,
             string typeCar, int photoIndex, InitDasbordDelegate initDasbordDelegate, GetVechicleDelegate getVechicleDelegate, string nameLayoute, 
             string onDeliveryToCarrier, string totalPaymentToCarrier)
         {

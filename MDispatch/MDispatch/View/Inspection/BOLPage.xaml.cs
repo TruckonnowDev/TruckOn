@@ -1,21 +1,23 @@
-﻿using System;
+﻿using MDispatch.Helpers;
+using MDispatch.Models;
+using MDispatch.Service;
+using MDispatch.Service.HelperView;
+using MDispatch.Service.ManagerDispatchMob;
+using MDispatch.Service.OpacityTouchView;
+using MDispatch.View.Inspection.PickedUp;
+using MDispatch.View.Popups;
+using MDispatch.View.ServiceView.ResizeImage;
+using MDispatch.ViewModels.InspectionMV;
+using Rg.Plugins.Popup.Services;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using MDispatch.Helpers;
-using MDispatch.Models;
-using MDispatch.Service;
-using MDispatch.Service.Helpers;
-using MDispatch.Service.HelpersViews;
-using MDispatch.View.Inspection.PickedUp;
-using MDispatch.View.ServiceView.ResizeImage;
-using MDispatch.ViewModels.InspectionMV;
-using Rg.Plugins.Popup.Services;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using static MDispatch.Service.ManagerDispatchMob;
+using static MDispatch.Service.ManagerDispatchMob.ManagerDispatchMobService;
 
 namespace MDispatch.View.Inspection
 {
@@ -23,9 +25,12 @@ namespace MDispatch.View.Inspection
     public partial class BOLPage : ContentPage
     {
         private BOLMV bOLMV = null;
-        
-        public BOLPage(ManagerDispatchMob managerDispatchMob, string idShip, InitDasbordDelegate initDasbordDelegate)
+        private readonly IHelperViewService _helperView;
+        private readonly IOpacityTouchViewService _opacityTouchView;
+        public BOLPage(IManagerDispatchMobService managerDispatchMob, string idShip, InitDasbordDelegate initDasbordDelegate)
         {
+            _helperView = DependencyService.Get<IHelperViewService>();
+            _opacityTouchView = DependencyService.Get<IOpacityTouchViewService>();
             bOLMV = new BOLMV(managerDispatchMob, idShip, Navigation, initDasbordDelegate, this);
             InitializeComponent();
             BindingContext = bOLMV;
@@ -125,8 +130,8 @@ namespace MDispatch.View.Inspection
         private async void VievFull(Xamarin.Forms.View v, object s)
         {
             Image image = ((Image)v);
-            await OpacityTouchView.TouchFeedBack(image);
-            await PopupNavigation.PushAsync(new ViewPhoto(image.Source));
+            await _opacityTouchView.TouchFeedBack(image);
+            await Navigation.PushAsync(new ViewPhotoPopupView(image.Source));
         }
 
         private async void InitElemnt()
@@ -319,13 +324,13 @@ namespace MDispatch.View.Inspection
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            HelpersView.InitAlert(body);
+            _helperView.InitAlert(body);
         }
 
         protected override  void OnDisappearing()
         {
             base.OnDisappearing();
-            HelpersView.Hidden();
+            _helperView.Hidden();
         }
     }
 }

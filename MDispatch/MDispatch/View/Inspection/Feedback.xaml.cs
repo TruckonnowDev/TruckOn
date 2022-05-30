@@ -1,6 +1,6 @@
 ﻿using MDispatch.Models;
-using MDispatch.Service;
-using MDispatch.Service.Helpers;
+using MDispatch.Service.HelperView;
+using MDispatch.Service.ManagerDispatchMob;
 using MDispatch.ViewModels.InspectionMV;
 using Plugin.InputKit.Shared.Controls;
 using System;
@@ -9,13 +9,14 @@ using Xamarin.Forms.Xaml;
 
 namespace MDispatch.View.Inspection
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
+    [XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class Feedback : ContentPage
 	{
         FeedBackMV feedBackMV = null;
-
-        public Feedback (ManagerDispatchMob managerDispatchMob, VehiclwInformation vehiclwInformation, object payMVInspaction)
+        private readonly IHelperViewService _helperView;
+        public Feedback (IManagerDispatchMobService managerDispatchMob, VehiclwInformation vehiclwInformation, object payMVInspaction)
 		{
+            _helperView = DependencyService.Get<IHelperViewService>();
             feedBackMV = new FeedBackMV(managerDispatchMob, vehiclwInformation, Navigation, payMVInspaction);
 			InitializeComponent ();
             BindingContext = feedBackMV;
@@ -82,13 +83,13 @@ namespace MDispatch.View.Inspection
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            HelpersView.InitAlert(body);
+            _helperView.InitAlert(body);
         }
 
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            HelpersView.Hidden();
+            _helperView.Hidden();
         }
     }
 }

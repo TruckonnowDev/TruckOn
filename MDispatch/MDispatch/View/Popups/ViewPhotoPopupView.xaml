@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<pages:PopupPage 
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
+    xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup"  
+    xmlns:zoomImg="clr-namespace:MDispatch.ViewExtension"
+    x:Class="MDispatch.View.Popups.ViewPhotoPopupView">
+    <pages:PopupPage.Animation>
+        <animations:ScaleAnimation 
+            PositionIn="Center"
+            PositionOut="Center"
+            ScaleIn="3"     
+            ScaleOut="1.5"
+            DurationIn="200"
+            DurationOut="200"
+            EasingIn="SinOut"
+            EasingOut="SinIn"
+            HasBackgroundAnimation="True"/>
+    </pages:PopupPage.Animation>
+    <StackLayout Margin="20, 5, 20, 10">
+            <Image Source="Close.png"
+                   HorizontalOptions="End"
+                   WidthRequest="14"
+                   HeightRequest="14"
+                   Margin="0, 5, 5, 0">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                    </Image.GestureRecognizers>
+                 </Image>
+        <Frame CornerRadius="6"
+               Padding="5" Margin="0"
+               HasShadow="True"
+               HorizontalOptions="FillAndExpand"
+               VerticalOptions="FillAndExpand" >
+            <StackLayout Spacing="0">
+                <zoomImg:PinchToZoomContainer>
+                    <zoomImg:PinchToZoomContainer.Content>
+                        <Image x:Name="img"
+                               HorizontalOptions="Fill"
+                               VerticalOptions="Fill" />
+                    </zoomImg:PinchToZoomContainer.Content>
+                </zoomImg:PinchToZoomContainer>
+            </StackLayout>
+        </Frame>
+    </StackLayout>
+</pages:PopupPage>

@@ -1,11 +1,11 @@
-﻿using MDispatch.Service;
-using MDispatch.Service.Helpers;
+﻿using MDispatch.Service.HelperView;
+using MDispatch.Service.ManagerDispatchMob;
 using MDispatch.View.PageApp;
 using MDispatch.ViewModels.TAbbMV;
 using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using static MDispatch.Service.ManagerDispatchMob;
+using static MDispatch.Service.ManagerDispatchMob.ManagerDispatchMobService;
 
 namespace MDispatch.View.TabPage.Tab
 {
@@ -16,9 +16,11 @@ namespace MDispatch.View.TabPage.Tab
         public ArchiveMV archiveMV = null;
         private StackLayout SelectStackLayout = null;
         private InitDasbordDelegate initDasbordDelegate = null;
+        private readonly IHelperViewService _helperView;
 
-        public ArchivedPage(ManagerDispatchMob managerDispatchMob, INavigation navigation)
+        public ArchivedPage(IManagerDispatchMobService managerDispatchMob, INavigation navigation)
 		{
+            _helperView = DependencyService.Get<IHelperViewService>();
             this.archiveMV = new ArchiveMV(managerDispatchMob, navigation);
             InitializeComponent();
             BindingContext = this.archiveMV;
@@ -72,14 +74,14 @@ namespace MDispatch.View.TabPage.Tab
         [Obsolete]
         protected override void OnAppearing()
         {
-            HelpersView.InitAlert(body);
+            _helperView.InitAlert(body);
             archiveMV.Init();
         }
 
         protected override  void OnDisappearing()
         {
             base.OnDisappearing();
-            HelpersView.Hidden();
+            _helperView.Hidden();
         }
     }
 }

@@ -909,7 +909,7 @@ namespace ApiMobaileServise.Servise
         public async void SavePaymentsInDb(string id, string payment, string paymentTeams)
         {
             Shipping shipping = context.Shipping.FirstOrDefault(s => s.Id == id);
-            s => 
+            //s => 
             if (shipping != null)
             {
                 shipping.PriceListed = payment;

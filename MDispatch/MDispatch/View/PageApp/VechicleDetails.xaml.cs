@@ -1,5 +1,6 @@
 ﻿using MDispatch.Models;
 using MDispatch.Service;
+using MDispatch.Service.ManagerDispatchMob;
 using MDispatch.View.PageApp.DialogPage;
 using MDispatch.View.ServiceView.ResizeImage;
 using MDispatch.ViewModels.PageAppMV.VehicleDetals;
@@ -20,17 +21,16 @@ namespace MDispatch.View.PageApp
 
         VehicleDetailsMV vehicleDetailsMV = null;
 
-        public VechicleDetails(VehiclwInformation vehiclwInformation, ManagerDispatchMob managerDispatchMob)
+        public VechicleDetails(VehiclwInformation vehiclwInformation, IManagerDispatchMobService managerDispatchMob)
         {
-            vehicleDetailsMV = new VehicleDetailsMV(managerDispatchMob, Convert.ToInt32(vehiclwInformation.Id), this) { Navigationn = this.Navigation };
+            vehicleDetailsMV = new VehicleDetailsMV(managerDispatchMob, Convert.ToInt32(vehiclwInformation.Id), this, Navigation);
             InitializeComponent();
             BindingContext = vehicleDetailsMV;
         }
 
-        [Obsolete]
         public async Task InitPhoto(VehiclwInformation vehiclwInformation)
         {
-            await PopupNavigation.PushAsync(new LoadPage());
+            await Navigation.PushAsync(new LoadPage());
             AddScan(vehiclwInformation);
             AddBlocItemPhoto(vehiclwInformation);
             AddBlocSeatBelts(vehiclwInformation);
@@ -38,7 +38,7 @@ namespace MDispatch.View.PageApp
             AddBlocInspectionPhoto(vehiclwInformation);
             AddBlocInspectionPhoto1(vehiclwInformation);
             AddBlocPhotoClient(vehiclwInformation);
-            await PopupNavigation.PopAsync();
+            await Navigation.PopAsync();
         }
 
         private void AddScan(VehiclwInformation vehiclwInformation)

@@ -1,8 +1,8 @@
-﻿using MDispatch.Helpers;
-using MDispatch.Models.Enum;
+﻿using MDispatch.Models.Enum;
 using MDispatch.NewElement;
 using MDispatch.Service;
-using MDispatch.Service.Helpers;
+using MDispatch.Service.HelperView;
+using MDispatch.Service.ManagerDispatchMob;
 using MDispatch.ViewModels.PageAppMV.Settings;
 using Plugin.LatestVersion;
 using Plugin.Settings;
@@ -19,10 +19,13 @@ namespace MDispatch.View.PageApp.Settings
     public partial class Settings : ContentPage
     {
         private SettingsMV settingsMV = null;
+        private readonly IHelperViewService _helperView;
 
-        public Settings(ManagerDispatchMob managerDispatchMob)
+        [Obsolete]
+        public Settings(IManagerDispatchMobService managerDispatchMob)
         {
-            settingsMV = new SettingsMV(managerDispatchMob) { Navigation = this.Navigation };
+            _helperView = DependencyService.Get<IHelperViewService>();
+            settingsMV = new SettingsMV(managerDispatchMob, Navigation);
             InitializeComponent();
             On<iOS>().SetUseSafeArea(true);
             BindingContext = settingsMV;
@@ -72,18 +75,18 @@ namespace MDispatch.View.PageApp.Settings
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            HelpersView.InitAlert(body);
+            _helperView.InitAlert(body);
         }
 
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            HelpersView.Hidden();
+            _helperView.Hidden();
         }
 
         private async void TapGestureRecognizer_Tapped_4(System.Object sender, System.EventArgs e)
         {
-            await PopupNavigation.PushAsync(new SelectLanguage(SetLan));
+            await Navigation.PushAsync(new SelectLanguage(SetLan));
         }
 
         private void SetLan(int lanIndex)

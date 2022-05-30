@@ -1,7 +1,7 @@
 ﻿using MDispatch.Helpers;
 using MDispatch.Models;
-using MDispatch.Service;
-using MDispatch.Service.Helpers;
+using MDispatch.Service.HelperView;
+using MDispatch.Service.ManagerDispatchMob;
 using MDispatch.View.GlobalDialogView;
 using MDispatch.View.Inspection.PickedUp.CameraPageFolder;
 using MDispatch.ViewModels.InspectionMV.PickedUpMV;
@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.IO;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using static MDispatch.Service.ManagerDispatchMob;
+using static MDispatch.Service.ManagerDispatchMob.ManagerDispatchMobService;
 
 namespace MDispatch.View.Inspection.PickedUp
 {
@@ -20,9 +20,11 @@ namespace MDispatch.View.Inspection.PickedUp
     public partial class Ask2Page : ContentPage
     {
         private Ask2PageMW ask2PageMW = null;
+        private readonly IHelperViewService _helperView;
 
-        public Ask2Page(ManagerDispatchMob managerDispatchMob, string idVech, string idShip, InitDasbordDelegate initDasbordDelegate)
+        public Ask2Page(IManagerDispatchMobService managerDispatchMob, string idVech, string idShip, InitDasbordDelegate initDasbordDelegate)
         {
+            _helperView = DependencyService.Get<IHelperViewService>();
             ask2PageMW = new Ask2PageMW(managerDispatchMob, idVech, idShip, Navigation, initDasbordDelegate);
             ask2PageMW.Ask2 = new Ask2();
             InitializeComponent();
@@ -191,7 +193,6 @@ namespace MDispatch.View.Inspection.PickedUp
         #endregion  
 
 
-        [Obsolete]
         private async void ToolbarItem_Clicked(object sender, EventArgs e)
         {
             if (isAsk1 && isAsk3 && isAsk4 && isAsk5 && isAsk6)
@@ -200,7 +201,7 @@ namespace MDispatch.View.Inspection.PickedUp
             }
             else
             {
-                await PopupNavigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
+                await Navigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
                 CheckAsk();
             }
         }
@@ -263,13 +264,13 @@ namespace MDispatch.View.Inspection.PickedUp
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            HelpersView.InitAlert(body);
+            _helperView.InitAlert(body);
         }
 
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            HelpersView.Hidden();
+            _helperView.Hidden();
         }
     }
 }

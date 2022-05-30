@@ -1,13 +1,10 @@
 ﻿using MDispatch.Models;
 using MDispatch.Service;
-using MDispatch.Service.Helpers;
+using MDispatch.Service.HelperView;
+using MDispatch.Service.ManagerDispatchMob;
 using MDispatch.ViewModels.PageAppMV;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -17,10 +14,12 @@ namespace MDispatch.View.PageApp
     public partial class EditDeliveryInformation : ContentPage
     {
         EditDeliveryInformationMV editDeliveryInformationMV = null;
+        private readonly IHelperViewService _helperView;
 
-        public EditDeliveryInformation(ManagerDispatchMob managerDispatchMob, Shipping shipping)
+        public EditDeliveryInformation(IManagerDispatchMobService managerDispatchMob, Shipping shipping)
         {
-            editDeliveryInformationMV = new EditDeliveryInformationMV(managerDispatchMob, shipping) { Navigationn = Navigation };
+            _helperView = DependencyService.Get<IHelperViewService>();
+            editDeliveryInformationMV = new EditDeliveryInformationMV(managerDispatchMob, shipping, Navigation);
             InitializeComponent();
             BindingContext = editDeliveryInformationMV;
             Init(shipping);
@@ -304,13 +303,13 @@ namespace MDispatch.View.PageApp
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            HelpersView.InitAlert(body);
+            _helperView.InitAlert(body);
         }
 
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            HelpersView.Hidden();
+            _helperView.Hidden();
         }
     }
 }

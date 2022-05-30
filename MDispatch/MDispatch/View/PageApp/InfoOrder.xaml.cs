@@ -1,14 +1,14 @@
 ﻿using MDispatch.Helpers;
 using MDispatch.Models;
 using MDispatch.NewElement;
-using MDispatch.Service;
-using MDispatch.Service.Helpers;
+using MDispatch.Service.HelperView;
+using MDispatch.Service.ManagerDispatchMob;
 using MDispatch.ViewModels.PageAppMV;
 using System;
 using System.Linq;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using static MDispatch.Service.ManagerDispatchMob;
+using static MDispatch.Service.ManagerDispatchMob.ManagerDispatchMobService;
 
 namespace MDispatch.View.PageApp
 {
@@ -17,13 +17,15 @@ namespace MDispatch.View.PageApp
     {
         private InfoOrderMV infoOrderMV = null;
         private bool isNextPage = false;
-        private ManagerDispatchMob managerDispatchMob;
+        private IManagerDispatchMobService managerDispatchMob;
         private InitDasbordDelegate initDasbordDelegate;
         private string currentStatus;
+        private readonly IHelperViewService _helperView;
 
-        public InfoOrder(ManagerDispatchMob managerDispatchMob, InitDasbordDelegate initDasbordDelegate, string statusInspection, string idShipping)
+        public InfoOrder(IManagerDispatchMobService managerDispatchMob, InitDasbordDelegate initDasbordDelegate, string statusInspection, string idShipping)
         {
-            this.infoOrderMV = new InfoOrderMV(managerDispatchMob, initDasbordDelegate, statusInspection, idShipping, CallBackVehiclwInformation) { Navigation = this.Navigation };
+            _helperView = DependencyService.Get<IHelperViewService>();
+            this.infoOrderMV = new InfoOrderMV(managerDispatchMob, initDasbordDelegate, statusInspection, idShipping, CallBackVehiclwInformation, Navigation);
             InitializeComponent();
             BindingContext = this.infoOrderMV;
             SetupView();
@@ -85,7 +87,7 @@ namespace MDispatch.View.PageApp
         {
             if(infoOrderMV.Shipping == null)
             {
-                HelpersView.CallError(LanguageHelper.NoDataAlert);
+                _helperView.CallError(LanguageHelper.NoDataAlert);
                 return;
             }
 
@@ -109,13 +111,13 @@ namespace MDispatch.View.PageApp
         {
             base.OnAppearing();
             DependencyService.Get<IOrientationHandler>().ForceSensor();
-            HelpersView.InitAlert(body);
+            _helperView.InitAlert(body);
         }
 
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            HelpersView.Hidden();
+            _helperView.Hidden();
         }
 
         void TapGestureRecognizer_Tapped(System.Object sender, System.EventArgs e)

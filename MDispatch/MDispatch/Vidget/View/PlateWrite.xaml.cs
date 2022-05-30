@@ -25,7 +25,7 @@ namespace MDispatch.Vidget.View
         [System.Obsolete]
         private async void TapGestureRecognizer_Tapped(object sender, System.EventArgs e)
         {
-            await PopupNavigation.PopAllAsync();
+            await Navigation.PopToRootAsync();
             fullPhotoTruckVM.BackToRootPage();
         }
 

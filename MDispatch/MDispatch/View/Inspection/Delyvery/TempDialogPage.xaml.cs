@@ -13,10 +13,9 @@ namespace MDispatch.View.Inspection.Delyvery
 			InitializeComponent ();
 		}
 
-        [Obsolete]
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            await PopupNavigation.PopAsync(true);
+            await Navigation.PopAsync(true);
         }
     }
 }

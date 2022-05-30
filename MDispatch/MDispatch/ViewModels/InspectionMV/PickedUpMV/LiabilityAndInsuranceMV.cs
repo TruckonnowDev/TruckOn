@@ -1,38 +1,41 @@
 using MDispatch.Helpers;
 using MDispatch.Models;
 using MDispatch.NewElement.ToastNotify;
-using MDispatch.Service;
-using MDispatch.Service.Helpers;
-using MDispatch.Service.Net;
+using MDispatch.Service.HelperView;
+using MDispatch.Service.ManagerDispatchMob;
 using MDispatch.View;
 using MDispatch.View.GlobalDialogView;
 using MDispatch.View.Inspection;
 using MDispatch.View.Inspection.PickedUp;
 using Plugin.Settings;
 using Prism.Commands;
-using Prism.Mvvm;
 using Rg.Plugins.Popup.Services;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using static MDispatch.Service.ManagerDispatchMob;
+using static MDispatch.Service.ManagerDispatchMob.ManagerDispatchMobService;
 
 namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
 {
-    public class LiabilityAndInsuranceMV : BindableBase
+    public class LiabilityAndInsuranceMV : BaseViewModel
     {
-        public ManagerDispatchMob managerDispatchMob = null;
-        public INavigation Navigation { get; set; }
+        public readonly IManagerDispatchMobService managerDispatchMob;
         public DelegateCommand GoToFeedBackCommand { get; set; }
         public InitDasbordDelegate initDasbordDelegate = null;
         public LiabilityAndInsurance liabilityAndInsurance = null;
+        private readonly IHelperViewService _helperView;
 
-        public LiabilityAndInsuranceMV(ManagerDispatchMob managerDispatchMob, string idVech, string idShip, INavigation navigation, InitDasbordDelegate initDasbordDelegate,
+        public LiabilityAndInsuranceMV(
+            IManagerDispatchMobService managerDispatchMob, 
+            string idVech, string idShip, 
+            INavigation navigation, 
+            InitDasbordDelegate initDasbordDelegate,
             LiabilityAndInsurance liabilityAndInsurance)
+            : base(navigation)
         {
+            _helperView = DependencyService.Get<IHelperViewService>();
             this.managerDispatchMob = managerDispatchMob;
-            Navigation = navigation;
             IdShip = idShip;
             IdVech = idVech;
             this.liabilityAndInsurance = liabilityAndInsurance;
@@ -85,7 +88,6 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
         public string What_form_of_payment_are_you_using_to_pay_for_transportation { set; get; }
         public string CountPay { set; get; }
 
-        [System.Obsolete]
         private async void InitShipping()
         {
             Isloader = true;
@@ -102,17 +104,17 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 });
                 if (state == 1)
                 {
-                    GlobalHelper.OutAccount();
-                    await PopupNavigation.PushAsync(new Alert(description, null));
+                    _globalHelperService.OutAccount();
+                    await _navigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
-                    if (Navigation.NavigationStack.Count > 1)
+                    if (_navigation.NavigationStack.Count > 1)
                     {
-                        await Navigation.PopAsync();
+                        await _navigation.PopAsync();
                     }
                     //await PopupNavigation.PushAsync(new Errror(description, null));
-                    HelpersView.CallError(description);
+                    _helperView.CallError(description);
                 }
                 else if (state == 3)
                 {
@@ -120,27 +122,26 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 }
                 else if (state == 4)
                 {
-                    if (Navigation.NavigationStack.Count > 1)
+                    if (_navigation.NavigationStack.Count > 1)
                     {
-                        await Navigation.PopAsync();
+                        await _navigation.PopAsync();
                     }
                     //await PopupNavigation.PushAsync(new Errror("Technical work on the service", null));
-                    HelpersView.CallError(LanguageHelper.TechnicalWorkServiceAlert);
+                    _helperView.CallError(LanguageHelper.TechnicalWorkServiceAlert);
                 }
                 StataLoadShip = 1;
             }
             Isloader = false;
         }
 
-        [System.Obsolete]
         public async void SaveSigAndMethodPay()
         {
             Isloader = true;
-            await PopupNavigation.PushAsync(new LoadPage());
+            await _navigation.PushAsync(new LoadPage());
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
             string description = null;
             int state = 0;
-            await Task.Run(() => Utils.CheckNet());
+            await Task.Run(() => _utils.CheckNet());
             if (App.isNetwork)
             {
                 //Task.Run(async () => await SaveRecountVideo());
@@ -150,39 +151,39 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                     state = managerDispatchMob.SaveMethodPay(token, IdShip, What_form_of_payment_are_you_using_to_pay_for_transportation, CountPay, ref description);
                     initDasbordDelegate.Invoke();
                 });
-                await PopupNavigation.PopAsync();
+                await _navigation.PopAsync();
                 if (state == 1)
                 {
-                    GlobalHelper.OutAccount();
-                    await PopupNavigation.PushAsync(new Alert(description, null));
+                    _globalHelperService.OutAccount();
+                    await _navigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
-                    await PopupNavigation.PushAsync(new Alert(description, Navigation));
+                    await _navigation.PushAsync(new Alert(description, _navigation));
                 }
                 else if (state == 3)
                 {
                     if (What_form_of_payment_are_you_using_to_pay_for_transportation == "Cash")
                     {
-                        await Navigation.PushAsync(new VideoCameraPage(this, ""));
+                        await _navigation.PushAsync(new VideoCameraPage(this, ""));
                     }
                     else if (What_form_of_payment_are_you_using_to_pay_for_transportation == "Check")
                     {
-                        await Navigation.PushAsync(new CameraPaymmant(this, "", "CheckPaymment.png"));
+                        await _navigation.PushAsync(new CameraPaymmant(this, "", "CheckPaymment.png"));
                     }
                     else
                     {
-                        await Navigation.PushAsync(new Ask2Page(this.managerDispatchMob, this.IdVech, this.IdShip, this.initDasbordDelegate));
+                        await _navigation.PushAsync(new Ask2Page(this.managerDispatchMob, this.IdVech, this.IdShip, this.initDasbordDelegate));
                     }
-                    if (Navigation.NavigationStack.Count > 2)
+                    if (_navigation.NavigationStack.Count > 2)
                     {
-                        Navigation.RemovePage(Navigation.NavigationStack[1]);
+                        _navigation.RemovePage(_navigation.NavigationStack[1]);
                     }
                     DependencyService.Get<IToast>().ShowMessage(LanguageHelper.PaymmantMethodSaved);
                 }
                 else if (state == 4)
                 {
-                    await PopupNavigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, Navigation));
+                    await _navigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, _navigation));
                 }
             }
             else
@@ -192,7 +193,6 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
             Isloader = true;
         }
 
-        [System.Obsolete]
         public async void AddPhoto(byte[] photoResult)
         {
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
@@ -201,7 +201,7 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
             Photo photo = new Photo();
             photo.Base64 = Convert.ToBase64String(photoResult);
             photo.path = $"../Photo/{IdVech}/Pay/DelyverySig.jpg";
-            await Task.Run(() => Utils.CheckNet());
+            await Task.Run(() => _utils.CheckNet());
             if (App.isNetwork)
             {
                 await Task.Run(() =>
@@ -211,36 +211,35 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 });
                 if (state == 1)
                 {
-                    GlobalHelper.OutAccount();
-                    await PopupNavigation.PushAsync(new Alert(description, null));
+                    _globalHelperService.OutAccount();
+                    await _navigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
-                    await PopupNavigation.PushAsync(new Alert(description, Navigation));
+                    await _navigation.PushAsync(new Alert(description, _navigation));
                 }
                 else if (state == 3)
                 {
-                    if (Navigation.NavigationStack.Count > 2)
+                    if (_navigation.NavigationStack.Count > 2)
                     {
-                        Navigation.RemovePage(Navigation.NavigationStack[1]);
+                        _navigation.RemovePage(_navigation.NavigationStack[1]);
                     }
                     DependencyService.Get<IToast>().ShowMessage(LanguageHelper.PaymmantMethodSaved);
                 }
                 else if (state == 4)
                 {
-                    await PopupNavigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, Navigation));
+                    await _navigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, _navigation));
                 }
             }
         }
 
-        [System.Obsolete]
         public async void SaveRecountVideo()
         {
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
             string description = null;
             int state = 0;
-            await PopupNavigation.PushAsync(new LoadPage());
-            await Task.Run(() => Utils.CheckNet());
+            await _navigation.PushAsync(new LoadPage());
+            await Task.Run(() => _utils.CheckNet());
             if (App.isNetwork)
             {
                 if (videoRecount != null)
@@ -254,27 +253,27 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 }
                 if (state == 1)
                 {
-                    GlobalHelper.OutAccount();
-                    await PopupNavigation.PushAsync(new Alert(description, null));
+                    _globalHelperService.OutAccount();
+                    await _navigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
-                    await PopupNavigation.PushAsync(new Alert(description, Navigation));
+                    await _navigation.PushAsync(new Alert(description, _navigation));
                 }
                 else if (state == 3)
                 {
-                    if (Navigation.NavigationStack.Count > 2)
+                    if (_navigation.NavigationStack.Count > 2)
                     {
-                        Navigation.RemovePage(Navigation.NavigationStack[1]);
+                        _navigation.RemovePage(_navigation.NavigationStack[1]);
                     }
                     DependencyService.Get<IToast>().ShowMessage(LanguageHelper.VideoSavedSuccessfully);
 
                 }
                 else if (state == 4)
                 {
-                    await PopupNavigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, Navigation));
+                    await _navigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, _navigation));
                 }
-                await PopupNavigation.PopAsync();
+                await _navigation.PopAsync();
             }
             else
             {
@@ -282,14 +281,13 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
             }
         }
 
-        [System.Obsolete]
         public async Task SendLiabilityAndInsuranceEmaile()
         {
             GoEvaluationAndSurvey();
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
             string description = null;
             int state = 0;
-            await Task.Run(() => Utils.CheckNet());
+            await Task.Run(() => _utils.CheckNet());
             if (App.isNetwork)
             {
                 await Task.Run(() =>
@@ -299,12 +297,12 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 });
                 if (state == 1)
                 {
-                    GlobalHelper.OutAccount();
-                    await PopupNavigation.PushAsync(new Alert(description, null));
+                    _globalHelperService.OutAccount();
+                    await _navigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
-                    await PopupNavigation.PushAsync(new Alert(description, null));
+                    await _navigation.PushAsync(new Alert(description, null));
                 }
                 else if (state == 3)
                 {
@@ -312,19 +310,18 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 }
                 else if (state == 4)
                 {
-                    await PopupNavigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, null));
+                    await _navigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, null));
                 }
             }
         }
 
-        [System.Obsolete]
         public async void GoEvaluationAndSurvey()
         {
-            if (PopupNavigation.PopupStack.Count != 0)
+            if (_navigation.NavigationStack.Count != 0)
             {
-                await PopupNavigation.PopAsync(true);
+                await _navigation.PopAsync(true);
             }
-            await PopupNavigation.PushAsync(new EvaluationAndSurveyDialog(this, Navigation));
+            await _navigation.PushAsync(new EvaluationAndSurveyDialog(this, _navigation));
         }
 
         public async Task<bool> CheckProplem()
@@ -333,7 +330,7 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
             string description = null;
             int state = 0;
-            await Task.Run(() => Utils.CheckNet());
+            await Task.Run(() => _utils.CheckNet());
             if (App.isNetwork)
             {
                 await Task.Run(() =>
@@ -343,12 +340,12 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 });
                 if (state == 1)
                 {
-                    GlobalHelper.OutAccount();
-                    await PopupNavigation.PushAsync(new Alert(description, null));
+                    _globalHelperService.OutAccount();
+                    await _navigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
-                    await PopupNavigation.PushAsync(new Alert(description, null));
+                    await _navigation.PushAsync(new Alert(description, null));
                 }
                 else if (state == 3)
                 {
@@ -356,25 +353,24 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 }
                 else if (state == 4)
                 {
-                    await PopupNavigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, null));
+                    await _navigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, null));
                 }
             }
             return isProplem;
         }
 
-        [System.Obsolete]
         private async void GoToFeedBack()
         {
-            await PopupNavigation.PopAllAsync(true);
-            await Navigation.PushAsync(new View.Inspection.Feedback(managerDispatchMob, Shipping.VehiclwInformations.FirstOrDefault(v => v.Id == IdVech), this));
+            await _navigation.PopToRootAsync(true);
+            await _navigation.PushAsync(new View.Inspection.Feedback(managerDispatchMob, Shipping.VehiclwInformations.FirstOrDefault(v => v.Id == IdVech), this));
         }
 
         public async void GoToContinue()
         {
-            await Navigation.PushAsync(new Ask2Page(managerDispatchMob, IdVech, IdShip, initDasbordDelegate));
-            if (Navigation.NavigationStack.Count > 1)
+            await _navigation.PushAsync(new Ask2Page(managerDispatchMob, IdVech, IdShip, initDasbordDelegate));
+            if (_navigation.NavigationStack.Count > 1)
             {
-                Navigation.RemovePage(Navigation.NavigationStack[1]);
+                _navigation.RemovePage(_navigation.NavigationStack[1]);
             }
         }
 
@@ -383,7 +379,7 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
             string description = null;
             int state = 0;
-            await Task.Run(() => Utils.CheckNet());
+            await Task.Run(() => _utils.CheckNet());
             if (App.isNetwork)
             {
                 await Task.Run(() =>
@@ -393,12 +389,12 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 });
                 if (state == 1)
                 {
-                    GlobalHelper.OutAccount();
-                    await PopupNavigation.PushAsync(new Alert(description, null));
+                    _globalHelperService.OutAccount();
+                    await _navigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
-                    await PopupNavigation.PushAsync(new Alert(description, null));
+                    await _navigation.PushAsync(new Alert(description, null));
                 }
                 else if (state == 3)
                 {
@@ -406,7 +402,7 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 }
                 else if (state == 4)
                 {
-                    await PopupNavigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, null));
+                    await _navigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, null));
                 }
             }
         }

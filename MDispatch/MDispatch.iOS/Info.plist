@@ -22,8 +22,6 @@
 	<string>10.0</string>
 	<key>CFBundleDisplayName</key>
 	<string>Truckonnow</string>
-	<key>CFBundleIdentifier</key>
-	<string>com.companyname.MDispatch</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This application requires access to the geolocation of driver tracking in the workplace.</string>
 	<key>UILaunchStoryboardName</key>
@@ -79,5 +77,7 @@
 	<string>Picture Picker uses photo library</string>
 	<key>CFBundleVersion</key>
 	<string>2</string>
+	<key>CFBundleIdentifier</key>
+	<string>etc.truckonnow</string>
 </dict>
 </plist>

@@ -1,13 +1,26 @@
-using System;
-using System.Threading.Tasks;
 using FormsControls.Base;
 using MDispatch.Helpers;
-using MDispatch.Service.GeloctionGPS;
+using MDispatch.Service.Auth;
+using MDispatch.Service.DatabaseContext;
+using MDispatch.Service.DriverInspection;
+using MDispatch.Service.GlobalHelper;
+using MDispatch.Service.GoogleApi;
+using MDispatch.Service.HelperView;
+using MDispatch.Service.Inspection;
+using MDispatch.Service.ManagerDispatchMob;
+using MDispatch.Service.ManagerStore;
+using MDispatch.Service.OpacityTouchView;
+using MDispatch.Service.OrderGet;
+using MDispatch.Service.RequestQueue;
+using MDispatch.Service.StoreNotify;
 using MDispatch.Service.Tasks;
-using MDispatch.StoreNotify;
+using MDispatch.Service.TimeSync;
+using MDispatch.Service.Utils;
 using MDispatch.View.A_R;
 using MDispatch.View.TabPage;
 using Plugin.Settings;
+using System;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace MDispatch
@@ -18,9 +31,13 @@ namespace MDispatch
         public static bool isNetwork;
         public static bool isStart;
         public static DateTime time = DateTime.Now;
-
+        private readonly IUtilsService _utils;
+        private readonly ITimeSyncService _untils;
         public App ()
         {
+            RegisterServices();
+            _utils = DependencyService.Get<IUtilsService>();
+            _untils = DependencyService.Get<ITimeSyncService>();
             SetCurrentCultureThread();
             LanguageHelper.InitLanguage();
             InitializeComponent();
@@ -34,9 +51,27 @@ namespace MDispatch
             {
                 TaskManager.isWorkTask = true;
                 isAvtorization = true;
-                MainPage = new AnimationNavigationPage(new TabPage(new Service.ManagerDispatchMob()));
+                MainPage = new AnimationNavigationPage(new TabPage());
             }
 
+        }
+
+        private void RegisterServices()
+        {
+            DependencyService.Register<IAuth, Auth>();
+            DependencyService.Register<IManagerStore, ManagerStore>();
+            DependencyService.Register<IOrderGetService, OrderGetService>();
+            DependencyService.Register<IManagerDispatchMobService, ManagerDispatchMobService>();
+            DependencyService.Register<IDatabaseContextService, DatabaseContextService>();
+            DependencyService.Register<IDriverInspectionService, DriverInspectionService>();
+            DependencyService.Register<IGoogleApiService, GoogleApiService>();
+            DependencyService.Register<IInspectionService, InspectionService>();
+            DependencyService.Register<IUtilsService, UtilsService>();
+            DependencyService.Register<ITimeSyncService, TimeSyncService>();
+            DependencyService.Register<IManagerQueueService, ManagerQueueService>();
+            DependencyService.Register<IOpacityTouchViewService, OpacityTouchViewService>();
+            DependencyService.Register<IGlobalHelperService, GlobalHelperService>();
+            DependencyService.Register<IHelperViewService, HelperViewService>();
         }
 
         [Obsolete]
@@ -50,8 +85,8 @@ namespace MDispatch
                     DependencyService.Get<IStore>().OnTokenRefresh();
                 });
                 isStart = true;
-                MDispatch.Service.TimeSync.Untils.Start();
-                await Utils.StartListening();
+                _untils.Start();
+                await _utils.StartListening();
                 TaskManager.CommandToDo("CheckTask");
             }
         }
@@ -61,8 +96,8 @@ namespace MDispatch
             if (isAvtorization)
             {
                 isStart = false;
-                MDispatch.Service.TimeSync.Untils.Stop();
-                await Utils.StopListening();
+                _untils.Stop();
+                await _utils.StopListening();
             }
         }
 
@@ -71,8 +106,8 @@ namespace MDispatch
             if (isAvtorization)
             {
                 isStart = true;
-                MDispatch.Service.TimeSync.Untils.Start();
-                await Utils.StartListening();
+                _untils.Start();
+                await _utils.StartListening();
             }
         }
 

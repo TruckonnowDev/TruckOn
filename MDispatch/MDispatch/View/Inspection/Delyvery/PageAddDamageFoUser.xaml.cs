@@ -36,13 +36,12 @@ namespace MDispatch.View.Inspection.PickedUp
                 .SetPreferredStatusBarUpdateAnimation(UIStatusBarAnimation.Fade);
         }
 
-        [System.Obsolete]
         private async void TouchImage_TouchAction(object sender, NewElement.TouchCordinate.TouchActionEventArgs e)
         {
             stateSelect = 1;
-            await PopupNavigation.PushAsync(new DamageSelecter1(this, null), true);
+            await Navigation.PushAsync(new DamageSelecter1(this, null), true);
             await WaiteSelectDamage();
-            await PopupNavigation.PopAsync(true);
+            await Navigation.PopAsync(true);
             if (stateSelect == 0)
             {
                 stateSelect = 1;

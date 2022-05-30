@@ -2,14 +2,13 @@
 using MDispatch.Models;
 using MDispatch.NewElement.ToastNotify;
 using MDispatch.Service;
-using MDispatch.Service.Helpers;
-using MDispatch.Service.Net;
+using MDispatch.Service.GlobalHelper;
+using MDispatch.Service.HelperView;
+using MDispatch.Service.ManagerDispatchMob;
+using MDispatch.Service.Utils;
 using MDispatch.View;
 using MDispatch.View.GlobalDialogView;
-using MDispatch.View.Inspection;
-using MDispatch.View.Inspection.PickedUp;
 using MDispatch.ViewModels.InspectionMV.DelyveryMV;
-using MDispatch.ViewModels.InspectionMV.PickedUpMV;
 using Plugin.Settings;
 using Prism.Mvvm;
 using Rg.Plugins.Popup.Services;
@@ -18,17 +17,25 @@ using Xamarin.Forms;
 
 namespace MDispatch.ViewModels.InspectionMV
 {
-    public class FeedBackMV : BindableBase
+    public class FeedBackMV : BaseViewModel
     {
-        public ManagerDispatchMob managerDispatchMob = null;
-        public INavigation Navigation { get; set; }
+        public readonly IManagerDispatchMobService managerDispatchMob;
         private object paymmpayMVInspactionant = null;
+        private readonly IUtilsService _utils;
+        private readonly IGlobalHelperService _globalHelper;
+        private readonly IHelperViewService _helperView;
 
-        public FeedBackMV(ManagerDispatchMob managerDispatchMob, VehiclwInformation vehiclwInformation, INavigation navigation, object paymmpayMVInspactionant)
+        public FeedBackMV(
+            IManagerDispatchMobService managerDispatchMob, 
+            VehiclwInformation vehiclwInformation, 
+            INavigation navigation, object paymmpayMVInspactionant)
+            :base(navigation)
         {
+            _utils = DependencyService.Get<IUtilsService>();
+            _globalHelper = DependencyService.Get<IGlobalHelperService>();
+            _helperView = DependencyService.Get<IHelperViewService>();
             this.paymmpayMVInspactionant = paymmpayMVInspactionant;
             this.managerDispatchMob = managerDispatchMob;
-            Navigation = navigation;
             VehiclwInformation = vehiclwInformation;
         }
 
@@ -53,14 +60,13 @@ namespace MDispatch.ViewModels.InspectionMV
             set => SetProperty(ref email, value);
         }
 
-        [System.Obsolete]
         public async void SaveAsk()
         {
-            await PopupNavigation.PushAsync(new LoadPage(), true);
+            await _navigation.PushAsync(new LoadPage(), true);
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
             string description = null;
             int state = 0;
-            await Task.Run(() => Utils.CheckNet());
+            await Task.Run(() => _utils.CheckNet());
             if (App.isNetwork)
             {
                 await Task.Run(() =>
@@ -68,23 +74,23 @@ namespace MDispatch.ViewModels.InspectionMV
                     managerDispatchMob.AskWork("SendCouponMail", token, null, Email, ref description);
                     state = managerDispatchMob.AskWork("FeedBack", token, null, Feedback, ref description);
                 });
-                await PopupNavigation.PopAsync(true);
+                await _navigation.PopAsync(true);
                 if (state == 1)
                 {
-                    GlobalHelper.OutAccount();
-                    await PopupNavigation.PushAsync(new Alert(description, null));
+                    _globalHelper.OutAccount();
+                    await _navigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
                     //await PopupNavigation.PushAsync(new Errror(description, null));
-                    HelpersView.CallError(description);
+                    _helperView.CallError(description);
                 }
                 else if (state == 3)
                 {
                     DependencyService.Get<IToast>().ShowMessage(LanguageHelper.FeedbackSaved);
                     if (paymmpayMVInspactionant is AskForUsersDelyveryMW)
                     {
-                        await Navigation.PopAsync(true);
+                        await _navigation.PopAsync(true);
                     }
                     else
                     {
@@ -100,14 +106,14 @@ namespace MDispatch.ViewModels.InspectionMV
                         //{
                         //    await Navigation.PushAsync(new Ask2Page(((LiabilityAndInsuranceMV)paymmpayMVInspactionant).managerDispatchMob, ((LiabilityAndInsuranceMV)paymmpayMVInspactionant).IdVech, ((LiabilityAndInsuranceMV)paymmpayMVInspactionant).IdShip, ((LiabilityAndInsuranceMV)paymmpayMVInspactionant).initDasbordDelegate));
                         //}
-                        await Navigation.PopAsync(true);
+                        await _navigation.PopAsync(true);
                     }
                 }
             }
             else if (state == 4)
             {
                 //await PopupNavigation.PushAsync(new Errror("Technical work on the service", null));
-                HelpersView.CallError(LanguageHelper.TechnicalWorkServiceAlert);
+                _helperView.CallError(LanguageHelper.TechnicalWorkServiceAlert);
             }
         }
     }

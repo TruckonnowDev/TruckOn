@@ -1,12 +1,11 @@
 ﻿using MDispatch.Helpers;
 using MDispatch.Models;
-using MDispatch.Service;
-using MDispatch.Service.Helpers;
+using MDispatch.Service.HelperView;
+using MDispatch.Service.ManagerDispatchMob;
 using MDispatch.View.GlobalDialogView;
 using MDispatch.View.Inspection.PickedUp;
 using MDispatch.ViewModels.InspectionMV.DelyveryMV;
 using MDispatch.ViewModels.InspectionMV.Servise.Paymmant;
-using Newtonsoft.Json;
 using Plugin.InputKit.Shared.Controls;
 using Plugin.Settings;
 using Rg.Plugins.Popup.Services;
@@ -17,20 +16,22 @@ using System.Threading;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using static MDispatch.Service.ManagerDispatchMob;
+using static MDispatch.Service.ManagerDispatchMob.ManagerDispatchMobService;
 
 namespace MDispatch.View.Inspection.Delyvery
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
+    [XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class AskForUserDelyvery : ContentPage
 	{
         public AskForUsersDelyveryMW askForUsersDelyveryMW = null;
         private IPaymmant Paymmant = null;
         private Timer timer = null;
+        private readonly IHelperViewService _helperView;
 
-        public AskForUserDelyvery (ManagerDispatchMob managerDispatchMob, string idShip, InitDasbordDelegate initDasbordDelegate, string OnDeliveryToCarrier, string totalPaymentToCarrier,
+        public AskForUserDelyvery (IManagerDispatchMobService managerDispatchMob, string idShip, InitDasbordDelegate initDasbordDelegate, string OnDeliveryToCarrier, string totalPaymentToCarrier,
             VehiclwInformation vehiclwInformation, GetShiping getShiping, GetVechicleDelegate getVechicleDelegate, bool isproplem)
 		{
+            _helperView = DependencyService.Get<IHelperViewService>();
             askForUsersDelyveryMW = new AskForUsersDelyveryMW(managerDispatchMob, idShip, Navigation, getShiping, initDasbordDelegate, getVechicleDelegate, vehiclwInformation, totalPaymentToCarrier);
             askForUsersDelyveryMW.AskForUserDelyveryM = new AskForUserDelyveryM();
             InitializeComponent ();
@@ -246,7 +247,6 @@ namespace MDispatch.View.Inspection.Delyvery
         }
         #endregion
 
-        [Obsolete]
         private async void ToolbarItem_Clicked(object sender, EventArgs e)
         {
             if (Paymmant != null)
@@ -259,7 +259,7 @@ namespace MDispatch.View.Inspection.Delyvery
             }
             else
             {
-                await PopupNavigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
+                await Navigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
                 CheckAsk();
             }
         }
@@ -330,7 +330,6 @@ namespace MDispatch.View.Inspection.Delyvery
             //await PopupNavigation.PushAsync(new ContactInfo());
         }
 
-        [Obsolete]
         private async void Entry_TextChanged1(object sender, TextChangedEventArgs e)
         {
             if (CrossSettings.Current.GetValueOrDefault("Password", "") == e.NewTextValue)
@@ -347,7 +346,7 @@ namespace MDispatch.View.Inspection.Delyvery
                     }
                     else
                     {
-                        await PopupNavigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
+                        await Navigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
                         CheckAsk();
                     }
                 }
@@ -382,7 +381,7 @@ namespace MDispatch.View.Inspection.Delyvery
             }
             else
             {
-                await PopupNavigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
+                await Navigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
                 CheckAsk();
             }
 
@@ -408,13 +407,13 @@ namespace MDispatch.View.Inspection.Delyvery
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            HelpersView.InitAlert(body);
+            _helperView.InitAlert(body);
         }
 
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            HelpersView.Hidden();
+            _helperView.Hidden();
         }
     }
 }

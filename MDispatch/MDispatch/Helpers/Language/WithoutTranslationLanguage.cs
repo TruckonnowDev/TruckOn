@@ -14,13 +14,13 @@
         public static string PlaceholderYourPhone => "Enter Your phone";
         public static string AskBlockManyKesTitle => "How many keys did the driver receive?";
         public static string PlaceholderManyKes => "Enter the number of keys you gave";
-        public static string AskBlockGivenToDriverTitle => "Any titles has been given to the driver?";
-        public static string IDontKnowBtnText => "No, I don't know";
+        public static string AskBlockGivenToDriverTitle => "Did you give a title to the driver?";
+        public static string IDontKnowBtnText => "No";
         public static string YesBtnText => "Yes";
         public static string NoBtnText => "No";
         public static string MaybeBtnText => "Maybe";
         public static string ContinuingBtnText => "Continue";
-        public static string TitleBillOfLandingPage => "BILL OF LADING";
+        public static string TitleBillOfLandingPage => "BOL";
         public static string TitleOriginInfo => "Origin";
         public static string TitleDestinatiinInfo => "Destination";
         public static string TitleYourSignature => "Your signature";

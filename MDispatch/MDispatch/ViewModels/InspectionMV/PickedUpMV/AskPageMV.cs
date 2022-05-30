@@ -2,38 +2,42 @@
 using MDispatch.Models;
 using MDispatch.NewElement;
 using MDispatch.NewElement.ToastNotify;
-using MDispatch.Service;
-using MDispatch.Service.Helpers;
-using MDispatch.Service.Net;
+using MDispatch.Service.HelperView;
+using MDispatch.Service.ManagerDispatchMob;
 using MDispatch.View;
 using MDispatch.View.GlobalDialogView;
 using MDispatch.View.PageApp;
 using Newtonsoft.Json;
 using Plugin.Settings;
-using Prism.Mvvm;
 using Rg.Plugins.Popup.Services;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using static MDispatch.Service.ManagerDispatchMob;
+using static MDispatch.Service.ManagerDispatchMob.ManagerDispatchMobService;
 
 namespace MDispatch.ViewModels.AskPhoto
 {
-    public class AskPageMV : BindableBase
+    public class AskPageMV : BaseViewModel
     {
-        public ManagerDispatchMob managerDispatchMob = null;
-        public INavigation Navigation  { get; set; }
+        public readonly IManagerDispatchMobService managerDispatchMob;
         private InitDasbordDelegate initDasbordDelegate = null;
         private GetVechicleDelegate getVechicleDelegate = null;
+        private readonly IHelperViewService _helperView;
 
-        public AskPageMV(ManagerDispatchMob managerDispatchMob, VehiclwInformation vehiclwInformation, string idShip, INavigation navigation, InitDasbordDelegate initDasbordDelegate, GetVechicleDelegate getVechicleDelegate,
+        public AskPageMV(
+            IManagerDispatchMobService managerDispatchMob, 
+            VehiclwInformation vehiclwInformation, 
+            string idShip, INavigation navigation, 
+            InitDasbordDelegate initDasbordDelegate, 
+            GetVechicleDelegate getVechicleDelegate,
              string onDeliveryToCarrier, string totalPaymentToCarrier)
+            : base(navigation)
         {
+            _helperView = DependencyService.Get<IHelperViewService>();
             this.getVechicleDelegate = getVechicleDelegate;
             this.initDasbordDelegate = initDasbordDelegate;
             this.managerDispatchMob = managerDispatchMob;
-            Navigation = navigation;
             VehiclwInformation = vehiclwInformation;
             IdShip = idShip;
             OnDeliveryToCarrier = onDeliveryToCarrier;
@@ -81,13 +85,12 @@ namespace MDispatch.ViewModels.AskPhoto
         }
 
 
-        [System.Obsolete]
         public async void SaveAsk(string indexTypeCar)
         {
             bool isNavigationMany = false;
-            if (Navigation.NavigationStack.Count > 2)
+            if (_navigation.NavigationStack.Count > 2)
             {
-                await PopupNavigation.PushAsync(new LoadPage());
+                await _navigation.PushAsync(new LoadPage());
                 isNavigationMany = true;
             }
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
@@ -95,9 +98,9 @@ namespace MDispatch.ViewModels.AskPhoto
             int state = 0;
             DependencyService.Get<IOrientationHandler>().ForceSensor();
             FullPagePhoto fullPagePhoto = new FullPagePhoto(managerDispatchMob, VehiclwInformation, IdShip, $"{indexTypeCar}1.png", indexTypeCar, 1, initDasbordDelegate, getVechicleDelegate, "", OnDeliveryToCarrier, TotalPaymentToCarrier);
-            await Navigation.PushAsync(fullPagePhoto);
-            await Navigation.PushAsync(new CameraPagePhoto($"{indexTypeCar}1.png", fullPagePhoto, "PhotoIspection"));
-            await Task.Run(() => Utils.CheckNet());
+            await _navigation.PushAsync(fullPagePhoto);
+            await _navigation.PushAsync(new CameraPagePhoto($"{indexTypeCar}1.png", fullPagePhoto, "PhotoIspection"));
+            await Task.Run(() => _utils.CheckNet());
             if (App.isNetwork)
             {
 
@@ -108,40 +111,40 @@ namespace MDispatch.ViewModels.AskPhoto
                 });
                 if (state == 1)
                 {
-                    GlobalHelper.OutAccount();
-                    await PopupNavigation.PushAsync(new Alert(description, null));
+                    _globalHelperService.OutAccount();
+                    await _navigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
                     if (isNavigationMany)
                     {
-                        await PopupNavigation.RemovePageAsync(PopupNavigation.PopupStack[0]);
+                        _navigation.RemovePage(_navigation.NavigationStack[0]);
                         isNavigationMany = false;
                     }
                     GoToABack();
                     //await PopupNavigation.PushAsync(new Errror(description, Navigation));
-                    HelpersView.CallError(description);
+                    _helperView.CallError(description);
                 }
                 else if (state == 3)
                 {
                     if (isNavigationMany)
                     {
-                        await PopupNavigation.RemovePageAsync(PopupNavigation.PopupStack[0]);
+                        _navigation.RemovePage(_navigation.NavigationStack[0]);
                         isNavigationMany = false;
                     }
-                    Navigation.RemovePage(Navigation.NavigationStack[1]);
+                    _navigation.RemovePage(_navigation.NavigationStack[1]);
                     DependencyService.Get<IToast>().ShowMessage(LanguageHelper.AnswersSaved);
                 }
                 else if (state == 4)
                 {
                     if (isNavigationMany)
                     {
-                        await PopupNavigation.RemovePageAsync(PopupNavigation.PopupStack[0]);
+                        _navigation.RemovePage(_navigation.NavigationStack[0]);
                         isNavigationMany = false;
                     }
                     GoToABack();
                     //await PopupNavigation.PushAsync(new Errror("Technical work on the service", Navigation));
-                    HelpersView.CallError(LanguageHelper.TechnicalWorkServiceAlert);
+                    _helperView.CallError(LanguageHelper.TechnicalWorkServiceAlert);
                 }
             }
             else
@@ -152,10 +155,10 @@ namespace MDispatch.ViewModels.AskPhoto
 
         private async void GoToABack()
         {
-            if (Navigation.NavigationStack.Count > 2)
+            if (_navigation.NavigationStack.Count > 2)
             {
-                await Navigation.PopAsync();
-                await Navigation.PopAsync();
+                await _navigation.PopAsync();
+                await _navigation.PopAsync();
             }
             DependencyService.Get<IOrientationHandler>().ForceSensor();
         }

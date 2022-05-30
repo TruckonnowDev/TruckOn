@@ -73,13 +73,12 @@ namespace MDispatch.View.Inspection.PickedUp
             dmgSelected = null;
         }
 
-        [Obsolete]
         private async void TouchImage_TouchAction(object sender, NewElement.TouchCordinate.TouchActionEventArgs e)
         {
             stateSelect = 1;
-            await PopupNavigation.PushAsync(new DamageSelecter1(null, this), true);
+            await Navigation.PushAsync(new DamageSelecter1(null, this), true);
             await WaiteSelectDamage();
-            await PopupNavigation.PopAsync(true);
+            await Navigation.PopAsync(true);
             if (stateSelect == 0)
             {
                 stateSelect = 1;

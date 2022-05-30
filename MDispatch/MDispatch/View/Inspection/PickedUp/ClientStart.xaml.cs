@@ -1,14 +1,11 @@
 ﻿using MDispatch.Models;
 using MDispatch.NewElement;
-using MDispatch.Service;
-using MDispatch.Service.Helpers;
-using MDispatch.View.GlobalDialogView;
-using Rg.Plugins.Popup.Services;
+using MDispatch.Service.HelperView;
+using MDispatch.Service.ManagerDispatchMob;
 using System;
-
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using static MDispatch.Service.ManagerDispatchMob;
+using static MDispatch.Service.ManagerDispatchMob.ManagerDispatchMobService;
 
 namespace MDispatch.View.Inspection.PickedUp
 {
@@ -16,9 +13,11 @@ namespace MDispatch.View.Inspection.PickedUp
     public partial class ClientStart : ContentPage
     {
         private AskForUser askForUser = null;
+        private readonly IHelperViewService _helperView;
 
-        public ClientStart(ManagerDispatchMob managerDispatchMob, VehiclwInformation vehiclwInformation, string idShip, InitDasbordDelegate initDasbordDelegate, string onDeliveryToCarrier, string totalPaymentToCarrier)
+        public ClientStart(IManagerDispatchMobService managerDispatchMob, VehiclwInformation vehiclwInformation, string idShip, InitDasbordDelegate initDasbordDelegate, string onDeliveryToCarrier, string totalPaymentToCarrier)
         {
+            _helperView = DependencyService.Get<IHelperViewService>();
             askForUser = new AskForUser(managerDispatchMob, vehiclwInformation, idShip, initDasbordDelegate, onDeliveryToCarrier, totalPaymentToCarrier);
             InitializeComponent();
         }
@@ -39,13 +38,13 @@ namespace MDispatch.View.Inspection.PickedUp
         {
             base.OnAppearing();
             DependencyService.Get<IOrientationHandler>().ForceSensor();
-            HelpersView.InitAlert(body);
+            _helperView.InitAlert(body);
         } 
 
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            HelpersView.Hidden();
+            _helperView.Hidden();
         }
     }
 }

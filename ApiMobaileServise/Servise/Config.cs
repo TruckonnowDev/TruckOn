@@ -15,7 +15,8 @@ namespace ApiMobaileServise.Servise
         {
             get
             {
-                string path = Path.GetFullPath("../AuchConfig/json.txt");
+                string path = Path.GetFullPath("../AuthConfig/credentials.json");
+                //string path = Path.GetFullPath("../ApiMobaileServise/AuthConfig/credentials.json");
                 return path;
             }
         }

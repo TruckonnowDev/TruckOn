@@ -20,7 +20,7 @@ namespace MDispatch.View.Inspection.Delyvery
         
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            await Navigation.PopAsync(true);
+            await PopupNavigation.Instance.PopAsync(true);
             if (askForUsersDelyveryMW.Payment == "COD" || askForUsersDelyveryMW.Payment == "COP" || askForUsersDelyveryMW.Payment == "Biling")
             {
                 //askForUsersDelyveryMW.Continue();
@@ -34,8 +34,8 @@ namespace MDispatch.View.Inspection.Delyvery
 
         private async void Button_Clicked_1(object sender, EventArgs e)
         {
-            await Navigation.PopAsync(true);
-            await Navigation.PushAsync(new EvaluationAndSurveyDialog1(askForUsersDelyveryMW));
+            await PopupNavigation.Instance.PopAsync(true);
+            await PopupNavigation.Instance.PushAsync(new EvaluationAndSurveyDialog1(askForUsersDelyveryMW));
         }
     }
 }

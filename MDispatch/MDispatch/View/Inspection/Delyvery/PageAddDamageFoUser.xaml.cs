@@ -39,9 +39,9 @@ namespace MDispatch.View.Inspection.PickedUp
         private async void TouchImage_TouchAction(object sender, NewElement.TouchCordinate.TouchActionEventArgs e)
         {
             stateSelect = 1;
-            await Navigation.PushAsync(new DamageSelecter1(this, null), true);
+            await askForUsersDelyveryMW._popupNavigation.PushAsync(new DamageSelecter1(this, null), true);
             await WaiteSelectDamage();
-            await Navigation.PopAsync(true);
+            await askForUsersDelyveryMW._popupNavigation.PopAsync(true);
             if (stateSelect == 0)
             {
                 stateSelect = 1;

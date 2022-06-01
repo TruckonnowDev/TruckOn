@@ -59,7 +59,7 @@ namespace MDispatch.ViewModels.PageAppMV
 
         private async void SavePayments()
         {
-            await _navigation.PushAsync(new LoadPage(), true);
+            await _popupNavigation.PushAsync(new LoadPage(), true);
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
             string description = null;
             int state = 0;
@@ -70,15 +70,15 @@ namespace MDispatch.ViewModels.PageAppMV
                 {
                     state = managerDispatchMob.OrderOneWork("Save", Shipping.Id, token, "Payment", Shipping.PriceListed, Shipping.TotalPaymentToCarrier, ref description);
                 });
-                await _navigation.PopToRootAsync(true);
+                await _popupNavigation.PopAllAsync(true);
                 if (state == 1)
                 {
                     _globalHelperService.OutAccount();
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 else if (state == 2)
                 {
-                    await _navigation.PushAsync(new Alert(description, _navigation));
+                    await _popupNavigation.PushAsync(new Alert(description, Navigation));
                 }
                 else if (state == 3)
                 {
@@ -86,12 +86,12 @@ namespace MDispatch.ViewModels.PageAppMV
                 }
                 else if (state == 4)
                 {
-                    await _navigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, _navigation));
+                    await _popupNavigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, Navigation));
                 }
             }
             else
             {
-                await _navigation.PopAsync(true);
+                await _popupNavigation.PopAsync(true);
             }
         }
     }

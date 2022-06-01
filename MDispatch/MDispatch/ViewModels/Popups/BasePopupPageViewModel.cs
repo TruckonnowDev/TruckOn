@@ -17,7 +17,7 @@ namespace MDispatch.ViewModels.Popups
 
         internal virtual async Task OnGoBackPopupCommand()
         {
-            await _navigation.PopToRootAsync();
+            await _popupNavigation.PopAsync();
         }
     }
 }

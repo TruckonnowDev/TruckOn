@@ -70,7 +70,7 @@ namespace MDispatch.ViewModels.InspectionMV
         {
             bool isNavigationMany = false;
             IsLoad = true;
-            if (_navigation.NavigationStack.Count > 2)
+            if (_popupNavigation.PopupStack.Count > 2)
             {
                 isNavigationMany = true;
             }
@@ -88,13 +88,13 @@ namespace MDispatch.ViewModels.InspectionMV
                 if (state == 1)
                 {
                     _globalHelpersService.OutAccount();
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
                     if (isNavigationMany)
                     {
-                        _navigation.RemovePage(_navigation.NavigationStack[0]);
+                        await _popupNavigation.RemovePageAsync(_popupNavigation.PopupStack[0]);
                         isNavigationMany = false;
                     }
                     //await PopupNavigation.PushAsync(new Errror("Error", null));
@@ -104,7 +104,7 @@ namespace MDispatch.ViewModels.InspectionMV
                 {
                     if (isNavigationMany)
                     {
-                        _navigation.RemovePage(_navigation.NavigationStack[0]);
+                        await _popupNavigation.RemovePageAsync(_popupNavigation.PopupStack[0]);
                         isNavigationMany = false;
                     }
                     Shipping = shipping1;
@@ -114,7 +114,7 @@ namespace MDispatch.ViewModels.InspectionMV
                 {
                     if (isNavigationMany)
                     {
-                        _navigation.RemovePage(_navigation.NavigationStack[0]);
+                        await _popupNavigation.RemovePageAsync(_popupNavigation.PopupStack[0]);
                         isNavigationMany = false;
                     }
                     //await PopupNavigation.PushAsync(new Errror("Technical work on the service", null));
@@ -140,11 +140,11 @@ namespace MDispatch.ViewModels.InspectionMV
                 if (state == 1)
                 {
                     _globalHelpersService.OutAccount();
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                     _helperView.CallError(description);
                 }
                 else if (state == 3)

@@ -19,7 +19,7 @@ namespace MDispatch.View.GlobalDialogView
 
         private async void Button_Clicked(object sender, System.EventArgs e)
         {
-            await Navigation.PopAsync(true);
+            await PopupNavigation.Instance.PopAsync(true);
             if(navigation != null)
             {
                 await navigation.PopAsync();

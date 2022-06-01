@@ -24,13 +24,13 @@ namespace MDispatch.ViewModels.TAbbMV.DialogAsk
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            await Navigation.PopAsync();
+            await PopupNavigation.Instance.PopAsync();
         }
 
         private async void Button_Clicked_1(object sender, EventArgs e)
         {
             activeMV.GoToInspectionDrive();
-            await Navigation.PopAsync();
+            await PopupNavigation.Instance.PopAsync();
         }
     }
 }

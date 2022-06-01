@@ -60,7 +60,7 @@ namespace MDispatch.ViewModels.InspectionMV
 
         public async void SaveAsk()
         {
-            await _navigation.PushAsync(new LoadPage(), true);
+            await _popupNavigation.PushAsync(new LoadPage(), true);
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
             string description = null;
             int state = 0;
@@ -72,11 +72,11 @@ namespace MDispatch.ViewModels.InspectionMV
                     managerDispatchMob.AskWork("SendCouponMail", token, null, Email, ref description);
                     state = managerDispatchMob.AskWork("FeedBack", token, null, Feedback, ref description);
                 });
-                await _navigation.PopAsync(true);
+                await _popupNavigation.PopAsync(true);
                 if (state == 1)
                 {
                     _globalHelper.OutAccount();
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
@@ -88,7 +88,7 @@ namespace MDispatch.ViewModels.InspectionMV
                     DependencyService.Get<IToast>().ShowMessage(LanguageHelper.FeedbackSaved);
                     if (paymmpayMVInspactionant is AskForUsersDelyveryMW)
                     {
-                        await _navigation.PopAsync(true);
+                        await Navigation.PopAsync(true);
                     }
                     else
                     {
@@ -104,7 +104,7 @@ namespace MDispatch.ViewModels.InspectionMV
                         //{
                         //    await Navigation.PushAsync(new Ask2Page(((LiabilityAndInsuranceMV)paymmpayMVInspactionant).managerDispatchMob, ((LiabilityAndInsuranceMV)paymmpayMVInspactionant).IdVech, ((LiabilityAndInsuranceMV)paymmpayMVInspactionant).IdShip, ((LiabilityAndInsuranceMV)paymmpayMVInspactionant).initDasbordDelegate));
                         //}
-                        await _navigation.PopAsync(true);
+                        await Navigation.PopAsync(true);
                     }
                 }
             }

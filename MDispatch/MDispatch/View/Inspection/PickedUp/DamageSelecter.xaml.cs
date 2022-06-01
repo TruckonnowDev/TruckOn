@@ -60,7 +60,7 @@ namespace MDispatch.View.Inspection.PickedUp
         private async void TapGestureRecognizer_Tapped(object sender, System.EventArgs e)
         {
             pageAddDamage.stateSelect = 2;
-            await Navigation.PopAsync(true);
+            await PopupNavigation.Instance.PopAsync(true);
         }
     }
 }

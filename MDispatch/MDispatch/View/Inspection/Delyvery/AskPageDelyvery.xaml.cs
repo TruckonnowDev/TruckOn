@@ -538,7 +538,7 @@ namespace MDispatch.View.Inspection.Delyvery
             }
             else
             {
-                await Navigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
+                await askDelyveryMV._popupNavigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
                 CheckAsk();
             }
         }

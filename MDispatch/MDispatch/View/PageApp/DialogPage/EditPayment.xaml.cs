@@ -59,7 +59,7 @@ namespace MDispatch.View.PageApp.DialogPage
 
         private async void Button_Clicked(object sender, System.EventArgs e)
         {
-            await Navigation.PopToRootAsync(true);
+            await PopupNavigation.Instance.PopAsync(true);
         }
     }
 }

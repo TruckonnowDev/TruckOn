@@ -131,7 +131,7 @@ namespace MDispatch.View.Inspection
         {
             Image image = ((Image)v);
             await _opacityTouchView.TouchFeedBack(image);
-            await Navigation.PushAsync(new ViewPhotoPopupView(image.Source));
+            await bOLMV._popupNavigation.PushAsync(new ViewPhotoPopupView(image.Source));
         }
 
         private async void InitElemnt()

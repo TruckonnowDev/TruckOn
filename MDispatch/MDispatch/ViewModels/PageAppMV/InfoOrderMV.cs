@@ -142,7 +142,7 @@ namespace MDispatch.ViewModels.PageAppMV
         {
             if (Shipping != null)
             {
-                _navigation.PushAsync(new Instruction(this));
+                Navigation.PushAsync(new Instruction(this));
             }
             else
             {
@@ -154,7 +154,7 @@ namespace MDispatch.ViewModels.PageAppMV
         {
             if (Shipping != null)
             {
-                await _navigation.PushAsync(new EditPicupInfo(_managerDispatchMob, Shipping), true);
+                await Navigation.PushAsync(new EditPicupInfo(_managerDispatchMob, Shipping), true);
             }
             else
             {
@@ -166,7 +166,7 @@ namespace MDispatch.ViewModels.PageAppMV
         {
             if (Shipping != null)
             {
-                await _navigation.PushAsync(new EditDeliveryInformation(_managerDispatchMob, Shipping), true);
+                await Navigation.PushAsync(new EditDeliveryInformation(_managerDispatchMob, Shipping), true);
             }
             else
             {
@@ -177,12 +177,12 @@ namespace MDispatch.ViewModels.PageAppMV
         [System.Obsolete]
         private async void ToEditPayment()
         {
-            await PopupNavigation.PushAsync(new EditPayment(_managerDispatchMob, Shipping), true);
+            await _popupNavigation.PushAsync(new EditPayment(_managerDispatchMob, Shipping), true);
         }
 
         public async void ToVehicleDetails(VehiclwInformation vehiclwInformation)
         {
-            await _navigation.PushAsync(new VechicleDetails(vehiclwInformation, _managerDispatchMob));
+            await Navigation.PushAsync(new VechicleDetails(vehiclwInformation, _managerDispatchMob));
         }
 
         public async void Init()
@@ -206,7 +206,7 @@ namespace MDispatch.ViewModels.PageAppMV
                 IsInspection = false;
                 StatusInspection = "Delivered";
             }
-            await PopupNavigation.PushAsync(new LoadPage());
+            await _popupNavigation.PushAsync(new LoadPage());
             await Task.Run(() => _utils.CheckNet());
             if (App.isNetwork)
             {
@@ -218,7 +218,7 @@ namespace MDispatch.ViewModels.PageAppMV
                 if (state == 1)
                 {
                     _globalHelper.OutAccount();
-                    await PopupNavigation.PushAsync(new Alert(description, null));
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
@@ -245,7 +245,7 @@ namespace MDispatch.ViewModels.PageAppMV
                     _helpersView.CallError(LanguageHelper.TechnicalWorkServiceAlert);
                 }
             }
-            await PopupNavigation.PopAsync();
+            await _popupNavigation.PopAsync();
         }
 
         [System.Obsolete]
@@ -273,17 +273,17 @@ namespace MDispatch.ViewModels.PageAppMV
                 if (vehiclwInformation.Ask == null)
                 {
                     await PopupNavigation.PushAsync(new HintPageVechicle(LanguageHelper.StartInspectionPickedUp, vehiclwInformation));
-                    await _navigation.PushAsync(new AskPage(_managerDispatchMob, vehiclwInformation, Shipping.Id, initDasbordDelegate, getVechicleDelegate, Shipping.OnDeliveryToCarrier, Shipping.TotalPaymentToCarrier), true);
-                    _navigation.RemovePage(_navigation.NavigationStack[1]);
+                    await Navigation.PushAsync(new AskPage(_managerDispatchMob, vehiclwInformation, Shipping.Id, initDasbordDelegate, getVechicleDelegate, Shipping.OnDeliveryToCarrier, Shipping.TotalPaymentToCarrier), true);
+                    Navigation.RemovePage(Navigation.NavigationStack[1]);
                     return;
                 }
                 else if (photoInspections == null || photoInspections.Count == 0)
                 {
                     await PopupNavigation.PushAsync(new HintPageVechicle(LanguageHelper.ContinuingInspectionPickedUp, vehiclwInformation));
                     FullPagePhoto fullPagePhoto = new FullPagePhoto(_managerDispatchMob, vehiclwInformation, Shipping.Id, $"{vehiclwInformation.Ask.TypeVehicle.Replace(" ", "")}1.png", vehiclwInformation.Ask.TypeVehicle.Replace(" ", ""), 1, initDasbordDelegate, getVechicleDelegate, car.GetNameLayout(1), Shipping.OnDeliveryToCarrier, Shipping.TotalPaymentToCarrier);
-                    await _navigation.PushAsync(fullPagePhoto, true);
+                    await Navigation.PushAsync(fullPagePhoto, true);
                     //await Navigation.PushAsync(new CameraPagePhoto($"{vehiclwInformation.Ask.TypeVehicle.Replace(" ", "")}1.png", fullPagePhoto, "PhotoIspection"));
-                    _navigation.RemovePage(_navigation.NavigationStack[1]);
+                    Navigation.RemovePage(Navigation.NavigationStack[1]);
                     return;
                 }
                 else if (photoInspections.Find(p => p.IndexPhoto == car.CountCarImg) == null)
@@ -291,61 +291,61 @@ namespace MDispatch.ViewModels.PageAppMV
                     await PopupNavigation.PushAsync(new HintPageVechicle(LanguageHelper.ContinuingInspectionPickedUp, vehiclwInformation));
                     int lastIndexPhoto = photoInspections[vehiclwInformation.PhotoInspections.Count - 1].IndexPhoto + 1;
                     FullPagePhoto fullPagePhoto = new FullPagePhoto(_managerDispatchMob, vehiclwInformation, Shipping.Id, $"{vehiclwInformation.Ask.TypeVehicle.Replace(" ", "")}{lastIndexPhoto}.png", vehiclwInformation.Ask.TypeVehicle.Replace(" ", ""), lastIndexPhoto, initDasbordDelegate, getVechicleDelegate, car.GetNameLayout(lastIndexPhoto), Shipping.OnDeliveryToCarrier, Shipping.TotalPaymentToCarrier);
-                    await _navigation.PushAsync(fullPagePhoto, true);
+                    await Navigation.PushAsync(fullPagePhoto, true);
                     //await Navigation.PushAsync(new CameraPagePhoto($"{vehiclwInformation.Ask.TypeVehicle.Replace(" ", "")}{lastIndexPhoto}.png", fullPagePhoto, "PhotoIspection"));
-                    _navigation.RemovePage(_navigation.NavigationStack[1]);
+                    Navigation.RemovePage(Navigation.NavigationStack[1]);
                     return;
                 }
                 else if (vehiclwInformation.Ask1 == null)
                 {
                     await PopupNavigation.PushAsync(new HintPageVechicle(LanguageHelper.ContinuingInspectionPickedUp, vehiclwInformation));
-                    await _navigation.PushAsync(new Ask1Page(_managerDispatchMob, vehiclwInformation, Shipping.Id, initDasbordDelegate, getVechicleDelegate, vehiclwInformation.Ask.TypeVehicle, Shipping.OnDeliveryToCarrier, Shipping.TotalPaymentToCarrier), true);
-                    _navigation.RemovePage(_navigation.NavigationStack[1]);
+                    await Navigation.PushAsync(new Ask1Page(_managerDispatchMob, vehiclwInformation, Shipping.Id, initDasbordDelegate, getVechicleDelegate, vehiclwInformation.Ask.TypeVehicle, Shipping.OnDeliveryToCarrier, Shipping.TotalPaymentToCarrier), true);
+                    Navigation.RemovePage(Navigation.NavigationStack[1]);
                     return;
                 }
                 else if(vehiclwInformation.Ask1.App_will_force_driver_to_take_pictures_of_each_strap == null || (vehiclwInformation.Ask1.App_will_force_driver_to_take_pictures_of_each_strap != null && vehiclwInformation.Ask1.App_will_force_driver_to_take_pictures_of_each_strap.Count == 0))
                 {
-                    await _navigation.PushAsync(new CameraStrapAndTrack(_managerDispatchMob, vehiclwInformation, Shipping.Id, initDasbordDelegate, getVechicleDelegate, Shipping.OnDeliveryToCarrier, Shipping.TotalPaymentToCarrier, vehiclwInformation.Ask.TypeVehicle), true);
+                    await Navigation.PushAsync(new CameraStrapAndTrack(_managerDispatchMob, vehiclwInformation, Shipping.Id, initDasbordDelegate, getVechicleDelegate, Shipping.OnDeliveryToCarrier, Shipping.TotalPaymentToCarrier, vehiclwInformation.Ask.TypeVehicle), true);
                     return;
                 }
             }
             if (Shipping.AskFromUser == null)
             {
                 vehiclwInformation1 = Shipping.VehiclwInformations[0];
-                await _navigation.PushAsync(new View.Inspection.PickedUp.ClientStart(_managerDispatchMob, vehiclwInformation1, Shipping.Id, initDasbordDelegate, Shipping.OnDeliveryToCarrier, Shipping.TotalPaymentToCarrier), true);
+                await Navigation.PushAsync(new View.Inspection.PickedUp.ClientStart(_managerDispatchMob, vehiclwInformation1, Shipping.Id, initDasbordDelegate, Shipping.OnDeliveryToCarrier, Shipping.TotalPaymentToCarrier), true);
                 await PopupNavigation.PushAsync(new Alert(LanguageHelper.PassTheDeviceAlert, null));
-                _navigation.RemovePage(_navigation.NavigationStack[1]);
+                Navigation.RemovePage(Navigation.NavigationStack[1]);
                 return;
             }
             else if (Shipping.AskFromUser.App_will_ask_for_signature_of_the_client_signature == null || Shipping.AskFromUser.What_form_of_payment_are_you_using_to_pay_for_transportation == null
                 || (Shipping.TotalPaymentToCarrier == "COP" && Shipping.AskFromUser.CountPay == null))
             {
-                await _navigation.PushAsync(new LiabilityAndInsurance(_managerDispatchMob, vehiclwInformation1.Id, Shipping.Id, initDasbordDelegate, Shipping.OnDeliveryToCarrier, Shipping.TotalPaymentToCarrier, Shipping.IsProblem), true);
-                _navigation.RemovePage(_navigation.NavigationStack[1]);
+                await Navigation.PushAsync(new LiabilityAndInsurance(_managerDispatchMob, vehiclwInformation1.Id, Shipping.Id, initDasbordDelegate, Shipping.OnDeliveryToCarrier, Shipping.TotalPaymentToCarrier, Shipping.IsProblem), true);
+                Navigation.RemovePage(Navigation.NavigationStack[1]);
                 return;
             }
             else if ((Shipping.AskFromUser.PhotoPay == null && Shipping.AskFromUser.VideoRecord == null) && Shipping.AskFromUser.What_form_of_payment_are_you_using_to_pay_for_transportation != "Biling" && Shipping.TotalPaymentToCarrier == "COP")
             {
-                LiabilityAndInsuranceMV liabilityAndInsuranceMV = new LiabilityAndInsuranceMV(_managerDispatchMob, vehiclwInformation1.Id, Shipping.Id, _navigation, initDasbordDelegate, null);
+                LiabilityAndInsuranceMV liabilityAndInsuranceMV = new LiabilityAndInsuranceMV(_managerDispatchMob, vehiclwInformation1.Id, Shipping.Id, Navigation, initDasbordDelegate, null);
                 if (Shipping.AskFromUser.What_form_of_payment_are_you_using_to_pay_for_transportation == "Cash")
                 {
-                    await _navigation.PushAsync(new VideoCameraPage(liabilityAndInsuranceMV, ""));
+                    await Navigation.PushAsync(new VideoCameraPage(liabilityAndInsuranceMV, ""));
                 }
                 else if (Shipping.AskFromUser.What_form_of_payment_are_you_using_to_pay_for_transportation == "Check")
                 {
-                    await _navigation.PushAsync(new CameraPaymmant(liabilityAndInsuranceMV, "", "CheckPaymment.png"));
+                    await Navigation.PushAsync(new CameraPaymmant(liabilityAndInsuranceMV, "", "CheckPaymment.png"));
                 }
                 else
                 {
-                    await _navigation.PushAsync(new Ask2Page(liabilityAndInsuranceMV.managerDispatchMob, liabilityAndInsuranceMV.IdVech, liabilityAndInsuranceMV.IdShip, liabilityAndInsuranceMV.initDasbordDelegate));
+                    await Navigation.PushAsync(new Ask2Page(liabilityAndInsuranceMV.managerDispatchMob, liabilityAndInsuranceMV.IdVech, liabilityAndInsuranceMV.IdShip, liabilityAndInsuranceMV.initDasbordDelegate));
                 }
-                _navigation.RemovePage(_navigation.NavigationStack[1]);
+                Navigation.RemovePage(Navigation.NavigationStack[1]);
             }
             else if(Shipping.Ask2 == null)
             {
                 Ask2Page ask2Page = new Ask2Page(_managerDispatchMob, vehiclwInformation1.Id, shipping.Id, initDasbordDelegate);
-                await _navigation.PushAsync(ask2Page);
-                _navigation.RemovePage(_navigation.NavigationStack[1]);
+                await Navigation.PushAsync(ask2Page);
+                Navigation.RemovePage(Navigation.NavigationStack[1]);
             }
             else
             {
@@ -366,32 +366,32 @@ namespace MDispatch.ViewModels.PageAppMV
             {
                 if (vehiclwInformation.AskDelyvery == null)
                 {
-                    await _navigation.PushAsync(new AskPageDelyvery(_managerDispatchMob, vehiclwInformation, Shipping.Id, initDasbordDelegate, getVechicleDelegate, Shipping.OnDeliveryToCarrier, Shipping.TotalPaymentToCarrier, GetShiping), true);
+                    await Navigation.PushAsync(new AskPageDelyvery(_managerDispatchMob, vehiclwInformation, Shipping.Id, initDasbordDelegate, getVechicleDelegate, Shipping.OnDeliveryToCarrier, Shipping.TotalPaymentToCarrier, GetShiping), true);
                     await PopupNavigation.PushAsync(new HintPageVechicle(LanguageHelper.StartInspectionDelivery, vehiclwInformation));
-                    _navigation.RemovePage(_navigation.NavigationStack[1]);
+                    Navigation.RemovePage(Navigation.NavigationStack[1]);
                     return;
                 }
             }
             if (Shipping.askForUserDelyveryM == null)
             {
-                await _navigation.PushAsync(new View.Inspection.Delyvery.ClientStart(_managerDispatchMob, Shipping.Id, initDasbordDelegate, Shipping.OnDeliveryToCarrier, Shipping.TotalPaymentToCarrier, Shipping.VehiclwInformations[0], GetShiping, getVechicleDelegate, shipping.IsProblem), true);
+                await Navigation.PushAsync(new View.Inspection.Delyvery.ClientStart(_managerDispatchMob, Shipping.Id, initDasbordDelegate, Shipping.OnDeliveryToCarrier, Shipping.TotalPaymentToCarrier, Shipping.VehiclwInformations[0], GetShiping, getVechicleDelegate, shipping.IsProblem), true);
                 await PopupNavigation.PushAsync(new Alert(LanguageHelper.PassTheDeviceAlert, null));
-                _navigation.RemovePage(_navigation.NavigationStack[1]);
+                Navigation.RemovePage(Navigation.NavigationStack[1]);
                 return;
             }
             else if ((Shipping.askForUserDelyveryM.VideoRecord == null && Shipping.askForUserDelyveryM.PhotoPay == null) && Shipping.askForUserDelyveryM.What_form_of_payment_are_you_using_to_pay_for_transportation != "Biling" && Shipping.TotalPaymentToCarrier == "COD")
             {
-                AskForUsersDelyveryMW askForUsersDelyveryMW = new AskForUsersDelyveryMW(_managerDispatchMob, Shipping.Id, _navigation, GetShiping, initDasbordDelegate, getVechicleDelegate, Shipping.VehiclwInformations[0], Shipping.TotalPaymentToCarrier, Shipping.askForUserDelyveryM.What_form_of_payment_are_you_using_to_pay_for_transportation);
+                AskForUsersDelyveryMW askForUsersDelyveryMW = new AskForUsersDelyveryMW(_managerDispatchMob, Shipping.Id, Navigation, GetShiping, initDasbordDelegate, getVechicleDelegate, Shipping.VehiclwInformations[0], Shipping.TotalPaymentToCarrier, Shipping.askForUserDelyveryM.What_form_of_payment_are_you_using_to_pay_for_transportation);
                 if (Shipping.askForUserDelyveryM.What_form_of_payment_are_you_using_to_pay_for_transportation == "Cash")
                 {
-                    await _navigation.PushAsync(new VideoCameraPage(this, ""));
-                    _navigation.RemovePage(_navigation.NavigationStack[1]);
+                    await Navigation.PushAsync(new VideoCameraPage(this, ""));
+                    Navigation.RemovePage(Navigation.NavigationStack[1]);
                     return;
                 }
                 else if (Shipping.askForUserDelyveryM.What_form_of_payment_are_you_using_to_pay_for_transportation == "Check")
                 {
-                    await _navigation.PushAsync(new CameraPaymmant(this, "", "CheckPaymment.png"));
-                    _navigation.RemovePage(_navigation.NavigationStack[1]);
+                    await Navigation.PushAsync(new CameraPaymmant(this, "", "CheckPaymment.png"));
+                    Navigation.RemovePage(Navigation.NavigationStack[1]);
                     return;
                 }
             }
@@ -407,9 +407,9 @@ namespace MDispatch.ViewModels.PageAppMV
                 {
                     await PopupNavigation.PushAsync(new HintPageVechicle(LanguageHelper.ContinuingInspectionDelivery, vehiclwInformation));
                     FullPagePhotoDelyvery fullPagePhotoDelyvery = new FullPagePhotoDelyvery(_managerDispatchMob, vehiclwInformation, Shipping.Id, $"{vehiclwInformation.Ask.TypeVehicle.Replace(" ", "")}1.png", vehiclwInformation.Ask.TypeVehicle.Replace(" ", ""), photoInspections.Count + 1, initDasbordDelegate, getVechicleDelegate, car.GetNameLayout(1), Shipping.OnDeliveryToCarrier, Shipping.TotalPaymentToCarrier);
-                    await _navigation.PushAsync(fullPagePhotoDelyvery, true);
+                    await Navigation.PushAsync(fullPagePhotoDelyvery, true);
                     //await Navigation.PushAsync(new CameraPagePhoto1($"{vehiclwInformation.Ask.TypeVehicle.Replace(" ", "")}1.png", fullPagePhotoDelyvery, "PhotoIspection"));
-                    _navigation.RemovePage(_navigation.NavigationStack[1]);
+                    Navigation.RemovePage(Navigation.NavigationStack[1]);
                     return;
                 }
                 else if (photoInspections.Find(p => p.IndexPhoto == car.CountCarImg) == null)
@@ -417,9 +417,9 @@ namespace MDispatch.ViewModels.PageAppMV
                     await PopupNavigation.PushAsync(new HintPageVechicle(LanguageHelper.ContinuingInspectionDelivery, vehiclwInformation));
                     int photoInspection = photoInspections[photoInspections.Count - 1].IndexPhoto + 1;
                     FullPagePhotoDelyvery fullPagePhotoDelyvery = new FullPagePhotoDelyvery(_managerDispatchMob, vehiclwInformation, Shipping.Id, $"{vehiclwInformation.Ask.TypeVehicle.Replace(" ", "")}{photoInspection}.png", vehiclwInformation.Ask.TypeVehicle.Replace(" ", ""), photoInspections.Count + 1, initDasbordDelegate, getVechicleDelegate, car.GetNameLayout(photoInspection), Shipping.OnDeliveryToCarrier, Shipping.TotalPaymentToCarrier);
-                    await _navigation.PushAsync(fullPagePhotoDelyvery);
+                    await Navigation.PushAsync(fullPagePhotoDelyvery);
                     //await Navigation.PushAsync(new CameraPagePhoto1($"{vehiclwInformation.Ask.TypeVehicle.Replace(" ", "")}{photoInspection}.png", fullPagePhotoDelyvery, "PhotoIspection"));
-                    _navigation.RemovePage(_navigation.NavigationStack[1]);
+                    Navigation.RemovePage(Navigation.NavigationStack[1]);
                     return;
                 }
             }
@@ -453,7 +453,7 @@ namespace MDispatch.ViewModels.PageAppMV
                 else if (state == 3)
                 {
                     initDasbordDelegate.Invoke();
-                    await _navigation.PopToRootAsync(true);
+                    await Navigation.PopToRootAsync(true);
                 }
                 else if (state == 4)
                 {
@@ -501,7 +501,7 @@ namespace MDispatch.ViewModels.PageAppMV
                 {
                     await PopupNavigation.PopAsync();
                     initDasbordDelegate.Invoke();
-                    await _navigation.PopToRootAsync(true);
+                    await Navigation.PopToRootAsync(true);
                 }
                 else if (state == 4)
                 {

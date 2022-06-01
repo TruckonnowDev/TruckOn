@@ -48,7 +48,7 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
             string description = null;
             int state = 0;
-            await _navigation.PushAsync(new LoadPage());
+            await _popupNavigation.PushAsync(new LoadPage());
             await Task.Run(() => _utils.CheckNet());
             if (App.isNetwork)
             {
@@ -59,24 +59,24 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 });
                 if (state == 1)
                 {
-                    await _navigation.PopAsync();
+                    await _popupNavigation.PopAsync();
                     _globalHelperService.OutAccount();
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
-                    await _navigation.PopAsync();
+                    await _popupNavigation.PopAsync();
                     _helperView.CallError(description);
                 }
                 else if (state == 3)
                 {
-                    await _navigation.PopAsync();
-                    await _navigation.PopToRootAsync();
+                    await _popupNavigation.PopAsync();
+                    await Navigation.PopToRootAsync();
                     DependencyService.Get<IToast>().ShowMessage(LanguageHelper.AnswersSaved);
                 }
                 else if (state == 4)
                 {
-                    await _navigation.PopAsync();
+                    await _popupNavigation.PopAsync();
                     _helperView.CallError(LanguageHelper.TechnicalWorkServiceAlert);
                 }
             }
@@ -98,7 +98,7 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 if (state == 1)
                 {
                     _globalHelperService.OutAccount();
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await Navigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {

@@ -88,7 +88,7 @@ namespace MDispatch.ViewModels.TAbbMV
                 if(state == 1)
                 {
                     _globalHelperService.OutAccount();
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                     //HelpersView.CallError(description);
                 }
                 else if (state == 2)
@@ -105,7 +105,7 @@ namespace MDispatch.ViewModels.TAbbMV
                         UnTimeOfInspection = new UnTimeOfInspection(description);
                         if (!UnTimeOfInspection.ISMaybiInspection)
                         {
-                            Device.BeginInvokeOnMainThread(async () => await _navigation.PushAsync(new AskHint(this)));
+                            Device.BeginInvokeOnMainThread(async () => await _popupNavigation.PushAsync(new AskHint(this)));
                         }
                     });
                 }
@@ -139,7 +139,7 @@ namespace MDispatch.ViewModels.TAbbMV
                 if (state == 1)
                 {
                     _globalHelperService.OutAccount();
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
@@ -152,12 +152,12 @@ namespace MDispatch.ViewModels.TAbbMV
                     if (isInspection)
                     {
                         Init();
-                        await _navigation.PushAsync(new Alert(LanguageHelper.InspectionTodayAlert, null));
+                        await _popupNavigation.PushAsync(new Alert(LanguageHelper.InspectionTodayAlert, null));
                         //Add Commplet Alert
                     }
                     else
                     {
-                        await _navigation.PushAsync(new Vidget.View.CameraPage(managerDispatchMob, UnTimeOfInspection.IdDriver, indexPhoto, initDasbordDelegate, truckCar));
+                        await Navigation.PushAsync(new Vidget.View.CameraPage(managerDispatchMob, UnTimeOfInspection.IdDriver, indexPhoto, initDasbordDelegate, truckCar));
                     }
                 }
                 else if (state == 4)

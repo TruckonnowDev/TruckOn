@@ -86,7 +86,7 @@ namespace MDispatch.ViewModels
 
         private async void Avtorization()
         {
-            await _navigation.PushAsync(new LoadPage(), true);
+            await _popupNavigation.PushAsync(new LoadPage(), true);
             string token = null;
             string description = null;
             int state = 3;
@@ -94,15 +94,15 @@ namespace MDispatch.ViewModels
             {
                 state = managerDispatchMob.A_RWork("authorisation", Username, Password, ref description, ref token);
             });
-            await _navigation.PopAsync(true);
+            await _popupNavigation.PopAsync(true);
             if (state == 1)
             {
-                await _navigation.PushAsync(new Alert(description, null));
+                await _popupNavigation.PushAsync(new Alert(description, null));
                 FeedBack = "Not Network";
             }
             else if(state == 2)
             {
-                await _navigation.PushAsync(new Alert(description, null));
+                await _popupNavigation.PushAsync(new Alert(description, null));
                 FeedBack = description;
             }
             else if(state == 3)
@@ -125,7 +125,7 @@ namespace MDispatch.ViewModels
             }
             else if(state == 4)
             {
-                await _navigation.PushAsync(new Alert(description, null));
+                await _popupNavigation.PushAsync(new Alert(description, null));
                 FeedBack = "Technical work on the service";
             }
         }
@@ -133,7 +133,7 @@ namespace MDispatch.ViewModels
         
         public async void RequestPasswordChanges()
         {
-            await _navigation.PushAsync(new LoadPage(), true);
+            await Navigation.PushAsync(new LoadPage(), true);
             string token = null;
             string description = null;
             int state = 3;
@@ -141,26 +141,26 @@ namespace MDispatch.ViewModels
             {
                 state = managerDispatchMob.A_RWork("RequestPasswordChanges", Email, FullName, ref description, ref token);
             });
-            await _navigation.PopAsync(true);
+            await Navigation.PopAsync(true);
             if (state == 1)
             {
-                await _navigation.PushAsync(new Alert(description, null));
+                await _popupNavigation.PushAsync(new Alert(description, null));
                 FeedBack1 = "Not Network";
             }
             else if (state == 2)
             {
-                await _navigation.PushAsync(new Alert(description, null));
+                await _popupNavigation.PushAsync(new Alert(description, null));
                 FeedBack1 = description;
             }
             else if (state == 3)
             {
-                await _navigation.PopToRootAsync();
+                await _popupNavigation.PopAllAsync();
                 FeedBack1 = "";
-                await _navigation.PushAsync(new InfoRecovery(this));
+                await _popupNavigation.PushAsync(new InfoRecovery(this));
             }
             else if (state == 4)
             {
-                await _navigation.PushAsync(new Alert(description, null));
+                await _popupNavigation.PushAsync(new Alert(description, null));
                 FeedBack1 = "Technical work on the service";
             }
         }

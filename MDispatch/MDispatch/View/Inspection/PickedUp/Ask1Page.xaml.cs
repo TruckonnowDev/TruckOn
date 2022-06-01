@@ -207,7 +207,7 @@ namespace MDispatch.View.Inspection
             }
             else
             {
-                await Navigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
+                await ask1PageMV._popupNavigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
                 CheckAsk();
             }
         }

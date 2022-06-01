@@ -59,15 +59,15 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
         public async void SaveAsk()
         {
             bool isNavigationMany = false;
-            if (_navigation.NavigationStack.Count > 2)
+            if (Navigation.NavigationStack.Count > 2)
             {
-                await _navigation.PushAsync(new LoadPage());
+                await _popupNavigation.PushAsync(new LoadPage());
                 isNavigationMany = true;
             }
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
             string description = null;
             int state = 0;
-            await _navigation.PushAsync(new LiabilityAndInsurance(managerDispatchMob, VehiclwInformation.Id, IdShip, initDasbordDelegate, OnDeliveryToCarrier, TotalPaymentToCarrier, false), true);
+            await Navigation.PushAsync(new LiabilityAndInsurance(managerDispatchMob, VehiclwInformation.Id, IdShip, initDasbordDelegate, OnDeliveryToCarrier, TotalPaymentToCarrier, false), true);
             await Task.Run(() => _utils.CheckNet());
             if (App.isNetwork)
             {
@@ -79,18 +79,18 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 if (state == 1)
                 {
                     _globalHelperService.OutAccount();
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
                     if (isNavigationMany)
                     {
-                        _navigation.RemovePage(_navigation.NavigationStack[0]);
+                        await _popupNavigation.RemovePageAsync(_popupNavigation.PopupStack[0]);
                         isNavigationMany = false;
                     }
-                    if (_navigation.NavigationStack.Count > 1)
+                    if (Navigation.NavigationStack.Count > 1)
                     {
-                        await _navigation.PopAsync();
+                        await Navigation.PopAsync();
                     }
                     //await PopupNavigation.PushAsync(new Errror(description, Navigation));
                     _helperView.CallError(description);
@@ -99,22 +99,22 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 {
                     if (isNavigationMany)
                     {
-                        _navigation.RemovePage(_navigation.NavigationStack[0]);
+                        await _popupNavigation.RemovePageAsync(_popupNavigation.PopupStack[0]);
                         isNavigationMany = false;
                     }
-                    _navigation.RemovePage(_navigation.NavigationStack[1]);
+                    Navigation.RemovePage(Navigation.NavigationStack[1]);
                     DependencyService.Get<IToast>().ShowMessage(LanguageHelper.AnswersSaved);
                 }
                 else if (state == 4)
                 {
                     if (isNavigationMany)
                     {
-                        _navigation.RemovePage(_navigation.NavigationStack[0]);
+                        await _popupNavigation.RemovePageAsync(_popupNavigation.PopupStack[0]);
                         isNavigationMany = false;
                     }
-                    if (_navigation.NavigationStack.Count > 1)
+                    if (Navigation.NavigationStack.Count > 1)
                     {
-                        await _navigation.PopAsync();
+                        await Navigation.PopAsync();
                     }
                     //await PopupNavigation.PushAsync(new Errror("Technical work on the service", Navigation));
                     _helperView.CallError(LanguageHelper.TechnicalWorkServiceAlert);
@@ -122,9 +122,9 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
             }
             else
             {
-                if (_navigation.NavigationStack.Count > 1)
+                if (Navigation.NavigationStack.Count > 1)
                 {
-                    await _navigation.PopAsync();
+                    await Navigation.PopAsync();
                 }
             }
         }

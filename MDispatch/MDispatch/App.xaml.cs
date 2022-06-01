@@ -19,6 +19,8 @@ using MDispatch.Service.Utils;
 using MDispatch.View.A_R;
 using MDispatch.View.TabPage;
 using Plugin.Settings;
+using Rg.Plugins.Popup.Contracts;
+using Rg.Plugins.Popup.Services;
 using System;
 using System.Threading.Tasks;
 using Xamarin.Forms;

@@ -61,9 +61,9 @@ namespace MDispatch.ViewModels.InspectionMV.DelyveryMV
         public async void SaveAsk()
         {
             bool isNavigationMany = false;
-            if (_navigation.NavigationStack.Count > 2)
+            if (Navigation.NavigationStack.Count > 2)
             {
-                await _navigation.PushAsync(new LoadPage());
+                await _popupNavigation.PushAsync(new LoadPage());
                 isNavigationMany = true;
             }
             IVehicle car = GetTypeCar(VehiclwInformation.Ask.TypeVehicle.Replace(" ", ""));
@@ -82,18 +82,18 @@ namespace MDispatch.ViewModels.InspectionMV.DelyveryMV
                 if (state == 1)
                 {
                     _globalHelperService.OutAccount();
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
                     if (isNavigationMany)
                     {
-                        _navigation.RemovePage(_navigation.NavigationStack[0]);
+                        await _popupNavigation.RemovePageAsync(_popupNavigation.PopupStack[0]);
                         isNavigationMany = false;
                     }
-                    if (_navigation.NavigationStack.Count > 1)
+                    if (Navigation.NavigationStack.Count > 1)
                     {
-                        await _navigation.PopAsync();
+                        await Navigation.PopAsync();
                     }
                     //await PopupNavigation.PushAsync(new Errror(description, Navigation));
                     _helperView.CallError(description);
@@ -102,12 +102,12 @@ namespace MDispatch.ViewModels.InspectionMV.DelyveryMV
                 {
                     if (isNavigationMany)
                     {
-                        _navigation.RemovePage(_navigation.NavigationStack[0]);
+                        await _popupNavigation.RemovePageAsync(_popupNavigation.PopupStack[0]);
                         isNavigationMany = false;
                     }
-                    if (_navigation.NavigationStack.Count > 1)
+                    if (Navigation.NavigationStack.Count > 1)
                     {
-                        _navigation.RemovePage(_navigation.NavigationStack[1]);
+                        Navigation.RemovePage(Navigation.NavigationStack[1]);
                     }
                     DependencyService.Get<IToast>().ShowMessage(LanguageHelper.AnswersSaved);
                 }
@@ -115,12 +115,12 @@ namespace MDispatch.ViewModels.InspectionMV.DelyveryMV
                 {
                     if (isNavigationMany)
                     {
-                        _navigation.RemovePage(_navigation.NavigationStack[0]);
+                        await _popupNavigation.RemovePageAsync(_popupNavigation.PopupStack[0]);
                         isNavigationMany = false;
                     }
-                    if (_navigation.NavigationStack.Count > 1)
+                    if (Navigation.NavigationStack.Count > 1)
                     {
-                        await _navigation.PopAsync();
+                        await Navigation.PopAsync();
                     }
                     //await PopupNavigation.PushAsync(new Errror("Technical work on the service", Navigation));
                     _helperView.CallError(LanguageHelper.TechnicalWorkServiceAlert);
@@ -128,9 +128,9 @@ namespace MDispatch.ViewModels.InspectionMV.DelyveryMV
             }
             else
             {
-                if (_navigation.NavigationStack.Count > 1)
+                if (Navigation.NavigationStack.Count > 1)
                 {
-                    await _navigation.PopAsync();
+                    await Navigation.PopAsync();
                 }
             }
         }
@@ -141,13 +141,13 @@ namespace MDispatch.ViewModels.InspectionMV.DelyveryMV
             int indexCurrentVechecle = vehiclwInformation1s.FindIndex(v => v == VehiclwInformation);
             if (vehiclwInformation1s.Count - 1 == indexCurrentVechecle)
             {
-                await _navigation.PushAsync(new Alert(LanguageHelper.PassTheDeviceAlert, null));
-                await _navigation.PushAsync(new ClientStart(managerDispatchMob, IdShip, initDasbordDelegate, OnDeliveryToCarrier, TotalPaymentToCarrier, vehiclwInformation1s[0], getShiping, getVechicleDelegate, false));
+                await _popupNavigation.PushAsync(new Alert(LanguageHelper.PassTheDeviceAlert, null));
+                await Navigation.PushAsync(new ClientStart(managerDispatchMob, IdShip, initDasbordDelegate, OnDeliveryToCarrier, TotalPaymentToCarrier, vehiclwInformation1s[0], getShiping, getVechicleDelegate, false));
             }
             else
             {
-                await _navigation.PushAsync(new HintPageVechicle(LanguageHelper.ContinuingInspectionDelivery, vehiclwInformation1s[indexCurrentVechecle + 1]));
-                await _navigation.PushAsync(new AskPageDelyvery(managerDispatchMob, vehiclwInformation1s[indexCurrentVechecle + 1], IdShip, initDasbordDelegate, getVechicleDelegate, OnDeliveryToCarrier, TotalPaymentToCarrier, getShiping), true);
+                await _popupNavigation.PushAsync(new HintPageVechicle(LanguageHelper.ContinuingInspectionDelivery, vehiclwInformation1s[indexCurrentVechecle + 1]));
+                await Navigation.PushAsync(new AskPageDelyvery(managerDispatchMob, vehiclwInformation1s[indexCurrentVechecle + 1], IdShip, initDasbordDelegate, getVechicleDelegate, OnDeliveryToCarrier, TotalPaymentToCarrier, getShiping), true);
             }
         }
 

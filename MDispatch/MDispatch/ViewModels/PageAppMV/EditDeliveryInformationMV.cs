@@ -41,7 +41,7 @@ namespace MDispatch.ViewModels.PageAppMV
 
         private async void SaveDelivery()
         {
-            await _navigation.PushAsync(new LoadPage(), true);
+            await _popupNavigation.PushAsync(new LoadPage(), true);
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
             string description = null;
             int state = 0;
@@ -53,11 +53,11 @@ namespace MDispatch.ViewModels.PageAppMV
                     state = managerDispatchMob.OrderOneWork("Save", Shipping.Id, token, Shipping.idOrder, Shipping.NameD, Shipping.ContactNameD, Shipping.AddresD,
                     Shipping.CityD, Shipping.StateD, Shipping.ZipD, Shipping.PhoneD, Shipping.EmailD, "Delivery", ref description);
                 });
-                await _navigation.PopAsync(true);
+                await _popupNavigation.PopAsync(true);
                 if (state == 1)
                 {
                     _globalHelperService.OutAccount();
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 else if (state == 2)
                 {
@@ -76,7 +76,7 @@ namespace MDispatch.ViewModels.PageAppMV
             }
             else
             {
-                await _navigation.PopAsync(true);
+                await _popupNavigation.PopAsync(true);
             }
         }
     }

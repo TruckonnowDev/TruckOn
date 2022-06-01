@@ -56,7 +56,7 @@ namespace MDispatch.View.TabPage.Tab
             {
                 idOrder = stackLayout.Parent.Parent.FindByName<Label>("idOrder").Text;
             }
-            await delyveryMV._navigation.PushAsync(new InfoOrder(delyveryMV.managerDispatchMob, delyveryMV.initDasbordDelegate,
+            await delyveryMV.Navigation.PushAsync(new InfoOrder(delyveryMV.managerDispatchMob, delyveryMV.initDasbordDelegate,
                 delyveryMV.Shippings.Find(s => s.Id == idOrder).CurrentStatus, delyveryMV.Shippings.Find(s => s.Id == idOrder).Id));
         }
 

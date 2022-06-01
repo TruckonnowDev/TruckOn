@@ -101,7 +101,7 @@ namespace MDispatch.View.Inspection.PickedUp
             }
             else
             {
-                await Navigation.PushAsync(new Alert(LanguageHelper.WithoutTranslationAskErrorAlert, null));
+                await askForUserMV._popupNavigation.PushAsync(new Alert(LanguageHelper.WithoutTranslationAskErrorAlert, null));
                 CheckAsk();
             }
         }

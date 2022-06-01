@@ -30,7 +30,7 @@ namespace MDispatch.View.PageApp
 
         public async Task InitPhoto(VehiclwInformation vehiclwInformation)
         {
-            await Navigation.PushAsync(new LoadPage());
+            await PopupNavigation.Instance.PushAsync(new LoadPage());
             AddScan(vehiclwInformation);
             AddBlocItemPhoto(vehiclwInformation);
             AddBlocSeatBelts(vehiclwInformation);
@@ -38,7 +38,7 @@ namespace MDispatch.View.PageApp
             AddBlocInspectionPhoto(vehiclwInformation);
             AddBlocInspectionPhoto1(vehiclwInformation);
             AddBlocPhotoClient(vehiclwInformation);
-            await Navigation.PopAsync();
+            await PopupNavigation.Instance.PopAsync();
         }
 
         private void AddScan(VehiclwInformation vehiclwInformation)

@@ -46,7 +46,7 @@ namespace MDispatch.View.TabPage.Tab
         {
             if (!activeMV.UnTimeOfInspection.ISMaybiInspection)
             {
-                await Navigation.PushAsync(new AskHint(activeMV));
+                await PopupNavigation.Instance.PushAsync(new AskHint(activeMV));
             }
             else
             {
@@ -66,7 +66,7 @@ namespace MDispatch.View.TabPage.Tab
                 {
                     idOrder = stackLayout.Parent.Parent.FindByName<Label>("idOrder").Text;
                 }
-                await activeMV._navigation.PushAsync(new InfoOrder(activeMV.managerDispatchMob, activeMV.initDasbordDelegate,
+                await activeMV.Navigation.PushAsync(new InfoOrder(activeMV.managerDispatchMob, activeMV.initDasbordDelegate,
                     activeMV.Shippings.Find(s => s.Id == idOrder).CurrentStatus, activeMV.Shippings.Find(s => s.Id == idOrder).Id));
             }
         }

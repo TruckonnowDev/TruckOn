@@ -53,7 +53,7 @@ namespace MDispatch.View.A_R
 
         private async void TapGestureRecognizer_Tapped(object sender, System.EventArgs e)
         {
-            await Navigation.PushAsync(new ForgotPassword(avtorizationMV));
+            await avtorizationMV._popupNavigation.PushAsync(new ForgotPassword(avtorizationMV));
         }
 
         void TapGestureRecognizer_Tapped_1(System.Object sender, System.EventArgs e)

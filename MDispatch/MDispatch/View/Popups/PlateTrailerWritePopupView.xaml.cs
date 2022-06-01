@@ -25,11 +25,5 @@ namespace MDispatch.View.Popups
         {
             return false;
         }
-
-        [System.Obsolete]
-        private async void Button_Clicked_1(object sender, System.EventArgs e)
-        {
-            
-        }
     }
 }

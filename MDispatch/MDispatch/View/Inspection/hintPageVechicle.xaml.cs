@@ -22,7 +22,7 @@ namespace MDispatch.View.Inspection
 
         private async void Button_Clicked(object sender, System.EventArgs e)
         {
-            await Navigation.PopAsync();
+            await PopupNavigation.Instance.PopAsync();
         }
     }
 }

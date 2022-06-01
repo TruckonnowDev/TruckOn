@@ -30,11 +30,10 @@ namespace MDispatch.Vidget.View
 
         private async void TapGestureRecognizer_Tapped(object sender, System.EventArgs e)
         {
-            await Navigation.PopToRootAsync();
+            await PopupNavigation.Instance.PopAllAsync();
             fullPhotoTruckVM.BackToRootPage();
         }
 
-        [System.Obsolete]
         private void Button_Clicked(object sender, System.EventArgs e)
         {
             fullPhotoTruckVM.SetPlate("Truck");
@@ -42,7 +41,7 @@ namespace MDispatch.Vidget.View
 
         private async void Button_Clicked_1(object sender, System.EventArgs e)
         {
-            await Navigation.PopToRootAsync();
+            await PopupNavigation.Instance.PopAllAsync();
             await fullPhotoTruckVM.Navigation.PushAsync(new ScanCamera(fullPhotoTruckVM, "truck"));
         }
     }

@@ -75,7 +75,7 @@ namespace MDispatch.ViewModels.TAbbMV
                 if (state == 1)
                 {
                     _globalHelperService.OutAccount();
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 else if (state == 2)
                 {

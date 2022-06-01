@@ -82,7 +82,7 @@ namespace MDispatch.View.Inspection.PickedUp
             }
             else
             {
-                await Navigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
+                await liabilityAndInsuranceMV._popupNavigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
                 CheckAsk();
             }
         }
@@ -436,8 +436,8 @@ namespace MDispatch.View.Inspection.PickedUp
                         }
                         else
                         {
-                            await Navigation.PopToRootAsync(true);
-                            await Navigation.PushAsync(new TempPageHint4());
+                            await PopupNavigation.Instance.PopAllAsync(true);
+                            await PopupNavigation.Instance.PushAsync(new TempPageHint4());
                             if (liabilityAndInsuranceMV.What_form_of_payment_are_you_using_to_pay_for_transportation == "Cash")
                             {
                                 await Navigation.PushAsync(new VideoCameraPage(liabilityAndInsuranceMV, ""));
@@ -456,7 +456,7 @@ namespace MDispatch.View.Inspection.PickedUp
                     {
                         ((Entry)sender).Text = "";
                         blockAskPay.IsVisible = false;
-                        await Navigation.PushAsync(new Alert(LanguageHelper.WithoutTranslationAskErrorAlert, null));
+                        await liabilityAndInsuranceMV._popupNavigation.PushAsync(new Alert(LanguageHelper.WithoutTranslationAskErrorAlert, null));
                         CheckAsk();
                     }
                 }
@@ -489,12 +489,12 @@ namespace MDispatch.View.Inspection.PickedUp
                 btnSave.IsVisible = false;
                 bloclThank.IsVisible = true;
                 blockPsw.IsVisible = true;
-                await Navigation.PushAsync(new CopyLibaryAndInsurance(liabilityAndInsuranceMV));
+                await PopupNavigation.Instance.PushAsync(new CopyLibaryAndInsurance(liabilityAndInsuranceMV));
 
             }
             else
             {
-                await Navigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
+                await liabilityAndInsuranceMV._popupNavigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
                 CheckAsk();
             }
 

@@ -38,7 +38,7 @@ namespace MDispatch.ViewModels.PageAppMV.VehicleDetals
 
         private async void InitVehiclwInformation(int idVech)
         {
-            await _navigation.PushAsync(new LoadPage(), true);
+            await _popupNavigation.PushAsync(new LoadPage(), true);
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
             string description = null;
             int state = 0;
@@ -50,16 +50,16 @@ namespace MDispatch.ViewModels.PageAppMV.VehicleDetals
                 {
                     state = managerDispatchMob.OrderWork("GetVechicleInffo", idVech, ref vehiclwInformation1, token, ref description);
                 });
-                await _navigation.PopAsync(true);
+                await _popupNavigation.PopAsync(true);
                 if (state == 1)
                 {
                     _globalHelperService.OutAccount();
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
-                    await _navigation.PopAsync(true);
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await Navigation.PopAsync(true);
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 else if (state == 3)
                 {
@@ -68,14 +68,14 @@ namespace MDispatch.ViewModels.PageAppMV.VehicleDetals
                 }
                 else if (state == 4)
                 {
-                    await _navigation.PopAsync(true);
-                    await _navigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, null));
+                    await Navigation.PopAsync(true);
+                    await _popupNavigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, null));
                 }
             }
             else
             {
-                await _navigation.PopAsync(true);
-                await _navigation.PopAsync(true);
+                await Navigation.PopAsync(true);
+                await _popupNavigation.PopAsync(true);
             }
         }
     }

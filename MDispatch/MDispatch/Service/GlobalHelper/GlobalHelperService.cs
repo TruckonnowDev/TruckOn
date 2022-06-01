@@ -21,15 +21,14 @@ namespace MDispatch.Service.GlobalHelper
             _managerDispatchMobService = DependencyService.Get<IManagerDispatchMobService>();
         }
 
-        [System.Obsolete]
         public async void OutAccount()
         {
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
             string description = null;
             int state = 0;
-            if (PopupNavigation.PopupStack.Count != 0)
+            if (PopupNavigation.Instance.PopupStack.Count != 0)
             {
-                await PopupNavigation.PopAllAsync();
+                await PopupNavigation.Instance.PopAllAsync();
             }
             await Task.Run(() => _utils.CheckNet());
             if (App.isNetwork)
@@ -40,7 +39,7 @@ namespace MDispatch.Service.GlobalHelper
                 });
                 if (state == 2)
                 {
-                    await PopupNavigation.PushAsync(new Alert("Error", null));
+                    await PopupNavigation.Instance.PushAsync(new Alert("Error", null));
                 }
                 else if (state == 3)
                 {
@@ -50,7 +49,7 @@ namespace MDispatch.Service.GlobalHelper
                 }
                 else if (state == 4)
                 {
-                    await PopupNavigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, null));
+                    await PopupNavigation.Instance.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, null));
                 }
             }
         }

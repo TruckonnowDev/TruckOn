@@ -229,7 +229,7 @@ namespace MDispatch.View.AskPhoto
             }
             else
             {
-                await Navigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
+                await askPageMV._popupNavigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
                 CheckAsk();
             }
         }

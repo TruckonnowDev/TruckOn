@@ -30,7 +30,7 @@ namespace MDispatch.View.AskPhoto.DialogPage
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            await Navigation.PopAsync(true);
+            await PopupNavigation.Instance.PopAsync(true);
         }
 
         private async void Button_Clicked_1(object sender, EventArgs e)
@@ -38,7 +38,7 @@ namespace MDispatch.View.AskPhoto.DialogPage
             if(selectedIndexDropDwn != -1)
             {
                 infoOrderMV.ToStartInspection();
-                await Navigation.PopAsync(true);
+                await PopupNavigation.Instance.PopAsync(true);
             }
             else
             {

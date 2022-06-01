@@ -182,7 +182,6 @@ namespace MDispatch.Vidget.VM
             }
         }
 
-        [System.Obsolete]
         private async void UpdateInspectionDriver()
         {
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
@@ -197,11 +196,11 @@ namespace MDispatch.Vidget.VM
                 });
                 if (state == 1)
                 {
-                    await Navigation.PushAsync(new Alert(LanguageHelper.NotNetworkAlert, null));
+                    await PopupNavigation.Instance.PushAsync(new Alert(LanguageHelper.NotNetworkAlert, null));
                 }
                 else if (state == 2)
                 {
-                    await PopupNavigation.PushAsync(new Alert(description, null));
+                    await PopupNavigation.Instance.PushAsync(new Alert(description, null));
                 }
                 else if (state == 3)
                 {

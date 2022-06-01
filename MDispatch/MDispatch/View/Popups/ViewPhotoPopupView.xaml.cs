@@ -32,7 +32,7 @@ namespace MDispatch.View.Popups
         private async void TapGestureRecognizer_Tapped(System.Object sender, System.EventArgs e)
         {
             await _opacityTouchViewService.TouchFeedBack((Xamarin.Forms.View)sender);
-            await Navigation.PopAsync();
+            await PopupNavigation.Instance.PopAsync();
         }
     }
 }

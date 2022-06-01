@@ -60,15 +60,15 @@ namespace MDispatch.ViewModels.InspectionMV
         public async void SaveAsk()
         {
             bool isNavigationMany = false;
-            if (_navigation.NavigationStack.Count > 2)
+            if (Navigation.NavigationStack.Count > 2)
             {
-                await _navigation.PushAsync(new LoadPage());
+                await _popupNavigation.PushAsync(new LoadPage());
                 isNavigationMany = true;
             }
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
             string description = null;
             int state = 0;
-            await _navigation.PushAsync(new CameraStrapAndTrack(managerDispatchMob, VehiclwInformation, IdShip, initDasbordDelegate, getVechicleDelegate, OnDeliveryToCarrier, TotalPaymentToCarrier, TypeCar));
+            await Navigation.PushAsync(new CameraStrapAndTrack(managerDispatchMob, VehiclwInformation, IdShip, initDasbordDelegate, getVechicleDelegate, OnDeliveryToCarrier, TotalPaymentToCarrier, TypeCar));
             
             await Task.Run(() => _utils.CheckNet());
             if (App.isNetwork)
@@ -81,18 +81,18 @@ namespace MDispatch.ViewModels.InspectionMV
                 if (state == 1)
                 {
                     _globalHelperService.OutAccount();
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
                     if (isNavigationMany)
                     {
-                        _navigation.RemovePage(_navigation.NavigationStack[0]);
+                        await _popupNavigation.RemovePageAsync(_popupNavigation.PopupStack[0]);
                         isNavigationMany = false;
                     }
-                    if (_navigation.NavigationStack.Count > 1)
+                    if (Navigation.NavigationStack.Count > 1)
                     {
-                        await _navigation.PopAsync();
+                        await Navigation.PopAsync();
                     }
                     _helperView.CallError(description);
                 }
@@ -100,31 +100,31 @@ namespace MDispatch.ViewModels.InspectionMV
                 {
                     if (isNavigationMany)
                     {
-                        _navigation.RemovePage(_navigation.NavigationStack[0]);
+                        await _popupNavigation.RemovePageAsync(_popupNavigation.PopupStack[0]);
                         isNavigationMany = false;
                     }
                     DependencyService.Get<IToast>().ShowMessage(LanguageHelper.AnswersSaved);
-                    _navigation.RemovePage(_navigation.NavigationStack[1]);
+                    Navigation.RemovePage(Navigation.NavigationStack[1]);
                 }
                 else if (state == 4)
                 {
                     if (isNavigationMany)
                     {
-                        _navigation.RemovePage(_navigation.NavigationStack[0]);
+                        await _popupNavigation.RemovePageAsync(_popupNavigation.PopupStack[0]);
                         isNavigationMany = false;
                     }
-                    if (_navigation.NavigationStack.Count > 1)
+                    if (Navigation.NavigationStack.Count > 1)
                     {
-                        await _navigation.PopAsync();
+                        await Navigation.PopAsync();
                     }
                     _helperView.CallError(LanguageHelper.TechnicalWorkServiceAlert);
                 }
             }
             else
             {
-                if (_navigation.NavigationStack.Count > 1)
+                if (Navigation.NavigationStack.Count > 1)
                 {
-                    await _navigation.PopAsync();
+                    await Navigation.PopAsync();
                 }
             }
         }

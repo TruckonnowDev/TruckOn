@@ -86,7 +86,7 @@ namespace MDispatch.ViewModels.InspectionMV.DelyveryMV
             }
             else
             {
-                await _navigation.PushAsync(new CameraPagePhoto1($"{Car.TypeIndex.Replace(" ", "")}{InderxPhotoInspektion}.png", fullPagePhoto, "PhotoIspection"));
+                await Navigation.PushAsync(new CameraPagePhoto1($"{Car.TypeIndex.Replace(" ", "")}{InderxPhotoInspektion}.png", fullPagePhoto, "PhotoIspection"));
             }
         }
 
@@ -283,18 +283,18 @@ namespace MDispatch.ViewModels.InspectionMV.DelyveryMV
             {
                 Car.OrintableScreen(InderxPhotoInspektion);
                 FullPagePhotoDelyvery fullPagePhotoDelyvery = new FullPagePhotoDelyvery(managerDispatchMob, VehiclwInformation, IdShip, $"{Car.TypeIndex.Replace(" ", "")}{InderxPhotoInspektion + 1}.png", Car.TypeIndex.Replace(" ", ""), InderxPhotoInspektion + 1, initDasbordDelegate, getVechicleDelegate, Car.GetNameLayout(InderxPhotoInspektion + 1), OnDeliveryToCarrier, TotalPaymentToCarrier);
-                await _navigation.PushAsync(fullPagePhotoDelyvery);
+                await Navigation.PushAsync(fullPagePhotoDelyvery);
             }
             await Task.Run(() => _utils.CheckNet(true, true));
             if (App.isNetwork)
             {
                 if(isNavigWthDamag)
                 {
-                    _navigation.RemovePage(_navigation.NavigationStack[2]);
+                    Navigation.RemovePage(Navigation.NavigationStack[2]);
                 }
-                if (_navigation.NavigationStack.Count > 1)
+                if (Navigation.NavigationStack.Count > 1)
                 {
-                    _navigation.RemovePage(_navigation.NavigationStack[1]);
+                    Navigation.RemovePage(Navigation.NavigationStack[1]);
                 }
                 await Task.Run(() =>
                 {
@@ -333,11 +333,11 @@ namespace MDispatch.ViewModels.InspectionMV.DelyveryMV
                 if (state == 1)
                 {
                     _globalHelperService.OutAccount();
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 else if (state == 3)
                 {
@@ -345,13 +345,13 @@ namespace MDispatch.ViewModels.InspectionMV.DelyveryMV
                 }
                 else if (state == 4)
                 {
-                    await _navigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, null));
+                    await _popupNavigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, null));
                 }
             }
             else
             {
                 _helperView.CallError(LanguageHelper.NotNetworkAlert);
-                await _navigation.PushAsync(new Alert(LanguageHelper.NotNetworkAlert, null));
+                await _popupNavigation.PushAsync(new Alert(LanguageHelper.NotNetworkAlert, null));
                 BackToRootPage();
             }
         }
@@ -365,14 +365,14 @@ namespace MDispatch.ViewModels.InspectionMV.DelyveryMV
             {
                 DependencyService.Get<IOrientationHandler>().ForceSensor();
                 Continue();
-                await _navigation.PopToRootAsync();
+                await Navigation.PopToRootAsync();
             }
             else
             {
-                await _navigation.PushAsync(new HintPageVechicle(LanguageHelper.ContinuingInspectionDelivery, vehiclwInformation1s[indexCurrentVechecle + 1]));
+                await _popupNavigation.PushAsync(new HintPageVechicle(LanguageHelper.ContinuingInspectionDelivery, vehiclwInformation1s[indexCurrentVechecle + 1]));
                 FullPagePhotoDelyvery fullPagePhotoDelyvery = new FullPagePhotoDelyvery(managerDispatchMob, VehiclwInformation, IdShip, $"{Car.TypeIndex.Replace(" ", "")}{1}.png", Car.TypeIndex.Replace(" ", ""), 1, initDasbordDelegate, getVechicleDelegate, Car.GetNameLayout(1), OnDeliveryToCarrier, TotalPaymentToCarrier);
-                await _navigation.PushAsync(fullPagePhotoDelyvery);
-                await _navigation.PushAsync(new CameraPagePhoto1($"{Car.TypeIndex.Replace(" ", "")}{1}.png", fullPagePhotoDelyvery, "PhotoIspection"));
+                await Navigation.PushAsync(fullPagePhotoDelyvery);
+                await Navigation.PushAsync(new CameraPagePhoto1($"{Car.TypeIndex.Replace(" ", "")}{1}.png", fullPagePhotoDelyvery, "PhotoIspection"));
             }
         }
 
@@ -419,7 +419,7 @@ namespace MDispatch.ViewModels.InspectionMV.DelyveryMV
         public async void BackToRootPage()
         {
             DependencyService.Get<IOrientationHandler>().ForceSensor();
-            await _navigation.PopToRootAsync();
+            await Navigation.PopToRootAsync();
         }
 
 
@@ -458,10 +458,10 @@ namespace MDispatch.ViewModels.InspectionMV.DelyveryMV
         private async Task NextInspectionPhotoPage()
         {
             FullPagePhotoDelyvery fullPagePhotoDelyvery = new FullPagePhotoDelyvery(managerDispatchMob, VehiclwInformation, IdShip, $"{Car.TypeIndex.Replace(" ", "")}{InderxPhotoInspektion + 1}.png", Car.TypeIndex.Replace(" ", ""), InderxPhotoInspektion + 1, initDasbordDelegate, getVechicleDelegate, Car.GetNameLayout(InderxPhotoInspektion + 1), OnDeliveryToCarrier, TotalPaymentToCarrier);
-            await _navigation.PushAsync(fullPagePhotoDelyvery);
-            if (_navigation.NavigationStack.Count > 1)
+            await Navigation.PushAsync(fullPagePhotoDelyvery);
+            if (Navigation.NavigationStack.Count > 1)
             {
-                _navigation.RemovePage(_navigation.NavigationStack[1]);
+                Navigation.RemovePage(Navigation.NavigationStack[1]);
             }
         }
 
@@ -501,9 +501,9 @@ namespace MDispatch.ViewModels.InspectionMV.DelyveryMV
 
         public async Task ClosePageToFirstPageInspction()
         {
-            for (int i = 0; _navigation.NavigationStack.Count >= 3; i++)
+            for (int i = 0; Navigation.NavigationStack.Count >= 3; i++)
             {
-                await _navigation.PopAsync();
+                await Navigation.PopAsync();
             }
         }
 

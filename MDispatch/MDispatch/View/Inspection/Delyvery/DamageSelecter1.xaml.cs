@@ -91,7 +91,7 @@ namespace MDispatch.View.Inspection.PickedUp
             {
                 pageAddDamage.stateSelect = 2;
             }
-            await Navigation.PopAsync(true);
+            await PopupNavigation.Instance.PopAsync(true);
         }
     }
 }

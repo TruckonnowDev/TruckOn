@@ -26,15 +26,12 @@ namespace MDispatch.ViewModels.Popups
             set => SetProperty(ref _plateTrailer, value);
         }
 
-        public ICommand CancelCommand => new AsyncCommand(OnCancelCommand);
         public ICommand SendCommand => new AsyncCommand(OnSendCommand);
         public ICommand ScanCommand => new AsyncCommand(OnScanCommand);
 
-        
-
-        private async Task OnCancelCommand()
+        internal override async Task OnGoBackPopupCommand()
         {
-            await _navigation.PopToRootAsync();
+            await base.OnGoBackPopupCommand();
             _fullPhotoTruckVM.BackToRootPage();
         }
 
@@ -45,7 +42,7 @@ namespace MDispatch.ViewModels.Popups
 
         private async Task OnScanCommand()
         {
-            await _navigation.PopToRootAsync();
+            await _popupNavigation.PopAsync();
             await _fullPhotoTruckVM.Navigation.PushAsync(new ScanCamera(_fullPhotoTruckVM, "trailer"));
         }
     }

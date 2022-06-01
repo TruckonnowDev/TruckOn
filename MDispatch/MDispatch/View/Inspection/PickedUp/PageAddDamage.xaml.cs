@@ -51,9 +51,9 @@ namespace MDispatch.View.Inspection.PickedUp
         {
             RemoveSelectedDmg();
             stateSelect = 1;
-            await Navigation.PushAsync(new DamageSelecter(FullPagePhotoMV, this), true);
+            await PopupNavigation.Instance.PushAsync(new DamageSelecter(FullPagePhotoMV, this), true);
             await WaiteSelectDamage();
-            await Navigation.PopAsync(true);
+            await PopupNavigation.Instance.PopAsync(true);
             if (stateSelect == 0)
             {
                 stateSelect = 1;

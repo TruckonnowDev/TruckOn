@@ -86,7 +86,7 @@ namespace MDispatch.View.PageApp.Settings
 
         private async void TapGestureRecognizer_Tapped_4(System.Object sender, System.EventArgs e)
         {
-            await Navigation.PushAsync(new SelectLanguage(SetLan));
+            await PopupNavigation.Instance.PushAsync(new SelectLanguage(SetLan));
         }
 
         private void SetLan(int lanIndex)

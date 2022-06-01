@@ -116,7 +116,7 @@ namespace MDispatch.ViewModels.PageAppMV.Settings
 
         private async void Init()
         {
-            await _navigation.PushAsync(new LoadPage());
+            await _popupNavigation.PushAsync(new LoadPage());
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
             string idDriver = CrossSettings.Current.GetValueOrDefault("IdDriver", "");
             string description = null;
@@ -131,15 +131,15 @@ namespace MDispatch.ViewModels.PageAppMV.Settings
                 {
                     state = managerDispatchMob.GetLastInspaction(token, idDriver, ref latsInspection, ref plateTruck, ref plateTrailer, ref description);
                 });
-                await _navigation.PopAsync();
+                await _popupNavigation.PopAsync();
                 if (state == 1)
                 {
                     _globalHelperService.OutAccount();
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 else if (state == 2)
                 {
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                     //HelpersView.CallError(description);
                 }
                 else if (state == 3)
@@ -150,19 +150,19 @@ namespace MDispatch.ViewModels.PageAppMV.Settings
                 }
                 else if (state == 4)
                 {
-                    await _navigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, null));
+                    await _popupNavigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, null));
                     //HelpersView.CallError("Technical work on the service");
                 }
             }
             else
             {
-                await _navigation.PopAsync();
+                await _popupNavigation.PopAsync();
             }
         }
 
         public async void OutAccount()
         {
-            await _navigation.PushAsync(new LoadPage());
+            await _popupNavigation.PushAsync(new LoadPage());
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
             string description = null;
             bool isInspection = false;
@@ -175,15 +175,15 @@ namespace MDispatch.ViewModels.PageAppMV.Settings
                     state = managerDispatchMob.A_RWork("Clear", null, null, ref description, ref token);
                 });
 
-                await _navigation.PopAsync();
+                await _popupNavigation.PopAsync();
                 if (state == 1)
                 {
                     _globalHelperService.OutAccount();
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
-                    await _navigation.PushAsync(new Alert("Error", null));
+                    await _popupNavigation.PushAsync(new Alert("Error", null));
                 }
                 else if (state == 3)
                 {
@@ -194,14 +194,14 @@ namespace MDispatch.ViewModels.PageAppMV.Settings
                 }
                 else if (state == 4)
                 {
-                    await _navigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, null));
+                    await _popupNavigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, null));
                 }
             }
         }
 
         internal async void DetectText(byte[] result, string type)
         {
-            await _navigation.PushAsync(new LoadPage());
+            await _popupNavigation.PushAsync(new LoadPage());
             string idDriver = CrossSettings.Current.GetValueOrDefault("IdDriver", "");
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
             int state = 0;
@@ -213,13 +213,13 @@ namespace MDispatch.ViewModels.PageAppMV.Settings
 
                 if (state == 1)
                 {
-                    await _navigation.PopAsync();
+                    await _popupNavigation.PopAsync();
                     _globalHelperService.OutAccount();
-                    await _navigation.PushAsync(new Alert(LanguageHelper.NoAvtorisationAlert, null));
+                    await _popupNavigation.PushAsync(new Alert(LanguageHelper.NoAvtorisationAlert, null));
                 }
                 else if (state == 3)
                 {
-                    await _navigation.PopAsync();
+                    await _popupNavigation.PopAsync();
                     if (type == "truck")
                     {
                         PlateTruck1 = plate;
@@ -231,7 +231,7 @@ namespace MDispatch.ViewModels.PageAppMV.Settings
                 }
                 else if (state == 4)
                 {
-                    await _navigation.PopAsync();
+                    await _popupNavigation.PopAsync();
                     //await PopupNavigation.PushAsync(new Errror("Technical work on the service scan", null));
                     _helperView.CallError(LanguageHelper.TechnicalWorkServiceAlert);
                 }

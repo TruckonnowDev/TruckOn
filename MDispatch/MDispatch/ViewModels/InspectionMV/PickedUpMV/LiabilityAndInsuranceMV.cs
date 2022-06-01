@@ -105,13 +105,13 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 if (state == 1)
                 {
                     _globalHelperService.OutAccount();
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
-                    if (_navigation.NavigationStack.Count > 1)
+                    if (Navigation.NavigationStack.Count > 1)
                     {
-                        await _navigation.PopAsync();
+                        await Navigation.PopAsync();
                     }
                     //await PopupNavigation.PushAsync(new Errror(description, null));
                     _helperView.CallError(description);
@@ -122,9 +122,9 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 }
                 else if (state == 4)
                 {
-                    if (_navigation.NavigationStack.Count > 1)
+                    if (Navigation.NavigationStack.Count > 1)
                     {
-                        await _navigation.PopAsync();
+                        await Navigation.PopAsync();
                     }
                     //await PopupNavigation.PushAsync(new Errror("Technical work on the service", null));
                     _helperView.CallError(LanguageHelper.TechnicalWorkServiceAlert);
@@ -137,7 +137,7 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
         public async void SaveSigAndMethodPay()
         {
             Isloader = true;
-            await _navigation.PushAsync(new LoadPage());
+            await _popupNavigation.PushAsync(new LoadPage());
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
             string description = null;
             int state = 0;
@@ -151,39 +151,39 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                     state = managerDispatchMob.SaveMethodPay(token, IdShip, What_form_of_payment_are_you_using_to_pay_for_transportation, CountPay, ref description);
                     initDasbordDelegate.Invoke();
                 });
-                await _navigation.PopAsync();
+                await _popupNavigation.PopAsync();
                 if (state == 1)
                 {
                     _globalHelperService.OutAccount();
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
-                    await _navigation.PushAsync(new Alert(description, _navigation));
+                    await _popupNavigation.PushAsync(new Alert(description, Navigation));
                 }
                 else if (state == 3)
                 {
                     if (What_form_of_payment_are_you_using_to_pay_for_transportation == "Cash")
                     {
-                        await _navigation.PushAsync(new VideoCameraPage(this, ""));
+                        await Navigation.PushAsync(new VideoCameraPage(this, ""));
                     }
                     else if (What_form_of_payment_are_you_using_to_pay_for_transportation == "Check")
                     {
-                        await _navigation.PushAsync(new CameraPaymmant(this, "", "CheckPaymment.png"));
+                        await Navigation.PushAsync(new CameraPaymmant(this, "", "CheckPaymment.png"));
                     }
                     else
                     {
-                        await _navigation.PushAsync(new Ask2Page(this.managerDispatchMob, this.IdVech, this.IdShip, this.initDasbordDelegate));
+                        await Navigation.PushAsync(new Ask2Page(this.managerDispatchMob, this.IdVech, this.IdShip, this.initDasbordDelegate));
                     }
-                    if (_navigation.NavigationStack.Count > 2)
+                    if (Navigation.NavigationStack.Count > 2)
                     {
-                        _navigation.RemovePage(_navigation.NavigationStack[1]);
+                        Navigation.RemovePage(Navigation.NavigationStack[1]);
                     }
                     DependencyService.Get<IToast>().ShowMessage(LanguageHelper.PaymmantMethodSaved);
                 }
                 else if (state == 4)
                 {
-                    await _navigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, _navigation));
+                    await _popupNavigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, Navigation));
                 }
             }
             else
@@ -212,23 +212,23 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 if (state == 1)
                 {
                     _globalHelperService.OutAccount();
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
-                    await _navigation.PushAsync(new Alert(description, _navigation));
+                    await _popupNavigation.PushAsync(new Alert(description, Navigation));
                 }
                 else if (state == 3)
                 {
-                    if (_navigation.NavigationStack.Count > 2)
+                    if (Navigation.NavigationStack.Count > 2)
                     {
-                        _navigation.RemovePage(_navigation.NavigationStack[1]);
+                        Navigation.RemovePage(Navigation.NavigationStack[1]);
                     }
                     DependencyService.Get<IToast>().ShowMessage(LanguageHelper.PaymmantMethodSaved);
                 }
                 else if (state == 4)
                 {
-                    await _navigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, _navigation));
+                    await _popupNavigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, Navigation));
                 }
             }
         }
@@ -238,7 +238,7 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
             string description = null;
             int state = 0;
-            await _navigation.PushAsync(new LoadPage());
+            await _popupNavigation.PushAsync(new LoadPage());
             await Task.Run(() => _utils.CheckNet());
             if (App.isNetwork)
             {
@@ -254,26 +254,26 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 if (state == 1)
                 {
                     _globalHelperService.OutAccount();
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
-                    await _navigation.PushAsync(new Alert(description, _navigation));
+                    await _popupNavigation.PushAsync(new Alert(description, Navigation));
                 }
                 else if (state == 3)
                 {
-                    if (_navigation.NavigationStack.Count > 2)
+                    if (Navigation.NavigationStack.Count > 2)
                     {
-                        _navigation.RemovePage(_navigation.NavigationStack[1]);
+                        Navigation.RemovePage(Navigation.NavigationStack[1]);
                     }
                     DependencyService.Get<IToast>().ShowMessage(LanguageHelper.VideoSavedSuccessfully);
 
                 }
                 else if (state == 4)
                 {
-                    await _navigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, _navigation));
+                    await _popupNavigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, Navigation));
                 }
-                await _navigation.PopAsync();
+                await _popupNavigation.PopAsync();
             }
             else
             {
@@ -298,11 +298,11 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 if (state == 1)
                 {
                     _globalHelperService.OutAccount();
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 else if (state == 3)
                 {
@@ -310,18 +310,18 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 }
                 else if (state == 4)
                 {
-                    await _navigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, null));
+                    await _popupNavigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, null));
                 }
             }
         }
 
         public async void GoEvaluationAndSurvey()
         {
-            if (_navigation.NavigationStack.Count != 0)
+            if (_popupNavigation.PopupStack.Count != 0)
             {
-                await _navigation.PopAsync(true);
+                await _popupNavigation.PopAsync(true);
             }
-            await _navigation.PushAsync(new EvaluationAndSurveyDialog(this, _navigation));
+            await _popupNavigation.PushAsync(new EvaluationAndSurveyDialog(this, Navigation));
         }
 
         public async Task<bool> CheckProplem()
@@ -341,11 +341,11 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 if (state == 1)
                 {
                     _globalHelperService.OutAccount();
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 else if (state == 3)
                 {
@@ -353,7 +353,7 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 }
                 else if (state == 4)
                 {
-                    await _navigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, null));
+                    await _popupNavigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, null));
                 }
             }
             return isProplem;
@@ -361,16 +361,16 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
 
         private async void GoToFeedBack()
         {
-            await _navigation.PopToRootAsync(true);
-            await _navigation.PushAsync(new View.Inspection.Feedback(managerDispatchMob, Shipping.VehiclwInformations.FirstOrDefault(v => v.Id == IdVech), this));
+            await _popupNavigation.PopAllAsync(true);
+            await Navigation.PushAsync(new View.Inspection.Feedback(managerDispatchMob, Shipping.VehiclwInformations.FirstOrDefault(v => v.Id == IdVech), this));
         }
 
         public async void GoToContinue()
         {
-            await _navigation.PushAsync(new Ask2Page(managerDispatchMob, IdVech, IdShip, initDasbordDelegate));
-            if (_navigation.NavigationStack.Count > 1)
+            await Navigation.PushAsync(new Ask2Page(managerDispatchMob, IdVech, IdShip, initDasbordDelegate));
+            if (Navigation.NavigationStack.Count > 1)
             {
-                _navigation.RemovePage(_navigation.NavigationStack[1]);
+                Navigation.RemovePage(Navigation.NavigationStack[1]);
             }
         }
 
@@ -390,11 +390,11 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 if (state == 1)
                 {
                     _globalHelperService.OutAccount();
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 else if (state == 3)
                 {
@@ -402,7 +402,7 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 }
                 else if (state == 4)
                 {
-                    await _navigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, null));
+                    await _popupNavigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, null));
                 }
             }
         }

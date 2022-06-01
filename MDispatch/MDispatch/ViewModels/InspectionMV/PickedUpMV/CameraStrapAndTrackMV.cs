@@ -65,13 +65,13 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
             int indexCurrentVechecle = vehiclwInformation1s.FindIndex(v => v == VehiclwInformation);
             if (vehiclwInformation1s.Count - 1 == indexCurrentVechecle)
             {
-                await _navigation.PushAsync(new ClientStart(managerDispatchMob, VehiclwInformation, IdShip, initDasbordDelegate, OnDeliveryToCarrier, TotalPaymentToCarrier));
-                await _navigation.PushAsync(new Alert(LanguageHelper.PassTheDeviceAlert, null));
+                await Navigation.PushAsync(new ClientStart(managerDispatchMob, VehiclwInformation, IdShip, initDasbordDelegate, OnDeliveryToCarrier, TotalPaymentToCarrier));
+                await _popupNavigation.PushAsync(new Alert(LanguageHelper.PassTheDeviceAlert, null));
             }
             else
             {
-                await _navigation.PushAsync(new HintPageVechicle(LanguageHelper.ContinuingInspectionPickedUp, vehiclwInformation1s[indexCurrentVechecle + 1]));
-                await _navigation.PushAsync(new AskPage(managerDispatchMob, vehiclwInformation1s[indexCurrentVechecle + 1], IdShip, initDasbordDelegate, getVechicleDelegate, OnDeliveryToCarrier, TotalPaymentToCarrier), true);
+                await _popupNavigation.PushAsync(new HintPageVechicle(LanguageHelper.ContinuingInspectionPickedUp, vehiclwInformation1s[indexCurrentVechecle + 1]));
+                await Navigation.PushAsync(new AskPage(managerDispatchMob, vehiclwInformation1s[indexCurrentVechecle + 1], IdShip, initDasbordDelegate, getVechicleDelegate, OnDeliveryToCarrier, TotalPaymentToCarrier), true);
             }
         }
 
@@ -127,9 +127,9 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
         internal async void SavePhotoInTruck()
         {
             bool isNavigationMany = false;
-            if (_navigation.NavigationStack.Count > 2)
+            if (Navigation.NavigationStack.Count > 2)
             {
-                await _navigation.PushAsync(new LoadPage());
+                await _popupNavigation.PushAsync(new LoadPage());
                 isNavigationMany = true;
             }
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
@@ -154,53 +154,53 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 if (state == 1)
                 {
                     _globalHelperService.OutAccount();
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
                     if (isNavigationMany)
                     {
-                        _navigation.RemovePage(_navigation.NavigationStack[0]);
+                        await _popupNavigation.RemovePageAsync(_popupNavigation.PopupStack[0]);
                         isNavigationMany = false;
                     }
-                    if (_navigation.NavigationStack.Count > 1)
+                    if (Navigation.NavigationStack.Count > 1)
                     {
-                        await _navigation.PopAsync();
+                        await Navigation.PopAsync();
                     }
-                    await _navigation.PushAsync(new Alert(description, _navigation));
+                    await _popupNavigation.PushAsync(new Alert(description, Navigation));
                 }
                 else if (state == 3)
                 {
                     if (isNavigationMany)
                     {
-                        _navigation.RemovePage(_navigation.NavigationStack[0]);
+                        await _popupNavigation.RemovePageAsync(_popupNavigation.PopupStack[0]);
                         isNavigationMany = false;
                     }
                     DependencyService.Get<IToast>().ShowMessage(LanguageHelper.AnswersSaved);
-                    if (_navigation.NavigationStack.Count > 1)
+                    if (Navigation.NavigationStack.Count > 1)
                     {
-                        _navigation.RemovePage(_navigation.NavigationStack[1]);
+                        Navigation.RemovePage(Navigation.NavigationStack[1]);
                     }
                 }
                 else if (state == 4)
                 {
                     if (isNavigationMany)
                     {
-                        _navigation.RemovePage(_navigation.NavigationStack[0]);
+                        await _popupNavigation.RemovePageAsync(_popupNavigation.PopupStack[0]);
                         isNavigationMany = false;
                     }
-                    if (_navigation.NavigationStack.Count > 1)
+                    if (Navigation.NavigationStack.Count > 1)
                     {
-                        await _navigation.PopAsync();
+                        await Navigation.PopAsync();
                     }
-                    await _navigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, _navigation));
+                    await _popupNavigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, Navigation));
                 }
             }
             else
             {
-                if (_navigation.NavigationStack.Count > 1)
+                if (Navigation.NavigationStack.Count > 1)
                 {
-                    await _navigation.PopAsync();
+                    await Navigation.PopAsync();
                 }
             }
         }

@@ -88,9 +88,9 @@ namespace MDispatch.ViewModels.AskPhoto
         public async void SaveAsk(string indexTypeCar)
         {
             bool isNavigationMany = false;
-            if (_navigation.NavigationStack.Count > 2)
+            if (Navigation.NavigationStack.Count > 2)
             {
-                await _navigation.PushAsync(new LoadPage());
+                await _popupNavigation.PushAsync(new LoadPage());
                 isNavigationMany = true;
             }
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
@@ -98,8 +98,8 @@ namespace MDispatch.ViewModels.AskPhoto
             int state = 0;
             DependencyService.Get<IOrientationHandler>().ForceSensor();
             FullPagePhoto fullPagePhoto = new FullPagePhoto(managerDispatchMob, VehiclwInformation, IdShip, $"{indexTypeCar}1.png", indexTypeCar, 1, initDasbordDelegate, getVechicleDelegate, "", OnDeliveryToCarrier, TotalPaymentToCarrier);
-            await _navigation.PushAsync(fullPagePhoto);
-            await _navigation.PushAsync(new CameraPagePhoto($"{indexTypeCar}1.png", fullPagePhoto, "PhotoIspection"));
+            await Navigation.PushAsync(fullPagePhoto);
+            await Navigation.PushAsync(new CameraPagePhoto($"{indexTypeCar}1.png", fullPagePhoto, "PhotoIspection"));
             await Task.Run(() => _utils.CheckNet());
             if (App.isNetwork)
             {
@@ -112,13 +112,13 @@ namespace MDispatch.ViewModels.AskPhoto
                 if (state == 1)
                 {
                     _globalHelperService.OutAccount();
-                    await _navigation.PushAsync(new Alert(description, null));
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
                     if (isNavigationMany)
                     {
-                        _navigation.RemovePage(_navigation.NavigationStack[0]);
+                        await _popupNavigation.RemovePageAsync(_popupNavigation.PopupStack[0]);
                         isNavigationMany = false;
                     }
                     GoToABack();
@@ -129,17 +129,17 @@ namespace MDispatch.ViewModels.AskPhoto
                 {
                     if (isNavigationMany)
                     {
-                        _navigation.RemovePage(_navigation.NavigationStack[0]);
+                        await _popupNavigation.RemovePageAsync(_popupNavigation.PopupStack[0]);
                         isNavigationMany = false;
                     }
-                    _navigation.RemovePage(_navigation.NavigationStack[1]);
+                    Navigation.RemovePage(Navigation.NavigationStack[1]);
                     DependencyService.Get<IToast>().ShowMessage(LanguageHelper.AnswersSaved);
                 }
                 else if (state == 4)
                 {
                     if (isNavigationMany)
                     {
-                        _navigation.RemovePage(_navigation.NavigationStack[0]);
+                        await _popupNavigation.RemovePageAsync(_popupNavigation.PopupStack[0]);
                         isNavigationMany = false;
                     }
                     GoToABack();
@@ -155,10 +155,10 @@ namespace MDispatch.ViewModels.AskPhoto
 
         private async void GoToABack()
         {
-            if (_navigation.NavigationStack.Count > 2)
+            if (Navigation.NavigationStack.Count > 2)
             {
-                await _navigation.PopAsync();
-                await _navigation.PopAsync();
+                await Navigation.PopAsync();
+                await Navigation.PopAsync();
             }
             DependencyService.Get<IOrientationHandler>().ForceSensor();
         }

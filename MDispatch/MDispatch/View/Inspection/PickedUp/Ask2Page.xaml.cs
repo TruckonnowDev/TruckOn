@@ -201,7 +201,7 @@ namespace MDispatch.View.Inspection.PickedUp
             }
             else
             {
-                await Navigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
+                await ask2PageMW._popupNavigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
                 CheckAsk();
             }
         }

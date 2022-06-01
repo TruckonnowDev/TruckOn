@@ -259,7 +259,7 @@ namespace MDispatch.View.Inspection.Delyvery
             }
             else
             {
-                await Navigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
+                await askForUsersDelyveryMW._popupNavigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
                 CheckAsk();
             }
         }
@@ -346,7 +346,7 @@ namespace MDispatch.View.Inspection.Delyvery
                     }
                     else
                     {
-                        await Navigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
+                        await askForUsersDelyveryMW._popupNavigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
                         CheckAsk();
                     }
                 }
@@ -381,7 +381,7 @@ namespace MDispatch.View.Inspection.Delyvery
             }
             else
             {
-                await Navigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
+                await askForUsersDelyveryMW._popupNavigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
                 CheckAsk();
             }
 

@@ -2,6 +2,7 @@
 using MDispatch.Service.Utils;
 using Prism.Mvvm;
 using Rg.Plugins.Popup.Contracts;
+using Rg.Plugins.Popup.Services;
 using Xamarin.Forms;
 
 namespace MDispatch.ViewModels
@@ -10,14 +11,16 @@ namespace MDispatch.ViewModels
     {
         internal readonly IUtilsService _utils;
         internal readonly IGlobalHelperService _globalHelperService;
-        internal readonly INavigation _navigation;
+        public readonly INavigation Navigation;
+        internal readonly IPopupNavigation _popupNavigation;
 
         public BaseViewModel(
             INavigation navigation)
         {
             _utils = DependencyService.Get<IUtilsService>();
             _globalHelperService = DependencyService.Get<IGlobalHelperService>();
-            _navigation = navigation;
+            Navigation = navigation;
+            _popupNavigation = PopupNavigation.Instance;
         }
     }
 }

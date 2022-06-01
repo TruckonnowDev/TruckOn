@@ -40,11 +40,11 @@ namespace MDispatch.Vidget.View
             await Navigation.PopAsync();
             if (fullPhotoTruckVM.PlateTruck == null || fullPhotoTruckVM.PlateTruck == "")
             {
-                await Navigation.PushAsync(new PlateTruckWrite(fullPhotoTruckVM));
+                await PopupNavigation.Instance.PushAsync(new PlateTruckWrite(fullPhotoTruckVM));
             }
             else if (fullPhotoTruckVM.PlateTrailer == null || fullPhotoTruckVM.PlateTrailer == "")
             {
-                await Navigation.PushAsync(new MDispatch.View.Popups.PlateTrailerWritePopupView(fullPhotoTruckVM));
+                await PopupNavigation.Instance.PushAsync(new MDispatch.View.Popups.PlateTrailerWritePopupView(fullPhotoTruckVM));
             }
         }
     }

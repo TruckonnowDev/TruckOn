@@ -382,8 +382,6 @@ namespace MDispatch.Helpers
 
         public static void InitLanguage()
         {
-            Language = new RussianLanguage();
-            return;
             switch (CrossSettings.Current.GetValueOrDefault("Language" , (int)LanguageType.Russian))
             {
                 case (int)LanguageType.English:

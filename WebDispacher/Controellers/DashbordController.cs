@@ -62,7 +62,7 @@ namespace WebDispacher.Controellers
         }
 
         [Route("Dashbord/Order/NewLoad")]
-        public async Task<IActionResult> NewLoad(int page, string name, string address, string phone, string email, string price)
+        public async Task<IActionResult> NewLoad(int page, string loadId, string name, string address, string phone, string email, string price)
         {
             try
             {
@@ -82,12 +82,15 @@ namespace WebDispacher.Controellers
                     ViewBag.NameCompany = companyName;
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     
-                    ViewBag.Orders = await orderService.GetOrders(OrderConstants.OrderStatusNewLoad, page, name, address, phone, email, price);
+                    ViewBag.Orders = await orderService.GetOrders(OrderConstants.OrderStatusNewLoad, page, loadId, name, address, phone, email, price);
 
                     ViewBag.Drivers = await driverService.GetDrivers(idCompany);
 
-                    ViewBag.count = await orderService.GetCountPage(OrderConstants.OrderStatusNewLoad, name, address, phone, email, price);
+                    var countPage = await orderService.GetCountPage(OrderConstants.OrderStatusNewLoad, loadId, name, address, phone, email, price);
 
+                    ViewBag.count = orderService.GetCountPage(countPage);
+                    
+                    ViewBag.LoadId = loadId;
                     ViewBag.Name = name;
                     ViewBag.Address = address;
                     ViewBag.Phone = phone;
@@ -217,8 +220,7 @@ namespace WebDispacher.Controellers
         }
 
         [Route("Dashbord/Order/Archived")]
-        [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
-        public async Task<IActionResult> Archived(int page, string name, string address, string phone, string email, string price)
+        public async Task<IActionResult> Archived(int page, string loadId, string name, string address, string phone, string email, string price)
         {
             try
             {
@@ -238,36 +240,29 @@ namespace WebDispacher.Controellers
                     ViewBag.NameCompany = companyName;
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     
-                    List<Shipping> shippings = null;
+                    var shippings = await orderService.GetOrders(OrderConstants.OrderStatusArchivedBilled, page, loadId, name, address, phone, email, price);
+                    if (shippings.Count < 20)
+                    {
+                        shippings.AddRange(await orderService.GetOrders(OrderConstants.OrderStatusArchivedPaid, page, loadId,  name, address, phone, email, price));
+                    }
+                    if (shippings.Count < 20)
+                    {
+                        shippings.AddRange(await orderService.GetOrders(OrderConstants.OrderStatusArchived, page, loadId, name, address, phone, email, price));
+                    }
+                    var drivers = await driverService.GetDrivers(idCompany);
                     
-                    await Task.WhenAll(
-                    Task.Run(async () =>
-                    {
-                        shippings = await orderService.GetOrders(OrderConstants.OrderStatusArchivedBilled, page, name, address, phone, email, price);
-                        if (shippings.Count < 20)
-                        {
-                            shippings.AddRange(await orderService.GetOrders(OrderConstants.OrderStatusArchivedPaid, page, name, address, phone, email, price));
-                        }
-                        if (shippings.Count < 20)
-                        {
-                            shippings.AddRange(await orderService.GetOrders(OrderConstants.OrderStatusArchived, page, name, address, phone, email, price));
-                        }
-                        var drivers = await driverService.GetDrivers(idCompany);
-                        ViewBag.Drivers = drivers;
-                        ViewBag.Orders = GetShippingDTOs(shippings, drivers);
-                    }),
-                    Task.Run(async () =>
-                    {
-                        ViewBag.count = await orderService.GetCountPage(OrderConstants.OrderStatusArchived, name, address, phone, email, price);
-                    }),
-                    Task.Run(async () =>
-                    {
-                        ViewBag.count = await orderService.GetCountPage(OrderConstants.OrderStatusArchivedBilled, name, address, phone, email, price);
-                    }),
-                    Task.Run(async () =>
-                    {
-                        ViewBag.count = await orderService.GetCountPage(OrderConstants.OrderStatusArchivedPaid, name, address, phone, email, price);
-                    }));
+                    ViewBag.Drivers = drivers;
+                    ViewBag.Orders = GetShippingDTOs(shippings, drivers);
+
+                    var countPage = await orderService.GetCountPage(OrderConstants.OrderStatusArchived, loadId, name, address, phone, email, price);
+
+                    countPage += await orderService.GetCountPage(OrderConstants.OrderStatusArchivedBilled, loadId, name, address, phone, email, price);
+
+                    countPage += await orderService.GetCountPage(OrderConstants.OrderStatusArchivedPaid, loadId, name, address, phone, email, price);
+
+                    ViewBag.count = orderService.GetCountPage(countPage);
+                    
+                    ViewBag.LoadId = loadId;
                     
                     ViewBag.Name = name;
                     ViewBag.Address = address;
@@ -293,7 +288,7 @@ namespace WebDispacher.Controellers
         
 
         [Route("Dashbord/Order/Assigned")]
-        public async Task<IActionResult> Assigned(int page, string name, string address, string phone, string email, string price)
+        public async Task<IActionResult> Assigned(int page, string loadId, string name, string address, string phone, string email, string price)
         {
             try
             {
@@ -315,20 +310,18 @@ namespace WebDispacher.Controellers
                     
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     
-                    await Task.WhenAll(
-                    Task.Run(async () =>
-                    {
-                        var shippings =
-                            await orderService.GetOrders(OrderConstants.OrderStatusAssigned, page, name, address, phone, email, price);
-                        var drivers = await driverService.GetDrivers(idCompany);
-                        
-                        ViewBag.Orders = GetShippingDTOs(shippings, drivers);
-                        ViewBag.Drivers = drivers;
-                    }),
-                    Task.Run(async () =>
-                    {
-                        ViewBag.count = await orderService.GetCountPage(OrderConstants.OrderStatusAssigned, name, address, phone, email, price);
-                    }));
+                    var shippings =
+                        await orderService.GetOrders(OrderConstants.OrderStatusAssigned, page, loadId, name, address, phone, email, price);
+                    var drivers = await driverService.GetDrivers(idCompany);
+                    
+                    ViewBag.Orders = GetShippingDTOs(shippings, drivers);
+                    ViewBag.Drivers = drivers;
+
+                    var countPage = await orderService.GetCountPage(OrderConstants.OrderStatusAssigned, loadId, name, address, phone, email, price);
+
+                    ViewBag.count = orderService.GetCountPage(countPage);
+                    
+                    ViewBag.LoadId = loadId;
                     ViewBag.Name = name;
                     ViewBag.Address = address;
                     ViewBag.Phone = phone;
@@ -352,7 +345,7 @@ namespace WebDispacher.Controellers
         }
 
         [Route("Dashbord/Order/Billed")]
-        public async Task<IActionResult> Billed(int page, string name, string address, string phone, string email, string price)
+        public async Task<IActionResult> Billed(int page, string loadId, string name, string address, string phone, string email, string price)
         {
             try
             {
@@ -371,26 +364,19 @@ namespace WebDispacher.Controellers
                     }
                     
                     ViewBag.NameCompany = companyName;
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany); 
-                    // await Task.WhenAll(
-                    // Task.Run(async () =>
-                    // {
-                    //     var shippings = await orderService.GetOrders("Delivered,Billed", page, name, address, phone, email, price);
-                    //     var drivers = await driverService.GetDrivers(idCompany);
-                    //     ViewBag.Orders = GetShippingDTOs(shippings, drivers);
-                    //     ViewBag.Drivers = drivers;
-                    // }),
-                    // Task.Run(async () =>
-                    // {
-                    //     ViewBag.count = await orderService.GetCountPage("Delivered,Billed", name, address, phone, email, price);
-                    // }));
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
 
                     var shippings =
-                        await orderService.GetOrders(OrderConstants.OrderStatusDeliveredBilled, page, name, address, phone, email, price);
+                        await orderService.GetOrders(OrderConstants.OrderStatusDeliveredBilled, page, loadId, name, address, phone, email, price);
+                    
                     ViewBag.Drivers = await driverService.GetDrivers(idCompany);;
                     ViewBag.Orders = GetShippingDTOs(shippings, ViewBag.Drivers);
-                    ViewBag.count = await orderService.GetCountPage(OrderConstants.OrderStatusDeliveredBilled, name, address, phone, email, price);
                     
+                    var countPage = await orderService.GetCountPage(OrderConstants.OrderStatusDeliveredBilled, loadId, name, address, phone, email, price);
+
+                    ViewBag.count = orderService.GetCountPage(countPage);
+                    
+                    ViewBag.LoadId = loadId;
                     ViewBag.Name = name;
                     ViewBag.Address = address;
                     ViewBag.Phone = phone;
@@ -414,7 +400,7 @@ namespace WebDispacher.Controellers
         }
 
         [Route("Dashbord/Order/Deleted")]
-        public async Task<IActionResult> Deleted(int page, string name, string address, string phone, string email, string price)
+        public async Task<IActionResult> Deleted(int page, string loadId, string name, string address, string phone, string email, string price)
         {
             try
             {
@@ -434,35 +420,36 @@ namespace WebDispacher.Controellers
                     
                     ViewBag.NameCompany = companyName;
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    List<Shipping> shippings = null;
-                    await Task.WhenAll(
-                    Task.Run(async () =>
+        
+                    var shippings = await orderService.GetOrders(OrderConstants.OrderStatusDeletedBilled, page, loadId, name, address, phone, email, price);
+                    
+                    if (shippings.Count < 20)
                     {
-                        shippings = await orderService.GetOrders(OrderConstants.OrderStatusDeletedBilled, page, name, address, phone, email, price);
-                        if (shippings.Count < 20)
-                        {
-                            shippings.AddRange(await orderService.GetOrders(OrderConstants.OrderStatusDeletedPaid, page, name, address, phone, email, price));
-                        }
-                        if (shippings.Count < 20)
-                        {
-                            shippings.AddRange(await orderService.GetOrders(OrderConstants.OrderStatusDeleted, page, name, address, phone, email, price));
-                        }
-                        var drivers = await driverService.GetDrivers(idCompany);
-                        ViewBag.Orders = GetShippingDTOs(shippings, drivers);
-                        ViewBag.Drivers = drivers;
-                    }),
-                    Task.Run(async() =>
+                        shippings.AddRange(await orderService.GetOrders(OrderConstants.OrderStatusDeletedPaid, page, loadId, name, address, phone, email, price));
+                    }
+                    
+                    if (shippings.Count < 20)
                     {
-                        ViewBag.count = await orderService.GetCountPage(OrderConstants.OrderStatusDeleted, name, address, phone, email, price);
-                    }),
-                    Task.Run(async() =>
-                    {
-                        ViewBag.count = await orderService.GetCountPage(OrderConstants.OrderStatusDeletedBilled, name, address, phone, email, price);
-                    }),
-                    Task.Run(async() =>
-                    {
-                        ViewBag.count = await orderService.GetCountPage(OrderConstants.OrderStatusDeletedPaid, name, address, phone, email, price);
-                    }));
+                        shippings.AddRange(await orderService.GetOrders(OrderConstants.OrderStatusDeleted, page, loadId, name, address, phone, email, price));
+                    }
+                    
+                    var drivers = await driverService.GetDrivers(idCompany);
+                    
+                    ViewBag.Orders = GetShippingDTOs(shippings, drivers);
+                    
+                    ViewBag.Drivers = drivers;
+        
+                    var countPage = await orderService.GetCountPage(OrderConstants.OrderStatusDeleted, loadId, name, address, phone, email, price);
+        
+                    countPage += await orderService.GetCountPage(OrderConstants.OrderStatusDeletedBilled, loadId, name, address, phone, email, price);
+        
+                    countPage += await orderService.GetCountPage(OrderConstants.OrderStatusDeletedPaid, loadId, name, address, phone, email, price);
+        
+                    countPage = orderService.GetCountPage(countPage);
+
+                    ViewBag.count = countPage;
+                    
+                    ViewBag.LoadId = loadId;
                     ViewBag.Name = name;
                     ViewBag.Address = address;
                     ViewBag.Phone = phone;
@@ -471,7 +458,7 @@ namespace WebDispacher.Controellers
                     
                     return View("Deleted");
                 }
-
+        
                 if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
                     Response.Cookies.Delete(CookiesKeysConstants.CarKey);
@@ -479,14 +466,14 @@ namespace WebDispacher.Controellers
             }
             catch (Exception)
             {
-
+        
             }
             
             return Redirect(Config.BaseReqvesteUrl);
         }
 
         [Route("Dashbord/Order/Delivered")]
-        public async Task<IActionResult> Delivered(int page, string name, string address, string phone, string email, string price)
+        public async Task<IActionResult> Delivered(int page, string loadId, string name, string address, string phone, string email, string price)
         {
             try
             {
@@ -506,29 +493,26 @@ namespace WebDispacher.Controellers
                     
                     ViewBag.NameCompany = companyName;
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
+
+                    var shippings = await orderService.GetOrders(OrderConstants.OrderStatusDeliveredPaid, page, loadId, name, address, phone, email, price);
                     
-                    var shippings = new List<Shipping>();
+                    if (shippings.Count < 20)
+                    {
+                        shippings.AddRange(await orderService.GetOrders(OrderConstants.OrderStatusDeliveredBilled, page, loadId, name, address, phone, email, price));
+                    }
                     
-                    await Task.WhenAll(
-                    Task.Run(async () =>
-                    {
-                        shippings.AddRange(await orderService.GetOrders(OrderConstants.OrderStatusDeliveredPaid, page, name, address, phone, email, price));
-                        if (shippings.Count < 20)
-                        {
-                            shippings.AddRange(await orderService.GetOrders(OrderConstants.OrderStatusDeliveredBilled, page, name, address, phone, email, price));
-                        }
-                        var drivers = await driverService.GetDrivers(idCompany);
-                        ViewBag.Orders = GetShippingDTOs(shippings, drivers);
-                        ViewBag.Drivers = drivers;
-                    }),
-                    Task.Run(async() =>
-                    {
-                        ViewBag.count = await orderService.GetCountPage(OrderConstants.OrderStatusDeliveredBilled, name, address, phone, email, price);
-                    }),
-                    Task.Run(async() =>
-                    {
-                        ViewBag.count = await orderService.GetCountPage(OrderConstants.OrderStatusDeliveredPaid, name, address, phone, email, price);
-                    }));
+                    var drivers = await driverService.GetDrivers(idCompany);
+                    
+                    ViewBag.Orders = GetShippingDTOs(shippings, drivers);
+                    ViewBag.Drivers = drivers;
+
+                    var countPage = await orderService.GetCountPage(OrderConstants.OrderStatusDeliveredBilled, loadId, name, address, phone, email, price);
+
+                    countPage += await orderService.GetCountPage(OrderConstants.OrderStatusDeliveredPaid, loadId, name, address, phone, email, price);
+
+                    ViewBag.count = orderService.GetCountPage(countPage);
+                    
+                    ViewBag.LoadId = loadId;
                     ViewBag.Name = name;
                     ViewBag.Address = address;
                     ViewBag.Phone = phone;
@@ -551,7 +535,7 @@ namespace WebDispacher.Controellers
             return Redirect(Config.BaseReqvesteUrl);
         }
 
-        public async Task<IActionResult> Paid(int page, string name, string address, string phone, string email, string price)
+        public async Task<IActionResult> Paid(int page, string loadId, string name, string address, string phone, string email, string price)
         {
             try
             {
@@ -571,21 +555,20 @@ namespace WebDispacher.Controellers
                     
                     ViewBag.NameCompany = companyName;
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    await Task.WhenAll(
-                    Task.Run(async () =>
-                    {
-                        var shippings =
-                            await orderService.GetOrders(OrderConstants.OrderStatusDeliveredPaid, page, name, address, phone, email, price);
-                        var drivers = await driverService.GetDrivers(idCompany);
-                        ViewBag.Orders = GetShippingDTOs(shippings, drivers);
-                        ViewBag.Drivers = drivers;
-                    }),
-                    Task.Run(async () =>
-                    {
-                        ViewBag.count = await 
-                            orderService.GetCountPage(OrderConstants.OrderStatusDeliveredPaid, name, address, phone, email, price);
-                    }));
+
+                    var shippings =
+                        await orderService.GetOrders(OrderConstants.OrderStatusDeliveredPaid, page, loadId, name, address, phone, email, price);
                     
+                    var drivers = await driverService.GetDrivers(idCompany);
+                    ViewBag.Orders = GetShippingDTOs(shippings, drivers);
+                    ViewBag.Drivers = drivers;
+
+                    var countPage = await 
+                        orderService.GetCountPage(OrderConstants.OrderStatusDeliveredPaid, loadId, name, address, phone, email, price);
+                    
+                    ViewBag.count = orderService.GetCountPage(countPage);
+                    
+                    ViewBag.LoadId = loadId;
                     ViewBag.Name = name;
                     ViewBag.Address = address;
                     ViewBag.Phone = phone;
@@ -609,7 +592,7 @@ namespace WebDispacher.Controellers
         }
 
         [Route("Dashbord/Order/Pickedup")]
-        public async Task<IActionResult> Pickedup(int page, string name, string address, string phone, string email, string price)
+        public async Task<IActionResult> Pickedup(int page, string loadId, string name, string address, string phone, string email, string price)
         {
             try
             {
@@ -629,18 +612,18 @@ namespace WebDispacher.Controellers
                     
                     ViewBag.NameCompany = companyName;
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    await Task.WhenAll(
-                    Task.Run(async () =>
-                    {
-                        var shippings = await orderService.GetOrders(OrderConstants.OrderStatusPickedUp, page, name, address, phone, email, price);
-                        var drivers = await driverService.GetDrivers(idCompany);
-                        ViewBag.Orders = GetShippingDTOs(shippings, drivers);
-                        ViewBag.Drivers = drivers;
-                    }),
-                    Task.Run(async () =>
-                    {
-                        ViewBag.count = await orderService.GetCountPage(OrderConstants.OrderStatusPickedUp, name, address, phone, email, price);
-                    }));
+                    var shippings = await orderService.GetOrders(OrderConstants.OrderStatusPickedUp, page, loadId, name, address, phone, email, price);
+                    
+                    var drivers = await driverService.GetDrivers(idCompany);
+                    
+                    ViewBag.Orders = GetShippingDTOs(shippings, drivers);
+                    ViewBag.Drivers = drivers;
+
+                    var countPage = await orderService.GetCountPage(OrderConstants.OrderStatusPickedUp, loadId, name, address, phone, email, price);
+
+                    ViewBag.count = orderService.GetCountPage(countPage);
+                    
+                    ViewBag.LoadId = loadId;
                     ViewBag.Name = name;
                     ViewBag.Address = address;
                     ViewBag.Phone = phone;
@@ -648,36 +631,6 @@ namespace WebDispacher.Controellers
                     ViewBag.price = price;
                     
                     return View("Pickedup");
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
-            }
-            catch (Exception)
-            {
-
-            }
-            
-            return Redirect(Config.BaseReqvesteUrl);
-        }
-
-        [Route("Dashbord/Order/ArchivedOrder")]
-        [ResponseCache(Location = ResponseCacheLocation.None, Duration = 300)]
-        public IActionResult DeletedOrder(string id)
-        {
-            try
-            {
-                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Dashboard))
-                {
-                    orderService.ArchiveOrder(id);
-                    Task.Run(() => orderService.AddHistory(key, "0", id, "0", "0", OrderConstants.ActionArchivedOrder));
-                    return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/NewLoad");
                 }
 
                 if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
@@ -722,10 +675,41 @@ namespace WebDispacher.Controellers
             
             return Redirect(Config.BaseReqvesteUrl);
         }
+        
+        [Route("Dashbord/Order/ArchivedOrder")]
+        public async Task<IActionResult> ArchivedOrder(string id, string status)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Dashboard))
+                {
+                    await orderService.ArchiveOrder(id);
+                    
+                    await Task.Run(() => orderService.AddHistory(key, "0", id, "0", "0", OrderConstants.ActionArchivedOrder));
+
+                    return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{status}");
+                }
+
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                {
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+            
+            return Redirect(Config.BaseReqvesteUrl);
+        }
 
         [Route("Dashbord/Order/FullInfoOrder")]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
-        public IActionResult FullInfoOrder(string id, string stasus)
+        public IActionResult FullInfoOrder(string id, string status)
         {
             try
             {
@@ -746,7 +730,7 @@ namespace WebDispacher.Controellers
                     ViewBag.NameCompany = companyName;
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
 
-                    if (string.IsNullOrEmpty(id)) return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{stasus}");
+                    if (string.IsNullOrEmpty(id)) return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{status}");
                     var order = orderService.GetOrder(id);
                     ViewBag.Historys = orderService.GetHistoryOrder(id).Select(x => new HistoryOrder()
                         {
@@ -774,7 +758,7 @@ namespace WebDispacher.Controellers
         
          [Route("Dashbord/Order/Edit")]
          [ResponseCache(Location = ResponseCacheLocation.None, Duration = 300)]
-         public IActionResult EditOrder(string id, string stasus)
+         public IActionResult EditOrder(string id, string status)
          {
              try
              {
@@ -788,10 +772,10 @@ namespace WebDispacher.Controellers
                      ViewBag.NameCompany = companyName;
                      ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
 
-                     if (string.IsNullOrEmpty(id)) return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{stasus}");
+                     if (string.IsNullOrEmpty(id)) return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{status}");
                      
                      var order = orderService.GetOrder(id);
-                     Status = stasus;
+                     Status = status;
                          
                      return View("EditOrder", order);
                  }
@@ -811,7 +795,7 @@ namespace WebDispacher.Controellers
          
         [Route("Dashbord/Order/EditReload")]
         [ResponseCache(Location = ResponseCacheLocation.None, Duration = 300)]
-        public IActionResult EditReload(string id, string stasus, ShippingViewModel model)
+        public IActionResult EditReload(string id, string status, ShippingViewModel model)
         {
             try
             {
@@ -825,7 +809,7 @@ namespace WebDispacher.Controellers
                     ViewBag.NameCompany = companyName;
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
 
-                    if (string.IsNullOrEmpty(id)) return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{stasus}");
+                    if (string.IsNullOrEmpty(id)) return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{status}");
                     var searchOrder = orderService.GetOrder(id);
                         
                     var order = searchOrder ?? new ShippingViewModel();
@@ -858,7 +842,7 @@ namespace WebDispacher.Controellers
                     order.PhoneC = model.PhoneC;
                     order.IccmcC = model.IccmcC;
                         
-                    Status = stasus;
+                    Status = status;
                         
                     return View("EditOrder", order);
 
@@ -894,7 +878,7 @@ namespace WebDispacher.Controellers
                     var shipping = await orderService.CreateShipping();
                     await Task.Run(() => orderService.AddHistory(key, "0", shipping.Id, "0", "0", OrderConstants.ActionCreate));
                     
-                    return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/Edit?id={shipping.Id}&stasus=NewLoad");
+                    return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/Edit?id={shipping.Id}&status=NewLoad");
                 }
 
                 if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
@@ -911,7 +895,7 @@ namespace WebDispacher.Controellers
         }
 
         [Route("Dashbord/Order/SavaOrder")]
-        public IActionResult SaveOrder(ShippingViewModel shipping)
+        public async Task<IActionResult> SaveOrder(ShippingViewModel shipping)
         {
             ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
             try
@@ -922,16 +906,18 @@ namespace WebDispacher.Controellers
                 
                 if (userService.CheckPermissions(key, idCompany, RouteConstants.Dashboard))
                 {
-                    orderService.UpdateOrder(shipping);
-                    Task.Run(() => orderService.AddHistory(key, "0", shipping.Id, "0", "0", OrderConstants.ActionSaveOrder));
-                    return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/NewLoad");
+                    var updatedOrder = await orderService.UpdateOrder(shipping);
+                    
+                    await Task.Run(() => orderService.AddHistory(key, "0", shipping.Id, "0", "0", OrderConstants.ActionSaveOrder));
+                    
+                    return Redirect(updatedOrder == null ? 
+                        $"{Config.BaseReqvesteUrl}/Dashbord/Order/NewLoad" : $"{Config.BaseReqvesteUrl}/Dashbord/Order/{updatedOrder.CurrentStatus}");
                 }
 
                 if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
                     Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
-                
             }
             catch (Exception)
             {
@@ -956,7 +942,7 @@ namespace WebDispacher.Controellers
                    await orderService.SaveVechi(idVech, VIN, Year, Make, Model, Type,  Color, LotNumber);
                    await Task.Run(() => orderService.AddHistory(key, "0", "0", idVech, "0", OrderConstants.ActionSaveOrder));
                     
-                   return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/Edit?id={idOrder}&stasus=NewLoad");
+                   return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/Edit?id={idOrder}&status=NewLoad");
                 }
 
                 if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
@@ -969,7 +955,7 @@ namespace WebDispacher.Controellers
                 return null;
             }
             
-            return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/Edit?id={idOrder}&stasus=NewLoad");
+            return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/Edit?id={idOrder}&status=NewLoad");
         }
 
         [Route("Dashbord/Order/RemoveVech")]

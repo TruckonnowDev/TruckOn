@@ -26,14 +26,15 @@ namespace WebDispacher.Business.Interfaces
         Task Assign(string idOrder, string idDriver);
         Task Unassign(string idOrder);
         void Solved(string idOrder);
-        Task<int> GetCountPage(string status, string name, string address, string phone, string email, string price);
+        Task<int> GetCountPage(string status, string loadId, string name, string address, string phone, string email, string price);
+        int GetCountPage(int countPage);
 
-        Task<List<Shipping>> GetOrders(string status, int page, string name, string address, string phone, string email,
+        Task<List<Shipping>> GetOrders(string status, int page, string loadId, string name, string address, string phone, string email,
             string price);
 
         ShippingViewModel GetOrder(string id);
 
-        void UpdateOrder(ShippingViewModel shipping);
+        Task<ShippingViewModel> UpdateOrder(ShippingViewModel shipping);
 
         void SavePath(string id, string path);
         Task<string> GetDocument(string id);

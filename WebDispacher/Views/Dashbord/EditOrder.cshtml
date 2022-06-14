@@ -258,7 +258,7 @@ $(document).ready(function() {
                  console.log(this.readyState);
                  if (this.readyState === 4 && this.status === 200) {
                      alert(this.responseText);
-                     var url = `@ViewBag.BaseUrl/Dashbord/Order/EditReload?Id=${idOrder}&stasus=${status}&idOrder=${loadId}&NameP=${nameP}`+
+                     var url = `@ViewBag.BaseUrl/Dashbord/Order/EditReload?Id=${idOrder}&status=${status}&idOrder=${loadId}&NameP=${nameP}`+
                                                  `&ContactNameP=${contactNameP}&Address=${addressP}&CityP=${cityP}&StateP=${stateP}&CurrentStatus=${status}` +
                                                  `&ZipP=${zipP}&PhoneP=${phoneP}&EmailP=${emailP}&PickupExactly=${scheduledPickupDateP}&Titl1DI=${instructions}` +
                                                  `&NameD=${nameD}&ContactNameD=${contactD}&AddressD=${addressD}&CityD=${cityD}&StateD=${stateD}&ZipD=${zipD}&PhoneD=${phoneD}` +

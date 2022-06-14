@@ -780,8 +780,8 @@ input[type="file"] {
 }
 
 .type-button {
-    min-width: 140px;
-    width:15%;
+    min-width: 90px;
+    width:12%;
     height:54px;
     background:#fff;
     border:1px solid #c4c9d5;
@@ -837,4 +837,10 @@ input[type="file"] {
 .delete-border-cursor{
     border:0!important;
     cursor:pointer;
+}
+
+@media screen and (max-width:1199px){
+    .type-button{
+        height: 36px;
+    }
 }

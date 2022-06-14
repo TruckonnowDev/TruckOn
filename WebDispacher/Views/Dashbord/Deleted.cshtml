@@ -11,12 +11,13 @@
                <div class="collapse multi-collapse" id="search-form">
                    <div style="margin-top: 15px;" class="card border card-body">
                        <form method="get" action="/Dashbord/Order/Deleted">
+                           <input class="type-button" type="text" value="@ViewBag.LoadId" id="loadId-input" name="loadId" placeholder="Load id">
                            <input class="type-button" type="text" value="@ViewBag.Name" id="name-input" name="name" placeholder="Name">
                            <input class="type-button" type="text" value="@ViewBag.Address" id="address-input" name="address" placeholder="Address">
                            <input class="type-button" type="text" value="@ViewBag.Phone" id="phone-input" name="phone" placeholder="Phone number">
                            <input class="type-button" type="text" value="@ViewBag.Email" id="email-input" name="email" placeholder="Email">
                            <input class="type-button" type="text" value="@ViewBag.price" id="price-input" name="price" placeholder="Price">
-                           <button type="submit" class="btn1 btn-modal">Search</button>
+                           <button type="submit" class="btn1 btn-modal mt-2">Search</button>
                        </form>
                    </div>
                </div>
@@ -39,12 +40,12 @@
                             <div class="one-line">
                                 <div class="top-line">
                                     <div class="left">
-                                        <button class="btn3" onClick='location.href="/Dashbord/Order/FullInfoOrder?id=@ViewBag.Orders[i].Id&stasus=Deleted"'>Load ID: @ViewBag.Orders[i].idOrder</button>
+                                        <button class="btn3" onClick='location.href="@Url.Action( "FullInfoOrder", new { id = ViewBag.Orders[i].Id, status = "Deleted" } )"'>Load ID: @ViewBag.Orders[i].idOrder</button>
                                         <div class="text"><img src="~/img/dolar.svg" alt=""> @ViewBag.Orders[i].PriceListed</div>
                                         <div class="text"><img src="~/img/clock.svg" alt=""> @ViewBag.Orders[i].TotalPaymentToCarrier</div>
                                     </div>
                                     <div class="right">
-                                        <a class="btn3" href="/Dashbord/Order/Edit?id=@ViewBag.Orders[i].Id&stasus=Deleted">Edit</a>
+                                        <a class="btn3" href="@Url.Action("EditOrder", new { id = ViewBag.Orders[i].Id, status = "Deleted" } )">Edit</a>
                                     </div>
                                 </div>
                                 <div class="info-line">
@@ -87,13 +88,14 @@
 
 <script>
  $(document).ready(function() {
-     var name= $('#name-input').val();
-     var address= $('#address-input').val();
-     var phone= $('#phone-input').val();
-     var email= $('#email-input').val();
-     var price= $('#price-input').val();
+     const loadId= $('#loadId-input').val();
+     const name= $('#name-input').val();
+     const address= $('#address-input').val();
+     const phone= $('#phone-input').val();
+     const email= $('#email-input').val();
+     const price= $('#price-input').val();
      
-     if (name !== "" || address !== "" 
+     if (loadId !== "" || name !== "" || address !== "" 
         || phone !== "" || email !== "" 
         || price !== "")
      {

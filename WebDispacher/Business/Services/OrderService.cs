@@ -50,9 +50,10 @@ namespace WebDispacher.Business.Services
         public async Task ArchiveOrder(string id)
         {
             var shipping = await db.Shipping.FirstOrDefaultAsync(s => s.Id == id);
+
             if (shipping == null) return;
             
-            if (shipping.CurrentStatus == OrderConstants.OrderStatusDeliveredBilled 
+            if (shipping.CurrentStatus == OrderConstants.OrderStatusDeliveredBilled
                 || shipping.CurrentStatus == OrderConstants.OrderStatusDeliveredPaid)
             {
                 shipping.CurrentStatus = shipping.CurrentStatus
@@ -328,16 +329,23 @@ namespace WebDispacher.Business.Services
             db.SaveChanges();
         }
         
-        public async Task<int> GetCountPage(string status, string name, string address, string phone,
+        public async Task<int> GetCountPage(string status, string loadId, string name, string address, string phone,
             string email, string price)
         {
-            return await GetCountPageInDb(status, name, address, phone, email, price);
+            return await GetCountPageInDb(status, loadId, name, address, phone, email, price);
+        }
+
+        public int GetCountPage(int countPage)
+        {
+            var remainderPage = countPage % 20;
+                    
+            return  remainderPage > 0 ? countPage + 1 : countPage;
         }
         
-        public async Task<List<Shipping>> GetOrders(string status, int page, string name, string address,
+        public async Task<List<Shipping>> GetOrders(string status, int page, string loadId ,string name, string address,
             string phone, string email, string price)
         {
-            return await GetShippings(status, page, name, address, phone, email, price);
+            return await GetShippings(status, page, loadId, name, address, phone, email, price);
         }
         
         public ShippingViewModel GetOrder(string id)
@@ -345,9 +353,9 @@ namespace WebDispacher.Business.Services
             return GetShipping(id);
         }
         
-        public void UpdateOrder(ShippingViewModel shipping)
+        public async Task<ShippingViewModel> UpdateOrder(ShippingViewModel shipping)
         {
-            UpdateOrderInDb(shipping);
+           return await UpdateOrderInDb(shipping);
         }
         
         public void SavePath(string id, string path)
@@ -464,63 +472,123 @@ namespace WebDispacher.Business.Services
 
             return mapper.Map<ShippingViewModel>(shipping);
         }
-        
-        private async Task<List<Shipping>> GetShippings(string status, int page, string name, string address, string phone, string email, string price)
+
+        private async Task<List<Shipping>> GetShippings(string status, int page, string loadId, string name, string address, string phone, string email, string price)
         {
-            List<Shipping> shipping = null;
-            shipping = await db.Shipping
-                .Where(s => s.CurrentStatus == status
-                            && (name == null || s.NameD.Contains(name) || s.NameP.Contains(name) || s.ContactNameP.Contains(name) || s.ContactNameD.Contains(name))
-                            && (address == null || s.AddresP.Contains(address) || s.AddresD.Contains(address) || s.CityP.Contains(address) || s.CityD.Contains(address) || s.StateP.Contains(address.ToUpper()) || s.StateD.Contains(address.ToUpper()) || s.ZipP.Contains(address) || s.ZipD.Contains(address))
-                            && (phone == null || s.PhoneP.Contains(phone) || s.PhoneD.Contains(phone) || s.PhoneC.Contains(phone))
-                            && (email == null || s.EmailP.Contains(email) || s.EmailD.Contains(email))
-                            && (price == null || s.PriceListed.Contains(price)))
-                .ToListAsync();
+            var qShippings = db.Shipping.Where(x => x.CurrentStatus == status).AsQueryable();
+        
+            if (loadId != null)
+            {
+                qShippings = qShippings.Where(x =>
+                    x.idOrder.Contains(loadId));
+            }
+            
+            if (name != null)
+            {
+                qShippings = qShippings.Where(x =>
+                    x.NameD.Contains(name) || x.NameP.Contains(name) || x.ContactNameP.Contains(name) ||
+                    x.ContactNameD.Contains(name));
+            }
+        
+            if (address != null)
+            {
+                qShippings = qShippings.Where(x =>
+                    x.AddresP.Contains(address) || x.AddresD.Contains(address) || x.CityP.Contains(address) ||
+                    x.CityD.Contains(address));
+            }
+        
+            if (phone != null)
+            {
+                qShippings = qShippings.Where(x =>
+                    x.PhoneP.Contains(phone) || x.PhoneD.Contains(phone) || x.PhoneC.Contains(phone));
+            }
+        
+            if (email != null)
+            {
+                qShippings = qShippings.Where(x => x.EmailP.Contains(email) || x.EmailD.Contains(email));
+            }
+        
+            if (price != null)
+            {
+                qShippings = qShippings.Where(x => x.PriceListed.Contains(price));
+            }
             
             if (page != 0)
             {
                 try
                 {
-                    shipping = shipping.GetRange((20 * page) - 20, 20);
+                    qShippings = qShippings.Skip(20 * page - 20);
+        
+                    qShippings = qShippings.Take(20);
                 }
                 catch(Exception)
                 {
-                    shipping = shipping.GetRange((20 * page) - 20, shipping.Count % 20);
+                    qShippings = qShippings.Skip((20 * page) - 20);
                 }
             }
             else
             {
                 try
                 {
-                    shipping = shipping.GetRange(0, 20);
+                    qShippings = qShippings.Take(20);
                 }
                 catch (Exception)
                 {
-                    shipping = shipping.GetRange(0, shipping.Count % 20);
                 }
             }
-            return shipping;
+        
+            var listShippings = await qShippings.ToListAsync();
+            
+            return listShippings;
         }
         
-        private async Task<int> GetCountPageInDb(string status, string name, string address, string phone, string email, string price)
+        private async Task<int> GetCountPageInDb(string status, string loadId, string name, string address, string phone, string email, string price)
         {
-            var countPage = 0;
-            var shipping = await db.Shipping
-                .Where(s => s.CurrentStatus == status
-                            && (name == null || s.NameD.Contains(name) || s.NameP.Contains(name) || s.ContactNameP.Contains(name) || s.ContactNameD.Contains(name))
-                            && (address == null || s.AddresP.Contains(address) || s.AddresD.Contains(address) || s.CityP.Contains(address) || s.CityD.Contains(address) || s.StateP.Contains(address.ToUpper()) || s.StateD.Contains(address.ToUpper()) || s.ZipP.Contains(address) || s.ZipD.Contains(address))
-                            && (phone == null || s.PhoneP.Contains(phone) || s.PhoneD.Contains(phone) || s.PhoneC.Contains(phone))
-                            && (email == null || s.EmailP.Contains(email) || s.EmailD.Contains(email))
-                            && (price == null || s.PriceListed.Contains(price)))
-                .ToListAsync();
+            var qShippings = db.Shipping.Where(x => x.CurrentStatus == status).AsQueryable();
+        
+            if (loadId != null)
+            {
+                qShippings = qShippings.Where(x =>
+                    x.idOrder.Contains(loadId));
+            }
             
-            countPage = shipping.Count / 20;
-            var remainderPage = shipping.Count % 20;
-            countPage = remainderPage > 0 ? countPage + 1 : countPage;
+            if (name != null)
+            {
+                qShippings = qShippings.Where(x =>
+                    x.NameD.Contains(name) || x.NameP.Contains(name) || x.ContactNameP.Contains(name) ||
+                    x.ContactNameD.Contains(name));
+            }
+        
+            if (address != null)
+            {
+                qShippings = qShippings.Where(x =>
+                    x.AddresP.Contains(address) || x.AddresD.Contains(address) || x.CityP.Contains(address) ||
+                    x.CityD.Contains(address));
+            }
+        
+            if (phone != null)
+            {
+                qShippings = qShippings.Where(x =>
+                    x.PhoneP.Contains(phone) || x.PhoneD.Contains(phone) || x.PhoneC.Contains(phone));
+            }
+        
+            if (email != null)
+            {
+                qShippings = qShippings.Where(x => x.EmailP.Contains(email) || x.EmailD.Contains(email));
+            }
+        
+            if (price != null)
+            {
+                qShippings = qShippings.Where(x => x.PriceListed.Contains(price));
+            }
+        
+            var countShippings = qShippings.Count();
+            
+            var countPage = countShippings / 20;
             
             return countPage;
         }
-        
+
         private async Task<List<VehiclwInformation>> RemoveDriversInOrder(string idOrder)
         {
             var shipping = db.Shipping
@@ -710,13 +778,15 @@ namespace WebDispacher.Business.Services
             return transportationDispatch;
         }
         
-        private async Task UpdateOrderInDb(ShippingViewModel shipping)
+        private async Task<ShippingViewModel> UpdateOrderInDb(ShippingViewModel shipping)
         {
-            var shippingEdit = db.Shipping.FirstOrDefault(s => s.Id == shipping.Id);
-            if (shipping == null) return;
-
-            if (shippingEdit == null) return; 
+            if (shipping == null) return null;
             
+            var shippingEdit = db.Shipping.FirstOrDefault(s => s.Id == shipping.Id);
+
+            if (shippingEdit != null)
+            {
+
                 shippingEdit.idOrder = shipping.IdOrder ?? shippingEdit.Id;
 
                 shippingEdit.InternalLoadID = shipping.InternalLoadID ?? shippingEdit.InternalLoadID;
@@ -754,15 +824,22 @@ namespace WebDispacher.Business.Services
                 shippingEdit.PhoneD = shipping.PhoneD ?? shippingEdit.PhoneD;
                 shippingEdit.EmailD = shipping.EmailD ?? shippingEdit.EmailD;
                 shippingEdit.DeliveryEstimated = shipping.DeliveryEstimated ?? shippingEdit.DeliveryEstimated;
-                shippingEdit.TotalPaymentToCarrier = shipping.TotalPaymentToCarrier ?? shippingEdit.TotalPaymentToCarrier;
+                shippingEdit.TotalPaymentToCarrier =
+                    shipping.TotalPaymentToCarrier ?? shippingEdit.TotalPaymentToCarrier;
                 shippingEdit.PriceListed = shipping.PriceListed ?? shippingEdit.PriceListed;
                 shippingEdit.BrokerFee = shipping.BrokerFee ?? shippingEdit.BrokerFee;
                 shippingEdit.ContactC = shipping.ContactC ?? shippingEdit.ContactC;
                 shippingEdit.PhoneC = shipping.PhoneC ?? shippingEdit.PhoneC;
                 shippingEdit.FaxC = shipping.FaxC ?? shippingEdit.FaxC;
                 shippingEdit.IccmcC = shipping.IccmcC ?? shippingEdit.IccmcC;
-
+                
                 await db.SaveChangesAsync();
+            
+            }
+
+            var updatedOrder = db.Shipping.FirstOrDefault(x => x.Id == shipping.Id);
+
+            return mapper.Map<ShippingViewModel>(updatedOrder);
         }
     }
 }

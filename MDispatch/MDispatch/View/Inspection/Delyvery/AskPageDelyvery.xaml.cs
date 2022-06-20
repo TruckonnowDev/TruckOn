@@ -1,31 +1,30 @@
 ﻿using MDispatch.Helpers;
 using MDispatch.Models;
 using MDispatch.NewElement;
-using MDispatch.Service;
-using MDispatch.Service.Helpers;
+using MDispatch.Service.HelperView;
+using MDispatch.Service.ManagerDispatchMob;
 using MDispatch.View.GlobalDialogView;
 using MDispatch.View.Inspection.Delyvery.CameraPage;
 using MDispatch.ViewModels.InspectionMV.DelyveryMV;
-using Newtonsoft.Json;
-using Plugin.InputKit.Shared.Controls;
 using Rg.Plugins.Popup.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using static MDispatch.Service.ManagerDispatchMob;
+using static MDispatch.Service.ManagerDispatchMob.ManagerDispatchMobService;
 
 namespace MDispatch.View.Inspection.Delyvery
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
+    [XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class AskPageDelyvery : ContentPage
 	{
         private AskDelyveryMV askDelyveryMV = null;
-
-        public AskPageDelyvery (ManagerDispatchMob managerDispatchMob, VehiclwInformation vehiclwInformation, string idShip, InitDasbordDelegate initDasbordDelegate, GetVechicleDelegate getVechicleDelegate,
+        private readonly IHelperViewService _helperView;
+        public AskPageDelyvery (IManagerDispatchMobService managerDispatchMob, VehiclwInformation vehiclwInformation, string idShip, InitDasbordDelegate initDasbordDelegate, GetVechicleDelegate getVechicleDelegate,
              string onDeliveryToCarrier, string totalPaymentToCarrier, GetShiping getShiping)
 		{
+            _helperView = DependencyService.Get<IHelperViewService>();
             askDelyveryMV = new AskDelyveryMV(managerDispatchMob, vehiclwInformation, idShip, Navigation, getShiping, initDasbordDelegate, getVechicleDelegate, onDeliveryToCarrier, totalPaymentToCarrier);
             askDelyveryMV.AskDelyvery = new AskDelyvery();
             InitializeComponent ();
@@ -531,7 +530,6 @@ namespace MDispatch.View.Inspection.Delyvery
         #endregion
 
 
-        [Obsolete]
         private async void ToolbarItem_Clicked(object sender, EventArgs e)
         {
             if (isAsk1 && isAsk2 && isAsk3 && isAsk4 && isAsk5 && isAsk6 && isAsk7 && isAsk8 && isAsk9 && isAsk10 && isAsk11 && isAsk12 && isAsk13 && isAsk14 && isAsk15 && isAsk16 && isAsk17 && isAsk18 && isAsk20)
@@ -540,7 +538,7 @@ namespace MDispatch.View.Inspection.Delyvery
             }
             else
             {
-                await PopupNavigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
+                await askDelyveryMV._popupNavigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
                 CheckAsk();
             }
         }
@@ -716,13 +714,13 @@ namespace MDispatch.View.Inspection.Delyvery
         {
             base.OnAppearing();
             DependencyService.Get<IOrientationHandler>().ForceSensor();
-            HelpersView.InitAlert(body);
+            _helperView.InitAlert(body);
         }
 
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            HelpersView.Hidden();
+            _helperView.Hidden();
         }
     }
 }

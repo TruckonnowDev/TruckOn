@@ -57,7 +57,6 @@ namespace MDispatch.ViewModels.InspectionMV.Servise.Paymmant
             return stackLayout;
         }
 
-        [Obsolete]
         private async void ClickBtn(object sender, EventArgs e)
         {
             if (((Entry)stackLayout.Children[0]).Text != null && ((Entry)stackLayout.Children[0]).Text.Length > 0)

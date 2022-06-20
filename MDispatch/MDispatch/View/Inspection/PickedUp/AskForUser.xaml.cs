@@ -1,14 +1,14 @@
 using MDispatch.Helpers;
 using MDispatch.Models;
-using MDispatch.Service;
-using MDispatch.Service.Helpers;
+using MDispatch.Service.HelperView;
+using MDispatch.Service.ManagerDispatchMob;
 using MDispatch.View.GlobalDialogView;
 using MDispatch.ViewModels.InspectionMV.PickedUpMV;
 using Rg.Plugins.Popup.Services;
 using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using static MDispatch.Service.ManagerDispatchMob;
+using static MDispatch.Service.ManagerDispatchMob.ManagerDispatchMobService;
 
 namespace MDispatch.View.Inspection.PickedUp
 {
@@ -16,9 +16,11 @@ namespace MDispatch.View.Inspection.PickedUp
 	public partial class AskForUser : ContentPage
 	{
         private AskForUserMV askForUserMV = null;
+        private readonly IHelperViewService _helperView;
 
-        public AskForUser (ManagerDispatchMob managerDispatchMob, VehiclwInformation vehiclwInformation, string idShip, InitDasbordDelegate initDasbordDelegate, string onDeliveryToCarrier, string totalPaymentToCarrier)
+        public AskForUser (IManagerDispatchMobService managerDispatchMob, VehiclwInformation vehiclwInformation, string idShip, InitDasbordDelegate initDasbordDelegate, string onDeliveryToCarrier, string totalPaymentToCarrier)
 		{
+            _helperView = DependencyService.Get<IHelperViewService>();
             askForUserMV = new AskForUserMV(managerDispatchMob, vehiclwInformation, idShip, Navigation, initDasbordDelegate, onDeliveryToCarrier, totalPaymentToCarrier);
             askForUserMV.AskForUser = new AskFromUser();
             InitializeComponent ();
@@ -91,7 +93,6 @@ namespace MDispatch.View.Inspection.PickedUp
         }
         #endregion
 
-        [Obsolete]
         private async void ToolbarItem_Clicked(object sender, EventArgs e)
         {
             if (isAsk1 && isAsk2 && isAsk3 && isAsk4)
@@ -100,7 +101,7 @@ namespace MDispatch.View.Inspection.PickedUp
             }
             else
             {
-                await PopupNavigation.PushAsync(new Alert(LanguageHelper.WithoutTranslationAskErrorAlert, null));
+                await askForUserMV._popupNavigation.PushAsync(new Alert(LanguageHelper.WithoutTranslationAskErrorAlert, null));
                 CheckAsk();
             }
         }
@@ -155,13 +156,13 @@ namespace MDispatch.View.Inspection.PickedUp
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            HelpersView.InitAlert(body);
+            _helperView.InitAlert(body);
         }
 
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            HelpersView.Hidden();
+            _helperView.Hidden();
         }
     }
 }

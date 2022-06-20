@@ -1,5 +1,6 @@
 ﻿using MDispatch.Models;
 using MDispatch.Service;
+using MDispatch.Service.ManagerDispatchMob;
 using MDispatch.ViewModels.PageAppMV;
 using Rg.Plugins.Popup.Pages;
 using Rg.Plugins.Popup.Services;
@@ -14,9 +15,9 @@ namespace MDispatch.View.PageApp.DialogPage
     {
         EditPaymentInfoMV editPaymentInfoMV = null;
 
-        public EditPayment(ManagerDispatchMob managerDispatchMob, Shipping shipping)
+        public EditPayment(IManagerDispatchMobService managerDispatchMob, Shipping shipping)
         {
-            editPaymentInfoMV = new EditPaymentInfoMV(managerDispatchMob, shipping) { Navigationn = Navigation};
+            editPaymentInfoMV = new EditPaymentInfoMV(managerDispatchMob, shipping, Navigation);
             InitializeComponent();
             BindingContext = editPaymentInfoMV;
             Init(shipping);
@@ -56,10 +57,9 @@ namespace MDispatch.View.PageApp.DialogPage
             }
         }
 
-        [System.Obsolete]
         private async void Button_Clicked(object sender, System.EventArgs e)
         {
-            await PopupNavigation.PopAllAsync(true);
+            await PopupNavigation.Instance.PopAsync(true);
         }
     }
 }

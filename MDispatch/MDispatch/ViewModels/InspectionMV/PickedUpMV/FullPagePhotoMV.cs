@@ -5,22 +5,15 @@ using MDispatch.Models.ModelDataBase;
 using MDispatch.NewElement;
 using MDispatch.NewElement.Directory;
 using MDispatch.NewElement.ResIzeImage;
-using MDispatch.NewElement.ToastNotify;
-using MDispatch.Service;
-using MDispatch.Service.Helpers;
-using MDispatch.Service.Net;
+using MDispatch.Service.HelperView;
+using MDispatch.Service.ManagerDispatchMob;
 using MDispatch.Service.RequestQueue;
-using MDispatch.Service.Tasks;
-using MDispatch.View;
-using MDispatch.View.GlobalDialogView;
+using MDispatch.Service.Utils;
 using MDispatch.View.Inspection;
-using MDispatch.View.Inspection.PickedUp;
 using MDispatch.View.PageApp;
-using MDispatch.ViewModels.AskPhoto;
 using MDispatch.ViewModels.InspectionMV.Servise.Models;
 using Newtonsoft.Json;
 using Plugin.Settings;
-using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -28,23 +21,25 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using static MDispatch.Service.ManagerDispatchMob;
+using static MDispatch.Service.ManagerDispatchMob.ManagerDispatchMobService;
 
 namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
 {
-    public class FullPagePhotoMV : BindableBase
+    public class FullPagePhotoMV : BaseViewModel
     {
-        public ManagerDispatchMob managerDispatchMob = null;
-        public INavigation Navigation { get; set; }
         public IVehicle Car = null;
         private InitDasbordDelegate initDasbordDelegate = null;
         private GetVechicleDelegate getVechicleDelegate = null;
         private FullPagePhoto fullPagePhoto = null;
+        public IManagerDispatchMobService managerDispatchMob;
+        private readonly IHelperViewService _helpersView;
+        private readonly IManagerQueueService _managerQueue;
 
-        public FullPagePhotoMV(ManagerDispatchMob managerDispatchMob, VehiclwInformation vehiclwInformation, string idShip, string typeCar, int inderxPhotoInspektion, INavigation navigation, InitDasbordDelegate initDasbordDelegate, 
+        public FullPagePhotoMV(IManagerDispatchMobService managerDispatchMob, VehiclwInformation vehiclwInformation, string idShip, string typeCar, int inderxPhotoInspektion, INavigation navigation, InitDasbordDelegate initDasbordDelegate, 
             GetVechicleDelegate getVechicleDelegate, string onDeliveryToCarrier, string totalPaymentToCarrier, FullPagePhoto fullPagePhoto)
+            :base(navigation)
         {
-            Navigation = navigation;
+            _helpersView = DependencyService.Get<IHelperViewService>();
             this.getVechicleDelegate = getVechicleDelegate;
             this.initDasbordDelegate = initDasbordDelegate;
             this.managerDispatchMob = managerDispatchMob;
@@ -319,7 +314,7 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 DependencyService.Get<IOrientationHandler>().ForceSensor();
                 await Navigation.PushAsync(new Ask1Page(managerDispatchMob, VehiclwInformation, IdShip, initDasbordDelegate, getVechicleDelegate, Car.TypeIndex.Replace(" ", ""), OnDeliveryToCarrier, TotalPaymentToCarrier), true);
             }
-            await Task.Run(() => Utils.CheckNet(true, true));
+            await Task.Run(() => _utils.CheckNet(true, true));
             if (App.isNetwork)
             {
                 if (isNavigWthDamag)
@@ -332,7 +327,7 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 }
                 await Task.Run(() =>
                 {
-                    ManagerQueue.AddReqvest("SavePhoto", token, VehiclwInformation.Id, PhotoInspection);
+                    _managerQueue.AddRequest("SavePhoto", token, VehiclwInformation.Id, PhotoInspection);
                     initDasbordDelegate.Invoke();
                 });
             }
@@ -352,8 +347,8 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
         {
             if (actionSheet == LanguageHelper.SelectBackToRootBage)
             {
-                HelpersView.ReSet();
-                HelpersView.CallError(LanguageHelper.NotNetworkAlert);
+                _helpersView.ReSet();
+                _helpersView.CallError(LanguageHelper.NotNetworkAlert);
                 BackToRootPage();
             }
             else if (actionSheet == LanguageHelper.SelectLoadGalery)
@@ -394,7 +389,7 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
 
         private async Task SaveAllPhotoInspactionToOflineFolder()
         {
-            await managerDispatchMob.dataBaseContext.AddPhotoInspection(new FolderOffline()
+            await managerDispatchMob.AddPhotoInspection(new FolderOffline()
             {
                 IdShiping = IdShip,
                 IdVech = VehiclwInformation.Id,

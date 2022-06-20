@@ -81,7 +81,6 @@ namespace MDispatch.View.Inspection.PickedUp
             "O - Other"
         };
 
-        [System.Obsolete]
         private async void TapGestureRecognizer_Tapped(object sender, System.EventArgs e)
         {
             if (pageAddDamageFoUser != null)
@@ -92,7 +91,7 @@ namespace MDispatch.View.Inspection.PickedUp
             {
                 pageAddDamage.stateSelect = 2;
             }
-            await PopupNavigation.PopAsync(true);
+            await PopupNavigation.Instance.PopAsync(true);
         }
     }
 }

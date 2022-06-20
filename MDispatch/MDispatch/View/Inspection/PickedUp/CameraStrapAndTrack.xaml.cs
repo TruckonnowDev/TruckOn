@@ -1,13 +1,13 @@
 ﻿using MDispatch.Models;
 using MDispatch.NewElement;
-using MDispatch.Service;
+using MDispatch.Service.ManagerDispatchMob;
 using MDispatch.ViewModels.InspectionMV.PickedUpMV;
 using System;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
-using static MDispatch.Service.ManagerDispatchMob;
+using static MDispatch.Service.ManagerDispatchMob.ManagerDispatchMobService;
 
 namespace MDispatch.View.Inspection.PickedUp
 {
@@ -18,13 +18,14 @@ namespace MDispatch.View.Inspection.PickedUp
         private int countPhoto = 1;
         private string nameVech = null;
 
-        public CameraStrapAndTrack(ManagerDispatchMob managerDispatchMob, VehiclwInformation vehiclwInformation, string idShip, InitDasbordDelegate initDasbordDelegate, GetVechicleDelegate getVechicleDelegate,
+        public CameraStrapAndTrack(IManagerDispatchMobService managerDispatchMob, VehiclwInformation vehiclwInformation, string idShip, InitDasbordDelegate initDasbordDelegate, GetVechicleDelegate getVechicleDelegate,
             string onDeliveryToCarrier, string totalPaymentToCarrier, string nameVehicl)
         {
-            cameraStrapAndTrackMV = new CameraStrapAndTrackMV(managerDispatchMob, vehiclwInformation, idShip, initDasbordDelegate, getVechicleDelegate, onDeliveryToCarrier, totalPaymentToCarrier, nameVehicl)
-            {
-                Navigation = this.Navigation
-            };
+            cameraStrapAndTrackMV = new CameraStrapAndTrackMV(
+                managerDispatchMob, vehiclwInformation,
+                idShip, initDasbordDelegate, getVechicleDelegate,
+                onDeliveryToCarrier, totalPaymentToCarrier, nameVehicl,
+                Navigation);
             InitializeComponent();
             Xamarin.Forms.NavigationPage.SetHasNavigationBar(this, false);
             On<iOS>().SetPrefersStatusBarHidden(StatusBarHiddenMode.True)

@@ -1,28 +1,26 @@
-﻿using MDispatch.Service;
-using MDispatch.Service.Helpers;
+﻿using MDispatch.Service.HelperView;
+using MDispatch.Service.ManagerDispatchMob;
 using MDispatch.View.PageApp;
 using MDispatch.ViewModels.TAbbMV;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using static MDispatch.Service.ManagerDispatchMob;
+using static MDispatch.Service.ManagerDispatchMob.ManagerDispatchMobService;
 
 namespace MDispatch.View.TabPage.Tab
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
+    [XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class DeiveredPage : ContentPage
 	{
         public DelyveryMV delyveryMV = null;
         private StackLayout SelectStackLayout = null;
         private InitDasbordDelegate initDasbordDelegate = null;
+        private readonly IHelperViewService _helperView;
 
-        public DeiveredPage(ManagerDispatchMob managerDispatchMob, INavigation navigation)
+        public DeiveredPage(IManagerDispatchMobService managerDispatchMob, INavigation navigation)
         {
+            _helperView = DependencyService.Get<IHelperViewService>();
             this.initDasbordDelegate = initDasbordDelegate;
             this.delyveryMV = new DelyveryMV(managerDispatchMob, navigation);
             InitializeComponent();
@@ -75,14 +73,14 @@ namespace MDispatch.View.TabPage.Tab
         [Obsolete]
         protected override async void OnAppearing()
         {
-            HelpersView.InitAlert(body);
+            _helperView.InitAlert(body);
             delyveryMV.Init();
         }
 
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            HelpersView.Hidden();
+            _helperView.Hidden();
         }
     }
 }

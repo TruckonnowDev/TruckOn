@@ -1,33 +1,35 @@
 ﻿using MDispatch.Helpers;
 using MDispatch.Models;
-using MDispatch.Service;
-using MDispatch.Service.Helpers;
-using MDispatch.Service.Net;
+using MDispatch.Service.HelperView;
+using MDispatch.Service.ManagerDispatchMob;
 using MDispatch.View.GlobalDialogView;
 using Plugin.DeviceInfo;
 using Plugin.DeviceInfo.Abstractions;
 using Plugin.Settings;
 using Prism.Commands;
-using Prism.Mvvm;
 using Rg.Plugins.Popup.Services;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
-using static MDispatch.Service.ManagerDispatchMob;
+using static MDispatch.Service.ManagerDispatchMob.ManagerDispatchMobService;
 
 namespace MDispatch.ViewModels.TAbbMV
 {
-    public class ArchiveMV : BindableBase
+    public class ArchiveMV : BaseViewModel
     {
-        public ManagerDispatchMob managerDispatchMob = null;
+        public readonly IManagerDispatchMobService managerDispatchMob;
         public INavigation Navigation { get; set; }
         public DelegateCommand RefreshCommand { get; set; }
         public InitDasbordDelegate initDasbordDelegate;
+        private readonly IHelperViewService _helperView;
 
-        public ArchiveMV(ManagerDispatchMob managerDispatchMob, INavigation navigation)
+        public ArchiveMV(
+            IManagerDispatchMobService managerDispatchMob, 
+            INavigation navigation)
+            :base(navigation)
         {
+            _helperView = DependencyService.Get<IHelperViewService>();
             Navigation = navigation;
             Shippings = new List<Shipping>();
             initDasbordDelegate = Init;
@@ -65,7 +67,7 @@ namespace MDispatch.ViewModels.TAbbMV
             string description = null;
             int state = 0;
             List<Shipping> shippings = null;
-            await Task.Run(() => Utils.CheckNet());
+            await Task.Run(() => _utils.CheckNet());
             if (App.isNetwork)
             {
                 await Task.Run(() =>
@@ -74,23 +76,23 @@ namespace MDispatch.ViewModels.TAbbMV
                 });
                 if (state == 1)
                 {
-                    GlobalHelper.OutAccount();
-                    await PopupNavigation.PushAsync(new Alert(description, null));
+                    _globalHelperService.OutAccount();
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 else if (state == 2)
                 {
                     //await PopupNavigation.PushAsync(new Errror(description, null));
-                    HelpersView.CallError(description);
+                    _helperView.CallError(description);
                 }
                 else if (state == 3)
                 {
                     Shippings = shippings;
-                    HelpersView.Hidden();
+                    _helperView.Hidden();
                 }
                 else if (state == 4)
                 {
                     //await PopupNavigation.PushAsync(new Errror("Technical work on the service", null));
-                    HelpersView.CallError(LanguageHelper.TechnicalWorkServiceAlert);
+                    _helperView.CallError(LanguageHelper.TechnicalWorkServiceAlert);
                 }
             }
             IsRefr = false;

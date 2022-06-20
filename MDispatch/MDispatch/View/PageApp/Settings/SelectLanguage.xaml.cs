@@ -46,12 +46,12 @@ namespace MDispatch.View.PageApp.Settings
                 HandlerSelectLang(e.SelectedItemIndex);
             }
             LanguageHelper.InitLanguage();
-            await PopupNavigation.PopAsync();
+            await PopupNavigation.Instance.PopAsync();
         }
 
         private async void TapGestureRecognizer_Tapped(System.Object sender, System.EventArgs e)
         {
-            await PopupNavigation.PopAsync();
+            await PopupNavigation.Instance.PopAsync();
         }
 
         private class LangModel

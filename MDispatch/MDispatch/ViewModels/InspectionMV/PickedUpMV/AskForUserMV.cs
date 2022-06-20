@@ -1,32 +1,37 @@
-﻿using MDispatch.Models;
+﻿using MDispatch.Helpers;
+using MDispatch.Models;
 using MDispatch.NewElement.ToastNotify;
-using MDispatch.Service;
-using MDispatch.Service.Net;
+using MDispatch.Service.HelperView;
+using MDispatch.Service.ManagerDispatchMob;
+using MDispatch.View;
 using MDispatch.View.GlobalDialogView;
 using MDispatch.View.Inspection.PickedUp;
 using Plugin.Settings;
-using Prism.Mvvm;
 using Rg.Plugins.Popup.Services;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using static MDispatch.Service.ManagerDispatchMob;
-using MDispatch.View;
-using MDispatch.Service.Helpers;
-using MDispatch.Helpers;
+using static MDispatch.Service.ManagerDispatchMob.ManagerDispatchMobService;
 
 namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
 {
-    public class AskForUserMV : BindableBase
+    public class AskForUserMV : BaseViewModel
     {
-        public ManagerDispatchMob managerDispatchMob = null;
-        public INavigation Navigation { get; set; }
+        public readonly IManagerDispatchMobService managerDispatchMob;
         public InitDasbordDelegate initDasbordDelegate = null;
+        private readonly IHelperViewService _helperView;
 
-        public AskForUserMV(ManagerDispatchMob managerDispatchMob, VehiclwInformation vehiclwInformation, string idShip, INavigation navigation, InitDasbordDelegate initDasbordDelegate, string onDeliveryToCarrier, string totalPaymentToCarrier)
+        public AskForUserMV(
+            IManagerDispatchMobService managerDispatchMob, 
+            VehiclwInformation vehiclwInformation, 
+            string idShip, INavigation navigation, 
+            InitDasbordDelegate initDasbordDelegate, 
+            string onDeliveryToCarrier, 
+            string totalPaymentToCarrier)
+            :base(navigation)
         {
+            _helperView = DependencyService.Get<IHelperViewService>();
             this.initDasbordDelegate = initDasbordDelegate;
             this.managerDispatchMob = managerDispatchMob;
-            Navigation = navigation;
             VehiclwInformation = vehiclwInformation;
             IdShip = idShip;
             OnDeliveryToCarrier = onDeliveryToCarrier;
@@ -51,20 +56,19 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
             set => SetProperty(ref vehiclwInformation, value);
         }
 
-        [System.Obsolete]
         public async void SaveAsk()
         {
             bool isNavigationMany = false;
             if (Navigation.NavigationStack.Count > 2)
             {
-                await PopupNavigation.PushAsync(new LoadPage());
+                await _popupNavigation.PushAsync(new LoadPage());
                 isNavigationMany = true;
             }
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
             string description = null;
             int state = 0;
             await Navigation.PushAsync(new LiabilityAndInsurance(managerDispatchMob, VehiclwInformation.Id, IdShip, initDasbordDelegate, OnDeliveryToCarrier, TotalPaymentToCarrier, false), true);
-            await Task.Run(() => Utils.CheckNet());
+            await Task.Run(() => _utils.CheckNet());
             if (App.isNetwork)
             {
                 await Task.Run(() =>
@@ -74,14 +78,14 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 });
                 if (state == 1)
                 {
-                    GlobalHelper.OutAccount();
-                    await PopupNavigation.PushAsync(new Alert(description, null));
+                    _globalHelperService.OutAccount();
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
                     if (isNavigationMany)
                     {
-                        await PopupNavigation.RemovePageAsync(PopupNavigation.PopupStack[0]);
+                        await _popupNavigation.RemovePageAsync(_popupNavigation.PopupStack[0]);
                         isNavigationMany = false;
                     }
                     if (Navigation.NavigationStack.Count > 1)
@@ -89,13 +93,13 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                         await Navigation.PopAsync();
                     }
                     //await PopupNavigation.PushAsync(new Errror(description, Navigation));
-                    HelpersView.CallError(description);
+                    _helperView.CallError(description);
                 }
                 else if (state == 3)
                 {
                     if (isNavigationMany)
                     {
-                        await PopupNavigation.RemovePageAsync(PopupNavigation.PopupStack[0]);
+                        await _popupNavigation.RemovePageAsync(_popupNavigation.PopupStack[0]);
                         isNavigationMany = false;
                     }
                     Navigation.RemovePage(Navigation.NavigationStack[1]);
@@ -105,7 +109,7 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 {
                     if (isNavigationMany)
                     {
-                        await PopupNavigation.RemovePageAsync(PopupNavigation.PopupStack[0]);
+                        await _popupNavigation.RemovePageAsync(_popupNavigation.PopupStack[0]);
                         isNavigationMany = false;
                     }
                     if (Navigation.NavigationStack.Count > 1)
@@ -113,7 +117,7 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                         await Navigation.PopAsync();
                     }
                     //await PopupNavigation.PushAsync(new Errror("Technical work on the service", Navigation));
-                    HelpersView.CallError(LanguageHelper.TechnicalWorkServiceAlert);
+                    _helperView.CallError(LanguageHelper.TechnicalWorkServiceAlert);
                 }
             }
             else

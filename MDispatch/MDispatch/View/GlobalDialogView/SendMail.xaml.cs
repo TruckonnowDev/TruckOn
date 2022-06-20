@@ -49,7 +49,7 @@ namespace MDispatch.View.GlobalDialogView
 
         private async void Button_Clicked_1(object sender, EventArgs e)
         {
-            await PopupNavigation.PopAsync();
+            await PopupNavigation.Instance.PopAsync();
         }
     }
 }

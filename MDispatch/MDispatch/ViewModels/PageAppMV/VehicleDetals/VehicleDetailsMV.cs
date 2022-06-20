@@ -1,26 +1,27 @@
 ﻿using MDispatch.Helpers;
 using MDispatch.Models;
 using MDispatch.Service;
-using MDispatch.Service.Net;
+using MDispatch.Service.ManagerDispatchMob;
 using MDispatch.View;
 using MDispatch.View.GlobalDialogView;
 using MDispatch.View.PageApp;
 using Plugin.Settings;
-using Prism.Mvvm;
 using Rg.Plugins.Popup.Services;
-using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace MDispatch.ViewModels.PageAppMV.VehicleDetals
 {
-    public class VehicleDetailsMV : BindableBase
+    public class VehicleDetailsMV : BaseViewModel
     {
-        public ManagerDispatchMob managerDispatchMob = null;
-        public INavigation Navigationn { get; set; }
+        public readonly IManagerDispatchMobService managerDispatchMob;
         private VechicleDetails vechicleDetails = null;
 
-        public VehicleDetailsMV(ManagerDispatchMob managerDispatchMob, int idVech, VechicleDetails vechicleDetails)
+        public VehicleDetailsMV(
+            IManagerDispatchMobService managerDispatchMob, 
+            int idVech, VechicleDetails vechicleDetails,
+            INavigation navigation)
+            :base(navigation)
         {
             this.managerDispatchMob = managerDispatchMob;
             VehiclwInformation = vehiclwInformation;
@@ -35,31 +36,30 @@ namespace MDispatch.ViewModels.PageAppMV.VehicleDetals
             set => SetProperty(ref vehiclwInformation, value);
         }
 
-        [System.Obsolete]
         private async void InitVehiclwInformation(int idVech)
         {
-            await PopupNavigation.PushAsync(new LoadPage(), true);
+            await _popupNavigation.PushAsync(new LoadPage(), true);
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
             string description = null;
             int state = 0;
             VehiclwInformation vehiclwInformation1 = null;
-            await Task.Run(() => Utils.CheckNet());
+            await Task.Run(() => _utils.CheckNet());
             if (App.isNetwork)
             {
                 await Task.Run(() =>
                 {
                     state = managerDispatchMob.OrderWork("GetVechicleInffo", idVech, ref vehiclwInformation1, token, ref description);
                 });
-                await PopupNavigation.PopAsync(true);
+                await _popupNavigation.PopAsync(true);
                 if (state == 1)
                 {
-                    GlobalHelper.OutAccount();
-                    await PopupNavigation.PushAsync(new Alert(description, null));
+                    _globalHelperService.OutAccount();
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
-                    await Navigationn.PopAsync(true);
-                    await PopupNavigation.PushAsync(new Alert(description, null));
+                    await Navigation.PopAsync(true);
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 else if (state == 3)
                 {
@@ -68,14 +68,14 @@ namespace MDispatch.ViewModels.PageAppMV.VehicleDetals
                 }
                 else if (state == 4)
                 {
-                    await Navigationn.PopAsync(true);
-                    await PopupNavigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, null));
+                    await Navigation.PopAsync(true);
+                    await _popupNavigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, null));
                 }
             }
             else
             {
-                await Navigationn.PopAsync(true);
-                await PopupNavigation.PopAsync(true);
+                await Navigation.PopAsync(true);
+                await _popupNavigation.PopAsync(true);
             }
         }
     }

@@ -79,7 +79,6 @@ namespace MDispatch.ViewModels.InspectionMV.Servise.Paymmant
         }
 
         bool isIamPay = false;
-        [Obsolete]
         private async void ClickBtn(object sender, EventArgs e)
         {
             if(((Entry)stackLayout.Children[0]).Text != null && ((Entry)stackLayout.Children[0]).Text.Length > 0)

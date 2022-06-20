@@ -2,10 +2,9 @@
 using MDispatch.Helpers;
 using MDispatch.NewElement;
 using MDispatch.NewElement.Tabs;
-using MDispatch.Service;
+using MDispatch.Service.ManagerDispatchMob;
 using MDispatch.View.TabPage.Tab;
 using MDispatch.ViewModels.TAbbPage;
-using Plugin.Badge.Abstractions;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
@@ -18,10 +17,12 @@ namespace MDispatch.View.TabPage
     public partial class TabPage : CustomTabbedPage
     {
         private TablePageMV tablePageMV = null;
+        private readonly IManagerDispatchMobService _managerDispatchMob;
 
-        public TabPage (ManagerDispatchMob managerDispatchMob)  : base()
+        public TabPage()
         {
-            tablePageMV = new TablePageMV(managerDispatchMob);
+            _managerDispatchMob = DependencyService.Get<IManagerDispatchMobService>();
+            tablePageMV = new TablePageMV(_managerDispatchMob, Navigation);
             InitializeComponent();
             Xamarin.Forms.NavigationPage.SetHasNavigationBar(this, false);
             On<iOS>().SetUseSafeArea(true);
@@ -29,9 +30,9 @@ namespace MDispatch.View.TabPage
             BindingContext = this.tablePageMV;
             On<Android>().SetBarItemColor(Color.FromHex("#A1A1A1"));
             On<Android>().SetBarSelectedItemColor(Color.FromHex("#2C5DEB"));
-            InitActivePage(managerDispatchMob);
-            InitDeiveredPage(managerDispatchMob);
-            InitArchivedPage(managerDispatchMob);
+            InitActivePage(_managerDispatchMob);
+            InitDeiveredPage(_managerDispatchMob);
+            InitArchivedPage(_managerDispatchMob);
         }
 
         protected override void OnAppearing()
@@ -40,7 +41,7 @@ namespace MDispatch.View.TabPage
             DependencyService.Get<IOrientationHandler>().ForceSensor();
         }
 
-        private void InitActivePage(ManagerDispatchMob managerDispatchMob)
+        private void InitActivePage(IManagerDispatchMobService managerDispatchMob)
         {
             AnimationNavigationPage navigationPage = new AnimationNavigationPage(new ActivePage(managerDispatchMob, Navigation) { Title = LanguageHelper.NamePageTabActive });
             navigationPage.Title = LanguageHelper.NamePageTabActive;
@@ -48,7 +49,7 @@ namespace MDispatch.View.TabPage
             Children.Add(navigationPage);
         }
 
-        private void InitDeiveredPage(ManagerDispatchMob managerDispatchMob)
+        private void InitDeiveredPage(IManagerDispatchMobService managerDispatchMob)
         {
             AnimationNavigationPage navigationPage = new AnimationNavigationPage(new DeiveredPage(managerDispatchMob, Navigation) { Title = LanguageHelper.NamePageTabDelivery } );
             navigationPage.Title = LanguageHelper.NamePageTabDelivery;
@@ -56,7 +57,7 @@ namespace MDispatch.View.TabPage
             Children.Add(navigationPage);
         }
 
-        private void InitArchivedPage(ManagerDispatchMob managerDispatchMob)
+        private void InitArchivedPage(IManagerDispatchMobService managerDispatchMob)
         {
             AnimationNavigationPage navigationPage = new AnimationNavigationPage(new ArchivedPage(managerDispatchMob, Navigation) { Title = LanguageHelper.NamePageTabArchived } );
             navigationPage.Title = LanguageHelper.NamePageTabArchived;

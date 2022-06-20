@@ -14,7 +14,10 @@
     <AssemblyName>MDispatch.iOS</AssemblyName>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <ProvisioningType>automatic</ProvisioningType>
+    <ProvisioningType>manual</ProvisioningType>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -22,13 +25,17 @@
     <OutputPath>bin\iPhoneSimulator\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <MtouchLink>None</MtouchLink>
+    <MtouchLink>SdkOnly</MtouchLink>
     <MtouchArch>x86_64</MtouchArch>
     <ConsolePause>false</ConsolePause>
-    <CodesignProvision>VS: com.companyname.MDispatch Development</CodesignProvision>
-    <CodesignKey>Apple Development: Artsiom Buniashyn (52PD49AATM)</CodesignKey>
+    <CodesignProvision>TruckonnowDevOnline</CodesignProvision>
+    <CodesignKey>iPhone Developer: Artsiom Karabeinikau (BD94X3754X)</CodesignKey>
     <LangVersion>8.0</LangVersion>
-    <DeviceSpecificBuild>true</DeviceSpecificBuild>
+    <DeviceSpecificBuild>false</DeviceSpecificBuild>
+    <MtouchDebug>true</MtouchDebug>
+    <MtouchFastDev>false</MtouchFastDev>
+    <MtouchEnableSGenConc>true</MtouchEnableSGenConc>
+    <MtouchNoSymbolStrip>false</MtouchNoSymbolStrip>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>true</DebugSymbols>
@@ -40,13 +47,14 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <MtouchArch>ARM64</MtouchArch>
-    <CodesignKey>Apple Development: Artsiom Buniashyn (52PD49AATM)</CodesignKey>
+    <CodesignKey>Apple Distribution: Artsiom Karabeinikau (6UD2U7V27V)</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <LangVersion>8.0</LangVersion>
     <MtouchLink>SdkOnly</MtouchLink>
     <DeviceSpecificBuild>true</DeviceSpecificBuild>
-    <CodesignProvision>VS: com.companyname.MDispatch Development</CodesignProvision>
+    <CodesignProvision>TruckonnowProd</CodesignProvision>
+    <MtouchFastDev>true</MtouchFastDev>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
@@ -56,12 +64,13 @@
     <WarningLevel>4</WarningLevel>
     <MtouchArch>ARM64</MtouchArch>
     <ConsolePause>false</ConsolePause>
-    <CodesignKey>iPhone Distribution: Artsiom Buniashyn (3K8963GCF8)</CodesignKey>
+    <CodesignKey>iPhone Distribution: Artsiom Karabeinikau (6UD2U7V27V)</CodesignKey>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
-    <CodesignProvision>AppStore truckon</CodesignProvision>
+    <CodesignProvision>TruckonnowProd</CodesignProvision>
     <LangVersion>8.0</LangVersion>
     <MtouchLink>SdkOnly</MtouchLink>
     <DeviceSpecificBuild>true</DeviceSpecificBuild>
+    <MtouchDebug>false</MtouchDebug>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ad-Hoc|iPhone' ">
     <DebugType>none</DebugType>
@@ -72,8 +81,8 @@
     <ConsolePause>False</ConsolePause>
     <MtouchArch>ARM64</MtouchArch>
     <BuildIpa>True</BuildIpa>
-    <CodesignProvision>VS: com.companyname.MDispatch Development</CodesignProvision>
-    <CodesignKey>Apple Development: Artsiom Buniashyn (52PD49AATM)</CodesignKey>
+    <CodesignProvision>TruckonnowProd</CodesignProvision>
+    <CodesignKey>iPhone Distribution: Artsiom Karabeinikau (6UD2U7V27V)</CodesignKey>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <LangVersion>8.0</LangVersion>
     <MtouchLink>SdkOnly</MtouchLink>
@@ -88,8 +97,8 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
     <MtouchArch>ARM64</MtouchArch>
-    <CodesignProvision>VS: com.companyname.MDispatch Development</CodesignProvision>
-    <CodesignKey>Apple Development: Artsiom Buniashyn (52PD49AATM)</CodesignKey>
+    <CodesignProvision>TruckonnowDev</CodesignProvision>
+    <CodesignKey>iPhone Developer: Artsiom Karabeinikau (BD94X3754X)</CodesignKey>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <LangVersion>8.0</LangVersion>
     <MtouchLink>SdkOnly</MtouchLink>
@@ -182,25 +191,30 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'AppStore|iPhoneSimulator'">
     <LangVersion>8.0</LangVersion>
-    <CodesignProvision>VS: com.companyname.MDispatch Development</CodesignProvision>
-    <CodesignKey>Apple Development: Artsiom Buniashyn (52PD49AATM)</CodesignKey>
+    <CodesignProvision>TruckonnowProd</CodesignProvision>
+    <CodesignKey>Apple Distribution: Artsiom Karabeinikau (6UD2U7V27V)</CodesignKey>
     <MtouchLink>SdkOnly</MtouchLink>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>false</DebugSymbols>
     <Optimize>false</Optimize>
     <OutputPath>bin\iPhoneSimulator\Debug</OutputPath>
-    <DefineConstants></DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <WarningLevel>4</WarningLevel>
     <CodesignKey>Apple Development: Artsiom Buniashyn (52PD49AATM)</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
-    <MtouchVerbosity></MtouchVerbosity>
+    <MtouchVerbosity>
+    </MtouchVerbosity>
     <IOSDebuggerPort>40708</IOSDebuggerPort>
     <MtouchLink>None</MtouchLink>
     <MtouchArch>x86_64</MtouchArch>
     <LangVersion>8.0</LangVersion>
     <DeviceSpecificBuild>true</DeviceSpecificBuild>
     <CodesignProvision>VS: com.companyname.MDispatch Development</CodesignProvision>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">
+    <AppExtensionDebugBundleId />
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
@@ -212,7 +226,6 @@
     <Compile Include="NewRender\ResizerImgIOS.cs" />
     <Compile Include="NewRender\TextIn\TextRender.cs" />
     <Compile Include="NewRender\ToastNotify\ToastIOS.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NewRender\Button\CorectButton.cs" />
     <Compile Include="NewRender\Picker\PikerCustom.cs" />
     <Compile Include="NewRender\CustomCamera\CameraPageRender.cs" />
@@ -1293,12 +1306,6 @@
     <BundleResource Include="Resources\Tricycle16.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="NewRender\AuntificationID\" />
-    <Folder Include="NewRender\Effect\" />
-    <Folder Include="Resources\Fonts\" />
-    <Folder Include="NewRender\Frame\" />
-    <Folder Include="NewRender\Direktory\" />
-    <Folder Include="NewRender\FeedBackHaptik\" />
-    <Folder Include="NewRender\DataBase\" />
+    <Folder Include="Properties\" />
   </ItemGroup>
 </Project>

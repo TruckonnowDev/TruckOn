@@ -1,8 +1,8 @@
 ﻿using FormsControls.Base;
-using MDispatch.Service;
-using MDispatch.Service.GeloctionGPS;
+using MDispatch.Service.ManagerDispatchMob;
+using MDispatch.Service.StoreNotify;
 using MDispatch.Service.Tasks;
-using MDispatch.StoreNotify;
+using MDispatch.Service.Utils;
 using MDispatch.View;
 using MDispatch.View.A_R;
 using MDispatch.View.GlobalDialogView;
@@ -17,14 +17,16 @@ using Xamarin.Forms;
 
 namespace MDispatch.ViewModels
 {
-    public class AvtorizationMV : BindableBase
+    public class AvtorizationMV : BaseViewModel
     {
-        private ManagerDispatchMob managerDispatchMob = null;
+        private readonly IManagerDispatchMobService managerDispatchMob;
         public DelegateCommand AvtorizationCommand { get; set; }
 
-        public AvtorizationMV()
+        public AvtorizationMV(
+            INavigation navigation)
+            : base(navigation)
         {
-            managerDispatchMob = new ManagerDispatchMob();
+            managerDispatchMob = DependencyService.Get<IManagerDispatchMobService>();
             AvtorizationCommand = new DelegateCommand(Avtorization);
         }
 
@@ -82,10 +84,9 @@ namespace MDispatch.ViewModels
             }
         }
 
-        [System.Obsolete]
         private async void Avtorization()
         {
-            await PopupNavigation.PushAsync(new LoadPage(), true);
+            await _popupNavigation.PushAsync(new LoadPage(), true);
             string token = null;
             string description = null;
             int state = 3;
@@ -93,15 +94,15 @@ namespace MDispatch.ViewModels
             {
                 state = managerDispatchMob.A_RWork("authorisation", Username, Password, ref description, ref token);
             });
-            await PopupNavigation.PopAsync(true);
+            await _popupNavigation.PopAsync(true);
             if (state == 1)
             {
-                await PopupNavigation.PushAsync(new Alert(description, null));
+                await _popupNavigation.PushAsync(new Alert(description, null));
                 FeedBack = "Not Network";
             }
             else if(state == 2)
             {
-                await PopupNavigation.PushAsync(new Alert(description, null));
+                await _popupNavigation.PushAsync(new Alert(description, null));
                 FeedBack = description;
             }
             else if(state == 3)
@@ -115,25 +116,24 @@ namespace MDispatch.ViewModels
                 await Task.Run(() =>
                 {
                     DependencyService.Get<IStore>().OnTokenRefresh();
-                    Utils.StartListening();
+                    _utils.StartListening();
                     TaskManager.CommandToDo("CheckTask");
                 });
 
-                    Application.Current.MainPage = new AnimationNavigationPage(new TabPage(managerDispatchMob));
+                    Application.Current.MainPage = new AnimationNavigationPage(new TabPage());
 
             }
             else if(state == 4)
             {
-                await PopupNavigation.PushAsync(new Alert(description, null));
+                await _popupNavigation.PushAsync(new Alert(description, null));
                 FeedBack = "Technical work on the service";
             }
         }
 
         
-        [Obsolete]
         public async void RequestPasswordChanges()
         {
-            await PopupNavigation.PushAsync(new LoadPage(), true);
+            await Navigation.PushAsync(new LoadPage(), true);
             string token = null;
             string description = null;
             int state = 3;
@@ -141,26 +141,26 @@ namespace MDispatch.ViewModels
             {
                 state = managerDispatchMob.A_RWork("RequestPasswordChanges", Email, FullName, ref description, ref token);
             });
-            await PopupNavigation.PopAsync(true);
+            await Navigation.PopAsync(true);
             if (state == 1)
             {
-                await PopupNavigation.PushAsync(new Alert(description, null));
+                await _popupNavigation.PushAsync(new Alert(description, null));
                 FeedBack1 = "Not Network";
             }
             else if (state == 2)
             {
-                await PopupNavigation.PushAsync(new Alert(description, null));
+                await _popupNavigation.PushAsync(new Alert(description, null));
                 FeedBack1 = description;
             }
             else if (state == 3)
             {
-                await PopupNavigation.PopAllAsync();
+                await _popupNavigation.PopAllAsync();
                 FeedBack1 = "";
-                await PopupNavigation.PushAsync(new InfoRecovery(this));
+                await _popupNavigation.PushAsync(new InfoRecovery(this));
             }
             else if (state == 4)
             {
-                await PopupNavigation.PushAsync(new Alert(description, null));
+                await _popupNavigation.PushAsync(new Alert(description, null));
                 FeedBack1 = "Technical work on the service";
             }
         }

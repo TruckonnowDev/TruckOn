@@ -1,8 +1,7 @@
 ﻿using MDispatch.Helpers;
 using MDispatch.Models;
 using MDispatch.NewElement.ToastNotify;
-using MDispatch.Service;
-using MDispatch.Service.Net;
+using MDispatch.Service.ManagerDispatchMob;
 using MDispatch.View;
 using MDispatch.View.AskPhoto;
 using MDispatch.View.GlobalDialogView;
@@ -10,25 +9,31 @@ using MDispatch.View.Inspection;
 using MDispatch.View.Inspection.PickedUp;
 using MDispatch.ViewModels.InspectionMV.Servise.Models;
 using Plugin.Settings;
-using Prism.Mvvm;
 using Rg.Plugins.Popup.Services;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using static MDispatch.Service.ManagerDispatchMob;
+using static MDispatch.Service.ManagerDispatchMob.ManagerDispatchMobService;
 
 namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
 {
-    public class CameraStrapAndTrackMV : BindableBase
+    public class CameraStrapAndTrackMV : BaseViewModel
     {
-        public ManagerDispatchMob managerDispatchMob = null;
-        public INavigation Navigation { get; set; }
+        public readonly IManagerDispatchMobService managerDispatchMob;
         public InitDasbordDelegate initDasbordDelegate = null;
         private GetVechicleDelegate getVechicleDelegate = null;
 
-        public CameraStrapAndTrackMV(ManagerDispatchMob managerDispatchMob, VehiclwInformation vehiclwInformation, string idShip, InitDasbordDelegate initDasbordDelegate, GetVechicleDelegate getVechicleDelegate,
-            string onDeliveryToCarrier, string totalPaymentToCarrier, string nameVehicl)
+        public CameraStrapAndTrackMV(
+            IManagerDispatchMobService managerDispatchMob, 
+            VehiclwInformation vehiclwInformation, 
+            string idShip, InitDasbordDelegate initDasbordDelegate, 
+            GetVechicleDelegate getVechicleDelegate,
+            string onDeliveryToCarrier, 
+            string totalPaymentToCarrier, 
+            string nameVehicl,
+            INavigation navigation)
+            :base(navigation)
         {
             this.getVechicleDelegate = getVechicleDelegate;
             this.initDasbordDelegate = initDasbordDelegate;
@@ -54,7 +59,6 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
             set => SetProperty(ref vehiclwInformation, value);
         }
 
-        [System.Obsolete]
         private async void CheckVechicleAndGoToResultPage()
         {
             List<VehiclwInformation> vehiclwInformation1s = getVechicleDelegate.Invoke();
@@ -62,11 +66,11 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
             if (vehiclwInformation1s.Count - 1 == indexCurrentVechecle)
             {
                 await Navigation.PushAsync(new ClientStart(managerDispatchMob, VehiclwInformation, IdShip, initDasbordDelegate, OnDeliveryToCarrier, TotalPaymentToCarrier));
-                await PopupNavigation.PushAsync(new Alert(LanguageHelper.PassTheDeviceAlert, null));
+                await _popupNavigation.PushAsync(new Alert(LanguageHelper.PassTheDeviceAlert, null));
             }
             else
             {
-                await PopupNavigation.PushAsync(new HintPageVechicle(LanguageHelper.ContinuingInspectionPickedUp, vehiclwInformation1s[indexCurrentVechecle + 1]));
+                await _popupNavigation.PushAsync(new HintPageVechicle(LanguageHelper.ContinuingInspectionPickedUp, vehiclwInformation1s[indexCurrentVechecle + 1]));
                 await Navigation.PushAsync(new AskPage(managerDispatchMob, vehiclwInformation1s[indexCurrentVechecle + 1], IdShip, initDasbordDelegate, getVechicleDelegate, OnDeliveryToCarrier, TotalPaymentToCarrier), true);
             }
         }
@@ -120,20 +124,19 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
             return car;
         }
 
-        [Obsolete]
         internal async void SavePhotoInTruck()
         {
             bool isNavigationMany = false;
             if (Navigation.NavigationStack.Count > 2)
             {
-                await PopupNavigation.PushAsync(new LoadPage());
+                await _popupNavigation.PushAsync(new LoadPage());
                 isNavigationMany = true;
             }
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
             string description = null;
             int state = 0;
             CheckVechicleAndGoToResultPage();
-            await Task.Run(() => Utils.CheckNet());
+            await Task.Run(() => _utils.CheckNet());
             if (App.isNetwork)
             {
                 await Task.Run(() =>
@@ -150,27 +153,27 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 });
                 if (state == 1)
                 {
-                    GlobalHelper.OutAccount();
-                    await PopupNavigation.PushAsync(new Alert(description, null));
+                    _globalHelperService.OutAccount();
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
                     if (isNavigationMany)
                     {
-                        await PopupNavigation.RemovePageAsync(PopupNavigation.PopupStack[0]);
+                        await _popupNavigation.RemovePageAsync(_popupNavigation.PopupStack[0]);
                         isNavigationMany = false;
                     }
                     if (Navigation.NavigationStack.Count > 1)
                     {
                         await Navigation.PopAsync();
                     }
-                    await PopupNavigation.PushAsync(new Alert(description, Navigation));
+                    await _popupNavigation.PushAsync(new Alert(description, Navigation));
                 }
                 else if (state == 3)
                 {
                     if (isNavigationMany)
                     {
-                        await PopupNavigation.RemovePageAsync(PopupNavigation.PopupStack[0]);
+                        await _popupNavigation.RemovePageAsync(_popupNavigation.PopupStack[0]);
                         isNavigationMany = false;
                     }
                     DependencyService.Get<IToast>().ShowMessage(LanguageHelper.AnswersSaved);
@@ -183,14 +186,14 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                 {
                     if (isNavigationMany)
                     {
-                        await PopupNavigation.RemovePageAsync(PopupNavigation.PopupStack[0]);
+                        await _popupNavigation.RemovePageAsync(_popupNavigation.PopupStack[0]);
                         isNavigationMany = false;
                     }
                     if (Navigation.NavigationStack.Count > 1)
                     {
                         await Navigation.PopAsync();
                     }
-                    await PopupNavigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, Navigation));
+                    await _popupNavigation.PushAsync(new Alert(LanguageHelper.TechnicalWorkServiceAlert, Navigation));
                 }
             }
             else

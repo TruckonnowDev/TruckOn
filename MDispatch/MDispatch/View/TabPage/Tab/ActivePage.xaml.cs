@@ -1,5 +1,5 @@
-﻿using MDispatch.Service;
-using MDispatch.Service.Helpers;
+﻿using MDispatch.Service.HelperView;
+using MDispatch.Service.ManagerDispatchMob;
 using MDispatch.View.PageApp;
 using MDispatch.View.PageApp.Settings;
 using MDispatch.ViewModels.TAbbMV;
@@ -9,7 +9,7 @@ using Rg.Plugins.Popup.Services;
 using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using static MDispatch.Service.ManagerDispatchMob;
+using static MDispatch.Service.ManagerDispatchMob.ManagerDispatchMobService;
 
 namespace MDispatch.View.TabPage.Tab
 {
@@ -19,11 +19,13 @@ namespace MDispatch.View.TabPage.Tab
         public ActiveMV activeMV = null;
         private StackLayout SelectStackLayout = null;
         private InitDasbordDelegate initDasbordDelegate = null;
+        private readonly IHelperViewService _helperView;
 
-        public ActivePage (ManagerDispatchMob managerDispatchMob, INavigation navigation)
+        public ActivePage (IManagerDispatchMobService managerDispatchMob, INavigation navigation)
 		{
             this.activeMV = new ActiveMV(managerDispatchMob, navigation);
-			InitializeComponent ();
+            _helperView = DependencyService.Get<IHelperViewService>();
+            InitializeComponent ();
             BindingContext = this.activeMV;
         }
 
@@ -40,12 +42,11 @@ namespace MDispatch.View.TabPage.Tab
             SelectStackLayout.BackgroundColor = Color.FromHex("#f5c8c8");
         }
 
-        [Obsolete]
         private async void TapGestureRecognizer_Tapped_1(object sender, EventArgs e)
         {
             if (!activeMV.UnTimeOfInspection.ISMaybiInspection)
             {
-                await PopupNavigation.PushAsync(new AskHint(activeMV));
+                await PopupNavigation.Instance.PushAsync(new AskHint(activeMV));
             }
             else
             {
@@ -82,13 +83,13 @@ namespace MDispatch.View.TabPage.Tab
 
         private void ToolbarItem_Clicked(object sender, EventArgs e)
         {
-            GlobalHelper.OutAccount();
+            this.activeMV._globalHelperService.OutAccount();
         }
 
         [Obsolete]
         protected override void OnAppearing()
         {
-            HelpersView.InitAlert(body);
+            _helperView.InitAlert(body);
             activeMV.Init();
         }
 
@@ -96,7 +97,7 @@ namespace MDispatch.View.TabPage.Tab
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            HelpersView.Hidden();
+            _helperView.Hidden();
         }
 
         private void ToolbarItem_Clicked_1(object sender, EventArgs e)

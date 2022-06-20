@@ -7,7 +7,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
-using static MDispatch.Service.ManagerDispatchMob;
+using static MDispatch.Service.ManagerDispatchMob.ManagerDispatchMobService;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace MDispatch.Vidget.View
@@ -17,7 +17,7 @@ namespace MDispatch.Vidget.View
     {
         private FullPhotoTruckVM fullPhotoTruckVM = null;
 
-        public CameraPage(ManagerDispatchMob managerDispatchMob, string idDriver, int indexCurrent, InitDasbordDelegate initDasbordDelegate,
+        public CameraPage(Service.ManagerDispatchMob.IManagerDispatchMobService managerDispatchMob, string idDriver, int indexCurrent, InitDasbordDelegate initDasbordDelegate,
             TruckCar truckCar = null)
         {
             fullPhotoTruckVM = new FullPhotoTruckVM(managerDispatchMob, idDriver, indexCurrent, Navigation, truckCar, initDasbordDelegate);

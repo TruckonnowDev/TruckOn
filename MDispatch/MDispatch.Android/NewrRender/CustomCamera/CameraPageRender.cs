@@ -335,7 +335,7 @@ namespace MDispatch.Droid.NewrRender
                 var image = Bitmap.CreateBitmap(liveView.Bitmap, 0, 0, liveView.Bitmap.Width, (int)(liveView.Bitmap.Width * ratio));
                 using (var imageStream = new System.IO.MemoryStream())
                 {
-                    await image.CompressAsync(Bitmap.CompressFormat.Jpeg, 70, imageStream);
+                    await image.CompressAsync(Bitmap.CompressFormat.Png, 40, imageStream);
                     image.Recycle();
                     imageBytes = imageStream.ToArray();
                 }

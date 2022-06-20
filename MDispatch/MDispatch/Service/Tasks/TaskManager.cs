@@ -1,17 +1,21 @@
-﻿using System.Threading.Tasks;
-using MDispatch.Service.Net;
+﻿using MDispatch.Service.Utils;
+using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace MDispatch.Service.Tasks
 {
     public class TaskManager
     {
+        private static IUtilsService _utils;
         public static bool isWorkTask = true;
 
         public static async void CommandToDo(string nameCommand, params object[] tasks)
         {
             ITask task = null;
+            if (_utils is null)
+                _utils = DependencyService.Get<IUtilsService>();
 
-            await Task.Run(() => Utils.CheckNet());
+            await Task.Run(() => _utils.CheckNet());
             if (!App.isNetwork)
             {
                 return;

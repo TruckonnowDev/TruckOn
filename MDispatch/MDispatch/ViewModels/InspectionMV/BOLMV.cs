@@ -1,32 +1,40 @@
-﻿using System.Threading.Tasks;
-using MDispatch.Helpers;
+﻿using MDispatch.Helpers;
 using MDispatch.Models;
 using MDispatch.NewElement.ToastNotify;
 using MDispatch.Service;
-using MDispatch.Service.Helpers;
-using MDispatch.Service.Net;
-using MDispatch.View;
+using MDispatch.Service.GlobalHelper;
+using MDispatch.Service.HelperView;
+using MDispatch.Service.ManagerDispatchMob;
+using MDispatch.Service.Utils;
 using MDispatch.View.GlobalDialogView;
 using MDispatch.View.Inspection;
 using Plugin.Settings;
 using Prism.Mvvm;
 using Rg.Plugins.Popup.Services;
+using System.Threading.Tasks;
 using Xamarin.Forms;
-using static MDispatch.Service.ManagerDispatchMob;
+using static MDispatch.Service.ManagerDispatchMob.ManagerDispatchMobService;
 
 namespace MDispatch.ViewModels.InspectionMV
 {
-    public class BOLMV : BindableBase
+    public class BOLMV : BaseViewModel
     {
         private BOLPage bOLPage = null;
-        public ManagerDispatchMob managerDispatchMob = null;
-        public INavigation Navigation { get; set; } 
         public InitDasbordDelegate initDasbordDelegate = null;
-
-        public BOLMV(ManagerDispatchMob managerDispatchMob, string idShip, INavigation navigation, InitDasbordDelegate initDasbordDelegate, BOLPage bOLPage)
+        private readonly IGlobalHelperService _globalHelpersService;
+        private readonly IHelperViewService _helperView;
+        private readonly IManagerDispatchMobService _managerDispatchMob;
+        public BOLMV(
+            IManagerDispatchMobService managerDispatchMob, 
+            string idShip, INavigation navigation, 
+            InitDasbordDelegate initDasbordDelegate, 
+            BOLPage bOLPage)
+            : base(navigation)
         {
-            this.managerDispatchMob = managerDispatchMob;
-            Navigation = navigation;
+            _helperView = DependencyService.Get<IHelperViewService>();
+            _globalHelpersService = DependencyService.Get<IGlobalHelperService>();
+            managerDispatchMob = DependencyService.Get<IManagerDispatchMobService>();
+            this._managerDispatchMob = managerDispatchMob;
             IdShip = idShip;
             this.initDasbordDelegate = initDasbordDelegate;
             this.bOLPage = bOLPage;
@@ -58,12 +66,11 @@ namespace MDispatch.ViewModels.InspectionMV
             set => SetProperty(ref email, value);
         }
 
-        [System.Obsolete]
         private async void InitShipping()
         {
             bool isNavigationMany = false;
             IsLoad = true;
-            if (Navigation.NavigationStack.Count > 2)
+            if (_popupNavigation.PopupStack.Count > 2)
             {
                 isNavigationMany = true;
             }
@@ -71,33 +78,33 @@ namespace MDispatch.ViewModels.InspectionMV
             string description = null;
             int state = 0;
             Shipping shipping1 = null;
-            await Task.Run(() => Utils.CheckNet());
+            await Task.Run(() => _utils.CheckNet());
             if (App.isNetwork)
             {
                 await Task.Run(() =>
                 {
-                    state = managerDispatchMob.GetShippingPhoto(token, IdShip, ref description, ref shipping1);
+                    state = _managerDispatchMob.GetShippingPhoto(token, IdShip, ref description, ref shipping1);
                 });
                 if (state == 1)
                 {
-                    GlobalHelper.OutAccount();
-                    await PopupNavigation.PushAsync(new Alert(description, null));
+                    _globalHelpersService.OutAccount();
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
                     if (isNavigationMany)
                     {
-                        await PopupNavigation.RemovePageAsync(PopupNavigation.PopupStack[0]);
+                        await _popupNavigation.RemovePageAsync(_popupNavigation.PopupStack[0]);
                         isNavigationMany = false;
                     }
                     //await PopupNavigation.PushAsync(new Errror("Error", null));
-                    HelpersView.CallError(description);
+                    _helperView.CallError(description);
                 }
                 else if (state == 3)
                 {
                     if (isNavigationMany)
                     {
-                        await PopupNavigation.RemovePageAsync(PopupNavigation.PopupStack[0]);
+                        await _popupNavigation.RemovePageAsync(_popupNavigation.PopupStack[0]);
                         isNavigationMany = false;
                     }
                     Shipping = shipping1;
@@ -107,39 +114,38 @@ namespace MDispatch.ViewModels.InspectionMV
                 {
                     if (isNavigationMany)
                     {
-                        await PopupNavigation.RemovePageAsync(PopupNavigation.PopupStack[0]);
+                        await _popupNavigation.RemovePageAsync(_popupNavigation.PopupStack[0]);
                         isNavigationMany = false;
                     }
                     //await PopupNavigation.PushAsync(new Errror("Technical work on the service", null));
-                    HelpersView.CallError(LanguageHelper.TechnicalWorkServiceAlert);
+                    _helperView.CallError(LanguageHelper.TechnicalWorkServiceAlert);
                 }
                 IsLoad = false;
             }
         }
 
-        [System.Obsolete]
         public async Task SendLiabilityAndInsuranceEmaile()
         {
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
             string description = null;
             int state = 0;
-            await Task.Run(() => Utils.CheckNet());
+            await Task.Run(() => _utils.CheckNet());
             if (App.isNetwork)
             {
                 await Task.Run(() =>
                 {
-                    state = managerDispatchMob.AskWork("SendBolMail", token, IdShip, Email, ref description);
+                    state = _managerDispatchMob.AskWork("SendBolMail", token, IdShip, Email, ref description);
                     initDasbordDelegate.Invoke();
                 });
                 if (state == 1)
                 {
-                    GlobalHelper.OutAccount();
-                    await PopupNavigation.PushAsync(new Alert(description, null));
+                    _globalHelpersService.OutAccount();
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
-                    await PopupNavigation.PushAsync(new Alert(description, null));
-                    HelpersView.CallError(description);
+                    await _popupNavigation.PushAsync(new Alert(description, null));
+                    _helperView.CallError(description);
                 }
                 else if (state == 3)
                 {
@@ -148,7 +154,7 @@ namespace MDispatch.ViewModels.InspectionMV
                 else if (state == 4)
                 {
                     //await PopupNavigation.PushAsync(new Errror("Technical work on the service", null));
-                    HelpersView.CallError(LanguageHelper.TechnicalWorkServiceAlert);
+                    _helperView.CallError(LanguageHelper.TechnicalWorkServiceAlert);
                 }
             }
         }

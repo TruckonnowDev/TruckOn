@@ -23,7 +23,7 @@
 	<key>CFBundleDisplayName</key>
 	<string>Truckonnow</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.companyname.MDispatch</string>
+	<string>etc.truckonnow</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This application requires access to the geolocation of driver tracking in the workplace.</string>
 	<key>UILaunchStoryboardName</key>

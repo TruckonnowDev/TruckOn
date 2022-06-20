@@ -1,14 +1,10 @@
 ﻿using MDispatch.Models;
-using MDispatch.Service;
-using MDispatch.Service.Helpers;
-using MDispatch.View.GlobalDialogView;
-using MDispatch.View.PageApp;
-using Rg.Plugins.Popup.Services;
+using MDispatch.Service.HelperView;
+using MDispatch.Service.ManagerDispatchMob;
 using System;
-
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using static MDispatch.Service.ManagerDispatchMob;
+using static MDispatch.Service.ManagerDispatchMob.ManagerDispatchMobService;
 
 namespace MDispatch.View.Inspection.Delyvery
 {
@@ -16,9 +12,11 @@ namespace MDispatch.View.Inspection.Delyvery
     public partial class ClientStart : ContentPage
     {
         private AskForUserDelyvery askForUserDelyvery = null;
+        private readonly IHelperViewService _helperView;
 
-        public ClientStart(ManagerDispatchMob managerDispatchMob, string idShip, InitDasbordDelegate initDasbordDelegate, string onDeliveryToCarrier, string totalPaymentToCarrier, VehiclwInformation vehiclwInformation, GetShiping getShiping, GetVechicleDelegate getVechicleDelegate, bool isproplem)
+        public ClientStart(IManagerDispatchMobService managerDispatchMob, string idShip, InitDasbordDelegate initDasbordDelegate, string onDeliveryToCarrier, string totalPaymentToCarrier, VehiclwInformation vehiclwInformation, GetShiping getShiping, GetVechicleDelegate getVechicleDelegate, bool isproplem)
         {
+            _helperView = DependencyService.Get<IHelperViewService>();
             askForUserDelyvery = new AskForUserDelyvery(managerDispatchMob, idShip, initDasbordDelegate, onDeliveryToCarrier, totalPaymentToCarrier, vehiclwInformation, getShiping, getVechicleDelegate, isproplem);
             InitializeComponent();
         }
@@ -38,13 +36,13 @@ namespace MDispatch.View.Inspection.Delyvery
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            HelpersView.InitAlert(body);
+            _helperView.InitAlert(body);
         }
 
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            HelpersView.Hidden();
+            _helperView.Hidden();
         }
     }
 }

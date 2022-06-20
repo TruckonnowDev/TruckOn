@@ -1,6 +1,7 @@
 ﻿using MDispatch.Models;
 using MDispatch.Service;
-using MDispatch.Service.Helpers;
+using MDispatch.Service.HelperView;
+using MDispatch.Service.ManagerDispatchMob;
 using MDispatch.ViewModels.PageAppMV;
 using System;
 using System.Threading.Tasks;
@@ -13,10 +14,12 @@ namespace MDispatch.View.PageApp
 	public partial class EditPicupInfo : ContentPage
 	{
         private EditPickedupMV editPickedupMV = null;
+        private readonly IHelperViewService _helperView;
 
-        public EditPicupInfo (ManagerDispatchMob managerDispatchMob, Shipping shipping)
+        public EditPicupInfo (IManagerDispatchMobService managerDispatchMob, Shipping shipping)
 		{
-            this.editPickedupMV = new EditPickedupMV(managerDispatchMob, shipping) { Navigationn = Navigation};
+            _helperView = DependencyService.Get<IHelperViewService>();
+            this.editPickedupMV = new EditPickedupMV(managerDispatchMob, shipping, Navigation);
             InitializeComponent ();
             BindingContext = this.editPickedupMV;
             Init(shipping);
@@ -300,13 +303,13 @@ namespace MDispatch.View.PageApp
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            HelpersView.InitAlert(body);
+            _helperView.InitAlert(body);
         }
 
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            HelpersView.Hidden();
+            _helperView.Hidden();
         }
     }
 }

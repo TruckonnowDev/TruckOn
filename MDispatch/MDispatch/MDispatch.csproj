@@ -25,6 +25,7 @@
     <PackageReference Include="Plugin.Badge" Version="2.3.1" />
     <PackageReference Include="Plugin.Permissions" Version="6.0.1" />
     <PackageReference Include="Prism.Forms" Version="8.1.97" />
+    <PackageReference Include="Refractored.MvvmHelpers" Version="1.6.2" />
     <PackageReference Include="RestSharp" Version="106.12.0" />
     <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
     <PackageReference Include="Xam.Plugin.Connectivity" Version="3.2.0" />
@@ -65,6 +66,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="View\Popups\PlateTrailerWritePopupView.xaml.cs">
+      <DependentUpon>PlateTrailerWritePopupView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="View\Popups\ViewPhotoPopupView.xaml.cs">
+      <DependentUpon>ViewPhotoPopupView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="View\Popups\WarningPopupView.xaml.cs">
+      <DependentUpon>WarningPopupView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="View\Popups\WarningPopupView.xaml.cs">
+      <DependentUpon>WarningPopupView.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Vidget\View\PlateTruckWrite.xaml.cs">
       <DependentUpon>PlateTruckWrite.xaml</DependentUpon>
     </Compile>
@@ -118,9 +131,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Service\TimeSync\" />
-    <Folder Include="Service\HelpersViews\" />
-    <Folder Include="Service\RequestQueue\" />
     <Folder Include="NewElement\AuntificationID\" />
     <Folder Include="NewElement\Effect\" />
     <Folder Include="NewElement\FrameCusstomise\" />

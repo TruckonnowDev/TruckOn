@@ -1,8 +1,7 @@
 ﻿using MDispatch.Helpers;
 using MDispatch.Models;
-using MDispatch.Service;
-using MDispatch.Service.Helpers;
-using MDispatch.Service.Net;
+using MDispatch.Service.HelperView;
+using MDispatch.Service.ManagerDispatchMob;
 using MDispatch.Vidget.VM;
 using MDispatch.View.GlobalDialogView;
 using MDispatch.ViewModels.TAbbMV.DialogAsk;
@@ -10,29 +9,30 @@ using Plugin.DeviceInfo;
 using Plugin.DeviceInfo.Abstractions;
 using Plugin.Settings;
 using Prism.Commands;
-using Prism.Mvvm;
 using Rg.Plugins.Popup.Services;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
-using static MDispatch.Service.ManagerDispatchMob;
+using static MDispatch.Service.ManagerDispatchMob.ManagerDispatchMobService;
 
 namespace MDispatch.ViewModels.TAbbMV
 {
-    public class ActiveMV : BindableBase
+    public class ActiveMV : BaseViewModel
     {
-        public ManagerDispatchMob managerDispatchMob = null;
-        public INavigation Navigation { get; set; }
+        public readonly IManagerDispatchMobService managerDispatchMob;
         public DelegateCommand RefreshCommand { get; set; }
         public DelegateCommand GoToInspectionDriveCommand { get; set; }
         public InitDasbordDelegate initDasbordDelegate;
+        private readonly IHelperViewService _helperView;
 
-        [Obsolete]
-        public ActiveMV(ManagerDispatchMob managerDispatchMob, INavigation navigation)
+        public ActiveMV(
+            IManagerDispatchMobService managerDispatchMob, 
+            INavigation navigation)
+            :base(navigation)
         {
-            Navigation = navigation;
+            _helperView = DependencyService.Get<IHelperViewService>();
             Shippings = new List<Shipping>();
             initDasbordDelegate = Init;
             this.managerDispatchMob = managerDispatchMob;
@@ -71,7 +71,6 @@ namespace MDispatch.ViewModels.TAbbMV
             Init();
         }
 
-        [Obsolete]
         public async void Init()
         {
             IsRefr = true;
@@ -79,7 +78,7 @@ namespace MDispatch.ViewModels.TAbbMV
             string description = null;
             int state = 0;
             List<Shipping> shippings = null;
-            await Task.Run(() => Utils.CheckNet());
+            await Task.Run(() => _utils.CheckNet());
             if (App.isNetwork)
             {
                 await Task.Run(() =>
@@ -88,38 +87,37 @@ namespace MDispatch.ViewModels.TAbbMV
                 });
                 if(state == 1)
                 {
-                    GlobalHelper.OutAccount();
-                    await PopupNavigation.PushAsync(new Alert(description, null));
+                    _globalHelperService.OutAccount();
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                     //HelpersView.CallError(description);
                 }
                 else if (state == 2)
                 {
                     //await PopupNavigation.PushAsync(new Errror(description, null));
-                    HelpersView.CallError(description);
+                    _helperView.CallError(description);
                 }
                 else if (state == 3)
                 {
                     Shippings = shippings;
-                    HelpersView.Hidden();
+                    _helperView.Hidden();
                     await Task.Run(() =>
                     {
                         UnTimeOfInspection = new UnTimeOfInspection(description);
                         if (!UnTimeOfInspection.ISMaybiInspection)
                         {
-                            Device.BeginInvokeOnMainThread(async () => await PopupNavigation.PushAsync(new AskHint(this)));
+                            Device.BeginInvokeOnMainThread(async () => await _popupNavigation.PushAsync(new AskHint(this)));
                         }
                     });
                 }
                 else if (state == 4)
                 {
                     //await PopupNavigation.PushAsync(new Errror("Technical work on the service", null));
-                    HelpersView.CallError(LanguageHelper.TechnicalWorkServiceAlert);
+                    _helperView.CallError(LanguageHelper.TechnicalWorkServiceAlert);
                 }
             }
             IsRefr = false;
         }
 
-        [Obsolete]
         public async void GoToInspectionDrive()
         {
             IsRefr = true;
@@ -131,7 +129,7 @@ namespace MDispatch.ViewModels.TAbbMV
             int indexPhoto = 1;
             int state = 0;
             TruckCar truckCar = null;
-            await Task.Run(() => Utils.CheckNet());
+            await Task.Run(() => _utils.CheckNet());
             if (App.isNetwork)
             {
                 await Task.Run(() =>
@@ -140,21 +138,21 @@ namespace MDispatch.ViewModels.TAbbMV
                 });
                 if (state == 1)
                 {
-                    GlobalHelper.OutAccount();
-                    await PopupNavigation.PushAsync(new Alert(description, null));
+                    _globalHelperService.OutAccount();
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 if (state == 2)
                 {
                     //PopupNavigation.PushAsync(new Alert(description, null));
-                    HelpersView.CallError(description);
+                    _helperView.CallError(description);
                 }
                 else if (state == 3)
                 {
-                    HelpersView.Hidden();
+                    _helperView.Hidden();
                     if (isInspection)
                     {
                         Init();
-                        await PopupNavigation.PushAsync(new Alert(LanguageHelper.InspectionTodayAlert, null));
+                        await _popupNavigation.PushAsync(new Alert(LanguageHelper.InspectionTodayAlert, null));
                         //Add Commplet Alert
                     }
                     else
@@ -165,7 +163,7 @@ namespace MDispatch.ViewModels.TAbbMV
                 else if (state == 4)
                 {
                     //await PopupNavigation.PushAsync(new Errror("Technical work on the service", null));
-                    HelpersView.CallError(LanguageHelper.TechnicalWorkServiceAlert);
+                    _helperView.CallError(LanguageHelper.TechnicalWorkServiceAlert);
                 }
             }
             IsRefr = false;

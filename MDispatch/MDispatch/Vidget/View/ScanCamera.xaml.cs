@@ -4,6 +4,7 @@ using System;
 using Xamarin.Forms.Xaml;
 using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
+using MDispatch.View.Popups;
 
 namespace MDispatch.Vidget.View
 {
@@ -39,11 +40,11 @@ namespace MDispatch.Vidget.View
             await Navigation.PopAsync();
             if (fullPhotoTruckVM.PlateTruck == null || fullPhotoTruckVM.PlateTruck == "")
             {
-                await PopupNavigation.PushAsync(new PlateTruckWrite(fullPhotoTruckVM));
+                await PopupNavigation.Instance.PushAsync(new PlateTruckWrite(fullPhotoTruckVM));
             }
             else if (fullPhotoTruckVM.PlateTrailer == null || fullPhotoTruckVM.PlateTrailer == "")
             {
-                await PopupNavigation.PushAsync(new PlateTrailerWrite(fullPhotoTruckVM));
+                await PopupNavigation.Instance.PushAsync(new MDispatch.View.Popups.PlateTrailerWritePopupView(fullPhotoTruckVM));
             }
         }
     }

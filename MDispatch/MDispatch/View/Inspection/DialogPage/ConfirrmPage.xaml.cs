@@ -28,19 +28,17 @@ namespace MDispatch.View.AskPhoto.DialogPage
             dropDwnCar.ItemsSource = new List<string>(infoOrderMV.Shipping.VehiclwInformations.Select(v => v.Make));
         }
 
-        [Obsolete]
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            await PopupNavigation.PopAsync(true);
+            await PopupNavigation.Instance.PopAsync(true);
         }
 
-        [Obsolete]
         private async void Button_Clicked_1(object sender, EventArgs e)
         {
             if(selectedIndexDropDwn != -1)
             {
                 infoOrderMV.ToStartInspection();
-                await PopupNavigation.PopAsync(true);
+                await PopupNavigation.Instance.PopAsync(true);
             }
             else
             {

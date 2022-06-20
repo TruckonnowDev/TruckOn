@@ -2,28 +2,31 @@
 using MDispatch.Models;
 using MDispatch.NewElement.ToastNotify;
 using MDispatch.Service;
-using MDispatch.Service.Helpers;
-using MDispatch.Service.Net;
+using MDispatch.Service.HelperView;
+using MDispatch.Service.ManagerDispatchMob;
 using MDispatch.View;
 using MDispatch.View.GlobalDialogView;
 using Plugin.Settings;
 using Prism.Commands;
-using Prism.Mvvm;
 using Rg.Plugins.Popup.Services;
-using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace MDispatch.ViewModels.PageAppMV
 {
-    public class EditDeliveryInformationMV : BindableBase
+    public class EditDeliveryInformationMV : BaseViewModel
     {
-        public ManagerDispatchMob managerDispatchMob = null;
+        public readonly IManagerDispatchMobService managerDispatchMob;
         public DelegateCommand SavePikedUpCommand { get; set; }
-        public INavigation Navigationn { get; set; }
+        private readonly IHelperViewService _helperView;
 
-        public EditDeliveryInformationMV(ManagerDispatchMob managerDispatchMob, Shipping shipping)
+        public EditDeliveryInformationMV(
+            IManagerDispatchMobService managerDispatchMob, 
+            Shipping shipping,
+            INavigation navigation)
+            : base(navigation)
         {
+           _helperView = DependencyService.Get<IHelperViewService>();
             this.managerDispatchMob = managerDispatchMob;
             Shipping = shipping;
             SavePikedUpCommand = new DelegateCommand(SaveDelivery);
@@ -36,14 +39,13 @@ namespace MDispatch.ViewModels.PageAppMV
             set => SetProperty(ref shipping, value);
         }
 
-        [System.Obsolete]
         private async void SaveDelivery()
         {
-            await PopupNavigation.PushAsync(new LoadPage(), true);
+            await _popupNavigation.PushAsync(new LoadPage(), true);
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
             string description = null;
             int state = 0;
-            await Task.Run(() => Utils.CheckNet());
+            await Task.Run(() => _utils.CheckNet());
             if (App.isNetwork)
             {
                 await Task.Run(() =>
@@ -51,16 +53,16 @@ namespace MDispatch.ViewModels.PageAppMV
                     state = managerDispatchMob.OrderOneWork("Save", Shipping.Id, token, Shipping.idOrder, Shipping.NameD, Shipping.ContactNameD, Shipping.AddresD,
                     Shipping.CityD, Shipping.StateD, Shipping.ZipD, Shipping.PhoneD, Shipping.EmailD, "Delivery", ref description);
                 });
-                await PopupNavigation.PopAsync(true);
+                await _popupNavigation.PopAsync(true);
                 if (state == 1)
                 {
-                    GlobalHelper.OutAccount();
-                    await PopupNavigation.PushAsync(new Alert(description, null));
+                    _globalHelperService.OutAccount();
+                    await _popupNavigation.PushAsync(new Alert(description, null));
                 }
                 else if (state == 2)
                 {
                     //await PopupNavigation.PushAsync(new Errror(description, Navigationn));
-                    HelpersView.CallError(description);
+                    _helperView.CallError(description);
                 }
                 else if (state == 3)
                 {
@@ -69,12 +71,12 @@ namespace MDispatch.ViewModels.PageAppMV
                 else if (state == 4)
                 {
                     //await PopupNavigation.PushAsync(new Errror("Technical work on the service", Navigationn));
-                    HelpersView.CallError(LanguageHelper.TechnicalWorkServiceAlert);
+                    _helperView.CallError(LanguageHelper.TechnicalWorkServiceAlert);
                 }
             }
             else
             {
-                await PopupNavigation.PopAsync(true);
+                await _popupNavigation.PopAsync(true);
             }
         }
     }

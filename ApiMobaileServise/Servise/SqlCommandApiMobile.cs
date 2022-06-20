@@ -867,7 +867,10 @@ namespace ApiMobaileServise.Servise
 
         public bool CheckEmailAndPsw(string email, string password)
         {
-            return context.Drivers.FirstOrDefault(d => d.EmailAddress == email && d.Password == password && !d.IsFired) != null ? true : false;
+            var drivers = context.Drivers.ToList();
+            var driver = context.Drivers.FirstOrDefault(d => d.EmailAddress == email && d.Password == password);
+            var response = context.Drivers.FirstOrDefault(d => d.EmailAddress == email && d.Password == password && !d.IsFired) != null ? true : false;
+            return response;
         }
 
         public void SavePikedUpInDb(string id, string idOrder, string name, string contactName, string address, string city, string state, string zip, string phone, string email)
@@ -909,7 +912,7 @@ namespace ApiMobaileServise.Servise
         public async void SavePaymentsInDb(string id, string payment, string paymentTeams)
         {
             Shipping shipping = context.Shipping.FirstOrDefault(s => s.Id == id);
-            s => 
+            //s => 
             if (shipping != null)
             {
                 shipping.PriceListed = payment;

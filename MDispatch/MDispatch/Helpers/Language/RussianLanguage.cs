@@ -85,7 +85,7 @@ namespace MDispatch.Helpers.Language
 
         public string ContinuingInspectionDelivery => "Продолжение осмотра при доставке";
         public string ContinuingInspectionPickedUp => "Постоянное осмотр Погрузки";
-        public string StartInspectionDelivery => "Начать инспекци доставку";
+        public string StartInspectionDelivery => "Начать Инспекцию на Доставке";
         public string StartInspectionPickedUp => "Начать осмотр Полученния";
 
         public string HintPhotoItemsPage => "Пожалуйста, сфотографируйте предметы, которые перевозятся на машине.";
@@ -94,9 +94,9 @@ namespace MDispatch.Helpers.Language
         public string HintPhotoSeatBeltsPage => "Сфотографируйте один из ремней безопасности, но тот, который уже был застегнут";
 
         public string TitleAskQuestionPage => "Вопросы осмотра";
-        public string ItemNextPage => "Следующий";
+        public string ItemNextPage => "Дальше";
 
-        public string AskBlockWeatherTitle => "Погодные условияx";
+        public string AskBlockWeatherTitle => "Погодные условия";
         public string ClearAnswer => "Солнечно";
         public string RainAnswer => "Дождь";
         public string SnowAnswer => "Снег";
@@ -108,10 +108,10 @@ namespace MDispatch.Helpers.Language
 
         public string AskBlockSafeLoctionTitle => "Безопасное место доставки";
 
-        public string AskBlockFarFromTrailerTitle => "Как далеко от трейлера?";
-        public string PlaceholderFarFromTrailerAnswer => "Пожалуйста, укажите, как далеко вы находитесь от трейлера";
+        public string AskBlockFarFromTrailerTitle => "Как далеко вы от трейлера?";
+        public string PlaceholderFarFromTrailerAnswer => "Укажите в ft.";
 
-        public string AskBlockGaveKeysTitle => "Пожалуйста, введите, как далеко вы от трейлера";
+        public string AskBlockGaveKeysTitle => "Пожалуйста, укажите кто отдал вам машину и ключи";
         public string PlaceholderGaveKeysAnswer => "Введите полное имя";
 
         public string AskBlockEnoughSpaceTitle => "Достаточно места для фотографий?";
@@ -144,7 +144,7 @@ namespace MDispatch.Helpers.Language
         public string NextBtnText => "Следующий";
         public string AddPhotoText => "Добавить фото";
 
-        public string AskBlockJumpedVehicleTitle => "Вы исполузували кабель чтобы запустить машину?";
+        public string AskBlockJumpedVehicleTitle => "Вы использовали кабель чтобы запустить авто?";
 
         public string AskBlockMusteMileageTitle => "Точный пробег после загрузки (необходимо ввести мили)";
         public string PlaceholderMusteMileage => "Пробег";
@@ -198,7 +198,7 @@ namespace MDispatch.Helpers.Language
         public string AskBlockAccountPasswordTitle => "Введите пароль своей учетной записи, чтобы продолжить";
         public string PlaceholderAccountPassword => "Введите пароль";
 
-        public string AskBlockDriverPayTitle => "Сделал плату водителя для перевозки?";
+        public string AskBlockDriverPayTitle => "Клиент оплатил перевозку?";
         public string DescriptionDriverPayTitle => "В ближайшее время диспетчер увидит проблему";
 
         public string TypeInfo => "Тип: ";
@@ -247,7 +247,7 @@ namespace MDispatch.Helpers.Language
 
         public string AskBlockRateCustomerTitle => "Оцените клиента";
 
-        public string ComleteInspactinBtnText => "Завершит осмотр";
+        public string ComleteInspactinBtnText => "Завершить Осмотр";
 
         public string TitleBlockInspaction => "Осмотр водителя";
         public string TimeInspactionText => "Время до осмотра: ";
@@ -274,7 +274,7 @@ namespace MDispatch.Helpers.Language
 
         public string AskBlockTruckLockedTitle => "Машина заблокирована?";
 
-        public string AskBlockPictureIdPersonTitle => "Пожалуйста, сфотографируйте идентификатор человека, принимающего доставку";
+        public string AskBlockPictureIdPersonTitle => "Пожалуйста, сфотографируйте права человека принимающего доставку";
 
         public string AskBlockTrailerLockedTitle => "Все замки на прицепе заблокированы?";
 
@@ -286,21 +286,21 @@ namespace MDispatch.Helpers.Language
 
         public string AskBlockVehicleStartsTitle => "Автомобиль завелся?";
         public string AskBlockVehicleStarts1Title => "Как ты завел машину?";
-        public string JumpAnswer => "Прыгать";
+        public string JumpAnswer => "Портативный Аккумулятор";
         public string CablesAnswer => "Кабели";
         public string RolledOutAnswer => "Выкатил";
 
         public string AskBlockDoesVehicleDrivesTitle => "Автомобиль движется?";
 
-        public string AskBlockAnyoneHelpingUnloadTitle => "Кто-нибудь помогает тебе разгрузиться?";
+        public string AskBlockAnyoneHelpingUnloadTitle => "Кто-то помогает вам разгрузиться?";
 
-        public string AskBlockSomeoneElseUnloadedVehicleTitle => "Кто-то еще разгрузил автомобиль за вас?";
+        public string AskBlockSomeoneElseUnloadedVehicleTitle => "Кто-то разгрузил авто за вас?";
 
         public string AskBlockVehicleParkedSafeLocationTitle => "Автомобиль припаркован в безопасном месте?";
 
         public string AskBlockTimeOfDeliveryTitle => "Время доставки";
 
-        public string InfoKeysGiveDriver => "Пожалуйста, удалите все предметы доставки и оставьте ключи при себе";
+        public string InfoKeysGiveDriver => "Пожалуйста, разгрузите авто и все предметы доставки, оставьте ключи при себе до оплаты!";
         public string AskBlockDeliveryCustomerInspectCarTitle => "Попросите клиента осмотреть машину";
         public string IConfirmTheInspectionBtnText => "Подтверждаю осмотр";
 
@@ -318,8 +318,8 @@ namespace MDispatch.Helpers.Language
 
         public string AskBlockRateDriverTitle => "Оценить водителя";
 
-        public string VehicleInspectionPikedUp => "Техосмотр автомобиля: Piked Up";
-        public string VehicleInspectionDelivery => "Техосмотр автомобил: Delivery";
+        public string VehicleInspectionPikedUp => "Начать Осмотр на Получении";
+        public string VehicleInspectionDelivery => "Начать Осмотр на Доставке";
         public string ThereAreNoVehiclesInThisOrder => "В этом заказе нет транспортных средств";
 
         public string TitelSelectPickPhoto => "Выберете вариант";

@@ -58,7 +58,7 @@ namespace MDispatch.ViewModels.InspectionMV.DelyveryMV
         private async void Init()
         {
             await Car.OrintableScreen(InderxPhotoInspektion + 1);
-            FolderOffline folderOffline = await managerDispatchMob.GetPhotoInspectionByOptinsInDB(IdShip, VehiclwInformation.Id, FolderOflineType.PhotoInspaction, InspactionType.PikedUp, InderxPhotoInspektion);
+            FolderOffline folderOffline = await managerDispatchMob.GetPhotoInspectionByOptinsInDB(IdShip, VehiclwInformation.Id, FolderOflineType.PhotoInspaction, InspactionType.Delivery, InderxPhotoInspektion);
             if(folderOffline != null)
             {
                 AllSourseImage = new ObservableCollection<ImageSource>();
@@ -483,7 +483,7 @@ namespace MDispatch.ViewModels.InspectionMV.DelyveryMV
                 Index = InderxPhotoInspektion,
                 FolderOflineType = FolderOflineType.PhotoInspaction,
                 Json = JsonConvert.SerializeObject(PhotoInspection),
-                InspactionType = InspactionType.PikedUp,
+                InspactionType = InspactionType.Delivery,
             });
         }
 

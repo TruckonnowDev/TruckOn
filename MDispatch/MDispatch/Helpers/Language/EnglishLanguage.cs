@@ -91,7 +91,7 @@
         public string HintPhotoInTruckPage => "Try to photograph the item exactly on the layout";
         public string HintPhotoSeatBeltsPage => "Take a picture of one of the safety belt, but the same one that has already been photographed";
 
-        public string TitleAskQuestionPage => "Question inspection";
+        public string TitleAskQuestionPage => "Customer Information";
         public string ItemNextPage => "Next";
 
         public string AskBlockWeatherTitle => "Weather conditions";
@@ -178,7 +178,7 @@
 
         public string ContinuetnBtnText => "Continue";
 
-        public string TitleBillOfLandingPage => "BILL OF LADING";
+        public string TitleBillOfLandingPage => "BOLL";
 
         public string TitleOriginInfo => "Origin";
         public string TitleDestinatiinInfo => "Destination";
@@ -210,7 +210,7 @@
 
         public string DescriptionDiscount => "Would you like to get 10% off from next load just for giving us a good revue and filling out a short survey?";
 
-        public string TitleFeedBackPage => "Feed Back";
+        public string TitleFeedBackPage => "Feedback";
 
         public string AskBlockSatisfiedServiceTitle => "How are you satisfied with a service?";
 

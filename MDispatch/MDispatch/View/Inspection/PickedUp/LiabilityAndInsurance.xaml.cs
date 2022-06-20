@@ -385,7 +385,7 @@ namespace MDispatch.View.Inspection.PickedUp
                 case "Check":
                     paymmant = new CheckPaymmant(this);
                     break;
-                case "Cradit card":
+                case "Electronic Money Transfer":
                     paymmant = new CraditCardPaymant(this);
                     break;
             }

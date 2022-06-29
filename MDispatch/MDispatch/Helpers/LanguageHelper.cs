@@ -400,7 +400,6 @@ namespace MDispatch.Helpers
                         break;
                     }
             }
-            Language = new EnglishLanguage();
         }
     }
 }

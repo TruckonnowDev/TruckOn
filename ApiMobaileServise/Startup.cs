@@ -25,7 +25,7 @@ namespace ApiMobaileServise
         {
             services.Configure<FormOptions>(options =>
             {
-                options.ValueCountLimit = int.MaxValue; // 200 items max
+                options.ValueCountLimit = 200; // 200 items max
                 options.ValueLengthLimit = 1024 * 1024 * 500; // 100MB max len form data
             });
             System.Net.ServicePointManager.DefaultConnectionLimit = 50;

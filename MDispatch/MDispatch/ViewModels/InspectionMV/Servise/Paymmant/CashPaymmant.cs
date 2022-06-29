@@ -6,6 +6,7 @@ using MDispatch.View.Inspection.PickedUp;
 using Rg.Plugins.Popup.Services;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace MDispatch.ViewModels.InspectionMV.Servise.Paymmant
@@ -22,7 +23,7 @@ namespace MDispatch.ViewModels.InspectionMV.Servise.Paymmant
             string fontBold = ((OnPlatform<string>)Application.Current.Resources["OpenSans-Bold"]).Platforms.ToList().First(p => p.Platform.FirstOrDefault(pp => pp == Device.RuntimePlatform) != null).Value.ToString();
             string fontRegular = ((OnPlatform<string>)Application.Current.Resources["OpenSans-Regular"]).Platforms.ToList().First(p => p.Platform.FirstOrDefault(pp => pp == Device.RuntimePlatform) != null).Value.ToString();
             Entry entry = new Entry();
-            Button button = new Button();
+            //Button button = new Button();
             FlexLayout flexLayout = new FlexLayout();
 
             entry.Keyboard = Keyboard.Numeric;
@@ -40,19 +41,19 @@ namespace MDispatch.ViewModels.InspectionMV.Servise.Paymmant
                 entry.HeightRequest = 40;
             }
 
-            button.Text = "Paid";
-            button.BackgroundColor = Color.White;
-            button.TextColor = Color.FromHex("#2C5DEB"); ;
-            button.Clicked += ClickBtn;
-            button.FontSize = 16;
-            button.FontFamily = fontBold;
-            button.HeightRequest = 19;
-            button.Padding = new Thickness(0);
+            //button.Text = "Paid";
+            //button.BackgroundColor = Color.White;
+            //button.TextColor = Color.FromHex("#2C5DEB"); ;
+            //button.Clicked += ClickBtn;
+            //button.FontSize = 16;
+            //button.FontFamily = fontBold;
+            //button.HeightRequest = 19;
+            //button.Padding = new Thickness(0);
 
             stackLayout = new StackLayout();
             stackLayout.Spacing = 10;
             stackLayout.Children.Add(entry);
-            flexLayout.Children.Add(button);
+            //flexLayout.Children.Add(button);
             stackLayout.Children.Add(flexLayout);
             return stackLayout;
         }
@@ -127,6 +128,22 @@ namespace MDispatch.ViewModels.InspectionMV.Servise.Paymmant
             {
                 IsAskPaymmant = false;
             }
+        }
+
+        public async Task Pay()
+        {
+            if (((Entry)stackLayout.Children[0]).Text != null && ((Entry)stackLayout.Children[0]).Text.Length > 0)
+            {
+                isIamPay = true;
+                stackLayout.IsEnabled = false;
+                //await PopupNavigation.PushAsync(new Alert($"{LanguageHelper.GiveMoneyAlert} {((Entry)stackLayout.Children[0]).Text}", null));
+            }
+            else
+            {
+                isIamPay = false;
+                //await PopupNavigation.PushAsync(new Alert(LanguageHelper.PaymentForDeliveryAlert, null));
+            }
+            CheckIsAskPaymmant();
         }
     }
 }

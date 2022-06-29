@@ -53,8 +53,8 @@ namespace MDispatch.View.Inspection.PickedUp
             {
                 liabilityAndInsuranceMV.What_form_of_payment_are_you_using_to_pay_for_transportation = "Biling";
                 isAsk2 = true;
-                instructionL.Text = OnDeliveryToCarrier;
-                bilingPay.IsVisible = true;
+                //instructionL.Text = OnDeliveryToCarrier;
+                //bilingPay.IsVisible = true;
             }
         }
 
@@ -76,6 +76,8 @@ namespace MDispatch.View.Inspection.PickedUp
             }
             if (isSignatureAsk && isAsk2)
             {
+                if (!Paymmant.IsAskPaymmant)
+                    await Paymmant.Pay();
                 liabilityAndInsuranceMV.SaveSigAndMethodPay();
             }
             else
@@ -479,6 +481,8 @@ namespace MDispatch.View.Inspection.PickedUp
         [Obsolete]
         private async void Button_Clicked_1(object sender, EventArgs e)
         {
+            if (!Paymmant.IsAskPaymmant)
+                await Paymmant.Pay();
             isAsk3 = true;
             if (Paymmant != null)
             {
@@ -486,6 +490,7 @@ namespace MDispatch.View.Inspection.PickedUp
             }
             if (isSignatureAsk && isAsk2)
             {
+                
                 btnSave.IsVisible = false;
                 bloclThank.IsVisible = true;
                 blockPsw.IsVisible = true;

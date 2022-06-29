@@ -17,7 +17,13 @@ namespace MDispatch
         public static bool isAvtorization;
         public static bool isNetwork;
         public static bool isStart;
-        public static DateTime time = DateTime.Now;
+
+        private static DateTime _time = DateTime.Now;
+        public static DateTime Time
+        {
+            get => _time;
+            set => _time = value;
+        }
 
         public App ()
         {

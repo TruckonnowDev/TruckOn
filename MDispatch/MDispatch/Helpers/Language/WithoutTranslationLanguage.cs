@@ -52,7 +52,7 @@
         public static string SendBOLBtnText => "Send BOL";
         public static string TitlePhotoInspactionPickedUp => "Photo inspection Picked Up";
         public static string TitlePhotoInspactionDelivery => "Photo inspection Delivery";
-        public static string TitleFeedBackPage => "Feed Back";
+        public static string TitleFeedBackPage => "Feedback";
         public static string AskBlockSatisfiedServiceTitle => "How are you satisfied with a service?";
         public static string AskBlockUseCompanyAgainTitle => "Would you use our company again";
         public static string AskBlockDriverPerformTitle => "How did the driver perform";

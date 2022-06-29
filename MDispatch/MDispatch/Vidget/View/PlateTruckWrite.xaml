@@ -34,6 +34,8 @@
                             JustifyContent="SpaceBetween">
                     <Entry Placeholder="{x:Static helperLang:LanguageHelper.PlaceholderSetPlateTruckAlert}"
                            FontSize="14"
+                           Keyboard="Numeric"
+                           TextChanged="Entry_TextChanged"
                            FontFamily="{StaticResource OpenSans-Regular}"
                            Text="{Binding PlateTruck}"/>
                     <Image Source="inScan.png" HeightRequest="25" WidthRequest="25">

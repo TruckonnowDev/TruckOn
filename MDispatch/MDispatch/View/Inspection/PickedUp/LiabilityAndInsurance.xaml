@@ -139,7 +139,7 @@
                                         </Picker>
                                     </Frame>
                                 </StackLayout>
-                                <StackLayout x:Name="bilingPay"
+                                <!--<StackLayout x:Name="bilingPay"
                                              IsVisible="False"
                                              Spacing="10">
                                     <Label Text="Biling pay"
@@ -148,7 +148,7 @@
                                            FontSize="14"
                                            TextColor="#FF2C2C"
                                            FontFamily="{StaticResource OpenSans-Regular}"/>
-                                </StackLayout>
+                                </StackLayout>-->
                             </StackLayout>
                         </shadowFrame:ShadowFrame>
                         <shadowFrame:ShadowFrame x:Name="askBlock3"

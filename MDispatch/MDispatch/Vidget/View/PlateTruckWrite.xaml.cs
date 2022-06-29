@@ -1,6 +1,8 @@
 ﻿using MDispatch.Vidget.VM;
 using Rg.Plugins.Popup.Pages;
 using Rg.Plugins.Popup.Services;
+using System.Linq;
+using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 
@@ -45,6 +47,16 @@ namespace MDispatch.Vidget.View
         {
             await PopupNavigation.PopAllAsync();
             await fullPhotoTruckVM.Navigation.PushAsync(new ScanCamera(fullPhotoTruckVM, "truck"));
+        }
+
+        private void Entry_TextChanged(object sender, Xamarin.Forms.TextChangedEventArgs args)
+        {
+            if (!string.IsNullOrWhiteSpace(args.NewTextValue))
+            {
+                bool isValid = args.NewTextValue.ToCharArray().All(x => char.IsDigit(x)); //Make sure all characters are numbers
+
+                ((Entry)sender).Text = isValid ? args.NewTextValue : args.NewTextValue.Remove(args.NewTextValue.Length - 1);
+            }
         }
     }
 }

@@ -65,31 +65,38 @@
                             <Label Text="{x:Static helperLang:LanguageHelper.AskBlockSafeDeliveryLocationTitle}"
                                Style="{StaticResource labelTitleAsk}"/>
                             <FlexLayout Wrap="Wrap"
-                                    JustifyContent="SpaceBetween">
+                                        JustifyContent="SpaceBetween">
                                 <Button Text="{x:Static helperLang:LanguageHelper.ParkingLotAnswer}"
                                     Clicked="RadioButton_Clicked_1"
                                     Style="{StaticResource btnAsk}"
-                                    Margin="0, 0, 8, 7"/>
+                                    Margin="0, 0, 0, 7"/>
                                 <Button Text="{x:Static helperLang:LanguageHelper.DrivewayAnswer}"
                                     Clicked="RadioButton_Clicked_1"
                                     Style="{StaticResource btnAsk}"
-                                    Margin="0, 0, 8, 7"/>
+                                    Margin="0, 0, 0, 7"/>
                                 <Button Text="{x:Static helperLang:LanguageHelper.GravelAnswer}"
                                     Clicked="RadioButton_Clicked_1"
                                     Style="{StaticResource btnAsk}"
-                                    Margin="0, 0, 8, 7"/>
+                                    Margin="0, 0, 0, 7"/>
                                 <Button Text="{x:Static helperLang:LanguageHelper.SidewalklAnswer}"
                                     Clicked="RadioButton_Clicked_1"
                                     Style="{StaticResource btnAsk}"
-                                    Margin="0, 0, 8, 7"/>
+                                    Margin="0, 0, 0, 7"/>
                                 <Button Text="{x:Static helperLang:LanguageHelper.StreetAnswer}"
                                     Style="{StaticResource btnAsk}"
-                                    Margin="0, 0, 8, 7"/>
-                            </FlexLayout>
-                            <Button Text="{x:Static helperLang:LanguageHelper.MiddleStreetAnswer}"
+                                        Clicked="RadioButton_Clicked_1"
+                                    Margin="0, 0, 0, 7"/>
+
+                                <Button Text="{x:Static helperLang:LanguageHelper.MiddleStreetAnswer}"
                                     Clicked="RadioButton_Clicked_1"
+                                    HorizontalOptions="Center"
                                     Style="{StaticResource btnAsk}"
-                                    Margin="0, 0, 8, 7"/>
+                                    Margin="0, 0, 0, 7"/>
+                                
+                            </FlexLayout>
+
+                            
+
                         </StackLayout>
                     </shadowFrame:ShadowFrame>
                 <!--4-->

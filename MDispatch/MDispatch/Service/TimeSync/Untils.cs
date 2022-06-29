@@ -52,7 +52,7 @@ namespace MDispatch.Service.TimeSync
                         GetData(content, ref dateTime);
                         string timeZpneCount = NodaTime.DateTimeZoneProviders.Tzdb.GetSystemDefault().MaxOffset.ToString();
                         dateTime = dateTime.AddHours(Convert.ToInt32(timeZpneCount));
-                        App.time = dateTime;
+                        App.Time = dateTime;
                     }
                 }
                 catch (Exception)

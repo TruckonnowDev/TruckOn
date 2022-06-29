@@ -5,6 +5,7 @@ using MDispatch.View.Inspection.PickedUp;
 using Rg.Plugins.Popup.Services;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace MDispatch.ViewModels.InspectionMV.Servise.Paymmant
@@ -52,7 +53,7 @@ namespace MDispatch.ViewModels.InspectionMV.Servise.Paymmant
             stackLayout = new StackLayout();
             stackLayout.Spacing = 10;
             stackLayout.Children.Add(entry);
-            flexLayout.Children.Add(button);
+            //flexLayout.Children.Add(button);
             stackLayout.Children.Add(flexLayout);
             return stackLayout;
         }
@@ -70,6 +71,21 @@ namespace MDispatch.ViewModels.InspectionMV.Servise.Paymmant
             {
                 IsAskPaymmant = false;
                 await PopupNavigation.PushAsync(new Alert(LanguageHelper.PaymentForDeliveryAlert, null));
+            }
+        }
+
+        public async Task Pay()
+        {
+            if (((Entry)stackLayout.Children[0]).Text != null && ((Entry)stackLayout.Children[0]).Text.Length > 0)
+            {
+                IsAskPaymmant = true;
+                stackLayout.IsEnabled = false;
+                //await PopupNavigation.PushAsync(new Alert($"{LanguageHelper.GiveMoneyAlert} {((Entry)stackLayout.Children[0]).Text}", null));
+            }
+            else
+            {
+                IsAskPaymmant = false;
+                //await PopupNavigation.PushAsync(new Alert(LanguageHelper.PaymentForDeliveryAlert, null));
             }
         }
 

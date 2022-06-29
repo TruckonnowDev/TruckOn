@@ -1,6 +1,7 @@
 ﻿using MDispatch.Models;
 using MDispatch.View.Inspection.Delyvery;
 using MDispatch.View.Inspection.PickedUp;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace MDispatch.ViewModels.InspectionMV.Servise.Paymmant
@@ -11,5 +12,6 @@ namespace MDispatch.ViewModels.InspectionMV.Servise.Paymmant
         LiabilityAndInsurance LiabilityAndInsurance { get; set; }
         bool IsAskPaymmant { get; set; }
         StackLayout GetStackLayout();
+        Task Pay();
     }
 }

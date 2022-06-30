@@ -790,9 +790,10 @@ namespace ApiMobaileServise.Servise
             return taskLoad.Id.ToString();
         }
 
-        public async void SaveFeedBackInDb(Feedback feedback)
+        public async void SaveFeedBackInDb(Feedback feedback, string shippingId)
         {
-            context.Feedbacks.Add(feedback);
+            context.Shipping.First(x => x.Id == shippingId)
+                .Feedback = feedback;
             await context.SaveChangesAsync();
         }
 

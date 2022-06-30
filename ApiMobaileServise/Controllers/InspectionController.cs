@@ -359,7 +359,7 @@ namespace ApiMobaileServise.Controllers
         [HttpPost]
         [Route("Save/FeedBack")]
         [CompressGzip(IsCompresReqvest = true, ParamUnZip = "jsonStrAsk")]
-        public async Task<string> SaveFeedBack(string token,string jsonStrAsk)
+        public async Task<string> SaveFeedBack(string token,string jsonStrAsk, string shippingId)
         {
             string respons = null;
             if (token == null || token == "")
@@ -371,7 +371,7 @@ namespace ApiMobaileServise.Controllers
                 bool isToken = managerMobileApi.CheckToken(token);
                 if (isToken)
                 {
-                    await managerMobileApi.SaveFeedBack(jsonStrAsk);
+                    await managerMobileApi.SaveFeedBack(jsonStrAsk, shippingId);
                     respons = JsonConvert.SerializeObject(new ResponseAppS("success", "", null));
                 }
                 else

@@ -66,6 +66,7 @@ namespace DaoModels.DAO.Models
         public AskFromUser AskFromUser { get; set; }
         public Ask2 Ask2 { get; set; }
         public AskForUserDelyveryM askForUserDelyveryM { get; set; }
+        public Feedback Feedback { get; set; }
         public List<DamageForUser> DamageForUsers { get; set; }
 
         ///////////////////////////////////////////////

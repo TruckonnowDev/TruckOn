@@ -10,14 +10,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DaoModels.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20210421164155_21.04.2021v1")]
-    partial class _21042021v1
+    [Migration("20220701102944_feedbackintoshipping")]
+    partial class feedbackintoshipping
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.14-servicing-32113")
+                .HasAnnotation("ProductVersion", "2.1.3-rtm-32065")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -633,6 +633,8 @@ namespace DaoModels.Migrations
 
                     b.Property<int>("IdDriver");
 
+                    b.Property<int>("IdUser");
+
                     b.Property<string>("Token");
 
                     b.HasKey("Id");
@@ -887,6 +889,8 @@ namespace DaoModels.Migrations
 
                     b.Property<string>("FaxC");
 
+                    b.Property<int?>("Feedbackid");
+
                     b.Property<string>("IccmcC");
 
                     b.Property<int>("IdDriver");
@@ -940,6 +944,8 @@ namespace DaoModels.Migrations
                     b.HasIndex("Ask2Id");
 
                     b.HasIndex("AskFromUserid");
+
+                    b.HasIndex("Feedbackid");
 
                     b.HasIndex("askForUserDelyveryMID");
 
@@ -1277,6 +1283,10 @@ namespace DaoModels.Migrations
                     b.HasOne("DaoModels.DAO.Models.AskFromUser", "AskFromUser")
                         .WithMany()
                         .HasForeignKey("AskFromUserid");
+
+                    b.HasOne("DaoModels.DAO.Models.Feedback", "Feedback")
+                        .WithMany()
+                        .HasForeignKey("Feedbackid");
 
                     b.HasOne("DaoModels.DAO.Models.AskForUserDelyveryM", "askForUserDelyveryM")
                         .WithMany()

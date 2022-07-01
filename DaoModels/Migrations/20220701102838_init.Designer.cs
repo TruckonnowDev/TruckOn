@@ -10,14 +10,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DaoModels.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20200505145800_05.05.2020v2")]
-    partial class _05052020v2
+    [Migration("20220701102838_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.14-servicing-32113")
+                .HasAnnotation("ProductVersion", "2.1.3-rtm-32065")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -267,6 +267,27 @@ namespace DaoModels.Migrations
                     b.ToTable("Contacts");
                 });
 
+            modelBuilder.Entity("DaoModels.DAO.Models.Customer_ST", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<int>("IdCompany");
+
+                    b.Property<string>("IdCustomerST");
+
+                    b.Property<string>("NameCompany");
+
+                    b.Property<string>("NameCompanyST");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Customer_STs");
+                });
+
             modelBuilder.Entity("DaoModels.DAO.Models.Damage", b =>
                 {
                     b.Property<int>("ID")
@@ -333,6 +354,27 @@ namespace DaoModels.Migrations
                     b.HasIndex("ShippingId");
 
                     b.ToTable("DamageForUsers");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.Dispatcher", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("IdCompany");
+
+                    b.Property<string>("Login");
+
+                    b.Property<string>("Password");
+
+                    b.Property<string>("Type");
+
+                    b.Property<string>("key");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Dispatchers");
                 });
 
             modelBuilder.Entity("DaoModels.DAO.Models.DocumentTruckAndTrailers", b =>
@@ -409,21 +451,81 @@ namespace DaoModels.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("AlcoholTendency");
+
                     b.Property<string>("Comment");
 
                     b.Property<string>("DateFired");
 
                     b.Property<string>("DateRegistration");
 
+                    b.Property<string>("DotViolations");
+
                     b.Property<string>("DriversLicenseNumber");
+
+                    b.Property<string>("DrivingSkills");
+
+                    b.Property<string>("DrugTendency");
+
+                    b.Property<string>("EldKnowledge");
+
+                    b.Property<string>("English");
+
+                    b.Property<string>("Experience");
 
                     b.Property<string>("FullName");
 
+                    b.Property<int>("IdCompany");
+
                     b.Property<int>("IdDriver");
+
+                    b.Property<string>("NumberOfAccidents");
+
+                    b.Property<string>("PaymentHandling");
+
+                    b.Property<string>("ReturnedEquipmen");
+
+                    b.Property<string>("Terminated");
+
+                    b.Property<string>("WorkingEfficiency");
 
                     b.HasKey("Id");
 
                     b.ToTable("DriverReports");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.DucumentCompany", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("DocPath");
+
+                    b.Property<int>("IdCommpany");
+
+                    b.Property<string>("NameDoc");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DucumentCompanies");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.DucumentDriver", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("DocPath");
+
+                    b.Property<int>("IdDriver");
+
+                    b.Property<string>("NameDoc");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DucumentDrivers");
                 });
 
             modelBuilder.Entity("DaoModels.DAO.Models.Feedback", b =>
@@ -472,7 +574,7 @@ namespace DaoModels.Migrations
 
                     b.Property<int>("IdDriver");
 
-                    b.Property<int>("IdOreder");
+                    b.Property<string>("IdOreder");
 
                     b.Property<int>("IdUser");
 
@@ -531,11 +633,32 @@ namespace DaoModels.Migrations
 
                     b.Property<int>("IdDriver");
 
+                    b.Property<int>("IdUser");
+
                     b.Property<string>("Token");
 
                     b.HasKey("Id");
 
                     b.ToTable("PasswordRecoveries");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.PaymentMethod_ST", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("IdCompany");
+
+                    b.Property<string>("IdCustomerAttachPaymentMethod");
+
+                    b.Property<string>("IdPaymentMethod_ST");
+
+                    b.Property<bool>("IsDefault");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PaymentMethods");
                 });
 
             modelBuilder.Entity("DaoModels.DAO.Models.Photo", b =>
@@ -639,6 +762,12 @@ namespace DaoModels.Migrations
 
                     b.Property<string>("Index");
 
+                    b.Property<bool>("IsUsed");
+
+                    b.Property<string>("Name");
+
+                    b.Property<int>("OrdinalIndex");
+
                     b.Property<int?>("TransportVehicleId");
 
                     b.HasKey("Id");
@@ -656,13 +785,34 @@ namespace DaoModels.Migrations
 
                     b.Property<string>("Name");
 
+                    b.HasKey("Id");
+
+                    b.ToTable("NamePaterns");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.Settings.ProfileSetting", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("IdCompany");
+
+                    b.Property<int>("IdTr");
+
+                    b.Property<bool>("IsUsed");
+
+                    b.Property<string>("Name");
+
                     b.Property<int?>("TransportVehicleId");
+
+                    b.Property<string>("TypeTransportVehikle");
 
                     b.HasKey("Id");
 
                     b.HasIndex("TransportVehicleId");
 
-                    b.ToTable("NamePaterns");
+                    b.ToTable("ProfileSettings");
                 });
 
             modelBuilder.Entity("DaoModels.DAO.Models.Settings.TransportVehicle", b =>
@@ -733,10 +883,6 @@ namespace DaoModels.Migrations
 
                     b.Property<string>("DispatchDate");
 
-                    b.Property<string>("Driver");
-
-                    b.Property<int?>("DriverrId");
-
                     b.Property<string>("EmailD");
 
                     b.Property<string>("EmailP");
@@ -745,7 +891,11 @@ namespace DaoModels.Migrations
 
                     b.Property<string>("IccmcC");
 
+                    b.Property<int>("IdDriver");
+
                     b.Property<string>("InternalLoadID");
+
+                    b.Property<bool>("IsInstructinRead");
 
                     b.Property<bool>("IsProblem");
 
@@ -793,11 +943,32 @@ namespace DaoModels.Migrations
 
                     b.HasIndex("AskFromUserid");
 
-                    b.HasIndex("DriverrId");
-
                     b.HasIndex("askForUserDelyveryMID");
 
                     b.ToTable("Shipping");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.Subscribe_ST", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ActiveType");
+
+                    b.Property<int>("IdCompany");
+
+                    b.Property<string>("IdCustomerST");
+
+                    b.Property<string>("IdItemSubscribeST");
+
+                    b.Property<string>("IdSubscribeST");
+
+                    b.Property<string>("Status");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Subscribe_STs");
                 });
 
             modelBuilder.Entity("DaoModels.DAO.Models.TaskLoad", b =>
@@ -882,7 +1053,7 @@ namespace DaoModels.Migrations
 
                     b.Property<string>("Satet");
 
-                    b.Property<string>("TypeTruk");
+                    b.Property<string>("Type");
 
                     b.Property<string>("Vin");
 
@@ -900,6 +1071,8 @@ namespace DaoModels.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("CompanyId");
+
+                    b.Property<string>("Date");
 
                     b.Property<string>("KeyAuthorized");
 
@@ -1090,10 +1263,10 @@ namespace DaoModels.Migrations
                         .HasForeignKey("TransportVehicleId");
                 });
 
-            modelBuilder.Entity("DaoModels.DAO.Models.Settings.NamePatern", b =>
+            modelBuilder.Entity("DaoModels.DAO.Models.Settings.ProfileSetting", b =>
                 {
-                    b.HasOne("DaoModels.DAO.Models.Settings.TransportVehicle")
-                        .WithMany("NamePaterns")
+                    b.HasOne("DaoModels.DAO.Models.Settings.TransportVehicle", "TransportVehicle")
+                        .WithMany()
                         .HasForeignKey("TransportVehicleId");
                 });
 
@@ -1106,10 +1279,6 @@ namespace DaoModels.Migrations
                     b.HasOne("DaoModels.DAO.Models.AskFromUser", "AskFromUser")
                         .WithMany()
                         .HasForeignKey("AskFromUserid");
-
-                    b.HasOne("DaoModels.DAO.Models.Driver", "Driverr")
-                        .WithMany()
-                        .HasForeignKey("DriverrId");
 
                     b.HasOne("DaoModels.DAO.Models.AskForUserDelyveryM", "askForUserDelyveryM")
                         .WithMany()

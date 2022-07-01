@@ -2,7 +2,7 @@
 
 namespace DaoModels.Migrations
 {
-    public partial class addedfeedbackintoshipping : Migration
+    public partial class feedbackintoshipping : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

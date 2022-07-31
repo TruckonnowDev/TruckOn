@@ -25,7 +25,7 @@
     <MtouchLink>SdkOnly</MtouchLink>
     <MtouchArch>x86_64</MtouchArch>
     <ConsolePause>false</ConsolePause>
-    <CodesignProvision>Distribution</CodesignProvision>
+    <CodesignProvision>TruckonAppStore</CodesignProvision>
     <CodesignKey>Apple Distribution: Artsiom Karabeinikau (6UD2U7V27V)</CodesignKey>
     <LangVersion>8.0</LangVersion>
     <DeviceSpecificBuild>true</DeviceSpecificBuild>
@@ -43,13 +43,13 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <MtouchArch>ARM64</MtouchArch>
-    <CodesignKey>iPhone Distribution</CodesignKey>
+    <CodesignKey>Apple Distribution: Artsiom Karabeinikau (6UD2U7V27V)</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <LangVersion>8.0</LangVersion>
     <MtouchLink>SdkOnly</MtouchLink>
     <DeviceSpecificBuild>true</DeviceSpecificBuild>
-    <CodesignProvision>TruckonnowProd</CodesignProvision>
+    <CodesignProvision>TruckonAppStore</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
@@ -61,7 +61,7 @@
     <ConsolePause>false</ConsolePause>
     <CodesignKey>iPhone Distribution</CodesignKey>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
-    <CodesignProvision>Distribution</CodesignProvision>
+    <CodesignProvision>TruckonAppStore</CodesignProvision>
     <LangVersion>8.0</LangVersion>
     <MtouchLink>SdkOnly</MtouchLink>
     <DeviceSpecificBuild>true</DeviceSpecificBuild>
@@ -203,16 +203,20 @@
     <MtouchVerbosity>
     </MtouchVerbosity>
     <IOSDebuggerPort>40708</IOSDebuggerPort>
-    <MtouchLink>None</MtouchLink>
+    <MtouchLink>SdkOnly</MtouchLink>
     <MtouchArch>x86_64</MtouchArch>
     <LangVersion>8.0</LangVersion>
     <DeviceSpecificBuild>true</DeviceSpecificBuild>
-    <CodesignProvision>TruckonnowProd</CodesignProvision>
+    <CodesignProvision>TruckonAppStore</CodesignProvision>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">
+    <AppExtensionDebugBundleId />
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <None Include="Entitlements.plist" />
+    <BundleResource Include="GoogleService-Info.plist" />
     <None Include="Info.plist" />
     <Compile Include="NewRender\Labal\CorectLabel.cs" />
     <Compile Include="NewRender\ORC\ORCReader.cs" />
@@ -373,7 +377,6 @@
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\TakeArow.png" />
-    <BundleResource Include="GoogleService-Info.plist" />
     <BundleResource Include="Resources\BoxTruckSingleWheel1.png" />
     <BundleResource Include="Resources\Coupe40.png" />
     <BundleResource Include="Resources\Coupe41.png" />

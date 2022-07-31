@@ -23,7 +23,7 @@ namespace MDispatch.View.Inspection
     public partial class BOLPage : ContentPage
     {
         private BOLMV bOLMV = null;
-        
+
         public BOLPage(ManagerDispatchMob managerDispatchMob, string idShip, InitDasbordDelegate initDasbordDelegate)
         {
             bOLMV = new BOLMV(managerDispatchMob, idShip, Navigation, initDasbordDelegate, this);
@@ -75,16 +75,30 @@ namespace MDispatch.View.Inspection
                     {
                         foreach (var photo in photoInspection.Photos)
                         {
+                            Frame imagebox = new Frame()
+                            {
+                                HeightRequest = 50,
+                                BackgroundColor = Color.Transparent,
+                                WidthRequest = 106,
+                                VerticalOptions = LayoutOptions.FillAndExpand,
+                                HorizontalOptions = LayoutOptions.FillAndExpand,
+                                Padding = new Thickness(0),
+                                Margin = new Thickness(0, 0, 5, 5),
+                            };
                             Image image = new Image()
                             {
                                 Source = ImageSource.FromUri(new Uri($"{Config.BaseReqvesteUrl}/Mobile/Image?name={photo.path}&type=jpg")),
-                                HeightRequest = 50,
-                                WidthRequest = 106,
+                                HeightRequest = photo.Height,
+                                HorizontalOptions = LayoutOptions.FillAndExpand,
+                                VerticalOptions = LayoutOptions.FillAndExpand,
+                                WidthRequest = photo.Width,
                                 Margin = new Thickness(0, 0, 5, 5)
                             };
+                            imagebox.Content = image;
                             image.GestureRecognizers.Add(new TapGestureRecognizer(VievFull));
-                            flexLayout.Children.Add(image);
+                            flexLayout.Children.Add(imagebox);
                         }
+                        blockPhotoInspection.Children.Add(flexLayout);
                         blockPhotoInspection.Children.Add(flexLayout);
                     }
                 }
@@ -101,15 +115,28 @@ namespace MDispatch.View.Inspection
                     {
                         foreach (var photo in photoInspection.Photos)
                         {
+                            Frame imagebox = new Frame()
+                            {
+                                HeightRequest = 50,
+                                BackgroundColor = Color.Transparent,
+                                WidthRequest = 106,
+                                VerticalOptions = LayoutOptions.FillAndExpand,
+                                HorizontalOptions = LayoutOptions.FillAndExpand,
+                                Padding = new Thickness(0),
+                                Margin = new Thickness(0, 0, 5, 5),
+                            };
                             Image image = new Image()
                             {
                                 Source = ImageSource.FromUri(new Uri($"{Config.BaseReqvesteUrl}/Mobile/Image?name={photo.path}&type=jpg")),
-                                HeightRequest = 50,
-                                WidthRequest = 106,
+                                HeightRequest = photo.Height,
+                                HorizontalOptions = LayoutOptions.FillAndExpand,
+                                VerticalOptions = LayoutOptions.FillAndExpand,
+                                WidthRequest = photo.Width,
                                 Margin = new Thickness(0, 0, 5, 5)
                             };
+                            imagebox.Content = image;
                             image.GestureRecognizers.Add(new TapGestureRecognizer(VievFull));
-                            flexLayout.Children.Add(image);
+                            flexLayout.Children.Add(imagebox);
                         }
                         blockPhotoInspection.Children.Add(flexLayout);
                     }
@@ -322,7 +349,7 @@ namespace MDispatch.View.Inspection
             HelpersView.InitAlert(body);
         }
 
-        protected override  void OnDisappearing()
+        protected override void OnDisappearing()
         {
             base.OnDisappearing();
             HelpersView.Hidden();

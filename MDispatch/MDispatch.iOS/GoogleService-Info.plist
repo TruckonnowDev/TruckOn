@@ -3,34 +3,22 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>832957432544-fnriub2h2218lm7epomkk7mpmuhbof43.apps.googleusercontent.com</string>
+	<string>810173985104-1mvem4ouad6b25qve5a4v8v7bm4favu9.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.832957432544-fnriub2h2218lm7epomkk7mpmuhbof43</string>
+	<string>com.googleusercontent.apps.810173985104-1mvem4ouad6b25qve5a4v8v7bm4favu9</string>
 	<key>API_KEY</key>
-	<string>AIzaSyA5yDSUV9Ay6QXbGodGo_xBucxx4IfRfuE</string>
+	<string>AIzaSyCso8cPvDd8rZPIji-BXMSLOUn1or6AgsY</string>
 	<key>GCM_SENDER_ID</key>
-	<string>832957432544</string>
+	<string>810173985104</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.companyname.MDispatch</string>
+	<string>etc.truckonnow</string>
 	<key>PROJECT_ID</key>
-	<string>truckonnow1</string>
+	<string>truckonnow-f90c8</string>
 	<key>STORAGE_BUCKET</key>
-	<string>truckonnow1.appspot.com</string>
+	<string>truckonnow-f90c8.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
-	<false></false>
-	<key>IS_ANALYTICS_ENABLED</key>
-	<false></false>
-	<key>IS_APPINVITE_ENABLED</key>
-	<true></true>
-	<key>IS_GCM_ENABLED</key>
-	<true></true>
-	<key>IS_SIGNIN_ENABLED</key>
-	<true></true>
-	<key>GOOGLE_APP_ID</key>
-	<string>1:832957432544:ios:97a16de771cd0d25d30685</string>
-	<key>DATABASE_URL</key>
-	<string>https://truckonnow1.firebaseio.com</string>
+	<false/>
 </dict>
 </plist>

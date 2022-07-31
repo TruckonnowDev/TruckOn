@@ -10,6 +10,9 @@ using Android.Runtime;
 using Android.Views;
 using Firebase;
 using Firebase.Provider;
+using Firebase.Messaging;
+using Firebase.Iid;
+using Android.Util;
 using Plugin.Permissions;
 using Xamarin.Forms.Platform.Android;
 using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
@@ -25,6 +28,9 @@ namespace MDispatch.Droid
     {
         public static MainActivity mainActivity = null;
         public static readonly int PickImageId = 1000;
+        static readonly string TAG = "MainActivity";
+        internal static readonly string CHANNEL_ID = "main_notification_channel";
+        internal static readonly int NOTIFICATION_ID = 100;
         public TaskCompletionSource<Stream> PickImageTaskCompletionSource { set; get; }
 
         protected override void OnCreate(Bundle bundle)
@@ -38,6 +44,7 @@ namespace MDispatch.Droid
             global::Xamarin.Forms.Forms.Init(this, bundle);
             Plugin.CurrentActivity.CrossCurrentActivity.Current.Init(this, bundle);
             FirebaseApp.InitializeApp(Android.App.Application.Context);
+            CreateNotificationChannel();
             //FirebasePushNotificationManager.ProcessIntent(this, Intent);
             //Firebase
             Xamarin.Essentials.Platform.Init(this, bundle);
@@ -45,6 +52,31 @@ namespace MDispatch.Droid
             LoadApplication(new App());
             mainActivity = this;
             ResizeForKeyBord();
+        }
+
+        void CreateNotificationChannel()
+        {
+            if (Build.VERSION.SdkInt < BuildVersionCodes.O)
+            {
+                // Notification channels are new in API 26 (and not a part of the
+                // support library). There is no need to create a notification
+                // channel on older versions of Android.
+                return;
+            }
+
+            var channel = new NotificationChannel(CHANNEL_ID,
+                                                  "FCM Notifications",
+                                                  NotificationImportance.Default)
+            {
+
+                Description = "Firebase Cloud Messages appear in this channel"
+            };
+
+            var notificationManager = (NotificationManager)GetSystemService(Android.Content.Context.NotificationService);
+            notificationManager.CreateNotificationChannel(channel);
+
+            var refreshedToken = FirebaseInstanceId.Instance.Token;
+            Log.Debug(TAG, "Refreshed token: " + refreshedToken);
         }
 
         private void IntSrtatusBar()

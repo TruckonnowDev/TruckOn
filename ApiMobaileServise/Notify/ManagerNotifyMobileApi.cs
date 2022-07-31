@@ -16,8 +16,8 @@ namespace ApiMobaileServise.Notify
         {
             tRequest = WebRequest.Create("https://fcm.googleapis.com/fcm/send");
             tRequest.Method = "post";
-            tRequest.Headers.Add(string.Format("Authorization: key={0}", "AAAAwfAhwuA:APA91bGEjY_-E4saZ4kv2GuiJzHFAzrON0i96akHnuHls0rOqCNEgwlo3KcvLCvTHcUDYeaJxCedVvs3OAx0h9dVn9SRxyUjJpD-qXqAT49XWwAHlhhIJeMMXW9T5koFiIo0a8Sw8qei"));
-            tRequest.Headers.Add(string.Format("Sender: id={0}", "832957432544"));
+            tRequest.Headers.Add(string.Format("Authorization: key={0}", "AAAAvKIh8VA:APA91bHn3S6rP3yBFlmXA1xEVZtS0IM2Mby11shGOkNvhrCOmxNtiu92cLXcWViSwKvkbh5jxMr_XPJW0qoA4V_dE1XsSPXFZE97i9uosj1whRyN9dE3XUu8ieyWikqc7yljUz-TH-d7"));
+            tRequest.Headers.Add(string.Format("Sender: id={0}", "810173985104"));
             tRequest.ContentType = "application/json";
         }
 
@@ -25,8 +25,8 @@ namespace ApiMobaileServise.Notify
         {
             tRequest = WebRequest.Create("https://fcm.googleapis.com/fcm/send");
             tRequest.Method = "post";
-            tRequest.Headers.Add(string.Format("Authorization: key={0}", "AAAAwfAhwuA:APA91bGEjY_-E4saZ4kv2GuiJzHFAzrON0i96akHnuHls0rOqCNEgwlo3KcvLCvTHcUDYeaJxCedVvs3OAx0h9dVn9SRxyUjJpD-qXqAT49XWwAHlhhIJeMMXW9T5koFiIo0a8Sw8qei"));
-            tRequest.Headers.Add(string.Format("Sender: id={0}", "832957432544"));
+            tRequest.Headers.Add(string.Format("Authorization: key={0}", "AAAAvKIh8VA:APA91bHn3S6rP3yBFlmXA1xEVZtS0IM2Mby11shGOkNvhrCOmxNtiu92cLXcWViSwKvkbh5jxMr_XPJW0qoA4V_dE1XsSPXFZE97i9uosj1whRyN9dE3XUu8ieyWikqc7yljUz-TH-d7"));
+            tRequest.Headers.Add(string.Format("Sender: id={0}", "810173985104"));
             tRequest.ContentType = "application/json";
         }
 

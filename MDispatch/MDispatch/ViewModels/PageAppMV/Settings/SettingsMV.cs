@@ -89,26 +89,27 @@ namespace MDispatch.ViewModels.PageAppMV.Settings
 
         private async void SetCurrentVersion()
         {
-            try
-            {
-                IsUpdateVersion = await CrossLatestVersion.Current.IsUsingLatestVersion();
-            }
-            catch
-            {
-                IsUpdateVersion = true;
-            }
+            IsUpdateVersion = true;
+            //try
+            //{
+            //    IsUpdateVersion = await CrossLatestVersion.Current.IsUsingLatestVersion();
+            //}
+            //catch
+            //{
+            //    IsUpdateVersion = true;
+            //}
         }
 
         private async void SetLatestVersionNumber()
         {
-            try
-            {
-                LastUpdateAvailable = await CrossLatestVersion.Current.GetLatestVersionNumber();
-            }
-            catch
-            {
-                LastUpdateAvailable = "Check stor app";
-            }
+            //try
+            //{
+            //    LastUpdateAvailable = await CrossLatestVersion.Current.GetLatestVersionNumber();
+            //}
+            //catch
+            //{
+            //    LastUpdateAvailable = "Check stor app";
+            //}
         }
 
         [System.Obsolete]

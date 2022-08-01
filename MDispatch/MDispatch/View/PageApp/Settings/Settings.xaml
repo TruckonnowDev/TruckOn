@@ -175,7 +175,7 @@
                                FontSize="22"
                                TextColor="Black"
                                FontFamily="{StaticResource OpenSans-Bold}"/>
-                        <Button Text="{Binding LastUpdateAvailable, StringFormat='Upgrade to {0:1} version'}"
+                        <!--<Button Text="{Binding LastUpdateAvailable, StringFormat='Upgrade to {0:1} version'}"
                                 IsVisible="{Binding IsUpdateVersion}"
                                 Clicked="Button_Clicked_2" 
                                 TextColor="#2C5DEB"
@@ -183,7 +183,7 @@
                                 FontFamily="{StaticResource OpenSans-Bold}"
                                 BackgroundColor="White"
                                 Padding="0"
-                                FlexLayout.Basis="75"/>
+                                FlexLayout.Basis="75"/>-->
                     </FlexLayout>
                     <StackLayout BackgroundColor="White"
                                  Margin="0, 6, 0, 11">
@@ -195,7 +195,7 @@
                                 <Label.FormattedText>
                                    <FormattedString>
                                         <Span Text="{x:Static helperLang:LanguageHelper.CurrentVersion}"/>
-                                        <Span Text="{Binding CurrentVersion}"/>
+                                        <!--<Span Text="{Binding CurrentVersion}"/>-->
                                     </FormattedString>
                                 </Label.FormattedText>
                             </Label>
@@ -206,7 +206,7 @@
                                 <Label.FormattedText>
                                    <FormattedString>
                                         <Span Text="{x:Static helperLang:LanguageHelper.LastUpdateAvailable}"/>
-                                        <Span Text="{Binding CurrentVersion}"/>
+                                        <!--<Span Text="{Binding CurrentVersion}"/>-->
                                     </FormattedString>
                                 </Label.FormattedText>
                              </Label>

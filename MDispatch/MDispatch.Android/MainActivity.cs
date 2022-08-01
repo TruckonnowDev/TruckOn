@@ -17,6 +17,7 @@ using Plugin.Permissions;
 using Xamarin.Forms.Platform.Android;
 using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
 using Xfx;
+using Android.Gms.Extensions;
 
 namespace MDispatch.Droid
 {
@@ -43,18 +44,17 @@ namespace MDispatch.Droid
             Rg.Plugins.Popup.Popup.Init(this, bundle);
             global::Xamarin.Forms.Forms.Init(this, bundle);
             Plugin.CurrentActivity.CrossCurrentActivity.Current.Init(this, bundle);
-            FirebaseApp.InitializeApp(Android.App.Application.Context);
-            CreateNotificationChannel();
-            //FirebasePushNotificationManager.ProcessIntent(this, Intent);
-            //Firebase
             Xamarin.Essentials.Platform.Init(this, bundle);
             FormsControls.Droid.Main.Init(this);
             LoadApplication(new App());
+            //Firebase
+            FirebaseApp.InitializeApp(this);
+            CreateNotificationChannel();
             mainActivity = this;
             ResizeForKeyBord();
         }
 
-        void CreateNotificationChannel()
+        async void CreateNotificationChannel()
         {
             if (Build.VERSION.SdkInt < BuildVersionCodes.O)
             {
@@ -75,7 +75,8 @@ namespace MDispatch.Droid
             var notificationManager = (NotificationManager)GetSystemService(Android.Content.Context.NotificationService);
             notificationManager.CreateNotificationChannel(channel);
 
-            var refreshedToken = FirebaseInstanceId.Instance.Token;
+            var instanceIdResult = await FirebaseInstanceId.Instance.GetInstanceId().AsAsync<IInstanceIdResult>();
+            var refreshedToken = instanceIdResult.Token;
             Log.Debug(TAG, "Refreshed token: " + refreshedToken);
         }
 

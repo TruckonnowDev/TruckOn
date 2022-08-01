@@ -11,11 +11,14 @@ namespace MDispatch.Droid.StoreService
     [IntentFilter(new[] { "com.google.firebase.MESSAGING_EVENT" })]
     public class MyFirebaseMessagingService : FirebaseMessagingService
     {
+        const string TAG = "FirebaseMsgService";
 
         public override void OnMessageReceived(RemoteMessage message)
         {
             var body = message.GetNotification();
             SendNotification(body.Body ,body.Title, body.ClickAction);
+            Android.Util.Log.Debug(TAG, "From: " + message.From);
+            Android.Util.Log.Debug(TAG, "Notification Message Body: " + message.GetNotification().Body);
         }
 
         void SendNotification(string messageBody, string title, string actionClick)
@@ -24,7 +27,7 @@ namespace MDispatch.Droid.StoreService
             const int pendingIntentId = 0;
             PendingIntent.GetActivity(this, pendingIntentId, intent, PendingIntentFlags.OneShot);
             PendingIntent pendingIntent = GetIntentOrder(actionClick);
-            var notificationBuilder = new NotificationCompat.Builder(this)
+            var notificationBuilder = new AndroidX.Core.App.NotificationCompat.Builder(this)
                                       .SetSmallIcon(Resource.Drawable.newOrder)
                                       .SetContentTitle(title)
                                       .SetContentText(messageBody)

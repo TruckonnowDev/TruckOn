@@ -90,17 +90,20 @@ namespace MDispatch.View.Inspection.PickedUp
         [Obsolete]
         public async void InitElemnt(bool isProplem)
         {
-            if (isProplem)
-            {
-                btnSave.IsVisible = false;
-                blockAskPay.IsVisible = true;
-                btnYesPay.IsVisible = false;
-                btnNoPay.IsVisible = false;
-                btnNumberOffice.IsVisible = true;
-                lReport.IsVisible = true;
-                blockAsk.IsVisible = false;
-                timer = new Timer(new TimerCallback(CheckProplem), null, 5000, 5000);
-            }
+            //if (isProplem)
+            //{
+            //    btnSave.IsVisible = false;
+            //    blockAskPay.IsVisible = true;
+            //    btnYesPay.IsVisible = false;
+            //    btnNoPay.IsVisible = false;
+            //    btnNumberOffice.IsVisible = true;
+            //    lReport.IsVisible = true;
+            //    blockAsk.IsVisible = false;
+            //    timer = new Timer(new TimerCallback(CheckProplem), null, 5000, 5000);
+            //}
+
+            //TODO: Rewrite logic when is problem.
+            
             await Wait();
             if (liabilityAndInsuranceMV.Shipping != null && liabilityAndInsuranceMV.Shipping.VehiclwInformations != null)
             {

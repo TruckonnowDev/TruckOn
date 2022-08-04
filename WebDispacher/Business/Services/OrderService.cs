@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using DaoModels.DAO;
@@ -371,6 +372,46 @@ namespace WebDispacher.Business.Services
         public void RemoveDoc(string idDock)
         {
             RemoveDocDb(idDock);
+        }
+
+        public string CreateFiltersString(string loadId, string name, string address, string phone, string email,
+                     string price)
+                 {
+            var sb = new StringBuilder("?");
+        
+            if (!string.IsNullOrEmpty(loadId))
+            {
+                sb.Append($"loadId={loadId}&");
+            }
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                sb.Append($"name={name}&");
+            }
+
+            if (!string.IsNullOrEmpty(address))
+            {
+                sb.Append($"address={address}&");
+            }
+
+            if (!string.IsNullOrEmpty(phone))
+            {
+                sb.Append($"phone={phone}&");
+            }
+
+            if (!string.IsNullOrEmpty(email))
+            {
+                sb.Append($"email={email}&");
+            }
+
+            if (!string.IsNullOrEmpty(price))
+            {
+                sb.Append($"price={price}");
+            }
+
+            if (sb.Length == 1 || sb[sb.Length - 1] == '&') sb.Length -= 1;
+
+            return sb.ToString();
         }
         
         public bool SendRemindInspection(int idDriver)

@@ -629,7 +629,7 @@ namespace WebDispacher.Controellers
                     ViewBag.Phone = phone;
                     ViewBag.Email = email;
                     ViewBag.price = price;
-                    
+
                     return View("Pickedup");
                 }
 
@@ -647,7 +647,7 @@ namespace WebDispacher.Controellers
         }
 
         [Route("Dashbord/Order/DeletedOrder")]
-        public async Task<IActionResult> DeletedOrder(string id, string status)
+        public async Task<IActionResult> DeletedOrder(string id, string status, string filters)
         {
             try
             {
@@ -660,7 +660,7 @@ namespace WebDispacher.Controellers
                     await orderService.DeleteOrder(id);
                     await Task.Run(() => orderService.AddHistory(key, "0", id, "0", "0", OrderConstants.ActionDeletedOrder));
                     
-                    return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{status}");
+                    return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{status}?{filters}");
                 }
 
                 if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
@@ -677,7 +677,7 @@ namespace WebDispacher.Controellers
         }
         
         [Route("Dashbord/Order/ArchivedOrder")]
-        public async Task<IActionResult> ArchivedOrder(string id, string status)
+        public async Task<IActionResult> ArchivedOrder(string id, string status, string filters)
         {
             try
             {
@@ -691,7 +691,7 @@ namespace WebDispacher.Controellers
                     
                     await Task.Run(() => orderService.AddHistory(key, "0", id, "0", "0", OrderConstants.ActionArchivedOrder));
 
-                    return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{status}");
+                    return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{status}?{filters}");
                 }
 
                 if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
@@ -775,9 +775,10 @@ namespace WebDispacher.Controellers
                      if (string.IsNullOrEmpty(id)) return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{status}");
                      
                      var order = orderService.GetOrder(id);
+                     
                      Status = status;
-                         
-                     return View("EditOrder", order);
+                     
+                     return View(order);
                  }
 
                  if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))

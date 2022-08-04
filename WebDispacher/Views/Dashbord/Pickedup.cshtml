@@ -1,4 +1,5 @@
 ﻿@using WebDispacher.Constants
+
 <div class="admin">
     <div class="container">
        <div class="row">
@@ -27,14 +28,14 @@
         <div class="row">
             <div class="col-md-12">
                 <div id="tabs">
-                    <div class="tab" onclick="window.location.href='@Url.Action("NewLoad", "Dashbord")';">New load</div>
-                    <div class="tab" onclick="window.location.href='@Url.Action("Assigned", "Dashbord")';">Assigned</div>
-                    <div class="tab whiteborder" onclick="window.location.href = '@Url.Action("Pickedup", "Dashbord")';">Picked up</div>
-                    <div class="tab" onclick="window.location.href='@Url.Action("Delivered", "Dashbord")';">Delivered</div>
-                    <div class="tab" onclick="window.location.href='@Url.Action("Billed", "Dashbord")';">Billed</div>
-                    <div class="tab" onclick="window.location.href='@Url.Action("Paid", "Dashbord")';">Paid</div>
-                    <div class="tab" onclick="window.location.href='@Url.Action("Archived", "Dashbord")';">Archived</div>
-                    <div class="tab" onclick="window.location.href='@Url.Action("Deleted", "Dashbord")';">Deleted</div>
+                    <div class="tab" onclick="window.location.href='@Url.Action("NewLoad", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price})';">New load</div>
+                    <div class="tab" onclick="window.location.href='@Url.Action("Assigned", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">Assigned</div>
+                    <div class="tab whiteborder" onclick="window.location.href = '@Url.Action("Pickedup", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">Picked up</div>
+                    <div class="tab" onclick="window.location.href='@Url.Action("Delivered", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">Delivered</div>
+                    <div class="tab" onclick="window.location.href='@Url.Action("Billed", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">Billed</div>
+                    <div class="tab" onclick="window.location.href='@Url.Action("Paid", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">Paid</div>
+                    <div class="tab" onclick="window.location.href='@Url.Action("Archived", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">Archived</div>
+                    <div class="tab" onclick="window.location.href='@Url.Action("Deleted", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">Deleted</div>
                     <div class="tabContent">
                         @for (int i = 0; i < ViewBag.Orders.Count; i++)
                         {
@@ -55,7 +56,8 @@
                                                 <option value="@ViewBag.Orders[i].Id,@ViewBag.Drivers[j].Id">@ViewBag.Drivers[j].FullName</option>
                                             }
                                         </select>*@
-                                        <a class="btn3" href=@Url.Action("ArchivedOrder", new { id = ViewBag.Orders[i].Id, status = OrderConstants.OrderStatusPickedUp})>Delete</a>
+                                        <a class="btn3" href=@Url.Action("ArchivedOrder", new { id = ViewBag.Orders[i].Id, status = OrderConstants.OrderStatusPickedUp,
+                                                                 filters = $"loadId={ViewBag.LoadId}&name={ViewBag.Name}&address={ViewBag.Address}&phone={ViewBag.Phone}&email={@ViewBag.Email}&price={@ViewBag.price}"})>Delete</a>
                                     </div>
                                 </div>
                                 <div class="info-line">

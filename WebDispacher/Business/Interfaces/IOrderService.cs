@@ -19,6 +19,9 @@ namespace WebDispacher.Business.Interfaces
         string GetStrAction(string key, string idCompany, string idOrder, string idVech, string idDriver,
             string action);
 
+        string CreateFiltersString(string loadId, string name, string address, string phone, string email,
+            string price);
+        
         void RemoveVechi(string idVech);
         Task<VehiclwInformation> AddVechi(string idOrder);
         Task<Shipping> CreateShipping();

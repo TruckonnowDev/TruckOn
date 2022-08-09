@@ -187,30 +187,37 @@ namespace WebDispacher.Controellers
             IFormFile truckLeaseAgreementDoc, IFormFile truckAnnualInspection, IFormFile bobTailPhysicalDamage, 
             IFormFile nYHUTDoc)
         {
-            try
+            if (ModelState.IsValid && truckAnnualInspection != null && truckRegistrationDoc != null &&  truckLeaseAgreementDoc != null)
             {
-                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                try
                 {
-                    truckAndTrailerService.CreateTruck(truck,idCompany, truckRegistrationDoc,
-                        truckLeaseAgreementDoc, truckAnnualInspection, bobTailPhysicalDamage, nYHUTDoc);
-                    
-                    return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trucks");
-                }
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                    {
+                        truckAndTrailerService.CreateTruck(truck, idCompany, truckRegistrationDoc,
+                            truckLeaseAgreementDoc, truckAnnualInspection, bobTailPhysicalDamage, nYHUTDoc);
+
+                        return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trucks");
+                    }
+
+                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    {
+                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                    }
+                }
+                catch (Exception)
                 {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+
                 }
             }
-            catch (Exception)
+            else
             {
-
+                return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trucks");
             }
-            
+
             return Redirect(Config.BaseReqvesteUrl);
         }
 
@@ -289,30 +296,38 @@ namespace WebDispacher.Controellers
         public IActionResult CreateTrailer(TrailerViewModel trailer,
             IFormFile trailerRegistrationDoc, IFormFile trailerAnnualInspectionDoc, IFormFile leaseAgreementDoc)
         {
-            try
+            if (ModelState.IsValid && trailerAnnualInspectionDoc != null && trailerRegistrationDoc != null)
             {
-                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                try
                 {
-                    truckAndTrailerService.CreateTrailer(trailer,idCompany, trailerRegistrationDoc,
-                        trailerAnnualInspectionDoc, leaseAgreementDoc);
-                    
-                    return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trailers");
-                }
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                    {
+                        truckAndTrailerService.CreateTrailer(trailer, idCompany, trailerRegistrationDoc,
+                            trailerAnnualInspectionDoc, leaseAgreementDoc);
+
+                        return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trailers");
+                    }
+
+                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    {
+                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                    }
+                }
+                catch (Exception)
                 {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+
                 }
             }
-            catch (Exception)
+            else
             {
-
+                return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trailers");
             }
             
+
             return Redirect(Config.BaseReqvesteUrl);
         }
 
@@ -362,29 +377,36 @@ namespace WebDispacher.Controellers
         [DisableRequestSizeLimit]
         public IActionResult EditTruck(TruckViewModel truck)
         {
-            try
+            if (ModelState.IsValid && truck.Id != 0)
             {
-                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                try
                 {
-                    truckAndTrailerService.EditTruck(truck);
-                    
-                    return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trucks");
-                }
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                    {
+                        truckAndTrailerService.EditTruck(truck);
+
+                        return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trucks");
+                    }
+
+                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    {
+                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                    }
+                }
+                catch (Exception)
                 {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+
                 }
             }
-            catch (Exception)
+            else
             {
-
+                return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trucks");
             }
-            
+
             return Redirect(Config.BaseReqvesteUrl);
         }
 
@@ -434,29 +456,37 @@ namespace WebDispacher.Controellers
         [DisableRequestSizeLimit]
         public IActionResult EditTrailer(TrailerViewModel trailer)
         {
-            try
-            {
-                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
-                {
-                    truckAndTrailerService.EditTrailer(trailer);
-                    
-                    return Redirect($"{Config.BaseReqvesteUrl}/Equipment/trailers");
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
-            }
-            catch (Exception)
+            if (ModelState.IsValid && trailer.Id != 0)
             {
 
+                try
+                {
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+
+                    if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                    {
+                        truckAndTrailerService.EditTrailer(trailer);
+
+                        return Redirect($"{Config.BaseReqvesteUrl}/Equipment/trailers");
+                    }
+
+                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    {
+                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
             }
-            
+            else
+            {
+                return Redirect($"{Config.BaseReqvesteUrl}/Equipment/trailers");
+            }
+
             return Redirect(Config.BaseReqvesteUrl);
         }
 
@@ -630,31 +660,38 @@ namespace WebDispacher.Controellers
         }
         
         [Route("Trailer/DocSaveById")]
-        public IActionResult TrailerDocSaveById(IFormFile uploadedFile, string nameDoc, string id)
+        public IActionResult Trailer(IFormFile uploadedFile, string nameDoc, string id)
         {
-            try
+            if (!string.IsNullOrEmpty(nameDoc) && !string.IsNullOrEmpty(id) && uploadedFile != null)
             {
-                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                try
                 {
-                    truckAndTrailerService.SaveDocTrailer(uploadedFile, nameDoc, id);
-                    
-                    return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trailer/Doc?id={id}");
-                }
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                    {
+                        truckAndTrailerService.SaveDocTrailer(uploadedFile, nameDoc, id);
+
+                        return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trailer/Doc?id={id}");
+                    }
+
+                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    {
+                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                    }
+                }
+                catch (Exception e)
                 {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+
                 }
             }
-            catch (Exception e)
+            else
             {
-
+                return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trailers");
             }
-            
+
             return Redirect(Config.BaseReqvesteUrl);
         }
         
@@ -662,29 +699,36 @@ namespace WebDispacher.Controellers
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public IActionResult DocSaveById(IFormFile uploadedFile, string nameDoc, string id)
         {
-            try
+            if (!string.IsNullOrEmpty(nameDoc) && !string.IsNullOrEmpty(id) && uploadedFile != null)
             {
-                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                try
                 {
-                    truckAndTrailerService.SaveDocTruck(uploadedFile, nameDoc, id);
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
 
-                    return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Truck/Doc/?id={id}");
+                    if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                    {
+                        truckAndTrailerService.SaveDocTruck(uploadedFile, nameDoc, id);
+
+                        return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Truck/Doc/?id={id}");
+                    }
+
+                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    {
+                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                    }
                 }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                catch (Exception e)
                 {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+
                 }
             }
-            catch (Exception e)
+            else
             {
-
+                return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trucks/");
             }
-            
+
             return Redirect(Config.BaseReqvesteUrl);
         }
 

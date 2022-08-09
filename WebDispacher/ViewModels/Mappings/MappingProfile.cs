@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DaoModels.DAO.Models;
 using WebDispacher.Models;
+using WebDispacher.ViewModels.Company;
 using WebDispacher.ViewModels.Contact;
 using WebDispacher.ViewModels.Dispatcher;
 using WebDispacher.ViewModels.Driver;

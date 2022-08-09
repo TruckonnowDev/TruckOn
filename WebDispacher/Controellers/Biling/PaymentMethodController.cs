@@ -11,6 +11,7 @@ using WebDispacher.Business.Interfaces;
 using WebDispacher.Constants;
 using WebDispacher.Mosels;
 using WebDispacher.Service;
+using WebDispacher.ViewModels.Payment;
 
 namespace WebDispacher.Controellers.Biling
 {
@@ -120,45 +121,48 @@ namespace WebDispacher.Controellers.Biling
 
         [HttpPost]
         [Route("AddPaymentMethod")]
-        public IActionResult AddPaymentMethod(string number, string name, string expiry, string cvc)
+        public IActionResult AddPaymentMethod(CardViewModel card)
         {
-            try
+            if (ModelState.IsValid)
             {
-                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
-                
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.PaymentMethod))
+                try
                 {
-                    ViewBag.NameCompany = companyName;
-                    ViewData[NavConstants.TypeNavBar] =
-                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
-                    
-                    var responseStripe =  companyService.AddPaymentCard(idCompany, number, name, expiry, cvc);
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
 
-                    if (!responseStripe.IsError)
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Biling/PaymentMethod");
-                    
-                    ViewBag.TxtError = responseStripe.Message;
-                    ViewBag.Numbercard = number;
-                    ViewBag.FullName = name;
-                    ViewBag.Expire = expiry;
-                    ViewBag.Cvv = cvc;
-                        
-                    return View("~/Views/Settings/Biling/AddPaymentMethod.cshtml");
+                    if (userService.CheckPermissions(key, idCompany, RouteConstants.PaymentMethod))
+                    {
+                        ViewBag.NameCompany = companyName;
+                        ViewData[NavConstants.TypeNavBar] =
+                            companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+
+                        var responseStripe = companyService.AddPaymentCard(idCompany, card);
+
+                        if (!responseStripe.IsError)
+                            return Redirect($"{Config.BaseReqvesteUrl}/Settings/Biling/PaymentMethod");
+
+                        ViewBag.TxtError = responseStripe.Message;
+
+                        return View("~/Views/Settings/Biling/AddPaymentMethod.cshtml", card);
+                    }
+
+                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    {
+                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                    }
                 }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                catch (Exception e)
                 {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+
                 }
             }
-            catch (Exception e)
+            else
             {
-
+                return Redirect($"{Config.BaseReqvesteUrl}/Settings/Biling/PaymentMethod");
             }
-            
+
             return Redirect(Config.BaseReqvesteUrl);
         }
 

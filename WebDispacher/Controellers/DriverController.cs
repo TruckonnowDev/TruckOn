@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using DaoModels.DAO.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -206,54 +207,60 @@ namespace WebDispacher.Controellers
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public IActionResult AddReport(DriverReportViewModel driverReport)
         {
-            ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
-            try
+            if (ModelState.IsValid)
             {
-                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Driver))
+                ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
+                try
                 {
-                    if (driverReport.Terminated == DriverConstants.Undefined)
-                    {
-                        driverReport.Terminated = DriverConstants.Yes;
-                    }
-                    if (driverReport.Experience == DriverConstants.Undefined)
-                    {
-                        driverReport.Experience = string.Empty;
-                    }
-                    if (!string.IsNullOrEmpty(driverReport.Experience) 
-                        && driverReport.Experience  != DriverConstants.Undefined 
-                        && driverReport.Experience.LastIndexOf(',') == driverReport.Experience .Length - 2)
-                    {
-                        driverReport.Experience  = driverReport.Experience.Remove(driverReport.Experience.Length - 2);
-                    }
-                    
-                    driverReport.English = GetLevel(driverReport.English); 
-                    driverReport.ReturnedEquipmen = GetLevel(driverReport.ReturnedEquipmen); 
-                    driverReport.WorkingEfficiency = GetLevel(driverReport.WorkingEfficiency); 
-                    driverReport.EldKnowledge = GetLevel(driverReport.EldKnowledge); 
-                    driverReport.DrivingSkills = GetLevel(driverReport.DrivingSkills); 
-                    driverReport.PaymentHandling = GetLevel(driverReport.PaymentHandling); 
-                    driverReport.AlcoholTendency = GetLevel(driverReport.AlcoholTendency); 
-                    driverReport.DrugTendency = GetLevel(driverReport.DrugTendency);
-                    
-                    driverService.AddNewReportDriver(driverReport);
-                    
-                    return Redirect("Check");
-                }
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    if (userService.CheckPermissions(key, idCompany, RouteConstants.Driver))
+                    {
+                        if (driverReport.Terminated == DriverConstants.Undefined)
+                        {
+                            driverReport.Terminated = DriverConstants.Yes;
+                        }
+
+                        if (driverReport.Experience == DriverConstants.Undefined)
+                        {
+                            driverReport.Experience = string.Empty;
+                        }
+
+                        if (!string.IsNullOrEmpty(driverReport.Experience)
+                            && driverReport.Experience != DriverConstants.Undefined
+                            && driverReport.Experience.LastIndexOf(',') == driverReport.Experience.Length - 2)
+                        {
+                            driverReport.Experience =
+                                driverReport.Experience.Remove(driverReport.Experience.Length - 2);
+                        }
+
+                        driverReport.English = GetLevel(driverReport.English);
+                        driverReport.ReturnedEquipmen = GetLevel(driverReport.ReturnedEquipmen);
+                        driverReport.WorkingEfficiency = GetLevel(driverReport.WorkingEfficiency);
+                        driverReport.EldKnowledge = GetLevel(driverReport.EldKnowledge);
+                        driverReport.DrivingSkills = GetLevel(driverReport.DrivingSkills);
+                        driverReport.PaymentHandling = GetLevel(driverReport.PaymentHandling);
+                        driverReport.AlcoholTendency = GetLevel(driverReport.AlcoholTendency);
+                        driverReport.DrugTendency = GetLevel(driverReport.DrugTendency);
+
+                        driverService.AddNewReportDriver(driverReport);
+
+                        return Redirect("Check");
+                    }
+
+                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    {
+                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                    }
+                }
+                catch (Exception)
                 {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+
                 }
             }
-            catch (Exception)
-            {
 
-            }
-            
             return Redirect(Config.BaseReqvesteUrl);
         }
 
@@ -396,43 +403,53 @@ namespace WebDispacher.Controellers
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public IActionResult RemoveDriver(DriverReportModel model)
         {
-            try
+            if (ModelState.IsValid)
             {
-                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Driver))
+                try
                 {
-                    if(model.Terminated == DriverConstants.Undefined)
-                    {
-                        model.Terminated = DriverConstants.Yes;
-                    }
-                    if (model.Experience == DriverConstants.Undefined)
-                    {
-                        model.Experience = string.Empty;
-                    }
-                    if (!string.IsNullOrEmpty(model.Experience) && model.Experience != DriverConstants.Undefined 
-                        && model.Experience.LastIndexOf(',') == model.Experience.Length - 2)
-                    {
-                        model.Experience = model.Experience.Remove(model.Experience.Length - 2);
-                    }
-                    
-                    driverService.RemoveDrive(idCompany, model);
-                    
-                    return Redirect($"{Config.BaseReqvesteUrl}/Driver/Drivers");
-                }
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    if (userService.CheckPermissions(key, idCompany, RouteConstants.Driver))
+                    {
+                        if (model.Terminated == DriverConstants.Undefined)
+                        {
+                            model.Terminated = DriverConstants.Yes;
+                        }
+
+                        if (model.Experience == DriverConstants.Undefined)
+                        {
+                            model.Experience = string.Empty;
+                        }
+
+                        if (!string.IsNullOrEmpty(model.Experience) && model.Experience != DriverConstants.Undefined
+                            && model.Experience.LastIndexOf(',') ==
+                            model.Experience.Length - 2)
+                        {
+                            model.Experience = model.Experience.Remove(model.Experience.Length - 2);
+                        }
+
+                        driverService.RemoveDrive(idCompany, model);
+
+                        return Redirect($"{Config.BaseReqvesteUrl}/Driver/Drivers");
+                    }
+
+                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    {
+                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                    }
+                }
+                catch (Exception)
                 {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+
                 }
             }
-            catch (Exception)
+            else
             {
-
+                return Redirect($"{Config.BaseReqvesteUrl}/Driver/Drivers");
             }
-            
+
             return Redirect(Config.BaseReqvesteUrl);
         }
 
@@ -459,9 +476,13 @@ namespace WebDispacher.Controellers
                     
                     ViewBag.NameCompany = companyName;
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    ViewBag.Driver = driverService.GetDriverById(id);
+                    var driver = driverService.GetDriverByIdViewModel(id);
                     
-                    return View("EditDriver");
+                    if (driver != null)
+                    {
+                        return View("EditDriver", driver);
+                    }
+
                 }
 
                 if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
@@ -483,27 +504,35 @@ namespace WebDispacher.Controellers
         public IActionResult EditDriver(DriverViewModel driver)
         {
             ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
-            try
+            
+            if (ModelState.IsValid)
             {
-                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Driver))
+                try
                 {
-                    driverService.EditDriver(driver);
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
                     
-                    return Redirect($"{Config.BaseReqvesteUrl}/Driver/Drivers");
-                }
+                    if (userService.CheckPermissions(key, idCompany, RouteConstants.Driver))
+                    {
+                        driverService.EditDriver(driver);
+                        
+                        return Redirect($"{Config.BaseReqvesteUrl}/Driver/Drivers");
+                    }
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    {
+                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                    }
+                }
+                catch (Exception)
                 {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+
                 }
             }
-            catch (Exception)
+            else
             {
-
+                return Redirect($"{Config.BaseReqvesteUrl}/Driver/Drivers");
             }
             
             return Redirect(Config.BaseReqvesteUrl);

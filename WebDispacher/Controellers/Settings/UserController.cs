@@ -111,36 +111,43 @@ namespace WebDispacher.Controellers.Settings
         [HttpPost]
         [Route("CreateUser")]
         [ResponseCache(Location = ResponseCacheLocation.None, Duration = 300)]
-        public IActionResult CreateUsers(string login, string password)
+        public IActionResult CreateUsers(SettingsUserViewModel user)
         {
-            try
+            if (ModelState.IsValid)
             {
-                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
-                
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.SettingsUser))
+                try
                 {
-                    ViewData[NavConstants.TypeNavBar] =
-                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
-                    
-                    ViewBag.NameCompany = companyName;
-                    userService.AddUser(idCompany, login, password);
-                    
-                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/User/Users");
-                }
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    if (userService.CheckPermissions(key, idCompany, RouteConstants.SettingsUser))
+                    {
+                        ViewData[NavConstants.TypeNavBar] =
+                            companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+
+                        ViewBag.NameCompany = companyName;
+                        userService.AddUser(idCompany, user);
+
+                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/User/Users");
+                    }
+
+                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    {
+                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                    }
+                }
+                catch (Exception e)
                 {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+
                 }
             }
-            catch (Exception e)
+            else
             {
-
+                return Redirect($"{Config.BaseReqvesteUrl}/Settings/User/Users");
             }
-            
+
             return Redirect(Config.BaseReqvesteUrl);
         }
 
@@ -216,32 +223,40 @@ namespace WebDispacher.Controellers.Settings
         [Route("Edit")]
         public IActionResult EditUser(SettingsUserViewModel user)
         {
-            try
+            if (ModelState.IsValid)
             {
-                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
-                
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.SettingsUser))
+                try
                 {
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
-                    ViewBag.NameCompany = companyName;
-                    userService.EditUser(user);
-                    
-                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/User/Users");
-                }
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    if (userService.CheckPermissions(key, idCompany, RouteConstants.SettingsUser))
+                    {
+                        ViewData[NavConstants.TypeNavBar] =
+                            companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+                        ViewBag.NameCompany = companyName;
+                        userService.EditUser(user);
+
+                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/User/Users");
+                    }
+
+                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    {
+                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                    }
+                }
+                catch (Exception e)
                 {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+
                 }
             }
-            catch (Exception e)
-            {
-
+            else
+            { 
+                return Redirect($"{Config.BaseReqvesteUrl}/Settings/User/Users");
             }
-            
+
             return Redirect(Config.BaseReqvesteUrl);
         }
     }

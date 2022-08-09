@@ -899,32 +899,41 @@ namespace WebDispacher.Controellers
         public async Task<IActionResult> SaveOrder(ShippingViewModel shipping)
         {
             ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
-            try
+            if (ModelState.IsValid)
             {
-                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Dashboard))
+                try
                 {
-                    var updatedOrder = await orderService.UpdateOrder(shipping);
-                    
-                    await Task.Run(() => orderService.AddHistory(key, "0", shipping.Id, "0", "0", OrderConstants.ActionSaveOrder));
-                    
-                    return Redirect(updatedOrder == null ? 
-                        $"{Config.BaseReqvesteUrl}/Dashbord/Order/NewLoad" : $"{Config.BaseReqvesteUrl}/Dashbord/Order/{updatedOrder.CurrentStatus}");
-                }
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    if (userService.CheckPermissions(key, idCompany, RouteConstants.Dashboard))
+                    {
+                        var updatedOrder = await orderService.UpdateOrder(shipping);
+
+                        await Task.Run(() =>
+                            orderService.AddHistory(key, "0", shipping.Id, "0", "0", OrderConstants.ActionSaveOrder));
+
+                        return Redirect(updatedOrder == null
+                            ? $"{Config.BaseReqvesteUrl}/Dashbord/Order/NewLoad"
+                            : $"{Config.BaseReqvesteUrl}/Dashbord/Order/{updatedOrder.CurrentStatus}");
+                    }
+
+                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    {
+                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                    }
+                }
+                catch (Exception)
                 {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+
                 }
             }
-            catch (Exception)
+            else
             {
-
+                return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/NewLoad");
             }
-            
+
             return Redirect(Config.BaseReqvesteUrl);
         }
 

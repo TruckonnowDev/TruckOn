@@ -19,8 +19,10 @@ using WebDispacher.Models;
 using WebDispacher.Models.Subscription;
 using WebDispacher.Service;
 using WebDispacher.Service.TransportationManager;
+using WebDispacher.ViewModels.Company;
 using WebDispacher.ViewModels.Contact;
 using WebDispacher.ViewModels.Dispatcher;
+using WebDispacher.ViewModels.Payment;
 
 namespace WebDispacher.Business.Services
 {
@@ -167,9 +169,9 @@ namespace WebDispacher.Business.Services
             db.SaveChanges();
         }
         
-        public ResponseStripe AddPaymentCard(string idCompany, string number, string name, string expiry, string cvc)
+        public ResponseStripe AddPaymentCard(string idCompany, CardViewModel card)
         {
-            var responseStripe = stripeApi.CreatePaymentMethod(number.Replace(" ", ""), name, expiry, cvc);
+            var responseStripe = stripeApi.CreatePaymentMethod(card.Number.Replace(" ", ""), card.Name, card.Expiry, card.Cvc);
 
             if (responseStripe == null || responseStripe.IsError) return responseStripe;
             
@@ -267,7 +269,7 @@ namespace WebDispacher.Business.Services
             db.SaveChangesAsync();
         }
 
-        public async Task AddCompany(string nameCompany, string emailCompany, 
+        public async Task AddCompany(CreateCompanyViewModel model, 
             IFormFile MCNumberConfirmation, IFormFile IFTA, IFormFile KYU, IFormFile logbookPapers,
             IFormFile COI, IFormFile permits)
         {
@@ -275,13 +277,13 @@ namespace WebDispacher.Business.Services
             {
                 Active = true,
                 DateRegistration = DateTime.Now.ToString(),
-                Name = nameCompany,
+                Name = model.Name,
                 Type = TypeCompany.NormalCompany
             };
             
             var id = AddCompanyDb(company);
-            InitStripeForCompany(nameCompany, emailCompany, id);
-            userService.CreateUserForCompanyId(id, nameCompany, CreateToken(nameCompany, new Random().Next(10, 1000).ToString()));
+            InitStripeForCompany(model.Name, model.Email, id);
+            userService.CreateUserForCompanyId(id, model.Name, CreateToken(model.Name, new Random().Next(10, 1000).ToString()));
             await SaveDocCompany(MCNumberConfirmation, DocAndFileConstants.McNumber, id.ToString());
             
             if (IFTA != null)

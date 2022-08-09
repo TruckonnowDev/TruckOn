@@ -1,4 +1,6 @@
-﻿<div class="admin">
+﻿@model WebDispacher.ViewModels.Payment.CardViewModel
+
+<div class="admin">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
@@ -10,32 +12,32 @@
                     <form action="" method="post" enctype="multipart/form-data">
                         <label for="">
                             Card number
-                            <input type="tel" value="@ViewBag.Numbercard" name="number" pattern="[0-9\s]{13,19}" required>
+                            <input type="tel" value="@Model.Number" name="number" pattern="[0-9\s]{13,19}" required>
                         </label>
                         <div style="display:inline-flex;">
                             <div class="elem-1">
                                 <label for="">
                                     Name on card
-                                    <input value="@ViewBag.fullName" type="text" name="name" maxlength="15" required>
+                                    <input value="@Model.Name" type="text" name="name" maxlength="25" required>
                                 </label>
                             </div>
                             <div class="elem-2">
                                 <label for="">
                                     Expiration date
-                                    <input value="@ViewBag.expire" type="tel" name="expiry" required>
+                                    <input value="@Model.Expiry" type="tel" name="expiry" required>
                                 </label>
                             </div>
                             <div class="elem-3">
                                 <label for="">
                                     CVV
-                                    <input type="number" name="cvc" pattern="{3,4}" value="@ViewBag.cvv" required>
+                                    <input type="number" name="cvc" pattern="{3,4}" value="@Model.Cvc" required>
                                 </label>
                             </div>
                         </div>
                         <input class="btn1" type="submit" value="Add Card"/>
+                        <p style="color:red;">@ViewBag.TxtError</p>
                     </form>
-                    <p style="color:red;">@ViewBag.TxtError</p>
-                </div>
+                    </div>
                 </div>
             </div>
         </div>

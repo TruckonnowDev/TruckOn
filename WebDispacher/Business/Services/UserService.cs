@@ -146,14 +146,14 @@ namespace WebDispacher.Business.Services
             db.SaveChanges();
         }
 
-        public void AddUser(string idCompany, string login, string password)
+        public void AddUser(string idCompany, SettingsUserViewModel user)
         {
             var users = new Users()
             {
                 CompanyId = Convert.ToInt32(idCompany),
                 Date = DateTime.Now.ToString(),
-                Login = login,
-                Password = password
+                Login = user.Login,
+                Password = user.Password
             };
             
             AddUserDb(users);

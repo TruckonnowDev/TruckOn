@@ -25,6 +25,7 @@ namespace WebDispacher.Business.Interfaces
 
         Driver GetDriver(string idInspection);
         Driver GetDriverById(int id);
+        DriverViewModel GetDriverByIdViewModel(int id);
         void RemoveDocDriver(string idDock);
         List<Driver> GetDrivers(int pag, string idCompany);
         Task<List<Driver>> GetDrivers(string idCompany);

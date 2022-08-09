@@ -207,6 +207,23 @@
 </body>
 
 <script>
+$("#fi3").change(function() {
+    CheckValid('fl3','fi3');
+});
+
+$("#fi2").change(function() {
+    CheckValid('fl2','fi2');
+});
+
+$("#fi1").change(function() {
+    CheckValid('fl1','fi1');
+});
+
+ $("#button-save").on('click', function (){
+     CheckValid('fl1','fi1');
+     CheckValid('fl2','fi2');
+     CheckValid('fl3','fi3');
+ })
     var curentSelectPattern;
 
     function SelectTrailer(value) {

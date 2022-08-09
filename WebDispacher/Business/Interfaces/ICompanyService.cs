@@ -7,8 +7,10 @@ using Microsoft.AspNetCore.Http;
 using Stripe;
 using WebDispacher.Models;
 using WebDispacher.Models.Subscription;
+using WebDispacher.ViewModels.Company;
 using WebDispacher.ViewModels.Contact;
 using WebDispacher.ViewModels.Dispatcher;
+using WebDispacher.ViewModels.Payment;
 
 namespace WebDispacher.Business.Interfaces
 {
@@ -26,7 +28,7 @@ namespace WebDispacher.Business.Interfaces
         void DeleteContactById(int id);
         DispatcherViewModel GetDispatcherById(int idDispatch);
         void RemoveDispatchById(int idDispatch);
-        ResponseStripe AddPaymentCard(string idCompany, string number, string name, string expiry, string cvc);
+        ResponseStripe AddPaymentCard(string idCompany, CardViewModel card);
         void DeletePaymentMethod(string idPayment, string idCompany);
         Subscribe_ST GetSubscriptionIdCompany(string idCompany, ActiveType activeType = ActiveType.Active);
         ResponseStripe SelectDefaultPaymentMethod(string idPayment, string idCompany = null,
@@ -38,7 +40,7 @@ namespace WebDispacher.Business.Interfaces
         Task<List<DucumentCompany>> GetCompanyDoc(string id);
         void CreateContact(ContactViewModel contact, string idCompany);
 
-        Task AddCompany(string nameCompany, string emailCompany, IFormFile MCNumberConfirmation, IFormFile IFTA,
+        Task AddCompany(CreateCompanyViewModel model, IFormFile MCNumberConfirmation, IFormFile IFTA,
             IFormFile KYU, IFormFile logbookPapers, IFormFile COI, IFormFile permits);
 
         List<Contact> GetContacts(string idCompany);

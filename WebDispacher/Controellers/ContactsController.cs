@@ -106,31 +106,38 @@ namespace WebDispacher.Controellers
         public IActionResult CreateDriver(ContactViewModel model)
         {
             ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
-            try
+            if (ModelState.IsValid)
             {
-                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Contact))
+                try
                 {
-                    if (!ModelState.IsValid) return View("CreateContact");
-                    
-                    companyService.CreateContact(model, idCompany);
-                    
-                    return Redirect($"{Config.BaseReqvesteUrl}/Contact/Contacts");
-                }
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    if (userService.CheckPermissions(key, idCompany, RouteConstants.Contact))
+                    {
+                        if (!ModelState.IsValid) return View("CreateContact");
+
+                        companyService.CreateContact(model, idCompany);
+
+                        return Redirect($"{Config.BaseReqvesteUrl}/Contact/Contacts");
+                    }
+
+                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    {
+                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                    }
+                }
+                catch (Exception)
                 {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+
                 }
             }
-            catch (Exception)
+            else
             {
-
+                return Redirect($"{Config.BaseReqvesteUrl}/Contact/Contacts");
             }
-            
+
             return Redirect(Config.BaseReqvesteUrl);
         }
 
@@ -178,32 +185,39 @@ namespace WebDispacher.Controellers
         [Route("Contact/Edit")]
         public IActionResult EditContact(ContactViewModel contact)
         {
-            try
+            if (ModelState.IsValid)
             {
-                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
-                
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Contact))
+                try
                 {
-                    ViewBag.NameCompany = companyName;
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    companyService.EditContact(contact);
-                    
-                    return Redirect($"{Config.BaseReqvesteUrl}/Contact/Contacts");
-                }
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    if (userService.CheckPermissions(key, idCompany, RouteConstants.Contact))
+                    {
+                        ViewBag.NameCompany = companyName;
+                        ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
+                        companyService.EditContact(contact);
+
+                        return Redirect($"{Config.BaseReqvesteUrl}/Contact/Contacts");
+                    }
+
+                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    {
+                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                    }
+                }
+                catch (Exception)
                 {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+
                 }
             }
-            catch (Exception)
+            else
             {
-
+                return Redirect($"{Config.BaseReqvesteUrl}/Contact/Contacts");
             }
-            
+
             return Redirect(Config.BaseReqvesteUrl);
         }
 

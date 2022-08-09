@@ -1,4 +1,5 @@
-﻿using DaoModels.DAO.Interface;
+﻿using System.ComponentModel.DataAnnotations;
+using DaoModels.DAO.Interface;
 
 namespace WebDispacher.ViewModels.Trailer
 {
@@ -6,6 +7,8 @@ namespace WebDispacher.ViewModels.Trailer
     {
         public int Id { get; set; }
         public int CompanyId { get; set; }
+        
+        [Required]
         public string Name { get; set; }
         public string Year { get; set; }
         public string Make { get; set; }
@@ -13,9 +16,13 @@ namespace WebDispacher.ViewModels.Trailer
         public string Vin { get; set; }
         public string Owner { get; set; }
         public string Color { get; set; }
+        
+        [Required]
         public string Plate { get; set; }
         public string Exp { get; set; }
         public string AnnualIns { get; set; }
+        
+        [Required]
         public string Type { get; set; }
     }
 }

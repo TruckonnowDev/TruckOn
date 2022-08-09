@@ -217,6 +217,13 @@ namespace WebDispacher.Business.Services
         {
             return db.Drivers.FirstOrDefault(d => d.Id == id);
         }
+        
+        public DriverViewModel GetDriverByIdViewModel(int id)
+        {
+           var driver = db.Drivers.FirstOrDefault(d => d.Id == id);
+           
+           return mapper.Map<DriverViewModel>(driver);
+        }
 
         public void RemoveDocDriver(string idDock)
         {

@@ -9,6 +9,7 @@ using DaoModels.DAO.Models;
 using WebDispacher.Business.Interfaces;
 using WebDispacher.Constants;
 using WebDispacher.Service;
+using WebDispacher.ViewModels.Company;
 
 namespace WebDispacher.Controellers
 {
@@ -112,33 +113,42 @@ namespace WebDispacher.Controellers
 
         [HttpPost]
         [Route("CreateCompany")]
-        public IActionResult CreateCompany(string nameCompany, string emailCompany, List<IFormFile> MCNumberConfirmation, IFormFile IFTA, IFormFile KYU,
+        public IActionResult CreateCompany(CreateCompanyViewModel company, List<IFormFile> MCNumberConfirmation, IFormFile IFTA, IFormFile KYU,
             IFormFile logbookPapers, IFormFile COI, IFormFile permits)
         {
             ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
-            try
-            {
-                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Company))
-                {
-                    companyService.AddCompany(nameCompany, emailCompany, MCNumberConfirmation[0], IFTA, KYU, logbookPapers, COI, permits);
-                    
-                    return Redirect($"{Config.BaseReqvesteUrl}/Company/Companies");
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
-            }
-            catch (Exception e)
-            {
-
-            }
             
+            if (ModelState.IsValid && IFTA != null && KYU != null && logbookPapers != null && COI != null && permits != null && MCNumberConfirmation.Count != 0)
+            {
+                try
+                {
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+
+                    if (userService.CheckPermissions(key, idCompany, RouteConstants.Company))
+                    {
+                        companyService.AddCompany(company, MCNumberConfirmation[0], IFTA, KYU, logbookPapers, COI,
+                            permits);
+
+                        return Redirect($"{Config.BaseReqvesteUrl}/Company/Companies");
+                    }
+
+                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    {
+                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                    }
+                }
+                catch (Exception e)
+                {
+
+                }
+            }
+            else
+            {
+                return Redirect($"{Config.BaseReqvesteUrl}/Company/Companies");
+            }
+
             return Redirect(Config.BaseReqvesteUrl);
         }
 

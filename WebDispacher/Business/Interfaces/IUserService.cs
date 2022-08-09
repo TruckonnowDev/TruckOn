@@ -21,7 +21,7 @@ namespace WebDispacher.Business.Interfaces
         void CreateUserForCompanyId(int id, string nameCompany, string password);
         void EditUser(SettingsUserViewModel user);
         SettingsUserViewModel GetUserById(int id);
-        void AddUser(string idCompany, string login, string password);
+        void AddUser(string idCompany, SettingsUserViewModel user);
         void RemoveUserById(string idUser);
         bool Authorization(string login, string password);
         int CreateKey(string login, string password);

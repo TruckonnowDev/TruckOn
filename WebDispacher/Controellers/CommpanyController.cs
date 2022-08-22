@@ -224,30 +224,39 @@ namespace WebDispacher.Controellers
         }
 
         [Route("SaveDoc")]
-        public void SaveDoc(IFormFile uploadedFile, string nameDoc, string id)
+        public IActionResult SaveDoc(IFormFile uploadedFile, string nameDoc, string id)
         {
-            try
+            if (!string.IsNullOrEmpty(nameDoc) && !string.IsNullOrEmpty(id) && uploadedFile != null)
             {
-                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Company))
+                try
                 {
-                    companyService.SaveDocCompany(uploadedFile, nameDoc, id);
-                }
-                else
-                {
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+
+                    if (userService.CheckPermissions(key, idCompany, RouteConstants.Company))
+                    {
+                        companyService.SaveDocCompany(uploadedFile, nameDoc, id);
+
+                        return Redirect($"{Config.BaseReqvesteUrl}/Company/Doc?id={id}");
+                    }
+
                     if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                     {
                         Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                     }
                 }
-            }
-            catch (Exception e)
-            {
+                catch (Exception e)
+                {
 
+                }
             }
+            else
+            {
+                return Redirect($"{Config.BaseReqvesteUrl}/Company/Companies");
+            }
+
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [Route("RemoveDoc")]

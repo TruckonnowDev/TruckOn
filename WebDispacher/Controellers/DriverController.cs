@@ -729,30 +729,39 @@ namespace WebDispacher.Controellers
         }
 
         [Route("Driver/SaveDoc")]
-        public void SaveDoc(IFormFile uploadedFile, string nameDoc, string id)
+        public IActionResult SaveDoc(IFormFile uploadedFile, string nameDoc, string id)
         {
-            try
+            if (!string.IsNullOrEmpty(nameDoc) && !string.IsNullOrEmpty(id) && uploadedFile != null)
             {
-                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Driver))
+                try
                 {
-                    driverService.SaveDocDriver(uploadedFile, nameDoc, id);
-                }
-                else
-                {
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+
+                    if (userService.CheckPermissions(key, idCompany, RouteConstants.Driver))
+                    {
+                        driverService.SaveDocDriver(uploadedFile, nameDoc, id);
+
+                        return Redirect($"{Config.BaseReqvesteUrl}/Driver/Doc?id={id}");
+                    }
+
                     if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                     {
                         Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                     }
                 }
-            }
-            catch (Exception e)
-            {
+                catch (Exception e)
+                {
 
+                }
             }
+            else
+            {
+                return Redirect($"{Config.BaseReqvesteUrl}/Driver/Drivers");
+            }
+            
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [Route("Driver/RemoveDoc")]

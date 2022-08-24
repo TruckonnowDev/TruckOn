@@ -315,7 +315,16 @@
                         + "&experience=" + encodeURIComponent(experienceInp.value)
                         + "&dotViolations=" + encodeURIComponent(dotViolationsInp.value)
                         + "&description=" + encodeURIComponent(descriptionTA.value);
-                    document.location.href = "@ViewBag.BaseUrl/Driver/Drivers/Remove?" + body;
+                    
+                    $.ajax({
+                          type: "get",
+                          url: `/Driver/Drivers/Remove?${body}`,
+                          success: function () {
+                              window.location.reload();
+                          },
+                          error: function (response) {
+                          }
+                      });
                 }
             }
 </script>

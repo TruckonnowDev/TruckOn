@@ -706,12 +706,14 @@ input[type="file"] {
     line-height:1.2;
     color:#686f7c;
     margin-top:6px;
+    margin-bottom:6px;
+    margin-right:10px;
 }
 
 .file-group .select-button-1 label {
     font-size: 16;
     font-weight: 400;
-    padding-top: 20px;
+    padding-top: 22px;
     color: #2C5DEB;
     cursor: pointer;
     height: 73px;
@@ -720,6 +722,10 @@ input[type="file"] {
 
 .file-group label {
     width: auto!important;
+}
+
+.inp-file-width {
+    width:550px;
 }
 
 .full-label .a-label {
@@ -740,6 +746,9 @@ input[type="file"] {
     font-weight: 400;
 }
 
+.wrap {
+    flex-wrap: wrap;
+}
 .red-button-custom {
     color: red!important;
     cursor: pointer;

@@ -532,15 +532,25 @@ namespace DaoModels.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("DriverId");
+
                     b.Property<string>("How_Are_You_Satisfied_With_Service");
 
                     b.Property<string>("How_did_the_driver_perform");
+
+                    b.Property<string>("ShippingId");
 
                     b.Property<string>("Would_You_Like_To_Get_An_notification_If_We_Have_Any_Promotion");
 
                     b.Property<string>("Would_You_Use_Our_Company_Again");
 
                     b.HasKey("id");
+
+                    b.HasIndex("DriverId");
+
+                    b.HasIndex("ShippingId")
+                        .IsUnique()
+                        .HasFilter("[ShippingId] IS NOT NULL");
 
                     b.ToTable("Feedbacks");
                 });
@@ -887,8 +897,6 @@ namespace DaoModels.Migrations
 
                     b.Property<string>("FaxC");
 
-                    b.Property<int?>("Feedbackid");
-
                     b.Property<string>("IccmcC");
 
                     b.Property<int>("IdDriver");
@@ -942,8 +950,6 @@ namespace DaoModels.Migrations
                     b.HasIndex("Ask2Id");
 
                     b.HasIndex("AskFromUserid");
-
-                    b.HasIndex("Feedbackid");
 
                     b.HasIndex("askForUserDelyveryMID");
 
@@ -1202,6 +1208,18 @@ namespace DaoModels.Migrations
                         .HasForeignKey("geolocationsID");
                 });
 
+            modelBuilder.Entity("DaoModels.DAO.Models.Feedback", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.Driver", "Driver")
+                        .WithMany("Feedbacks")
+                        .HasForeignKey("DriverId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("DaoModels.DAO.Models.Shipping")
+                        .WithOne("Feedback")
+                        .HasForeignKey("DaoModels.DAO.Models.Feedback", "ShippingId");
+                });
+
             modelBuilder.Entity("DaoModels.DAO.Models.InspectionDriver", b =>
                 {
                     b.HasOne("DaoModels.DAO.Models.Driver")
@@ -1281,10 +1299,6 @@ namespace DaoModels.Migrations
                     b.HasOne("DaoModels.DAO.Models.AskFromUser", "AskFromUser")
                         .WithMany()
                         .HasForeignKey("AskFromUserid");
-
-                    b.HasOne("DaoModels.DAO.Models.Feedback", "Feedback")
-                        .WithMany()
-                        .HasForeignKey("Feedbackid");
 
                     b.HasOne("DaoModels.DAO.Models.AskForUserDelyveryM", "askForUserDelyveryM")
                         .WithMany()

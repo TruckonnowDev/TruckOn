@@ -402,10 +402,10 @@ namespace ApiMobaileServise.Servise
             return sqlCommandApiMobile.GetLastInspaction(idDriver);
         }
 
-        public async Task SaveFeedBack(string jsonStrAsk, string shippingId)
+        public async Task SaveFeedBack(string jsonStrAsk)
         {
             Feedback feedback = JsonConvert.DeserializeObject<Feedback>(jsonStrAsk);
-            sqlCommandApiMobile.SaveFeedBackInDb(feedback, shippingId);
+            sqlCommandApiMobile.SaveFeedBackInDb(feedback);
         }
 
         public async Task ReCurentStatus(string idShip, string status)

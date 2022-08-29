@@ -508,17 +508,34 @@ namespace MDispatch.View.Inspection.PickedUp
 
         }
 
-        private void Button_Clicked_2(object sender, EventArgs e)
+        private async void Button_Clicked_2(object sender, EventArgs e)
         {
-            btnYesPay.IsVisible = false;
-            btnNoPay.IsVisible = false;
-            btnNumberOffice.IsVisible = true;
-            lReport.IsVisible = true;
-            blockAsk.IsVisible = false;
-            bloclThank.IsVisible = false;
-            blockPsw.IsVisible = false;
-            liabilityAndInsuranceMV.SetProblem();
-            timer = new Timer(new TimerCallback(CheckProplem), null, 10000, 10000);
+            //btnYesPay.IsVisible = false;
+            //btnNoPay.IsVisible = false;
+            //btnNumberOffice.IsVisible = true;
+            //lReport.IsVisible = true;
+            //blockAsk.IsVisible = false;
+            //bloclThank.IsVisible = false;
+            //blockPsw.IsVisible = false;
+            //liabilityAndInsuranceMV.SetProblem();
+            //timer = new Timer(new TimerCallback(CheckProplem), null, 10000, 10000);
+
+            //lReport.IsVisible = true;
+            //if (Paymmant != null)
+            //{
+            //    isAsk2 = Paymmant.IsAskPaymmant;
+            //}
+            //if (isSignatureAsk && isAsk2)
+            //{
+            //    if (!Paymmant.IsAskPaymmant)
+            //        await Paymmant.Pay();
+            //    liabilityAndInsuranceMV.SaveSigAndMethodPay();
+            //}
+            //else
+            //{
+            //    await PopupNavigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
+            //    CheckAsk();
+            //}
         }
 
         private void Button_Clicked_3(object sender, EventArgs e)

@@ -16,7 +16,7 @@ namespace MDispatch.View.Inspection
             {
                 lMake.Text = vehiclwInformation.Make + " ";
                 lModel.Text = vehiclwInformation.Model + " ";
-                lYear.Text = vehiclwInformation.Year;
+                lYear.Text = vehiclwInformation.Year + " ";
             }
         }
 

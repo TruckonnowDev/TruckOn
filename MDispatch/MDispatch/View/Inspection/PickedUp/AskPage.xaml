@@ -216,6 +216,7 @@
                         <StackLayout Orientation="Horizontal" Spacing="13">
                             <Button Text="{x:Static helperLang:LanguageHelper.YesBtnText}"
                                     Clicked="Button_Clicked_6"
+                                    x:Name="additionalYesButton"
                                     Style="{StaticResource btnAsk}"/>
                             <Button Text="{x:Static helperLang:LanguageHelper.NoBtnText}"
                                     Clicked="Button_Clicked_6v1"

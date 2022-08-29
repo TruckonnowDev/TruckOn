@@ -31,12 +31,6 @@
                        FontFamily="{StaticResource OpenSans-Bold}"/>
                 <FlexLayout JustifyContent="Center"
                             Margin="0, 15, 0, 20">
-                    <Label x:Name="lYear"
-                           TextColor="#101010"
-                           FontSize="14"
-                           VerticalOptions="Center"
-                           HorizontalTextAlignment="Center"
-                           FontFamily="{StaticResource OpenSans-Regular}"/>
                     <Label x:Name="lMake"
                            TextColor="#101010"
                            FontSize="14"
@@ -44,6 +38,12 @@
                            HorizontalTextAlignment="Center"
                            FontFamily="{StaticResource OpenSans-Regular}"/>
                     <Label x:Name="lModel"
+                           TextColor="#101010"
+                           FontSize="14"
+                           VerticalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           FontFamily="{StaticResource OpenSans-Regular}"/>
+                    <Label x:Name="lYear"
                            TextColor="#101010"
                            FontSize="14"
                            VerticalOptions="Center"

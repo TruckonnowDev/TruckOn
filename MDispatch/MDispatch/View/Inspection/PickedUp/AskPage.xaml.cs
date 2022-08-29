@@ -345,10 +345,12 @@ namespace MDispatch.View.AskPhoto
 
         private async void Button_Clicked_6v1(object sender, EventArgs e)
         {
+            additionalYesButton.TextColor = Color.FromHex("#C1C1C1");
             isAsk10 = true;
             Button button = (Button)sender;
             button.TextColor = Color.FromHex("#2C5DEB");
-            if (button10 != null)
+            if (button10 != null &&
+                button1 != null)
             {
                 button1.TextColor = Color.FromHex("#C1C1C1");
             }

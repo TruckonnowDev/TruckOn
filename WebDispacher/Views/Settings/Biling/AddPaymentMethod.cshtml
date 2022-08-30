@@ -1,45 +1,89 @@
-﻿<div class="body">
-    <input class="backBtn" type="button" value="← Back to Orders" onclick="history.back();" />
-    <div class="body-card">
-        <div class="card-wrapper"></div>
-        <form method="post">
-            <input class="numberCard validation inpText" value="@ViewBag.Numbercard" placeholder="•••• •••• •••• ••••" type="tel" pattern="[0-9\s]{13,19}" name="number" required>
-            <div style="display:flex;">
-                <input class="fullname validation inpText" value="@ViewBag.fullName" placeholder="Full name" type="text" name="name" maxlength="15" required>
-                <input class="expire validation inpText" value="@ViewBag.expire" placeholder="MM/YYYY" type="tel" name="expiry" required>
-                <input class="cvv validation inpText" placeholder="CVC" type="number" name="cvc" pattern="{3,4}" value="@ViewBag.cvv" required>
+﻿<div class="admin">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="tabContent">
+                    <div class="title">
+                        <a href="#" onclick="history.back();">Back to Billing</a>
+                    </div>
+                    <div class="body-card">
+                    <form action="" method="post" enctype="multipart/form-data">
+                        <label for="">
+                            Card number
+                            <input type="tel" value="@ViewBag.Numbercard" name="number" pattern="[0-9\s]{13,19}" required>
+                        </label>
+                        <div style="display:inline-flex;">
+                            <div class="elem-1">
+                                <label for="">
+                                    Name on card
+                                    <input value="@ViewBag.fullName" type="text" name="name" maxlength="15" required>
+                                </label>
+                            </div>
+                            <div class="elem-2">
+                                <label for="">
+                                    Expiration date
+                                    <input value="@ViewBag.expire" type="tel" name="expiry" required>
+                                </label>
+                            </div>
+                            <div class="elem-3">
+                                <label for="">
+                                    CVV
+                                    <input type="number" name="cvc" pattern="{3,4}" value="@ViewBag.cvv" required>
+                                </label>
+                            </div>
+                        </div>
+                        <input class="btn1" type="submit" value="Add Card"/>
+                    </form>
+                    <p style="color:red;">@ViewBag.TxtError</p>
+                </div>
+                </div>
             </div>
-            <input class="btnSave" type="submit" value="Add Card" />
-        </form>
-        <p style="color:red;">@ViewBag.TxtError</p>
+        </div>
     </div>
 </div>
+@* <div class="body"> *@
+@*     <input class="backBtn" type="button" value="← Back to Orders" onclick="history.back();"/> *@
+@*     <div class="body-card"> *@
+@*         <div class="card-wrapper"></div> *@
+@*         <form method="post"> *@
+@*             <input class="numberCard validation inpText" value="@ViewBag.Numbercard" placeholder="•••• •••• •••• ••••" type="tel" pattern="[0-9\s]{13,19}" name="number" required> *@
+@*             <div style="display:flex;"> *@
+@*                 <input class="fullname validation inpText" value="@ViewBag.fullName" placeholder="Full name" type="text" name="name" maxlength="15" required> *@
+@*                 <input class="expire validation inpText" value="@ViewBag.expire" placeholder="MM/YYYY" type="tel" name="expiry" required> *@
+@*                 <input class="cvv validation inpText" placeholder="CVC" type="number" name="cvc" pattern="{3,4}" value="@ViewBag.cvv" required> *@
+@*             </div> *@
+@*             <input class="btn1" type="submit" value="Add Card"/> *@
+@*         </form> *@
+@*         <p style="color:red;">@ViewBag.TxtError</p> *@
+@*     </div> *@
+@* </div> *@
 
 <script src="~/dist/card.js"></script>
 <script>
-    var card = new Card({
-        form: document.querySelector('form'),
-        container: '.card-wrapper',
-        formatting: true,
-        width: 380,
-        messages: {
-            validDate: 'valid\ndate',
-            monthYear: 'mm/yyyy',
-        },
-        placeholders: {
-            number: '•••• •••• •••• ••••',
-            name: 'Full Name',
-            expiry: '••/••',
-            cvc: '••'
-        },
-        masks: {
-            cardNumber: '•'
-        }
-    });
-
-    
 </script>
 <style>
+label{
+width: 100%!important;
+}
+.btn1{
+width: 100%!important;
+}
+ .elem-1{
+ display: inline-block;
+ margin-right: 3%;
+ width: 48%;
+ }
+ 
+ .elem-2{
+  display: inline-block;
+  margin-right: 3%;
+  width: 28%;
+  }
+  
+  .elem-3{
+   display: inline-block;
+   width: 18%;
+   }
     * {
         margin: 0px;
     }
@@ -67,8 +111,8 @@
 
     .body-card {
         position:absolute;
-        width: 400px;
-        left:38%;
+        width: 550px;
+        left:28%;
     }
 
     form {
@@ -76,7 +120,6 @@
         display: flex;
         flex-wrap: wrap;
         margin: 20px;
-        justify-content: center;
     }
 
     .inpText {

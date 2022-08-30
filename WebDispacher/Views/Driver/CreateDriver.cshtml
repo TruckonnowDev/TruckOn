@@ -1,175 +1,234 @@
-﻿<div class="body">
-    <input class="backBtn" type="button" value="← Back to Orders" onclick="history.back();" />
-    <form action="" method="post" enctype="multipart/form-data">
-        <div class="content">
-            <h2 style="color: rgb(51, 51, 51);margin-bottom:2px;">Add New Driver</h2>
-            <p class="inpLabe">Full Name</p>
-            <input name="fullName" class="inpText validation" type="text" required />
-            <p class="inpLabe">Email Address</p>
-            <input name="emailAddress" class="inpText validation" type="email" required />
-            <p class="inpLabe">Password</p>
-            <input name="password" class="inpText validation" type="text" required />
-            <p class="inpLabe">Phone Number</p>
-            <input name="phoneNumbe" class="inpText validation" type="tel" placeholder="XXXXXXXXXX" pattern="[0-9]{4,12}" required />
-            <p class="inpLabe">Trailer Capacity</p>
-            <input name="trailerCapacity" class="inpText" type="text" />
-            <p class="inpLabe">Driver's License Number</p>
-            <input name="driversLicenseNumber" class="inpText validation" type="text" required />
-            <p class="inpLabe">Document DL</p>
-            <div class="inpText">
-                <label for="docLoad1" class="btnModal" style="margin-left:5px;">Select document DL</label>
-                <input id="docLoad1" style="display: none;" type="file" name="dLDoc" onchange="LoadFile(this, 1)" accept="application/pdf, image/jpeg, image/jpg" required>
-                <span id="nameNoLoadDoc1" class="spanModal" style="align-self:center;margin-left:5px;color:#ff4614;">You can upload files only in pdf, jpg and jepg</span>
-                <span id="nameLoadDoc1" class="spanModal" style="align-self:center;margin-left:5px;color:#95f816;" hidden></span>
-            </div>
-            <p class="inpLabe">Document Medical card</p>
-            <div class="inpText">
-                <label for="docLoad2" class="btnModal" style="margin-left:5px;">Select document Medical card</label>
-                <input id="docLoad2" style="display: none;" type="file" name="medicalCardDoc" onchange="LoadFile(this, 2)" accept="application/pdf, image/jpeg, image/jpg" required>
-                <span id="nameNoLoadDoc2" class="spanModal" style="align-self:center;margin-left:5px;color:#ff4614;">You can upload files only in pdf, jpg and jepg</span>
-                <span id="nameLoadDoc2" class="spanModal" style="align-self:center;margin-left:5px;color:#95f816;" hidden></span>
-            </div>
-            <p class="inpLabe">Document SSN</p>
-            <div class="inpText">
-                <label for="docLoad3" class="btnModal" style="margin-left:5px;">Select document SSN</label>
-                <input id="docLoad3" style="display: none;" type="file" name="sSNDoc" onchange="LoadFile(this, 3)" accept="application/pdf, image/jpeg, image/jpg" required>
-                <span id="nameNoLoadDoc3" class="spanModal" style="align-self:center;margin-left:5px;color:#ff4614;">You can upload files only in pdf, jpg and jepg</span>
-                <span id="nameLoadDoc3" class="spanModal" style="align-self:center;margin-left:5px;color:#95f816;" hidden></span>
-            </div>
-            <p class="inpLabe">Document Proof of work Authorization or GC</p>
-            <div class="inpText">
-                <label for="docLoad4" class="btnModal" style="margin-left:5px;">Select document Proof of work Authorization or GC</label>
-                <input id="docLoad4" style="display: none;" type="file" name="proofOfWorkAuthorizationOrGCDoc" onchange="LoadFile(this, 4)" accept="application/pdf, image/jpeg, image/jpg" required>
-                <span id="nameNoLoadDoc4" class="spanModal" style="align-self:center;margin-left:5px;color:#ff4614;">You can upload files only in pdf, jpg and jepg</span>
-                <span id="nameLoadDoc4" class="spanModal" style="align-self:center;margin-left:5px;color:#95f816;" hidden></span>
-            </div>
-            <p class="inpLabe">Document DQL (driver qualification file)</p>
-            <div class="inpText">
-                <label for="docLoad5" class="btnModal" style="margin-left:5px;">Select document DQL</label>
-                <input id="docLoad5" style="display: none;" type="file" name="dQLDoc" onchange="LoadFile(this, 5)" accept="application/pdf, image/jpeg, image/jpg" required>
-                <span id="nameNoLoadDoc5" class="spanModal" style="align-self:center;margin-left:5px;color:#ff4614;">You can upload files only in pdf, jpg and jepg</span>
-                <span id="nameLoadDoc5" class="spanModal" style="align-self:center;margin-left:5px;color:#95f816;" hidden></span>
-            </div>
-            <p class="inpLabe">Document Contract (company and driver)</p>
-            <div class="inpText">
-                <label for="docLoad6" class="btnModal" style="margin-left:5px;">Select document Contract</label>
-                <input id="docLoad6" style="display: none;" type="file" name="contractDoc" onchange="LoadFile(this, 6)" accept="application/pdf, image/jpeg, image/jpg" required>
-                <span id="nameNoLoadDoc6" class="spanModal" style="align-self:center;margin-left:5px;color:#ff4614;">You can upload files only in pdf, jpg and jepg</span>
-                <span id="nameLoadDoc6" class="spanModal" style="align-self:center;margin-left:5px;color:#95f816;" hidden></span>
-            </div>
-            <p class="inpLabe">Document Drug test results (optional for 26000+)</p>
-            <div class="inpText">
-                <label for="docLoad7" class="btnModal" style="margin-left:5px;">Select document Drug test results</label>
-                <input id="docLoad7" style="display: none;" type="file" name="drugTestResultsDoc" onchange="LoadFile(this, 7)" accept="application/pdf, image/jpeg, image/jpg">
-                <span id="nameNoLoadDoc7" class="spanModal" style="align-self:center;margin-left:5px;color:#ff4614;">You can upload files only in pdf, jpg and jepg</span>
-                <span id="nameLoadDoc7" class="spanModal" style="align-self:center;margin-left:5px;color:#95f816;" hidden></span>
+﻿<body>
+<div class="admin">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="tabContent">
+                    <div class="title">
+                        <a href="#" onclick="history.back();">Back to Drivers</a>
+                    </div>
+                    <div class="title">
+                        <h1 class="text-info-header-1">Info About the Driver</h1>
+                    </div>
+                    <form action="" method="post" enctype="multipart/form-data">
+                        <label class="big-label" for="">
+                            Full name
+                            <input class="height-input" type="text" name="FullName" required>
+                        </label>
+                        <label class="big-label" for="">
+                            Email address
+                            <input class="height-input" type="email" name="EmailAddress" required>
+                        </label>
+                        <label class="big-label" for="">
+                            Password
+                            <input class="height-input" type="text" name="Password" required>
+                        </label>
+                        <label class="big-label" for="">
+                            Phone number
+                            <input class="height-input" type="text" name="PhoneNumber" pattern="[0-9]{4,12}" required>
+                        </label>
+                        <label class="big-label" for="">
+                            Trailer capacity
+                            <input class="height-input" type="text" name="TrailerCapacity">
+                        </label>
+                        <label class="big-label" for="">
+                            Driver's license number
+                            <input class="height-input" type="text" name="DriversLicenseNumber" required>
+                        </label>
+                        <div class="full-label">
+                            <a class="a-label">Document DL</a>
+                            <div class="d-flex align-items-center">
+                                <div class="file-group big-label">
+                                    <div class="row">
+                                        <div class="col-md-8 label-input d-flex align-items-center">
+                                            <div onclick="ClearFile(`fi1`, 'fl1');" class="fi" id="fl1"></div>
+                                        </div>
+                                        <div class="col-md-4">
+
+                                            <div class="select-button-1 d-flex justify-content-end">
+                                                <label>
+                                                    Select document
+                                                    <input class="height-input" id="fi1" type="file" onchange="GetFileName(this.value, 'fl1');" name="dLDoc" accept="application/pdf, image/jpeg, image/jpg" required>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a class="pl-2">You can upload files only in pdf, jpg and jpeg</a>
+                            </div>
+                        </div>
+                        <div class="full-label">
+                            <a class="a-label">Document medical card</a>
+                            <div class="d-flex align-items-center">
+                                <div class="file-group big-label">
+                                    <div class="row">
+                                        <div class="col-md-8 label-input d-flex align-items-center">
+                                            <div onclick="ClearFile(`fi2`, 'fl2');" class="fi" id="fl2"></div>
+                                        </div>
+                                        <div class="col-md-4">
+
+                                            <div class="select-button-1 d-flex justify-content-end">
+                                                <label>
+                                                    Select document
+                                                    <input class="height-input" id="fi2" type="file" onchange="GetFileName(this.value, 'fl2');" name="medicalCardDoc" accept="application/pdf, image/jpeg, image/jpg" required>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a class="pl-2">You can upload files only in pdf, jpg and jpeg</a>
+                            </div>
+                        </div>
+                        <div class="full-label">
+                            <a class="a-label">Document SSN</a>
+                            <div class="d-flex align-items-center">
+                                <div class="file-group big-label">
+                                    <div class="row">
+                                        <div class="col-md-8 label-input d-flex align-items-center">
+                                            <div onclick="ClearFile(`fi3`, 'fl3');" class="fi" id="fl3"></div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="select-button-1 d-flex justify-content-end">
+                                                <label>
+                                                    Select document
+                                                    <input class="height-input" id="fi3" type="file" onchange="GetFileName(this.value, 'fl3');" name="sSNDoc" accept="application/pdf, image/jpeg, image/jpg" required>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a class="pl-2">You can upload files only in pdf, jpg and jpeg</a>
+                            </div>
+                        </div>
+                        <div class="full-label">
+                            <a class="a-label">Document proof of work authorization or GC</a>
+                            <div class="d-flex align-items-center">
+                                <div class="file-group big-label">
+                                    <div class="row">
+                                        <div class="col-md-8 label-input d-flex align-items-center">
+                                            <div onclick="ClearFile(`fi4`, 'fl4');" class="fi" id="fl4"></div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="select-button-1 d-flex justify-content-end">
+                                                <label>
+                                                    Select document
+                                                    <input class="height-input" id="fi4" type="file" onchange="GetFileName(this.value, 'fl4');" name="proofOfWorkAuthorizationOrGCDoc" accept="application/pdf, image/jpeg, image/jpg" required>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a class="pl-2">You can upload files only in pdf, jpg and jpeg</a>
+                            </div>
+                        </div>
+                        <div class="full-label">
+                            <a class="a-label">Document DQL (driver qualification file)</a>
+                            <div class="d-flex align-items-center">
+                                <div class="file-group big-label">
+                                    <div class="row">
+                                        <div class="col-md-8 label-input d-flex align-items-center">
+                                            <div onclick="ClearFile(`fi5`, 'fl5');" class="fi" id="fl5"></div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="select-button-1 d-flex justify-content-end">
+                                                <label>
+                                                    Select document
+                                                    <input class="height-input" id="fi5" type="file" onchange="GetFileName(this.value, 'fl5');" name="dQLDoc" accept="application/pdf, image/jpeg, image/jpg" required>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a class="pl-2">You can upload files only in pdf, jpg and jpeg</a>
+                            </div>
+                        </div>
+                        <div class="full-label">
+                            <a class="a-label">Document contract (company and driver)</a>
+                            <div class="d-flex align-items-center">
+                                <div class="file-group big-label">
+                                    <div class="row">
+                                        <div class="col-md-8 label-input d-flex align-items-center">
+                                            <div onclick="ClearFile(`fi6`, 'fl6');" class="fi" id="fl6"></div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="select-button-1 d-flex justify-content-end">
+                                                <label>
+                                                    Select document
+                                                    <input class="height-input" id="fi6" onchange="GetFileName(this.value, 'fl6');" type="file" name="contractDoc" accept="application/pdf, image/jpeg, image/jpg" required>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a class="pl-2">You can upload files only in pdf, jpg and jpeg</a>
+                            </div>
+                        </div>
+                        <div class="full-label">
+                            <a class="a-label">Document Drug test results (optional for 26000+)</a>
+                            <div class="d-flex align-items-center">
+                                <div class="file-group big-label">
+                                    <div class="row">
+                                        <div class="col-md-8 label-input d-flex align-items-center">
+                                            <div onclick="ClearFile(`fi7`, 'fl7');" class="fi" id="fl7"></div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="select-button-1 d-flex justify-content-end">
+                                                <label>
+                                                    Select document
+                                                    <input class="height-input" id="fi7" onchange="GetFileName(this.value, 'fl7');" type="file" name="drugTestResultsDoc" accept="application/pdf, image/jpeg, image/jpg" required>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a class="pl-2">You can upload files only in pdf, jpg and jpeg</a>
+                            </div>
+                        </div>
+                        <input type="submit" value="Save Info" class="height-input btn1 big-label big-font-size"/>
+                    </form>
+                </div>
             </div>
         </div>
-        <input class="btnSave" value="Save" type="submit" />
-    </form>
+    </div>
 </div>
+</body>
 
 <script>
-    function LoadFile(fille, numDock) {
-        let pref = fille.files[0].name.substr(fille.files[0].name.lastIndexOf(".") + 1);
-        let nameLoadDocEl = document.getElementById("nameLoadDoc" + numDock);
-        let nameNoLoadDocEl = document.getElementById("nameNoLoadDoc" + numDock);
-        if (pref == "pdf" || pref == "jpg" || pref == "jepg") {
-            nameNoLoadDocEl.hidden = "hidden";
-            nameLoadDocEl.hidden = "";
-            nameLoadDocEl.textContent = fille.files[0].name;
-        }
-        else {
-            nameNoLoadDocEl.hidden = "";
-            nameLoadDocEl.hidden = "hidden";
-            fille.value = "";
-        }
-    }
+$("#fi1").change(function() {
+    CheckValid('fl1','fi1');
+});
+ 
+$("#fi2").change(function() {
+    CheckValid('fl2','fi2');
+});
+
+$("#fi3").change(function() {
+    CheckValid('fl3','fi3');
+});
+
+$("#fi4").change(function() {
+    CheckValid('fl4','fi4');
+});
+
+$("#fi5").change(function() {
+    CheckValid('fl5','fi5');
+});
+
+$("#fi6").change(function() {
+    CheckValid('fl6','fi6');
+});
+
+$("#fi7").change(function() {
+    CheckValid('fl7','fi7');
+});
+
+ $("input[type=submit]").on('click', function (){
+     CheckValid('fl1','fi1');
+     CheckValid('fl2','fi2');
+     CheckValid('fl3','fi3');
+     CheckValid('fl4','fi4');
+     CheckValid('fl5','fi5');
+     CheckValid('fl6','fi6');
+     CheckValid('fl7','fi7');
+ })
 </script>
-
-<style>
-    * {
-        margin: 0px;
-    }
-
-    .validation:invalid {
-        border-color: red;
-    }
-
-    .validation:valid {
-        border-color: #4ad73b;
-    }
-
-    .btnSave {
-        color: rgba(45,45,45,0.88);
-        background: none;
-        display: inline-block;
-        padding: 7px;
-        font-size: 16px;
-        font-weight: 400;
-        text-align: center;
-        border: 1px solid;
-        border-radius: 4px;
-        width: 130px;
-    }
-
-    btnSave:hover {
-        background-color: rgba(45,45,45,0.98);
-        transition: 0.5s;
-    }
-
-    .btnD:hover {
-        background: rgba(243, 167, 76, 0.29);
-    }
-
-    .inpTextTr {
-        border: none;
-        width: 97%;
-        background-color: rgba(243, 167, 76, 0.09);
-        color: #f3a74c;
-    }
-
-    .inpLabe {
-        font-size: 18px;
-        color: rgb(51, 51, 51);
-        margin-top: 10px;
-        margin-left:5px;
-    }
-
-    .inpText {
-        width: 100%;
-        height: 25px;
-        border-width: 1px;
-        border-style: double;
-        border-radius: 4px;
-        padding: 2px;
-        font-size: 16px;
-        color: rgb(51, 51, 51);
-        border-color: rgba(51, 51, 51, 0.24);
-        margin-bottom: 15px;
-    }
-
-    .content {
-        width: 40%;
-    }
-
-    .contentBody {
-        display: flex;
-        justify-content: space-around;
-    }
-
-    .backBtn {
-        background: none;
-        border: none;
-        font-size: 17px;
-        color: #ffd7a6;
-        margin-bottom: 20px;
-    }
-
-    .body {
-        margin-top: 30px;
-        margin-left: 5px;
-        margin-right: 5px;
-        padding: 10px;
-    }
-</style>

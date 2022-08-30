@@ -10,6 +10,7 @@ namespace BaceModel.ModelInspertionDriver
             ITransportVehicle transportVehicle = null;
             switch (typeTruk)
             {
+                case "PickUpDually4TiresInTheBackMustHave4Door": transportVehicle = new PickUpDually4TiresInTheBackMustHave4Door(); break;
                 case "PickupFourWheel": transportVehicle = new PickupFourWheel(); break;
                 case "FourDoorTruckChassisOpenFrame": transportVehicle = new FourDoorTruckChassisOpenFrame(); break;
                 case "BoxTruckSingleWheel": transportVehicle = new BoxTruckSingleWheel(); break;
@@ -22,6 +23,7 @@ namespace BaceModel.ModelInspertionDriver
                 case "PickUpDuallyFlatbed4Door": transportVehicle = new PickUpDuallyFlatbed4Door(); break;
                 case "PickUpDuallyFlatbedMustHave2Door": transportVehicle = new PickUpDuallyFlatbedMustHave2Door(); break;
 
+                case "Bumperpool2CarEeclosedTraile": transportVehicle = new Bumperpool2CarEeclosedTraile(); break;
                 case "EnclosedTrailerTwoVehicles": transportVehicle = new EnclosedTrailerTwoVehicles(); break;
                 case "GooseneckTrailerTwoVehicles": transportVehicle = new GooseneckTrailerTwoVehicles(); break;
                 case "a1CarGooseneckTrailer": transportVehicle = new A1CarGooseneckTrailer(); break;

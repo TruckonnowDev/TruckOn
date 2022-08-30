@@ -8,13 +8,13 @@
             </div>
             <div class="col-md-auto">
                 <ul class="menu top-nav_menu">
-                    <li><a href="/Dashbord/Order/NewLoad">Orders</a></li>
-                    <li><a href="/Geolcation/Map">GPS Tracking</a></li>
-                    <li><a href="/Contact/Contacts">Contacts</a></li>
-                    <li><a href="/Driver/Drivers">Drivers</a></li>
-                    <li><a href="/Equipment/Trucks">Equipment</a></li>
-                    <li><a href="/Settings/User/Users">Settings</a></li>
-                    <li><a href="">Exit</a></li>
+                    <li><a id="Dashbord" href="/Dashbord/Order/NewLoad">Orders</a></li>
+                    <li><a id="Geolcation" href="/Geolcation/Map">GPS Tracking</a></li>
+                    <li><a id="Contact" href="/Contact/Contacts">Contacts</a></li>
+                    <li><a id="Driver" href="/Driver/Drivers">Drivers</a></li>
+                    <li><a id="Equipment" href="/Equipment/Trucks">Equipment</a></li>
+                    <li><a id="Settings" href="/Settings/User/Users">Settings</a></li>
+                    <li><a href="/Exsit">Exit</a></li>
                 </ul>
                 <div class="burger">
                     <button class="top-nav_btn hamburger hamburger--3dy">
@@ -27,3 +27,19 @@
         </div>
     </div>
 </header>
+
+
+<script>
+    const NavItems = ['Dashbord','Geolcation','Contact','Driver','Equipment','Settings']
+        $(document).ready(function () {
+            var str = location.pathname
+            for (let i = 0; i < NavItems.length; i++)
+            {
+                 if (str.indexOf(NavItems[i]) >=0){
+                    $('#' + NavItems[i]).addClass('active');
+                    break;
+                }
+            }
+          
+        });
+</script>

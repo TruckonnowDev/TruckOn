@@ -402,10 +402,23 @@ namespace ApiMobaileServise.Servise
             return sqlCommandApiMobile.GetLastInspaction(idDriver);
         }
 
-        public async Task SaveFeedBack(string jsonStrAsk)
+        public async Task SaveFeedBack(string jsonStrAsk, string shippingId)
         {
             Feedback feedback = JsonConvert.DeserializeObject<Feedback>(jsonStrAsk);
-            sqlCommandApiMobile.SaveFeedBackInDb(feedback);
+            await sqlCommandApiMobile.SaveFeedBackInDb(feedback, shippingId);
+        }
+
+        public async Task<string> GetFeedback(string shippingId)
+        {
+            var feedback = await sqlCommandApiMobile.GetFeedbackFromShippingId(shippingId);
+            if (feedback != null)
+            {
+                return JsonConvert.SerializeObject(feedback);
+            }
+            else
+            {
+                return "";
+            }
         }
 
         public async Task ReCurentStatus(string idShip, string status)
@@ -485,6 +498,11 @@ namespace ApiMobaileServise.Servise
         public string GetInspectionDriver(string token)
         {
             return sqlCommandApiMobile.GetInspectionDriverIndb(token);
+        }
+
+        internal void SetInstraction(string idShiping)
+        {
+            sqlCommandApiMobile.SetInstractionShipingById(idShiping);
         }
 
         public bool GetOrdersForToken(string token, ref List<Shipping> shippings)

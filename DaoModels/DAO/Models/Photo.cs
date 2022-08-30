@@ -37,29 +37,25 @@ namespace DaoModels.DAO.Models
             }
             get
             {
-                if (path != null)
-                {
-                    try
-                    {
-                        string tmpJson = JsonConvert.SerializeObject(File.ReadAllBytes(path));
-                        tmpJson = tmpJson.Replace("\"", "");
-                        return tmpJson;
-                    }
-                    catch(Exception)
-                    {
-                        return "";
-                    }
-                }
-                else
-                {
-                    return "";
-                }
+                //if (path != null)
+                //{
+                //    try
+                //    {
+                //        string tmpJson = JsonConvert.SerializeObject(File.ReadAllBytes(path));
+                //        tmpJson = tmpJson.Replace("\"", "");
+                //        return tmpJson;
+                //    }
+                //    catch(Exception)
+                //    {
+                //        return "";
+                //    }
+                //}
+                //else
+                //{
+                //    return "";
+                //}
+                return "";
             }
-        }
-
-        public Photo()
-        {
-
         }
     }
 }

@@ -1,0 +1,100 @@
+﻿<div class="body">
+    <div class="contentBody">
+        <div>
+            @if (@ViewBag.Truck != null)
+            {
+            <h2 class="headPhoto" style="font-size:25px;">Truck Document @ViewBag.Truck.NameTruk @ViewBag.Truck.Yera @ViewBag.Truck.Make @ViewBag.Truck.Model @ViewBag.Truck.PlateTruk</h2> <br />
+            }
+            else
+            {
+                <h2 class="headPhoto" style="font-size:25px;">Truck Document</h2> <br />
+            }
+            @for (int i = 0; i < ViewBag.TruckDoc.Count; i++)
+            {
+                string pref = @ViewBag.TruckDoc[i].DocPath.Remove(0, @ViewBag.TruckDoc[i].DocPath.LastIndexOf('.') + 1);
+                <p class="headPhoto">@ViewBag.TruckDoc[i].NameDoc</p> <br />
+                if (pref == "pdf")
+                {
+
+                    <embed src="@ViewBag.BaseUrl/Equipment/GetDockPDF?docPath=@ViewBag.TruckDoc[i].DocPath" height="700" class="docPdf" />
+                }
+                else
+                {
+                    <img src="@ViewBag.BaseUrl/Equipment/GetDock?docPath=@ViewBag.TruckDoc[i].DocPath&type=image/@pref" class="docImg" />
+                }
+            }
+        </div>
+        <hr />
+        <div>
+            @if (@ViewBag.Trailer != null)
+            {
+            <h2 class="headPhoto" style="font-size:25px;">Trailer Document @ViewBag.Trailer.Name @ViewBag.Trailer.Year @ViewBag.Trailer.Make @ViewBag.Trailer.Plate</h2> <br />
+            }
+            else
+            {
+        <h2 class="headPhoto" style="font-size:25px;">Trailer Document</h2> <br />
+            }
+            @for (int i = 0; i < ViewBag.TrailerDoc.Count; i++)
+            {
+                string pref = @ViewBag.TrailerDoc[i].DocPath.Remove(0, @ViewBag.TrailerDoc[i].DocPath.LastIndexOf('.') + 1);
+                <p class="headPhoto">@ViewBag.TrailerDoc[i].NameDoc</p>
+                if (pref == "pdf")
+                {
+
+                    <embed src="@ViewBag.BaseUrl/Equipment/GetDockPDF?docPath=@ViewBag.TrailerDoc[i].DocPath" height="700" class="docPdf"/>
+                }
+                else
+                {
+                    <img src="@ViewBag.BaseUrl/Equipment/GetDock?docPath=@ViewBag.TrailerDoc[i].DocPath&type=image/@pref"  class="docImg"/>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    * {
+        margin: 0px;
+        -webkit-appearance: none;
+    }
+
+    .headPhoto {
+        color: rgba(59, 51, 51, 0.87);
+        font-size: 23px;
+    }
+
+    .inpData {
+        font-size: 18px;
+        color: rgb(51, 51, 51);
+    }
+
+    .contentBody {
+        width: 100%;
+    }
+
+    .body {
+        margin-top: 30px;
+        margin-left: 5px;
+        margin-right: 5px;
+        padding: 10px;
+    }
+
+    .docImg {
+        width: 60%;
+    }
+
+    .docPdf {
+        width: 60%;
+    }
+
+    @@media (max-width: 1150px) {
+        .docImg {
+            width: 95%;
+        }
+
+        .docPdf {
+            width: 95%;
+        }
+    }
+}
+</style>

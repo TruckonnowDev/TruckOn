@@ -6,22 +6,17 @@
   "content_scripts": [
     {
       "matches": [
-        "*://*.centraldispatch.com/*"
+        "*://*.centraldispatch.com/*",
+        "*://*.truckonnow.com/*"
       ],
       "js": [ "central.js", "Init.js" ],
       "run_at": "document_end"
     }
   ],
   "permissions": [
-    "https://212.224.113.5/",
-    "http://212.224.113.5/",
     "http://truckonnow.com/",
     "https://truckonnow.com/",
-    "http://192.168.31.15/",
-    "https://192.168.31.15/",
-    "storage",
-    "cookies",
-    "notifications"
+    "storage"
   ],
   "browser_action": {
     "default_popup": "popup.html",

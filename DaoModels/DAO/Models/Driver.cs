@@ -20,6 +20,7 @@ namespace DaoModels.DAO.Models
         public bool IsInspectionToDayDriver { get; set; }
         public Geolocations geolocations { get; set; }
         public virtual List<InspectionDriver> InspectionDrivers { get; set; }
+        public virtual ICollection<Feedback> Feedbacks { get; set; }
         public bool IsFired { get; set; }
         public string LastDateInspaction { get; set; }
         public string DateRegistration { get; set; }

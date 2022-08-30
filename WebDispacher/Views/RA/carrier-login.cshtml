@@ -1,36 +1,51 @@
 ﻿<body>
-    <div class="login-page">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-5">
-                    <p style="color: red; text-align: center; font-size: 15px">
-                        @ViewData["TextError"]
-                    </p>
-                    <form action="~/RA/Avthorization" method="post" class="form-login">
-                        <div class="white">
+<div class="login-page-carrier">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <p style="color: red; text-align: center; font-size: 15px">
+                    @ViewData["TextError"]
+                </p>
+                <form action="~/RA/Avthorization" method="post" class="form-login">
+                    <div class="white">
+                        <div class="form-login-custom">
                             <h1>Carrier TMS</h1>
                             <label for="">
                                 Email
-                                <input name="Email" placeholder="abc@gmail.com">
+                                <div>
+                                    <input name="Email" placeholder="abc@gmail.com">
+                                </div>
+                                
                             </label>
                             <label for="" class="password">
                                 Password
-                                <input type="password" id="password-input" name="Password" placeholder="password">
-                                <a href="#" class="password-control" onclick="return show_hide_password(this);"></a>
-                            </label>
-                            <input type="submit" value="Sign Up" class="btn1-big">
+                                <div class="d-flex align-items-center">
+                                    <input type="password" id="password-input" name="Password" placeholder="password">
+                                    <a href="#" class="password-control" onclick="return show_hide_password(this, 'password-input');"></a>
+                               </div>
+                                
+                            </label> <input type="submit" value="Sign Up" class="btn1-big">
 
-                            <a href="">Forgot password?</a>
+                            <a href="/recovery-password-send-mail">Forgot password?</a>
                         </div>
-                        <label class="accept">
-                            <input type="checkbox" name="accept" onchange="document.getElementById('mc-embedded-subscribe').disabled = !this.checked" checked /><p>
-                                I accept
-                                By signing in, you agree to Truckonnow's <a href="">Terms & Conditions</a> and <a href="">Privacy Policy</a>
-                            </p>
-                        </label>
-                    </form>
-                </div>
+
+
+                    </div>
+                    <label class="accept">
+                        <input type="checkbox" name="accept" onchange="document.getElementById('mc-embedded-subscribe').disabled = !this.checked" checked/>
+                        <p>
+                            I accept
+                            By signing in, you agree to Truckonnow's <a href="">Terms & Conditions</a> and <a href="">Privacy Policy</a>
+                        </p>
+                    </label>
+                </form>
             </div>
         </div>
     </div>
+</div>
 </body>
+<style>
+    input{
+        border: 1px solid #C4C9D4;
+    }
+</style>

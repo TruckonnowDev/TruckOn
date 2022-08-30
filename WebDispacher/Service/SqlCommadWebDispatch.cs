@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebDispacher.Models;
 
 namespace WebDispacher.Dao
 {
@@ -46,6 +47,11 @@ namespace WebDispacher.Dao
         internal Dispatcher GetDispatcherByKeyUsers(string key)
         {
             return context.Dispatchers.FirstOrDefault(d => d.key != null && d.key == key);
+        }
+
+        internal Subscribe_ST GetSubscriptionIdCompany(string idCompany, ActiveType activeType = ActiveType.Active)
+        {
+            return context.Subscribe_STs.FirstOrDefault(s => s.IdCompany.ToString() == idCompany && s.ActiveType == activeType);
         }
 
         private async void InitUserOne()
@@ -93,6 +99,16 @@ namespace WebDispacher.Dao
             {
 
             } 
+        }
+
+        internal void UpdateTypeActiveSubById(int idSub, ActiveType activeType)
+        {
+            Subscribe_ST subscribe_ST = context.Subscribe_STs.FirstOrDefault(s => s.Id == idSub);
+            if(subscribe_ST != null)
+            {
+                subscribe_ST.ActiveType = activeType;
+                context.SaveChanges();
+            }
         }
 
         internal List<Dispatcher> GetDispatchersDB(int idCompany)
@@ -170,6 +186,11 @@ namespace WebDispacher.Dao
                 .FirstOrDefault();
         }
 
+        internal Contact GetContactById(int id)
+        {
+            return context.Contacts.FirstOrDefault(c => c.ID == id) ;
+        }
+
         internal void RefreshTokenDispatchDB(string idDispatch, string token)
         {
             Dispatcher dispatcher = context.Dispatchers.FirstOrDefault(d => d.Id.ToString() == idDispatch);
@@ -178,6 +199,44 @@ namespace WebDispacher.Dao
                 dispatcher.key = token;
                 context.SaveChanges();
             }
+        }
+
+        internal bool CheckEmail(string email)
+        {
+            return context.User.FirstOrDefault(u => u.Login == email) != null;
+        }
+        
+        internal int AddRecoveryPassword(string email, string token)
+        {
+            Users users = context.User.FirstOrDefault(u => u.Login == email);
+            PasswordRecovery passwordRecovery1 = context.PasswordRecoveries.FirstOrDefault(p => p.IdUser == users.Id);
+            if (passwordRecovery1 == null)
+            {
+                PasswordRecovery passwordRecovery = new PasswordRecovery()
+                {
+                    Date = DateTime.Now.ToString(),
+                    IdUser = users.Id,
+                    Token = token
+                };
+                context.PasswordRecoveries.Add(passwordRecovery);
+            }
+            else
+            {
+                passwordRecovery1.Token = token;
+                passwordRecovery1.Date = DateTime.Now.ToString();
+            }
+            context.SaveChanges();
+            return users.Id;
+        }
+
+        internal void UpdateTypeInactiveByIdCompany(string idCompany)
+        {
+            List<Subscribe_ST> subscribe_STs = context.Subscribe_STs.Where(s => s.IdCompany.ToString() == idCompany && s.ActiveType != ActiveType.Inactive).ToList();
+            foreach(Subscribe_ST subscribe_ST in subscribe_STs)
+            {
+                subscribe_ST.ActiveType = ActiveType.Inactive;
+            }
+            context.SaveChanges();
         }
 
         internal int AddProfileDb(ProfileSetting profileSetting)
@@ -210,6 +269,18 @@ namespace WebDispacher.Dao
             return truck; 
         }
 
+        internal void EditContact(int id, string fullName, string emailAddress, string phoneNumbe)
+        {
+            Contact contact = context.Contacts.FirstOrDefault(c => c.ID == id);
+            if(contact != null)
+            {
+                contact.Email = emailAddress;
+                contact.Name = fullName;
+                contact.Phone = phoneNumbe;
+                context.SaveChanges();
+            }
+        }
+
         internal void RemoveProfiledb(string idCompany, int idProfile)
         {
             ProfileSetting profileSetting = context.ProfileSettings
@@ -223,6 +294,46 @@ namespace WebDispacher.Dao
                 context.ProfileSettings.Remove(context.ProfileSettings.First(p => p.IdCompany.ToString() == idCompany && p.Id == idProfile));
                 context.SaveChanges();
             }
+        }
+
+        internal string GetEmailUserDb(string idUser)
+        {
+            string emailDriver = "";
+            Users users = context.User.FirstOrDefault(d => d.Id.ToString() == idUser);
+            if (users != null)
+            {
+                emailDriver = users.Login;
+            }
+            return emailDriver;
+        }
+
+        internal int ResetPasswordFoUser(string newPassword, string idUser, string token)
+        {
+            int isStateActual = 0;
+            PasswordRecovery passwordRecovery = context.PasswordRecoveries.ToList().FirstOrDefault(p => p.IdUser.ToString() == idUser && p.Token == token);
+            if (passwordRecovery != null && Convert.ToDateTime(passwordRecovery.Date) > DateTime.Now.AddHours(-2))
+            {
+                Users users = context.User.FirstOrDefault(d => d.Id.ToString() == idUser);
+                users.Password = newPassword;
+                isStateActual = 2;
+            }
+            if (passwordRecovery != null)
+            {
+                context.PasswordRecoveries.Remove(passwordRecovery);
+            }
+            context.SaveChanges();
+            return isStateActual;
+        }
+
+        internal int CheckTokenFoUserDb(string idUser, string token)
+        {
+            int isStateActual = 0;
+            PasswordRecovery passwordRecovery = context.PasswordRecoveries.ToList().FirstOrDefault(p => p.IdUser.ToString() == idUser && p.Token == token);
+            if (passwordRecovery != null && Convert.ToDateTime(passwordRecovery.Date) > DateTime.Now.AddHours(-2))
+            {
+                isStateActual = 1;
+            }
+            return isStateActual;
         }
 
         internal ITr GetTrailerById(int idTr)
@@ -258,6 +369,16 @@ namespace WebDispacher.Dao
                 dispatcher.Login = login;
                 dispatcher.Password = password;
                 dispatcher.Type = typeDispatcher;
+                context.SaveChanges();
+            }
+        }
+
+        internal void DeleteContactById(int id)
+        {
+            Contact contact = context.Contacts.FirstOrDefault(c => c.ID == id);
+            if(contact != null)
+            {
+                context.Contacts.Remove(contact);
                 context.SaveChanges();
             }
         }
@@ -321,9 +442,9 @@ namespace WebDispacher.Dao
             return commpany.Id;
         }
 
-        internal List<Driver> GetDriversByIdCompany(string id)
+        internal List<Driver> GetDriversByIdCompany(string idCompany)
         {
-            return context.Drivers.Where(d => !d.IsFired && d.CompanyId.ToString() == id).ToList();
+            return context.Drivers.Where(d => !d.IsFired && d.CompanyId.ToString() == idCompany).ToList();
         }
 
         internal void RemoveCompanyDb(string id)
@@ -380,6 +501,46 @@ namespace WebDispacher.Dao
                 }
             }
             return idPaymentNewSelect;
+        }
+
+        internal void EditTruckDB(int idTruck, string nameTruk, string yera, string make, string model, string typeTruk, string state, string exp, string vin, string owner, string plateTruk, string color)
+        {
+            Truck truck = context.Trucks.FirstOrDefault(t => t.Id == idTruck);
+            if(truck != null)
+            {
+                truck.NameTruk = nameTruk;
+                truck.Yera = yera;
+                truck.Make = make;
+                truck.Model = model;
+                truck.Type = typeTruk;
+                truck.Satet = state;
+                truck.Exp = exp;
+                truck.Vin = vin;
+                truck.Owner = owner;
+                truck.PlateTruk = plateTruk;
+                truck.ColorTruk = color;
+                context.SaveChanges();
+            }
+        }
+
+        internal void EditTrailerDB(int idTrailer, string name, string typeTrailer, string year, string make, string howLong, string vin, string owner, string color, string plate, string exp, string annualIns)
+        {
+            Trailer trailer = context.Trailers.FirstOrDefault(t => t.Id == idTrailer);
+            if (trailer != null)
+            {
+                trailer.Name = name;
+                trailer.Type = typeTrailer;
+                trailer.Year = year;
+                trailer.Make = make;
+                trailer.HowLong = howLong;
+                trailer.Vin = vin;
+                trailer.Owner = owner;
+                trailer.Color = color;
+                trailer.Plate = plate;
+                trailer.Exp = exp;
+                trailer.AnnualIns = annualIns;
+                context.SaveChanges();
+            }
         }
 
         internal void LayoutUPDb(int idLayout, int idTransported)
@@ -598,7 +759,7 @@ namespace WebDispacher.Dao
 
         internal void RemoveSubscribeST(Customer_ST customer_ST)
         {
-            Subscribe_ST subscribe_ST = context.Subscribe_STs.FirstOrDefault(s => s.IdCustomer == customer_ST.IdCustomerST);
+            Subscribe_ST subscribe_ST = context.Subscribe_STs.FirstOrDefault(s => s.IdCustomerST == customer_ST.IdCustomerST);
             if(subscribe_ST != null)
             {
                 context.Subscribe_STs.Remove(subscribe_ST);
@@ -682,7 +843,7 @@ namespace WebDispacher.Dao
         {
             List<Driver> drivers = null;
             drivers = await context.Drivers
-                .Where(d => !d.IsFired && d .CompanyId.ToString() == idCommpany)
+                .Where(d => !d.IsFired && d.CompanyId.ToString() == idCommpany)
                 .Include(d => d.InspectionDrivers)
                 .Include(d => d.geolocations)
                 .ToListAsync();
@@ -1244,7 +1405,8 @@ namespace WebDispacher.Dao
 
         public async void UpdateorderInDb(string idOrder, string idLoad, string internalLoadID, string driver, string status, string instructions, string nameP, string contactP,
             string addressP, string cityP, string stateP, string zipP, string phoneP, string emailP, string scheduledPickupDateP, string nameD, string contactD, string addressD,
-            string cityD, string stateD, string zipD, string phoneD, string emailD, string ScheduledPickupDateD, string paymentMethod, string price, string paymentTerms, string brokerFee)
+            string cityD, string stateD, string zipD, string phoneD, string emailD, string ScheduledPickupDateD, string paymentMethod, string price, string paymentTerms, string brokerFee,
+            string contactId, string phoneC, string faxC, string iccmcC)
         {
             Shipping shipping = context.Shipping.FirstOrDefault(s => s.Id == idOrder);
             shipping.idOrder = idLoad != null ? idLoad : shipping.Id;
@@ -1284,6 +1446,10 @@ namespace WebDispacher.Dao
             shipping.TotalPaymentToCarrier = paymentMethod != null ? paymentMethod : shipping.TotalPaymentToCarrier;
             shipping.PriceListed = price != null ? price : shipping.PriceListed;
             shipping.BrokerFee = brokerFee != null ? brokerFee : shipping.BrokerFee;
+            shipping.ContactC = contactId != null ? contactId : shipping.ContactC;
+            shipping.PhoneC = phoneC != null ? phoneC : shipping.PhoneC;
+            shipping.FaxC = faxC != null ? faxC : shipping.FaxC;
+            shipping.IccmcC = iccmcC != null ? iccmcC : shipping.IccmcC;
             await context.SaveChangesAsync();
         }
 
@@ -1345,39 +1511,46 @@ namespace WebDispacher.Dao
 
 
 
-        public async void UpdateDriver(Driver driver)
+        public  void UpdateDriver(int id, string fullName, string emailAddress, string password, string phoneNumbe, string trailerCapacity, string driversLicenseNumber)
         {
-            context.Drivers.Update(driver);
-            await context.SaveChangesAsync();
+            Driver driver = context.Drivers.FirstOrDefault(d => d.Id == id);
+            driver.FullName = fullName;
+            driver.EmailAddress = emailAddress;
+            driver.Password = password;
+            driver.PhoneNumber = phoneNumbe;
+            driver.TrailerCapacity = trailerCapacity;
+            driver.DriversLicenseNumber = driversLicenseNumber;
+            context.SaveChanges();
         }
 
-        public void RemoveDriveInDb(int id, string numberOfAccidents, string english, string returnedEquipmen, string workingEfficiency, string eldKnowledge, string drivingSkills,
-            string paymentHandling, string alcoholTendency, string drugTendency, string terminated, string experience, string description, string dotViolations)
+        public void RemoveDriveInDb(DriverReportModel model)
         {
             Driver driver = context.Drivers
-                .FirstOrDefault(d => d.Id == id);
+                .FirstOrDefault(d => d.Id == model.Id);
+            
             driver.IsFired = true;
+            
             DriverReport driverReport = new DriverReport()
             {
-                Comment = description,
+                Comment = model.Description,
                 DriversLicenseNumber = driver.DriversLicenseNumber,
                 FullName = driver.FullName,
                 IdDriver = driver.Id,
                 DateRegistration = driver.DateRegistration,
                 DateFired = DateTime.Now.ToString(),
-                AlcoholTendency = alcoholTendency,
-                DrivingSkills = drivingSkills,
-                DrugTendency = drugTendency,
-                EldKnowledge = eldKnowledge,
-                English = english,
-                Experience = experience,
+                AlcoholTendency = model.AlcoholTendency,
+                DrivingSkills = model.DrivingSkills,
+                DrugTendency = model.DrugTendency,
+                EldKnowledge = model.EldKnowledge,
+                English = model.English,
+                Experience = model.Experience,
                 IdCompany = driver.CompanyId,
-                PaymentHandling = paymentHandling,
-                ReturnedEquipmen = returnedEquipmen,
-                Terminated = terminated,
-                WorkingEfficiency = workingEfficiency,
-                DotViolations = dotViolations,
-                NumberOfAccidents = numberOfAccidents
+                PaymentHandling = model.PaymentHandling,
+                ReturnedEquipmen = model.ReturnedEquipmen,
+                Terminated = model.Terminated,
+                WorkingEfficiency = model.WorkingEfficiency,
+                DotViolations = model.DotViolations,
+                NumberOfAccidents = model.NumberOfAccidents
             };
             context.DriverReports.Add(driverReport);
             context.SaveChanges();

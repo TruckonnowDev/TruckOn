@@ -1,110 +1,47 @@
-﻿<div class="body">
-    <input class="backBtn" type="button" value="← Back to Orders" onclick="history.back();" />
-    <form action="" method="post">
-        <div class="content">
-            <h2 style="color: rgb(51, 51, 51);margin-bottom:2px;">Add New Driver</h2>
-            <p class="inpLabe">Full Name</p>
-            <input name="fullName" class="inpText validation" type="text" value="@ViewBag.Driver.FullName" required/>
-            <p class="inpLabe">Email Address</p>
-            <input name="emailAddress" class="inpText validation" type="email" value="@ViewBag.Driver.EmailAddress" required/>
-            <p class="inpLabe">Password</p>
-            <input name="password" class="inpText validation" type="text" value="@ViewBag.Driver.Password" required/>
-            <p class="inpLabe">Phone Number</p>
-            <input name="phoneNumbe" class="inpText validation" type="tel" placeholder="XXXXXXXXXX" pattern="[0-9]{4,12}"  value="@ViewBag.Driver.PhoneNumber" required/>
-            <p class="inpLabe">Trailer Capacity</p>
-            <input name="trailerCapacity" class="inpText" type="text" value="@ViewBag.Driver.TrailerCapacity" />
-            <p class="inpLabe">Driver's License Number</p>
-            <input name="driversLicenseNumber" class="inpText validation" type="text" value="@ViewBag.Driver.DriversLicenseNumber" required/>
-            <input name="id" class="inpText" type="text" value="@ViewBag.Driver.Id" style="display:none"/>
+﻿<body>
+    <div class="admin">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="tabContent">
+                        
+                        <div class="title">
+                            <a href="#" onclick="history.back();">Back to Drivers</a>
+                        </div>
+                        <div class="title">
+                            <h1 class="text-info-header-1">Info About the Driver</h1>
+                        </div>
+                        <form action="" method="post">
+                            <label class="big-label" for="">
+                                Full name
+                                <input class="height-input" type="text" name="FullName" value="@ViewBag.Driver.FullName" required>
+                            </label>
+                            <label class="big-label" for="">
+                                Email address
+                                <input class="height-input" type="email" name="EmailAddress" value="@ViewBag.Driver.EmailAddress" required>
+                            </label>
+                            <label class="big-label" for="">
+                                Password
+                                <input class="height-input" type="text" name="Password" value="@ViewBag.Driver.Password" required>
+                            </label>
+                            <label class="big-label" for="">
+                                Phone number
+                                <input class="height-input" type="text" name="PhoneNumber" placeholder="XXXXXXXXXX" pattern="[0-9]{4,12}" value="@ViewBag.Driver.PhoneNumber" required>
+                            </label>
+                            <label class="big-label" for="">
+                                Trailer capacity
+                                <input class="height-input" type="text" name="TrailerCapacity" value="@ViewBag.Driver.TrailerCapacity" required>
+                            </label>
+                            <label class="big-label pb-3" for="">
+                                Driver's license number
+                                <input class="height-input" type="text" name="DriversLicenseNumber" value="@ViewBag.Driver.DriversLicenseNumber" required>
+                            </label>
+                            <input name="id" value="@ViewBag.Driver.Id" style="display:none"/>
+                            <input class="btn1 height-input big-font-size big-label" type="submit" value="Save Info"/>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-        <input class="btnSave" value="Save" type="submit" />
-    </form>
-</div>
-
-
-<style>
-    * {
-        margin: 0px;
-    }
-
-    .validation:invalid {
-        border-color: red;
-    }
-
-    .validation:valid {
-        border-color: #4ad73b;
-    }
-
-    .btnSave {
-        color: rgba(45,45,45,0.88);
-        background: none;
-        display: inline-block;
-        padding: 7px;
-        font-size: 16px;
-        font-weight: 400;
-        text-align: center;
-        border: 1px solid;
-        border-radius: 4px;
-        width: 130px;
-    }
-
-    btnSave:hover {
-        background-color: rgba(45,45,45,0.98);
-        transition: 0.5s;
-    }
-
-    .btnD:hover {
-        background: rgba(243, 167, 76, 0.29);
-    }
-
-    .inpTextTr {
-        border: none;
-        width: 97%;
-        background-color: rgba(243, 167, 76, 0.09);
-        color: #f3a74c;
-    }
-
-    .inpLabe {
-        font-size: 18px;
-        color: rgb(51, 51, 51);
-        margin-top: 10px;
-        margin-left:5px;
-    }
-
-    .inpText {
-        width: 100%;
-        height: 25px;
-        border-width: 1px;
-        border-style: double;
-        border-radius: 4px;
-        padding: 2px;
-        font-size: 16px;
-        color: rgb(51, 51, 51);
-        border-color: rgba(51, 51, 51, 0.24);
-        margin-bottom: 15px;
-    }
-
-    .content {
-        width: 40%;
-    }
-
-    .contentBody {
-        display: flex;
-        justify-content: space-around;
-    }
-
-    .backBtn {
-        background: none;
-        border: none;
-        font-size: 17px;
-        color: #ffd7a6;
-        margin-bottom: 20px;
-    }
-
-    .body {
-        margin-top: 30px;
-        margin-left: 5px;
-        margin-right: 5px;
-        padding: 10px;
-    }
-</style>
+    </div>
+</body>

@@ -43,14 +43,6 @@ namespace ApiMobaileServise.Controllers
             return respons;
         }
 
-        [HttpGet]
-        [Route("Test")]
-        public string Test()
-        {
-            
-            return "tesr";
-        }
-
         [HttpPost]
         [Route("Avtorization/Clear")]
         public string Clear(string token)

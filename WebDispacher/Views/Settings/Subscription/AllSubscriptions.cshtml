@@ -1,0 +1,23 @@
+﻿<div class="admin Billing">
+    <div class="container">
+        <h1>Choose subscription</h1>
+        @foreach (var subscription in ViewBag.Subscriptions)
+        {
+            <div class="content" style="margin-bottom: 60px;">
+                <p><strong>Name: </strong>@subscription.Name</p>
+                <p><strong>Total days subscriptions: </strong>@subscription.PeriodDays days</p>
+                <p><strong>Price: </strong>@subscription.Price</p>
+                <a href="~/Settings/Subscription/Select?idPrice=@subscription.IdSubscriptionST&priodDays=@subscription.PeriodDays" style="color:#69eb2c;text-align: center;width: 150px;" class="btn2">Select</a>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .content {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        flex-flow: column;
+    }
+</style>

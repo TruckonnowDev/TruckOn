@@ -1,28 +1,67 @@
 ﻿<body>
-    <div class="admin">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div id="tabs">
-                        <div class="tab" onclick="window.location.href='@Url.Action("Drivers", "Driver")';" >Drivers</div>
-                        <div class="tab whiteborder" onclick="window.location.href='@Url.Action("Check", "Driver")';">Driver check</div>
-                        <div class="tab" onclick="window.location.href='@Url.Action("AddReport", "Driver")';">Report driver</div>
-                        <div class="tabContent">
-                            <form method="get" action="" class="search ">
-                                <label for="" class="w50">
-                                    Name Driver
-                                    <input name="nameDriver" type="text" required>
-                                </label>
-                                <label for="" class="w50">
-                                    Driver's License
-                                    <input  name="driversLicense" type="text" required>
-                                </label>
-                                <input type="submit" value="Search" class="btn1">
-                            </form>
-                        </div>
+<div class="admin">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="title">
+                    <h1>Drivers</h1>
+                    <form method="get" action="" class="search ">
+                        <input placeholder="Name Driver" class="text-input" value="@ViewBag.NameDriver" name="nameDriver" type="text">
+                        <input placeholder="Driver's License" class="text-input" value="@ViewBag.DriversLicense" name="driversLicense" type="text">
+                        <input type="submit" value="Search" class="btn1">
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div id="tabs">
+                    <div class="tab" onclick="window.location.href='@Url.Action("Drivers", "Driver")';" >Drivers</div>
+                    <div class="tab whiteborder" onclick="window.location.href='@Url.Action("Check", "Driver")';">Driver check</div>
+                    <div class="tab" onclick="window.location.href='@Url.Action("AddReport", "Driver")';">Report driver</div>
+                    <div class="tabContent">
+                        @for (int i = 0; i < ViewBag.DriverReports.Count; i++)
+                        {
+                            <div class="one-line">
+                                <div class="top-line">
+                                    <div class="left">
+                                        <div class="contact">
+                                            <p><strong>@ViewBag.DriverReports[i].FullName</strong></p>
+                                            <p><strong>Driver’s License:</strong> @ViewBag.DriverReports[i].DriversLicenseNumber</p>
+                                            <p><strong>Registration:</strong> @ViewBag.DriverReports[i].DateRegistration</p>
+                                            <p><strong>Fired:</strong> @ViewBag.DriverReports[i].DateFired</p>
+                                            <p>@ViewBag.DriverReports[i].Comment</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </body>
+
+<style>
+    .text-input{
+        width:28%;
+        height:54px;
+        background:#fff;
+        border:1px solid #c4c9d5;
+        border-radius:10px;
+        padding:0 15px;
+        font-family:Montserrat;
+        font-style:normal;
+        font-weight:400;
+        font-size:16px;
+        line-height:1.2;
+        color:#686f7c;
+        margin-top:6px;
+        margin-right:3%;
+    }
+    input::-webkit-input-placeholder {
+        color: #c4c9d5;
+       }
+</style>

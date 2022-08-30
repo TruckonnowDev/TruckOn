@@ -1,0 +1,31 @@
+﻿@model WebDispacher.ViewModels.Contact.ContactViewModel
+
+<body>
+    <div class="admin">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="tabContent">
+                        <h2>Info About the Contact</h2>
+                        <form action="" method="post">
+                            <label for="">
+                                Contact Name
+                                <input type="text" name="Name" value="@Model.Name" required>
+                            </label>
+                            <label for="">
+                                Email address
+                                <input type="email" name="Email" value="@Model.Email" required>
+                            </label>
+                            <label for="">
+                                Phone number
+                                <input type="text" name="Phone" placeholder="XXXXXXXXXX" pattern="[0-9]{4,12}" value="@Model.Phone" required>
+                            </label>
+                            <input name="Id" value="@Model.Id" style="display:none" />
+                            <input class="btn1" type="submit" value="Save Info" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

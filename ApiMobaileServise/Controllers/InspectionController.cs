@@ -80,6 +80,7 @@ namespace ApiMobaileServise.Controllers
 
         [HttpPost]
         [Route("Status/Inspection/Delivered")]
+        [CompressGzip(IsCompresRespons = true)]
         public string GetStatusInspectionEnd(string token, string idShipping)
         {
             string respons = null;
@@ -358,7 +359,7 @@ namespace ApiMobaileServise.Controllers
         [HttpPost]
         [Route("Save/FeedBack")]
         [CompressGzip(IsCompresReqvest = true, ParamUnZip = "jsonStrAsk")]
-        public async Task<string> SaveFeedBack(string token,string jsonStrAsk)
+        public async Task<string> SaveFeedBack(string token,string jsonStrAsk, string shippingId)
         {
             string respons = null;
             if (token == null || token == "")
@@ -370,8 +371,37 @@ namespace ApiMobaileServise.Controllers
                 bool isToken = managerMobileApi.CheckToken(token);
                 if (isToken)
                 {
-                    await managerMobileApi.SaveFeedBack(jsonStrAsk);
+                    await managerMobileApi.SaveFeedBack(jsonStrAsk, shippingId);
                     respons = JsonConvert.SerializeObject(new ResponseAppS("success", "", null));
+                }
+                else
+                {
+                    respons = JsonConvert.SerializeObject(new ResponseAppS("NotAuthorized", "Not Authorized", null));
+                }
+            }
+            catch (Exception)
+            {
+                respons = JsonConvert.SerializeObject(new ResponseAppS("failed", "Technical work on the service", null));
+            }
+            return respons;
+        }
+
+        [HttpGet]
+        [Route("Get/FeedBack")]
+        public async Task<string> GetFeedback(string token, string shippingId)
+        {
+            string respons = null;
+            if (token == null || token == "")
+            {
+                return JsonConvert.SerializeObject(new ResponseAppS("NotAuthorized", "Not Authorized", null));
+            }
+            try
+            {
+                bool isToken = managerMobileApi.CheckToken(token);
+                if (isToken)
+                {
+                    var feedback = await managerMobileApi.GetFeedback(shippingId);
+                    respons = JsonConvert.SerializeObject(new ResponseAppS("success", "", feedback));
                 }
                 else
                 {
@@ -594,6 +624,44 @@ namespace ApiMobaileServise.Controllers
                 respons = JsonConvert.SerializeObject(new ResponseAppS("failed", "Technical work on the service", null));
             }
             return respons;
+        }
+
+        [HttpPost]
+        [Route("Instraction")]
+        public string SetInstraction(string token, string idShiping)
+        {
+            string respons = null;
+            if (token == null || token == "")
+            {
+                return JsonConvert.SerializeObject(new ResponseAppS("NotAuthorized", "Not Authorized", null));
+            }
+            try
+            {
+                bool isToken = managerMobileApi.CheckToken(token);
+                if (isToken)
+                {
+                    managerMobileApi.SetInstraction(idShiping);
+                    respons = JsonConvert.SerializeObject(new ResponseAppS("success", "", null));
+                }
+                else
+                {
+                    respons = JsonConvert.SerializeObject(new ResponseAppS("NotAuthorized", "Not Authorized", null));
+                }
+            }
+            catch (Exception)
+            {
+                respons = JsonConvert.SerializeObject(new ResponseAppS("failed", "Technical work on the service", null));
+            }
+            return respons;
+        }
+
+        [HttpGet]
+        [Route("Image")]
+        [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
+        public IActionResult GetShiping(string name, string type)
+        {
+            var imageFileStream = System.IO.File.OpenRead(name);
+            return File(imageFileStream, $"image/{type}");
         }
     }
 }

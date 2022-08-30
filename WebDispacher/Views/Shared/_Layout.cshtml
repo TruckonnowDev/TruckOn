@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using WebDispacher.Constants
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -9,10 +10,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="~/css/main.min.css">
     <script src="~/js/scripts.min.js"></script>
+    <script src="~/libs/bootstrap/css/bootstrap.min.css"></script>
+    <script src="~/libs/bootstrap/js/bootstrap.min.js"></script>
     <script src="~/js/orders.js"></script>
     <script src="~/js/driver.js"></script>
     <script src="~/js/equipment.js"></script>
     <script src="~/js/dispatch.js"></script>
+    <script src="~/js/common.js"></script>
     <script>
         if (window.screen.width < 767) {
             document.write('<script src="js/dop-768.js"><\/script>');
@@ -21,37 +25,46 @@
 
 </head>
 <body>
-    @if (ViewData["TypeNavBar"] == "AllUsers")
+    @if (ViewData[NavConstants.TypeNavBar] == NavConstants.AllUsers)
     {
         @await Html.PartialAsync("~/Views/PartView/NavAllUsers.cshtml");
     }
-    else if (ViewData["TypeNavBar"] == "BaseCommpany")
+    @if (ViewData[NavConstants.TypeNavBar] == NavConstants.BaseAllUsers)
+    {
+        @await Html.PartialAsync("~/Views/PartView/NavBaseAllUsers.cshtml");
+    }
+    else if (ViewData[NavConstants.TypeNavBar] == NavConstants.BaseCompany)
     {
         @await Html.PartialAsync("~/Views/PartView/NavBaseCommpany.cshtml");
     }
-    else if (ViewData["TypeNavBar"] == "NormaCommpany")
+    else if (ViewData[NavConstants.TypeNavBar] == NavConstants.NormalCompany)
     {
         @await Html.PartialAsync("~/Views/PartView/NavNormalCompany.cshtml");
     }
-    else if (ViewData["TypeNavBar"] == "BaseCommpanySettings")
+    else if (ViewData[NavConstants.TypeNavBar] == NavConstants.TypeNavBaseCompanySettings)
     {
         @await Html.PartialAsync("~/Views/PartView/NavSettingsBaseCompany.cshtml");
     }
-    else if (ViewData["TypeNavBar"] == "NormaCommpanySettings")
+    else if (ViewData[NavConstants.TypeNavBar] == NavConstants.TypeNavNormalCompanySettings)
     {
         @await Html.PartialAsync("~/Views/PartView/NavSettingsNormalCompany.cshtml");
     }
-    else if (ViewData["TypeNavBar"] == "NavTry_for_free")
+    else if (ViewData[NavConstants.TypeNavBar] == NavConstants.NavTryForFree)
     {
         @await Html.PartialAsync("~/Views/PartView/NavTry_for_free.cshtml");
     }
-    <div class="home">
-        @RenderBody()
-    </div>
+    else if (ViewData[NavConstants.TypeNavBar] == NavConstants.CancelSubscribe)
+    {
+        @await Html.PartialAsync("~/Views/PartView/NavSettingsCacelSubscribe.cshtml");
+    }
+    else if (ViewData[NavConstants.TypeNavBar] == NavConstants.Error)
+    {
+    }
+    @RenderBody()
     <script>
         $(document).ready(function () {
             //$("body").fadeIn(1000);
-            window.onbeforeunload = function () { $("body").fadeOut(200); }
+            window.onload = function () { $("body").fadeIn(400); }
         });
     </script>
 </body>
@@ -67,8 +80,7 @@
     @@keyframes open {
         from {opacity: 0;}
         to {opacity: 1;}
-    }
-}
+        }
 
 
     .navst {
@@ -134,5 +146,10 @@
 
         ::-webkit-scrollbar-thumb:hover {
             background: rgba(16, 156, 228, 0.34);
+            
+            
+        }
+        .active{
+            color: #C4C9D4!important;
         }
 </style>

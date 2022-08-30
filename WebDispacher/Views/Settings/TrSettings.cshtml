@@ -1,88 +1,104 @@
-﻿<div class="body">
-    <div style="display:flex;">
-    </div>
-    <nav style="display:flex;justify-content:flex-start">
-        @*<input class="btnSt activeBtn" type="button" value="Companies" onclick="window.location.href='@Url.Action("Companies", "Company")';" />
-        <input style="width:150px" class="btnSt" type="button" value="All Users" onclick="window.location.href='@Url.Action("Users", "Company")';" />*@
-        @foreach (var SetingTruck in ViewBag.SetingsTruck)
-        {
-            if (SetingTruck.IsSelect)
-            {
-                <div class="btnSt activeBtn">
-                    <span  onclick="window.location.href='@Url.Action("", "Settings")?idTr=@ViewBag.IdTr&idProfile=@SetingTruck.Id&typeTransport=@SetingTruck.TypeTransportVehikle';" ondblclick="window.location.href='@Url.Action("", "Settings")/RemoveProfile?idProfile=+ @SetingTruck.Id&typeTransport=@SetingTruck.TypeTransportVehikle&idTr=@ViewBag.IdTr';">@SetingTruck.Name</span>
-                    <input style="margin-left:10px;" type="radio" name="tabSet" checked="@SetingTruck.IsUsed" onclick="SelectProfile(@SetingTruck.Id, '@SetingTruck.TypeTransportVehikle', @ViewBag.IdTr)">
-                </div>
-            }
-            else
-            {
-                <div class="btnSt">
-                    <span  onclick="window.location.href='@Url.Action("", "Settings")?idTr=@ViewBag.IdTr&idProfile=@SetingTruck.Id&typeTransport=@SetingTruck.TypeTransportVehikle';" ondblclick="window.location.href='@Url.Action("", "Settings")/RemoveProfile?idProfile=@SetingTruck.Id&typeTransport=@SetingTruck.TypeTransportVehikle&idTr=@ViewBag.IdTr';">@SetingTruck.Name</span>    
-                    <input style="margin-left:10px;" type="radio" name="tabSet" checked="@SetingTruck.IsUsed" onclick="SelectProfile(@SetingTruck.Id, '@SetingTruck.TypeTransportVehikle', @ViewBag.IdTr)">
-                </div>
-            }
-        }
-        <input class="btnAddSt" type="button" value="+" onclick="window.location.href='@Url.Action("AddProfile", "Settings")?idTr=@ViewBag.IdTr&typeTransport=@ViewBag.TypeTransport'" />
-    </nav>
-    <div class="contentBody">
-      
-               <div class="cardLayouts">
-                   @foreach (var layout in ViewBag.SelectSetingTruck.TransportVehicle.Layouts)
-                   {
-                       <div class="cardLayout">
-                            <div>
-                                <span>@layout.Name</span>
-                                @if (layout.IsUsed)
-                                {
-                                    <img class="img" id="img_@layout.Id" src="@ViewBag.BaseUrl/Settings/Image?name=../@ViewBag.Pattern/@ViewBag.SelectSetingTruck.TransportVehicle.Type/@ViewBag.SelectSetingTruck.TransportVehicle.Type@layout.Index&type=png" />
-                                }
-                                else
-                                {
-                                    <img class="img" id="img_@layout.Id" style="opacity:0.4" src="@ViewBag.BaseUrl/Settings/Image?name=../@ViewBag.Pattern/@ViewBag.SelectSetingTruck.TransportVehicle.Type/@ViewBag.SelectSetingTruck.TransportVehicle.Type@layout.Index&type=png" />
-                                }
-                            </div>
-                           @if (ViewBag.SelectSetingTruck.IsChange)
-                           {
-                                <div class="cardTool">
-                                    @if (layout.OrdinalIndex != 1)
-                                    {
-                                        <div class="arrow-4 arrow-up" onclick="MovingLayoutUP(@layout.Id, @ViewBag.SelectSetingTruck.TransportVehicle.Id, this)">
-	                                        <span class="arrow-4-left arrow-left"></span>
-	                                        <span class="arrow-4-right arrow-right"></span>
-                                        </div>
-                                    }
-                                    <label class="container">
-                                        <input type="checkbox" checked="@layout.IsUsed" onchange="CheckChange(this.checked, @layout.Id)">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                    @if (layout.OrdinalIndex != ViewBag.SelectSetingTruck.TransportVehicle.Layouts.Count)
-                                    {
-                                        <div class="arrow-4 arrow-down" onclick="MovingLayoutDown(@layout.Id, @ViewBag.SelectSetingTruck.TransportVehicle.Id, this)">
-	                                        <span class="arrow-4-left arrow-left"></span>
-	                                        <span class="arrow-4-right arrow-right"></span>
-                                        </div>
-                                    }
+﻿<body>
+    <div class="cars">
+        <div class="container">
+            <div class="row">
+                <div class="admin">
+                    <div class="col-md-12">
+                        <a href="#" onclick="history.back();">Back to Equipment</a>
+                        <div class="title">
+                            <h1 class="text-info-header-1">Сustomize the Layout</h1>
+                        </div>
+                    </div>
+                    </div>
+                <div class="col-md-12 admin">
+                    <div id="tabs">
+                        @foreach (var SetingTruck in ViewBag.SetingsTruck)
+                        {
+                            if (SetingTruck.IsSelect)
+                            {
+                                <div class="tab whiteborder">
+                                    <span onclick="window.location.href='@Url.Action("", "Settings")?idTr=@ViewBag.IdTr&idProfile=@SetingTruck.Id&typeTransport=@SetingTruck.TypeTransportVehikle';"
+                                          ondblclick="window.location.href='@Url.Action("", "Settings")/RemoveProfile?idProfile=+ @SetingTruck.Id&typeTransport=@SetingTruck.TypeTransportVehikle&idTr=@ViewBag.IdTr';">@SetingTruck.Name</span>
+                                    <input style="margin-left:10px;" type="radio" name="tabSet" checked="@SetingTruck.IsUsed" onclick="SelectProfile(@SetingTruck.Id, '@SetingTruck.TypeTransportVehikle', @ViewBag.IdTr)">
                                 </div>
                             }
-                       </div>
-                   }
-               </div>
-       
+                            else
+                            {
+                                <div class="tab">
+                                    <span onclick="window.location.href='@Url.Action("", "Settings")?idTr=@ViewBag.IdTr&idProfile=@SetingTruck.Id&typeTransport=@SetingTruck.TypeTransportVehikle';"
+                                          ondblclick="window.location.href='@Url.Action("", "Settings")/RemoveProfile?idProfile=+ @SetingTruck.Id&typeTransport=@SetingTruck.TypeTransportVehikle&idTr=@ViewBag.IdTr';">@SetingTruck.Name</span>
+                                    <input style="margin-left:10px;" type="radio" name="tabSet" checked="@SetingTruck.IsUsed" onclick="SelectProfile(@SetingTruck.Id, '@SetingTruck.TypeTransportVehikle', @ViewBag.IdTr)">
+                                </div>
+                            }
+                        }
+                        <img class="tab-add-elem" src="img/addCross.svg" onclick="window.location.href='@Url.Action("AddProfile", "Settings")?idTr=@ViewBag.IdTr&typeTransport=@ViewBag.TypeTransport'"/>
+                        <div class="tabContent">
+                            <div class="row">
+                                @foreach (var layout in ViewBag.SelectSetingTruck.TransportVehicle.Layouts)
+                                {
+                                    <div class="col-md-3">
+                                        <div class="img">
+                                            <span>@layout.Name</span>
+                                            @if (layout.IsUsed)
+                                            {
+                                                <img style="width:90%;" id="img_@layout.Id" src="@ViewBag.BaseUrl/Settings/Image?name=../@ViewBag.Pattern/@ViewBag.SelectSetingTruck.TransportVehicle.Type/@ViewBag.SelectSetingTruck.TransportVehicle.Type@layout.Index&type=png" alt="">
+                                            }
+                                            else
+                                            {
+                                                <img style="opacity: 0.4;width: 90%;" id="img_@layout.Id" src="@ViewBag.BaseUrl/Settings/Image?name=../@ViewBag.Pattern/@ViewBag.SelectSetingTruck.TransportVehicle.Type/@ViewBag.SelectSetingTruck.TransportVehicle.Type@layout.Index&type=png" alt="">
+                                            }
+                                            @if (ViewBag.SelectSetingTruck.IsChange)
+                                            {
+                                                @if (layout.OrdinalIndex != 1)
+                                                {
+                                                    <img src="~/img/prev.svg" alt="" style="margin-right: 20px" onclick="MovingLayoutUP(@layout.Id, @ViewBag.SelectSetingTruck.TransportVehicle.Id, this)"/>
+                                                }
+                                                @if (layout.IsUsed)
+                                                {
+                                                    <img src="~/img/glass.svg" alt="" onclick="CheckChange(this.src, @layout.Id, this)"/>
+                                                }
+                                                else
+                                                {
+                                                    <img src="~/img/glass-not.svg" alt="" onclick="CheckChange(this.src, @layout.Id, this)"/>
+                                                }
+                                                @if (layout.OrdinalIndex != ViewBag.SelectSetingTruck.TransportVehicle.Layouts.Count)
+                                                {
+                                                    <img src="~/img/next.svg" alt="" style="margin-left: 20px" onclick="MovingLayoutDown(@layout.Id, @ViewBag.SelectSetingTruck.TransportVehicle.Id, this)">
+                                                }
+                                            }
+
+                                        </div>
+                                    </div>
+                                }
+
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <button onclick="window.location.href='@ViewBag.BaseUrl/Settings/Trucks'" class="text-info-header-2 btn1">Use these Settings</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+</body>
 
 <script>
-    function CheckChange(checked, idLayout) {
+    function CheckChange(url, idLayout, img) {
         let imgElment = document.getElementById("img_" + idLayout);
-        if (checked) {
+        if (url.includes("glass-not")) {
             imgElment.style.opacity = "1";
+            img.src = "@ViewBag.BaseUrl/img/glass.svg";
         }
         else {
             imgElment.style.opacity = "0.4";
+            img.src = "@ViewBag.BaseUrl/img/glass-not.svg";
         }
-        let url = "";
         let xmlHttp = new XMLHttpRequest();
         var body = 'idLayout=' + encodeURIComponent(idLayout);
-        if (!checked) {
+        if (!url.includes("glass-not")) {
             url = "@ViewBag.BaseUrl/Settings/UnSelectLayout";
         }
         else {
@@ -110,25 +126,6 @@
             else if (this.readyState == 4 && this.status == 200) {
                 let arrow = arrowElem.parentNode.parentNode.previousElementSibling;
                 let arrow1 = arrowElem.parentNode.parentNode;
-                //let count = 0;
-                //let timer = setInterval(function () {
-
-                //    if (count >= arrow.clientHeight && count >= arrow1.clientHeight) {
-
-                //        clearInterval(timer);
-                //        arrow1.style.bottom = "";
-                //        arrow1.style.top = "";
-                //        arrow.style.bottom = "";
-                //        arrow.style.top = "";
-                //        arrow.before(arrow1, arrow)
-                //        return;
-                //    }
-                //        draw(arrow1, count, 0);
-                //        draw(arrow, count, 1);
-
-                //    count += 1.5;
-                //}, 1);
-
                 arrow.before(arrow1, arrow)
             }
         };
@@ -149,25 +146,6 @@
             else if (this.readyState == 4 && this.status == 200) {
                 let arrow = arrowElem.parentNode.parentNode.nextElementSibling;
                 let arrow1 = arrowElem.parentNode.parentNode;
-                //let count = 0;
-                //let timer = setInterval(function () {
-
-                //    if (count >= arrow.clientHeight && count >= arrow1.clientHeight) {
-
-                //        clearInterval(timer);
-                //        arrow1.style.bottom = "";
-                //        arrow1.style.top = "";
-                //        arrow.style.bottom = "";
-                //        arrow.style.top = "";
-                //        arrow.before(arrow, arrow1)
-                //        return;
-                //    }
-                //    draw(arrow1, count, 1);
-                //    draw(arrow, count, 0);
-
-                //    count += 1.5;
-                //}, 1);
-
                 arrow.before(arrow, arrow1)
             }
         };
@@ -206,213 +184,8 @@
 </script>
 
 <style>
-    * {
-        margin: 0px;
-    }
-
-
-    .contentBody {
-        width: 100%;
-        height: 100px;
-        border-top: solid;
-        border-width: 1px;
-        border-color: rgba(51, 51, 51, 0.3);
-        display: flex;
-    }
-
-    .body {
-        margin-top: 30px;
-        margin-left: 5px;
-        margin-right: 5px;
-        padding: 10px;
-    }
-
-    .cardSetting {
-        margin-left: 10px;
-        width: 300px;
-    }
-
-    .cardLayouts {
-        width: 95%;
-        margin: 10px;
-        margin-left: 10px;
-        display:flex;
-        flex-wrap:wrap;
-    }
-
-    .cardLayout {
-        border-bottom: none;
-        border: groove;
-        border-color: rgba(151, 252, 126, 0.72);
-        position: relative;
-        width:24%;
-    }
-
-    .cardTool {
-        padding: 15px;
-        display:flex;
-        justify-content:space-around;
-    }
-
-    .container {
-        display: block;
-        position: relative;
-        padding-left: 35px;
-        margin-bottom: 12px;
-        margin-top: 12px;
+    .tab-add-elem{
+        padding-left: 1%;
         cursor: pointer;
-        font-size: 17px;
-        user-select: none;
-    }
-
-        .container input {
-            opacity: 0;
-            cursor: pointer;
-            height: 0;
-            width: 0;
-        }
-
-    .checkmark {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 12px;
-        width: 12px;
-        background-color: transparent;
-        border-radius: 5px;
-        border: solid rgba(60, 154, 37, 0.72);
-    }
-
-    .container input:checked ~ .checkmark {
-        background-color: transparent;
-        border: none;
-    }
-
-    .checkmark:after {
-        content: "";
-        position: absolute;
-        display: none;
-    }
-
-    .container input:checked ~ .checkmark:after {
-        display: block;
-    }
-
-    .container .checkmark:after {
-        left: 5px;
-        top: 1px;
-        width: 5px;
-        height: 10px;
-        border: solid rgba(60, 154, 37, 0.72);
-        border-width: 0 3px 3px 0;
-        -webkit-transform: rotate(45deg);
-        -ms-transform: rotate(45deg);
-        transform: rotate(45deg);
-    }
-
-    .arrow-4 {
-        position: relative;
-        cursor: pointer;
-        height: 10px;
-    }
-
-    .arrow-4-left {
-        position: relative;
-        background-color: transparent;
-        width: 4px;
-        height: 12px;
-        display: block;
-        border-radius: 4px;
-    }
-
-        .arrow-4-left:after {
-            content: "";
-            background-color: rgba(60, 154, 37, 0.80);
-            width: 4px;
-            height: 12px;
-            display: block;
-            border-radius: 6px 10px 10px 6px;
-            z-index: -1;
-        }
-
-    .arrow-4-right {
-        position: relative;
-        background-color: transparent;
-        width: 4px;
-        height: 12px;
-        display: block;
-        border-radius: 4px;
-    }
-
-        .arrow-4-right:after {
-            content: "";
-            background-color: rgba(60, 154, 37, 0.80);
-            width: 4px;
-            height: 12px;
-            display: block;
-            border-radius: 10px 6px 6px 10px;
-            z-index: -1;
-        }
-
-    .arrow-up {
-        top: 8px;
-        /*transform: rotate(90deg);*/
-    }
-
-    .arrow-down {
-        top:17px;
-        left: -16px;
-        transform: rotate(-180deg);
-    }
-
-    .arrow-right {
-        top:-4px;
-        transform: rotate(-40deg);
-    }
-
-    .arrow-left {
-        transform: rotate(40deg);
-    }
-
-    .img {
-        margin-bottom: 10px;
-        image-rendering: optimizeSpeed;
-        width: 90%;
-    }
-
-    .btnSt {
-        margin-left: 5px;
-        border: none;
-        width: 120px;
-        height: 40px;
-        background-color: white;
-        font-size: 20px;
-        color: rgb(51, 51, 51);
-        border-color: rgba(51, 51, 51, 1);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .btnAddSt {
-        margin-left: 5px;
-        border: none;
-        width: 20px;
-        height: 40px;
-        background-color: white;
-        font-size: 20px;
-        color: rgb(51, 51, 51);
-        border-color: rgba(51, 51, 51, 1);
-    }
-
-    .activeBtn {
-        border-radius: 1px;
-        border-top: solid;
-        border-right: solid;
-        border-left: solid;
-        border-width: 1.3px;
-        position: relative;
-        top: 2px;
-        border-color: rgba(51, 51, 51, 0.3);
     }
 </style>

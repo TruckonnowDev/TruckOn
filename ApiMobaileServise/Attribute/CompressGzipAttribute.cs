@@ -22,14 +22,14 @@ namespace ApiMobaileServise.Attribute
         public void OnActionExecuting(ActionExecutingContext context)
         {
             object paramReqvest = null;
-            if(IsCompresReqvest && ParamUnZip != null)
+            if (IsCompresReqvest && ParamUnZip != null)
             {
                 context.HttpContext.Response.Headers.Add("CompresReqvest", "Yes");
                 string[] paramsUnZip = ParamUnZip.Split(',');
-                foreach(string paramUnZip in paramsUnZip)
+                foreach (string paramUnZip in paramsUnZip)
                 {
                     paramReqvest = context.ActionArguments[paramUnZip] = UnCompress(context.ActionArguments[paramUnZip].ToString());
-                   
+
                 }
             }
             else

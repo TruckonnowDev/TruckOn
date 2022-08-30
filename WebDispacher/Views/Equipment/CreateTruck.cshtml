@@ -1,317 +1,280 @@
-﻿    <div class="body">
-        <input class="backBtn" type="button" value="← Back to Orders" onclick="history.back();" />
-        <div style="display:flex;justify-content:space-around">
-            <form style="width:45%;" action="" method="post" enctype="multipart/form-data">
-                <div class="content">
-                    <h2 style="color: rgb(51, 51, 51);margin-bottom:2px;">Add New Truck</h2>
-                    <p class="inpLabe">Name Truck*</p>
-                    <input name="nameTruk" class="inpText validation" type="text" required />
-                    <p class="inpLabe">Type</p>
-                    <select name="typeTruk" class="inpText validation" type="text" onchange="SelectTruck(this.options[this.selectedIndex].value)" required>
-                        <option value="">Choose a truck type</option>
-                        <option value="PickupFourWheel">Four-wheel pickup dually</option>
-                        <option value="FourDoorTruckChassisOpenFrame">Four-door truck with double chassis and open frame</option>
-                        <option value="BoxTruckSingleWheel">Box Truck Single Wheel</option>
-                        <option value="BoxTruckWheelDually">Box Truck Wheel Dually</option>
-                        <option value="CargiVanChasissDuallyOrSingleWheel">Cargi Van Chasiss Dually Or Single Wheel</option>
-                        <option value="CargoVanMustHaveWithDually">Cargo Van Must Have With Dually</option>
-                        <option value="PickUpDuallyChassisOpenFrameInTheBackMustHave2">Pick Up Dually Chassis Open Frame In The Back Must Have 2</option>
-                        <option value="PickUpDuallyChassisMustHave2Door">Pick Up Dually Chassis Must Have 2 Door</option>
-                        <option value="PickUpDuallyChassisMustHave4Door">Pick Up Dually Chassis Must Have 4 Door</option>
-                        <option value="PickUpDuallyFlatbed4Door">Pick Up Dually Flatbed 4 Door</option>
-                        <option value="PickUpDuallyFlatbedMustHave2Door">Pick Up Dually Flatbed Must Have 2 Door</option>
-                    </select>
-                    <p class="inpLabe">Year</p>
-                    <input name="yera" class="inpText" type="text" />
-                    <p class="inpLabe">Make*</p>
-                    <input name="make" class="inpText" type="text" />
-                    <p class="inpLabe">Model*</p>
-                    <input name="model" class="inpText" type="text" />
-                    <p class="inpLabe">State</p>
-                    <input name="state" class="inpText" type="text" />
-                    <p class="inpLabe">Plate Exp</p>
-                    <input name="exp" class="inpText" type="text" />
-                    <p class="inpLabe">Vin#</p>
-                    <input name="vin" class="inpText" type="text" />
-                    <p class="inpLabe">Owner</p>
-                    <input name="owner" class="inpText" type="text" />
-                    <p class="inpLabe">Plate Truck</p>
-                    <input name="plateTruk" class="inpText validation" type="text" required />
-                    <p class="inpLabe">Color</p>
-                    <input name="color" class="inpText" type="text" />
-                    <p class="inpLabe">Truck registration</p>
-                    <div class="inpText">
-                        <label for="docLoad1" class="btnModal" style="margin-left:5px;">Select document Truck registration</label>
-                        <input id="docLoad1" style="display: none;" type="file" name="truckRegistrationDoc" onchange="LoadFile(this, 1)" accept="application/pdf, image/jpeg, image/jpg" required>
-                        <span id="nameNoLoadDoc1" class="spanModal" style="align-self:center;margin-left:5px;color:#ff4614;">You can upload files only in pdf, jpg and jepg</span>
-                        <span id="nameLoadDoc1" class="spanModal" style="align-self:center;margin-left:5px;color:#95f816;" hidden></span>
+﻿<body>
+<div class="admin truc">
+<div class="container">
+<div class="row">
+<div class="col-md-6">
+    <div class="tabContent">
+        <div class="title">
+            <a href="#" onclick="history.back();">Back to Equipment</a>
+        </div>
+        <div class="title">
+            <h1 class="text-info-header-1">Add New Truck</h1>
+        </div>
+        <form action="" method="post" enctype="multipart/form-data">
+            <label class="big-label" for="">
+                Name Truck
+                <input class="height-input" type="text" name="NameTruck" required>
+            </label>
+            <label class="big-label" for="">
+                Type Truck <br/>
+                <select class="height-input input-select" name="Type" onchange="SelectTruck(this.options[this.selectedIndex].value)" required>
+                    <option value="">Choose a truck type</option>
+                    <option value="PickUpDually4TiresInTheBackMustHave4Door">Pick up Dually (4 tires in the bacK) must have 4 door</option>
+                    @*<option value="PickupFourWheel">Four-wheel pickup dually</option>
+                                    <option value="FourDoorTruckChassisOpenFrame">Four-door truck with double chassis and open frame</option>
+                                    <option value="BoxTruckSingleWheel">Box Truck Single Wheel</option>
+                                    <option value="BoxTruckWheelDually">Box Truck Wheel Dually</option>
+                                    <option value="CargiVanChasissDuallyOrSingleWheel">Cargi Van Chasiss Dually Or Single Wheel</option>
+                                    <option value="CargoVanMustHaveWithDually">Cargo Van Must Have With Dually</option>
+                                    <option value="PickUpDuallyChassisOpenFrameInTheBackMustHave2">Pick Up Dually Chassis Open Frame In The Back Must Have 2</option>
+                                    <option value="PickUpDuallyChassisMustHave2Door">Pick Up Dually Chassis Must Have 2 Door</option>
+                                    <option value="PickUpDuallyChassisMustHave4Door">Pick Up Dually Chassis Must Have 4 Door</option>
+                                    <option value="PickUpDuallyFlatbed4Door">Pick Up Dually Flatbed 4 Door</option>
+                                    <option value="PickUpDuallyFlatbedMustHave2Door">Pick Up Dually Flatbed Must Have 2 Door</option>*@
+                </select>
+            </label>
+            <label class="big-label" for="">
+                Year
+                <input class="height-input" type="text" name="Year">
+            </label>
+            <label class="big-label" for="">
+                Make
+                <input class="height-input" type="text" name="Make">
+            </label>
+            <label class="big-label" for="">
+                Model
+                <input class="height-input" type="text" name="Model">
+            </label>
+            <label class="big-label" for="">
+                State
+                <input class="height-input" type="text" name="State">
+            </label>
+            <label class="big-label" for="">
+                Plate Exp
+                <input class="height-input" type="text" name="Exp">
+            </label>
+            <label class="big-label" for="">
+                Vin#
+                <input class="height-input" type="text" name="Vin">
+            </label>
+            <label class="big-label" for="">
+                Owner
+                <input class="height-input" type="text" name="Owner">
+            </label>
+            <label class="big-label" for="">
+                Plate Truck
+                <input class="height-input" type="text" name="PlateTruck" required>
+            </label>
+            <label class="big-label" for="">
+                Color
+                <input class="height-input" type="text" name="ColorTruck">
+            </label>
+            <div class="full-label">
+                <p class="a-label">Truck registration</p>
+                <a class="pt-1 pb-1">You can upload files only in pdf, jpg and jpeg</a>
+                <div>
+                    <div class="file-group big-label">
+                        <div class="row">
+                            <div class="col-md-8 label-input d-flex align-items-center">
+                                <div onclick="ClearFile(`fi1`, 'fl1');" class="fi" id="fl1"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="select-button-1 d-flex justify-content-end">
+                                    <label>
+                                        Select document
+                                        <input class="height-input" id="fi1" onchange="GetFileName(this.value, 'fl1');" type="file" name="truckRegistrationDoc" accept="application/pdf, image/jpeg, image/jpg" required>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <p class="inpLabe">Truck lease agreement</p>
-                    <div class="inpText">
-                        <label for="docLoad2" class="btnModal" style="margin-left:5px;">Select document Truck lease agreement</label>
-                        <input id="docLoad2" style="display: none;" type="file" name="truckLeaseAgreementDoc" onchange="LoadFile(this, 2)" accept="application/pdf, image/jpeg, image/jpg" required>
-                        <span id="nameNoLoadDoc2" class="spanModal" style="align-self:center;margin-left:5px;color:#ff4614;">You can upload files only in pdf, jpg and jepg</span>
-                        <span id="nameLoadDoc2" class="spanModal" style="align-self:center;margin-left:5px;color:#95f816;" hidden></span>
-                    </div>
-                    <p class="inpLabe">Truck annual inspection</p>
-                    <div class="inpText">
-                        <label for="docLoad3" class="btnModal" style="margin-left:5px;">Select document Truck annual inspection</label>
-                        <input id="docLoad3" style="display: none;" type="file" name="truckAnnualInspection" onchange="LoadFile(this, 3)" accept="application/pdf, image/jpeg, image/jpg" required>
-                        <span id="nameNoLoadDoc3" class="spanModal" style="align-self:center;margin-left:5px;color:#ff4614;">You can upload files only in pdf, jpg and jepg</span>
-                        <span id="nameLoadDoc3" class="spanModal" style="align-self:center;margin-left:5px;color:#95f816;" hidden></span>
-                    </div>
-                    <p class="inpLabe">Bob tail physical damage (optional)</p>
-                    <div class="inpText">
-                        <label for="docLoad4" class="btnModal" style="margin-left:5px;">Select document Bob tail physical damage</label>
-                        <input id="docLoad4" style="display: none;" type="file" name="bobTailPhysicalDamage" onchange="LoadFile(this, 4)" accept="application/pdf, image/jpeg, image/jpg">
-                        <span id="nameNoLoadDoc4" class="spanModal" style="align-self:center;margin-left:5px;color:#ff4614;">You can upload files only in pdf, jpg and jepg</span>
-                        <span id="nameLoadDoc4" class="spanModal" style="align-self:center;margin-left:5px;color:#95f816;" hidden></span>
-                    </div>
-                    <p class="inpLabe">NY HUT (optional for NY rolling)</p>
-                    <div class="inpText">
-                        <label for="docLoad5" class="btnModal" style="margin-left:5px;">Select document NY HUT</label>
-                        <input id="docLoad5" style="display: none;" type="file" name="nYHUTDoc" onchange="LoadFile(this, 5)" accept="application/pdf, image/jpeg, image/jpg">
-                        <span id="nameNoLoadDoc5" class="spanModal" style="align-self:center;margin-left:5px;color:#ff4614;">You can upload files only in pdf, jpg and jepg</span>
-                        <span id="nameLoadDoc5" class="spanModal" style="align-self:center;margin-left:5px;color:#95f816;" hidden></span>
-                    </div>
-                </div>
-                <input class="btnSave" value="Save" type="submit" />
-            </form>
-            <div style="width:45%;">
-                <div id="PickupFourWheel" style="display:none;flex-wrap:wrap;justify-content:flex-start;">
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickupFourWheel/PickupFourWheel1.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickupFourWheel/PickupFourWheel6.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickupFourWheel/PickupFourWheel8.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickupFourWheel/PickupFourWheel9.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickupFourWheel/PickupFourWheel12.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickupFourWheel/PickupFourWheel13.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickupFourWheel/PickupFourWheel15.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickupFourWheel/PickupFourWheel16.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickupFourWheel/PickupFourWheel18.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickupFourWheel/PickupFourWheel19.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickupFourWheel/PickupFourWheel20.png&type=png" />
-                </div>
-                <div id="FourDoorTruckChassisOpenFrame" style="display:none;flex-wrap:wrap;justify-content:flex-start;">
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/FourDoorTruckChassisOpenFrame/FourDoorTruckChassisOpenFrame2.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/FourDoorTruckChassisOpenFrame/FourDoorTruckChassisOpenFrame3.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/FourDoorTruckChassisOpenFrame/FourDoorTruckChassisOpenFrame4.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/FourDoorTruckChassisOpenFrame/FourDoorTruckChassisOpenFrame5.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/FourDoorTruckChassisOpenFrame/FourDoorTruckChassisOpenFrame7.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/FourDoorTruckChassisOpenFrame/FourDoorTruckChassisOpenFrame8.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/FourDoorTruckChassisOpenFrame/FourDoorTruckChassisOpenFrame9.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/FourDoorTruckChassisOpenFrame/FourDoorTruckChassisOpenFrame11.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/FourDoorTruckChassisOpenFrame/FourDoorTruckChassisOpenFrame12.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/FourDoorTruckChassisOpenFrame/FourDoorTruckChassisOpenFrame14.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/FourDoorTruckChassisOpenFrame/FourDoorTruckChassisOpenFrame15.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/FourDoorTruckChassisOpenFrame/FourDoorTruckChassisOpenFrame16.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/FourDoorTruckChassisOpenFrame/FourDoorTruckChassisOpenFrame17.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/FourDoorTruckChassisOpenFrame/FourDoorTruckChassisOpenFrame19.png&type=png" />
-                </div>
-                <div id="BoxTruckSingleWheel" style="display:none;flex-wrap:wrap;justify-content:flex-start;">
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckSingleWheel/BoxTruckSingleWheel1.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckSingleWheel/BoxTruckSingleWheel2.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckSingleWheel/BoxTruckSingleWheel3.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckSingleWheel/BoxTruckSingleWheel4.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckSingleWheel/BoxTruckSingleWheel5.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckSingleWheel/BoxTruckSingleWheel7.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckSingleWheel/BoxTruckSingleWheel8.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckSingleWheel/BoxTruckSingleWheel9.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckSingleWheel/BoxTruckSingleWheel10.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckSingleWheel/BoxTruckSingleWheel11.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckSingleWheel/BoxTruckSingleWheel12.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckSingleWheel/BoxTruckSingleWheel13.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckSingleWheel/BoxTruckSingleWheel14.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckSingleWheel/BoxTruckSingleWheel15.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckSingleWheel/BoxTruckSingleWheel16.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckSingleWheel/BoxTruckSingleWheel17.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckSingleWheel/BoxTruckSingleWheel18.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckSingleWheel/BoxTruckSingleWheel19.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckSingleWheel/BoxTruckSingleWheel20.png&type=png" />
-                </div>
-                <div id="BoxTruckWheelDually" style="display:none;flex-wrap:wrap;justify-content:flex-start;">
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckWheelDually/BoxTruckWheelDually1.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckWheelDually/BoxTruckWheelDually2.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckWheelDually/BoxTruckWheelDually3.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckWheelDually/BoxTruckWheelDually4.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckWheelDually/BoxTruckWheelDually5.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckWheelDually/BoxTruckWheelDually7.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckWheelDually/BoxTruckWheelDually8.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckWheelDually/BoxTruckWheelDually9.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckWheelDually/BoxTruckWheelDually10.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckWheelDually/BoxTruckWheelDually11.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckWheelDually/BoxTruckWheelDually12.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckWheelDually/BoxTruckWheelDually13.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckWheelDually/BoxTruckWheelDually14.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckWheelDually/BoxTruckWheelDually15.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckWheelDually/BoxTruckWheelDually16.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckWheelDually/BoxTruckWheelDually17.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckWheelDually/BoxTruckWheelDually18.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckWheelDually/BoxTruckWheelDually19.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/BoxTruckWheelDually/BoxTruckWheelDually20.png&type=png" />
-                </div>
-                <div id="CargiVanChasissDuallyOrSingleWheel" style="display:none;flex-wrap:wrap;justify-content:flex-start;">
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargiVanChasissDuallyOrSingleWheel/CargiVanChasissDuallyOrSingleWheel1.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargiVanChasissDuallyOrSingleWheel/CargiVanChasissDuallyOrSingleWheel2.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargiVanChasissDuallyOrSingleWheel/CargiVanChasissDuallyOrSingleWheel3.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargiVanChasissDuallyOrSingleWheel/CargiVanChasissDuallyOrSingleWheel4.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargiVanChasissDuallyOrSingleWheel/CargiVanChasissDuallyOrSingleWheel5.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargiVanChasissDuallyOrSingleWheel/CargiVanChasissDuallyOrSingleWheel7.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargiVanChasissDuallyOrSingleWheel/CargiVanChasissDuallyOrSingleWheel8.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargiVanChasissDuallyOrSingleWheel/CargiVanChasissDuallyOrSingleWheel9.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargiVanChasissDuallyOrSingleWheel/CargiVanChasissDuallyOrSingleWheel10.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargiVanChasissDuallyOrSingleWheel/CargiVanChasissDuallyOrSingleWheel11.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargiVanChasissDuallyOrSingleWheel/CargiVanChasissDuallyOrSingleWheel12.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargiVanChasissDuallyOrSingleWheel/CargiVanChasissDuallyOrSingleWheel13.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargiVanChasissDuallyOrSingleWheel/CargiVanChasissDuallyOrSingleWheel14.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargiVanChasissDuallyOrSingleWheel/CargiVanChasissDuallyOrSingleWheel15.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargiVanChasissDuallyOrSingleWheel/CargiVanChasissDuallyOrSingleWheel16.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargiVanChasissDuallyOrSingleWheel/CargiVanChasissDuallyOrSingleWheel17.png&type=png" />
-                </div>
-                <div id="CargoVanMustHaveWithDually" style="display:none;flex-wrap:wrap;justify-content:flex-start;">
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargoVanMustHaveWithDually/CargoVanMustHaveWithDually1.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargoVanMustHaveWithDually/CargoVanMustHaveWithDually2.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargoVanMustHaveWithDually/CargoVanMustHaveWithDually3.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargoVanMustHaveWithDually/CargoVanMustHaveWithDually4.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargoVanMustHaveWithDually/CargoVanMustHaveWithDually5.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargoVanMustHaveWithDually/CargoVanMustHaveWithDually7.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargoVanMustHaveWithDually/CargoVanMustHaveWithDually8.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargoVanMustHaveWithDually/CargoVanMustHaveWithDually9.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargoVanMustHaveWithDually/CargoVanMustHaveWithDually10.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargoVanMustHaveWithDually/CargoVanMustHaveWithDually11.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargoVanMustHaveWithDually/CargoVanMustHaveWithDually12.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargoVanMustHaveWithDually/CargoVanMustHaveWithDually13.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargoVanMustHaveWithDually/CargoVanMustHaveWithDually14.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargoVanMustHaveWithDually/CargoVanMustHaveWithDually15.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargoVanMustHaveWithDually/CargoVanMustHaveWithDually16.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargoVanMustHaveWithDually/CargoVanMustHaveWithDually17.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargoVanMustHaveWithDually/CargoVanMustHaveWithDually18.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargoVanMustHaveWithDually/CargoVanMustHaveWithDually20.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargoVanMustHaveWithDually/CargoVanMustHaveWithDually21.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargoVanMustHaveWithDually/CargoVanMustHaveWithDually22.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/CargoVanMustHaveWithDually/CargoVanMustHaveWithDually23.png&type=png" />
-                </div>
-                <div id="PickUpDuallyChassisOpenFrameInTheBackMustHave2" style="display:none;flex-wrap:wrap;justify-content:flex-start;">
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisOpenFrameInTheBackMustHave2/PickUpDuallyChassisOpenFrameInTheBackMustHave21.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisOpenFrameInTheBackMustHave2/PickUpDuallyChassisOpenFrameInTheBackMustHave22.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisOpenFrameInTheBackMustHave2/PickUpDuallyChassisOpenFrameInTheBackMustHave23.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisOpenFrameInTheBackMustHave2/PickUpDuallyChassisOpenFrameInTheBackMustHave24.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisOpenFrameInTheBackMustHave2/PickUpDuallyChassisOpenFrameInTheBackMustHave25.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisOpenFrameInTheBackMustHave2/PickUpDuallyChassisOpenFrameInTheBackMustHave27.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisOpenFrameInTheBackMustHave2/PickUpDuallyChassisOpenFrameInTheBackMustHave28.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisOpenFrameInTheBackMustHave2/PickUpDuallyChassisOpenFrameInTheBackMustHave29.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisOpenFrameInTheBackMustHave2/PickUpDuallyChassisOpenFrameInTheBackMustHave210.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisOpenFrameInTheBackMustHave2/PickUpDuallyChassisOpenFrameInTheBackMustHave211.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisOpenFrameInTheBackMustHave2/PickUpDuallyChassisOpenFrameInTheBackMustHave212.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisOpenFrameInTheBackMustHave2/PickUpDuallyChassisOpenFrameInTheBackMustHave213.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisOpenFrameInTheBackMustHave2/PickUpDuallyChassisOpenFrameInTheBackMustHave214.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisOpenFrameInTheBackMustHave2/PickUpDuallyChassisOpenFrameInTheBackMustHave215.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisOpenFrameInTheBackMustHave2/PickUpDuallyChassisOpenFrameInTheBackMustHave216.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisOpenFrameInTheBackMustHave2/PickUpDuallyChassisOpenFrameInTheBackMustHave217.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisOpenFrameInTheBackMustHave2/PickUpDuallyChassisOpenFrameInTheBackMustHave218.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisOpenFrameInTheBackMustHave2/PickUpDuallyChassisOpenFrameInTheBackMustHave219.png&type=png" />
-                </div>
-                <div id="PickUpDuallyChassisMustHave2Door" style="display:none;flex-wrap:wrap;justify-content:flex-start;">
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave2Door/PickUpDuallyChassisMustHave2Door1.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave2Door/PickUpDuallyChassisMustHave2Door2.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave2Door/PickUpDuallyChassisMustHave2Door3.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave2Door/PickUpDuallyChassisMustHave2Door4.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave2Door/PickUpDuallyChassisMustHave2Door5.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave2Door/PickUpDuallyChassisMustHave2Door7.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave2Door/PickUpDuallyChassisMustHave2Door8.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave2Door/PickUpDuallyChassisMustHave2Door9.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave2Door/PickUpDuallyChassisMustHave2Door10.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave2Door/PickUpDuallyChassisMustHave2Door11.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave2Door/PickUpDuallyChassisMustHave2Door12.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave2Door/PickUpDuallyChassisMustHave2Door13.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave2Door/PickUpDuallyChassisMustHave2Door14.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave2Door/PickUpDuallyChassisMustHave2Door15.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave2Door/PickUpDuallyChassisMustHave2Door16.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave2Door/PickUpDuallyChassisMustHave2Door17.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave2Door/PickUpDuallyChassisMustHave2Door18.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave2Door/PickUpDuallyChassisMustHave2Door19.png&type=png" />
-                </div>
-                <div id="PickUpDuallyChassisMustHave4Door" style="display:none;flex-wrap:wrap;justify-content:flex-start;">
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave4Door/PickUpDuallyChassisMustHave4Door1.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave4Door/PickUpDuallyChassisMustHave4Door2.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave4Door/PickUpDuallyChassisMustHave4Door3.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave4Door/PickUpDuallyChassisMustHave4Door4.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave4Door/PickUpDuallyChassisMustHave4Door5.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave4Door/PickUpDuallyChassisMustHave4Door7.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave4Door/PickUpDuallyChassisMustHave4Door8.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave4Door/PickUpDuallyChassisMustHave4Door9.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave4Door/PickUpDuallyChassisMustHave4Door10.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave4Door/PickUpDuallyChassisMustHave4Door11.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave4Door/PickUpDuallyChassisMustHave4Door12.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave4Door/PickUpDuallyChassisMustHave4Door13.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave4Door/PickUpDuallyChassisMustHave4Door14.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave4Door/PickUpDuallyChassisMustHave4Door15.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave4Door/PickUpDuallyChassisMustHave4Door16.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave4Door/PickUpDuallyChassisMustHave4Door17.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave4Door/PickUpDuallyChassisMustHave4Door18.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyChassisMustHave4Door/PickUpDuallyChassisMustHave4Door19.png&type=png" />
-                </div>
-                <div id="PickUpDuallyFlatbed4Door" style="display:none;flex-wrap:wrap;justify-content:flex-start;">
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbed4Door/PickUpDuallyFlatbed4Door1.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbed4Door/PickUpDuallyFlatbed4Door2.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbed4Door/PickUpDuallyFlatbed4Door3.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbed4Door/PickUpDuallyFlatbed4Door4.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbed4Door/PickUpDuallyFlatbed4Door5.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbed4Door/PickUpDuallyFlatbed4Door7.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbed4Door/PickUpDuallyFlatbed4Door8.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbed4Door/PickUpDuallyFlatbed4Door9.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbed4Door/PickUpDuallyFlatbed4Door10.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbed4Door/PickUpDuallyFlatbed4Door11.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbed4Door/PickUpDuallyFlatbed4Door12.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbed4Door/PickUpDuallyFlatbed4Door13.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbed4Door/PickUpDuallyFlatbed4Door14.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbed4Door/PickUpDuallyFlatbed4Door15.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbed4Door/PickUpDuallyFlatbed4Door16.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbed4Door/PickUpDuallyFlatbed4Door17.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbed4Door/PickUpDuallyFlatbed4Door18.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbed4Door/PickUpDuallyFlatbed4Door19.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbed4Door/PickUpDuallyFlatbed4Door20.png&type=png" />
-                </div>
-                <div id="PickUpDuallyFlatbedMustHave2Door" style="display:none;flex-wrap:wrap;justify-content:flex-start;">
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbedMustHave2Door/PickUpDuallyFlatbedMustHave2Door1.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbedMustHave2Door/PickUpDuallyFlatbedMustHave2Door2.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbedMustHave2Door/PickUpDuallyFlatbedMustHave2Door3.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbedMustHave2Door/PickUpDuallyFlatbedMustHave2Door4.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbedMustHave2Door/PickUpDuallyFlatbedMustHave2Door5.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbedMustHave2Door/PickUpDuallyFlatbedMustHave2Door7.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbedMustHave2Door/PickUpDuallyFlatbedMustHave2Door8.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbedMustHave2Door/PickUpDuallyFlatbedMustHave2Door9.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbedMustHave2Door/PickUpDuallyFlatbedMustHave2Door10.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbedMustHave2Door/PickUpDuallyFlatbedMustHave2Door11.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbedMustHave2Door/PickUpDuallyFlatbedMustHave2Door12.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbedMustHave2Door/PickUpDuallyFlatbedMustHave2Door13.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbedMustHave2Door/PickUpDuallyFlatbedMustHave2Door14.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbedMustHave2Door/PickUpDuallyFlatbedMustHave2Door15.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbedMustHave2Door/PickUpDuallyFlatbedMustHave2Door16.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbedMustHave2Door/PickUpDuallyFlatbedMustHave2Door17.png&type=png" />
-                    <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDuallyFlatbedMustHave2Door/PickUpDuallyFlatbedMustHave2Door18.png&type=png" />
                 </div>
             </div>
+            <div class="full-label">
+                <p class="a-label">Truck lease agreement</p>
+                <a class="pt-1 pb-1">You can upload files only in pdf, jpg and jpeg</a>
+                <div>
+                    <div class="file-group big-label">
+                        <div class="row">
+                            <div class="col-md-8 label-input d-flex align-items-center">
+                                <div onclick="ClearFile(`fi2`, 'fl2');" class="fi" id="fl2"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="select-button-1 d-flex justify-content-end">
+                                    <label>
+                                        Select document
+                                        <input class="height-input" id="fi2" onchange="GetFileName(this.value, 'fl2');" type="file" name="truckLeaseAgreementDoc" accept="application/pdf, image/jpeg, image/jpg" required>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="full-label">
+                <p class="a-label">Truck annual inspection</p>
+                <a class="pt-1 pb-1">You can upload files only in pdf, jpg and jpeg</a>
+                <div>
+                    <div class="file-group big-label">
+                        <div class="row">
+                            <div class="col-md-8 label-input d-flex align-items-center">
+                                <div onclick="ClearFile(`fi3`, 'fl3');" class="fi" id="fl3"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="select-button-1 d-flex justify-content-end">
+                                    <label>
+                                        Select document
+                                        <input class="height-input" id="fi3" onchange="GetFileName(this.value, 'fl3');" type="file" name="truckAnnualInspection" accept="application/pdf, image/jpeg, image/jpg" required>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="full-label">
+                <p class="a-label">Bob tail physical damage (optional)</p>
+                <a class="pt-1 pb-1">You can upload files only in pdf, jpg and jpeg</a>
+                <div>
+                    <div class="file-group big-label">
+                        <div class="row">
+                            <div class="col-md-8 label-input d-flex align-items-center">
+                                <div onclick="ClearFile(`fi4`, 'fl4');" class="fi" id="fl4"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="select-button-1 d-flex justify-content-end">
+                                    <label>
+                                        Select document
+                                        <input class="height-input" id="fi4" onchange="GetFileName(this.value, 'fl4');" type="file" name="bobTailPhysicalDamage" accept="application/pdf, image/jpeg, image/jpg">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="full-label">
+                <p class="a-label">NY HUT (optional for NY rolling)</p>
+                <a class="pt-1 pb-1">You can upload files only in pdf, jpg and jpeg</a>
+                <div>
+                    <div class="file-group big-label">
+                        <div class="row">
+                            <div class="col-md-8 label-input d-flex align-items-center">
+                                <div onclick="ClearFile(`fi5`, 'fl5');" class="fi" id="fl5"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="select-button-1 d-flex justify-content-end">
+                                    <label>
+                                        Select document
+                                        <input class="height-input" id="fi5" onchange="GetFileName(this.value, 'fl5');" type="file" accept="application/pdf, image/jpeg, image/jpg" name="nYHUTDoc">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button id="button-save" class="btn1 big-label height-input big-font-size">Save Info</button>
+        </form>
+    </div>
+</div>
+<div class="col-md-6 image-col-place">
+    <div id="PickUpDually4TiresInTheBackMustHave4Door" class="row" style="display:none;">
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door1.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door2.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door3.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door4.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door5.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door6.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door7.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door8.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door9.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door10.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door11.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door12.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door13.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door14.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door15.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door16.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door17.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door18.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door19.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door20.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door21.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door22.png&type=png" alt="">
+        </div>
+        <div class="col-md-auto">
+            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door23.png&type=png" alt="">
         </div>
     </div>
+</div>
+</div>
+</div>
+</div>
+</body>
 
 <script>
-    var curentSelectPattern;
+$("#fi3").change(function() {
+    CheckValid('fl3','fi3');
+});
 
-    function LoadFile(fille, numDock) {
-        let pref = fille.files[0].name.substr(fille.files[0].name.lastIndexOf(".") + 1);
-        let nameLoadDocEl = document.getElementById("nameLoadDoc"+numDock);
-        let nameNoLoadDocEl = document.getElementById("nameNoLoadDoc"+numDock);
-        if (pref == "pdf" || pref == "jpg" || pref == "jepg") {
-            nameNoLoadDocEl.hidden = "hidden";
-            nameLoadDocEl.hidden = "";
-            nameLoadDocEl.textContent = fille.files[0].name;
-        }
-        else {
-            nameNoLoadDocEl.hidden = "";
-            nameLoadDocEl.hidden = "hidden";
-            fille.value = "";
-        }
-    }
+$("#fi2").change(function() {
+    CheckValid('fl2','fi2');
+});
+
+$("#fi1").change(function() {
+    CheckValid('fl1','fi1');
+});
+
+ $("#button-save").on('click', function (){
+     CheckValid('fl1','fi1');
+     CheckValid('fl2','fi2');
+     CheckValid('fl3','fi3');
+ })
+    var curentSelectPattern;
 
     function SelectTruck(value) {
         if (curentSelectPattern || value == "") {
@@ -324,123 +287,3 @@
         }
     }
 </script>
-
-<style>
-    * {
-        margin: 0px;
-    }
-
-    .img {
-        margin: 5px;
-        padding: 5px;
-        image-rendering: optimizeSpeed;
-        width:29%;
-    }
-
-        .img:hover {
-            opacity: 0.7;
-        }
-
-
-    .validation:invalid {
-        border-color: red;
-        color: red;
-    }
-
-    .validation:valid {
-        border-color: #4ad73b;
-        color: #4ad73b;
-    }
-
-    .uploadButton {
-        display: block;
-        width: 200px;
-        background: #3df;
-        padding: 10px;
-        color: #FFF;
-        font-size: 16px;
-        font-weight: bold;
-        font-family: Tahoma;
-        text-align: center;
-        border-radius: 10px;
-        cursor: pointer;
-    }
-
-        .uploadButton:hover {
-            background: #3ce;
-        }
-
-
-    .btnSave {
-        color: rgba(45,45,45,0.88);
-        background: none;
-        display: inline-block;
-        padding: 7px;
-        font-size: 16px;
-        font-weight: 400;
-        text-align: center;
-        border: 1px solid;
-        border-radius: 4px;
-        width: 130px;
-    }
-
-    btnSave:hover {
-        background-color: rgba(45,45,45,0.98);
-        transition: 0.5s;
-    }
-
-    .btnD:hover {
-        background: rgba(243, 167, 76, 0.29);
-    }
-
-    .inpTextTr {
-        border: none;
-        width: 97%;
-        background-color: rgba(243, 167, 76, 0.09);
-        color: #f3a74c;
-    }
-
-    .inpLabe {
-        font-size: 18px;
-        color: rgb(51, 51, 51);
-        margin-top: 10px;
-        margin-left: 5px;
-    }
-
-    .inpText {
-        width: 100%;
-        height: 25px;
-        border-width: 1px;
-        border-style: double;
-        border-radius: 4px;
-        padding: 2px;
-        font-size: 16px;
-        color: rgb(51, 51, 51);
-        border-color: rgba(51, 51, 51, 0.24);
-        margin-bottom: 15px;
-    }
-
-    .content {
-        width: 100%;
-    }
-
-    .contentBody {
-        display: flex;
-        justify-content: space-around;
-    }
-
-    .backBtn {
-        background: none;
-        border: none;
-        font-size: 17px;
-        color: #ffd7a6;
-        margin-bottom: 20px;
-    }
-
-    .body {
-        margin-top: 30px;
-        margin-left: 5px;
-        margin-right: 5px;
-        padding: 10px;
-    }
-</style>

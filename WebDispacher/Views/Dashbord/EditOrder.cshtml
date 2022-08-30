@@ -1,375 +1,344 @@
-﻿<div class="body">
-    <input class="backBtn" type="button" value="← Back to Orders" onclick="history.back();" />
-    <form action="SavaOrder" method="post">
-        <input type="text" name="idOrder" style="display:none;" value="@ViewBag.Order.Id" />
-        <div class="contentBody">
-            <div class="content">
-                <p class="inpLabe">Load Id</p>
-                <input name="idLoad" class="inpText" type="text" value="@ViewBag.Order.idOrder" />
-                <p class="inpLabe">Instructions</p>
-                <textarea name="instructions" class="inpText" style="height:92px;">@ViewBag.Order.Titl1DI</textarea>
-            </div>
-            <div class="content">
-                <p class="inpLabe">Status</p>
-                <select name="status" class="dropDown">
-                    <option value="">------------------------------------</option>
-                    <option value="NewLoad">NewLoad</option>
-                    <option value="Picked up">Picked up</option>
-                    <option value="Delivered">Delivered</option>
-                </select>
-            </div>
-        </div>
-        <div class="contentBody">
-            <div class="content">
-                <h2 style="color:rgb(51, 51, 51);margin-bottom:2px;">Pickup Information</h2>
-                <p class="inpLabe">Name</p>
-                <input name="nameP" class="inpText" type="text" value="@ViewBag.Order.NameP" placeholder="Name"/>
-                <p class="inpLabe">Contact</p>
-                <input name="contactP" class="inpText" type="text" value="@ViewBag.Order.ContactNameP" placeholder="Contact name"/>
-                <p class="inpLabe">Address*</p>
-                <input name="addressP" class="inpText validation" type="text" value="@ViewBag.Order.AddresP" placeholder="Address" required/>
-                <p class="inpLabe">City*</p>
-                <input name="cityP" class="inpText validation" type="text" value="@ViewBag.Order.CityP" placeholder="City" required/>
-                <p class="inpLabe">State*</p>
-                <input name="stateP" class="inpText validation" type="text" value="@ViewBag.Order.StateP" pattern="[A-Z]{2}" placeholder="XX - State" required/>
-                <p class="inpLabe">Zip*</p>
-                <input name="zipP" class="inpText validation" type="text" value="@ViewBag.Order.ZipP" pattern="[0-9]{5}" placeholder="XXXXX - Zip code" required/>
-                <p class="inpLabe">Phone*</p>
-                <input name="phoneP" class="inpText validation" type="tel" placeholder="XXXXXXXXXX - Phone number" pattern="[0-9]{4,12}"  value="@ViewBag.Order.PhoneP" required/>
-                <p class="inpLabe">Email*</p>
-                <input name="emailP" class="inpText validation" type="email" value="@ViewBag.Order.EmailP" placeholder="Email" required/>
-                <p class="inpLabe">Scheduled Pickup Date</p>
-                <input name="scheduledPickupDateP" class="inpText" type="text" value="@ViewBag.Order.PickupExactly" />
-            </div>
-            <div class="content">
-                <h2 style="color:rgb(51, 51, 51);margin-bottom:2px;">Delivery Information</h2>
-                <p class="inpLabe">Name</p>
-                <input name="nameD" class="inpText" type="text" value="@ViewBag.Order.NameD" placeholder="Name" />
-                <p class="inpLabe">Contact</p>
-                <input name="contactD" class="inpText" type="text" value="@ViewBag.Order.ContactNameD" placeholder="Contact name" />
-                <p class="inpLabe">Address*</p>
-                <input name="addressD" class="inpText validation" type="text" value="@ViewBag.Order.AddresD" placeholder="Address" required/>
-                <p class="inpLabe">City*</p>
-                <input name="cityD" class="inpText validation" type="text" value="@ViewBag.Order.CityD" placeholder="City" required/>
-                <p class="inpLabe">State*</p>
-                <input name="stateD" class="inpText validation" pattern="[A-Z]{2}" type="text" value="@ViewBag.Order.StateD" placeholder="XX - State" required/>
-                <p class="inpLabe">Zip*</p>
-                <input name="zipD" class="inpText validation" type="text" value="@ViewBag.Order.ZipD" pattern="[0-9]{5}" placeholder="XXXXX - Zip code" required/>
-                <p class="inpLabe">Phone*</p>
-                <input name="phoneD" class="inpText validation" placeholder="XXXXXXXXXX - Phone number" type="tel" pattern="[0-9]{4,12}" value="@ViewBag.Order.PhoneD" required/>
-                <p class="inpLabe">Email*</p>
-                <input name="emailD" class="inpText validation" type="email" value="@ViewBag.Order.EmailD" placeholder="Email" required/>
-            </div>
-        </div>
-        <div class="bodyTable">
-            <input type="text" name="idOrder" style="display:none;" value="@ViewBag.Order.Id" />
-            <h4 class="headTabe">Vehicles</h4>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>VIN</th>
-                        <th>Year</th>
-                        <th>Make</th>
-                        <th>Model</th>
-                        <th>Type</th>
-                        <th>Color</th>
-                        <th>Lot Number</th>
-                    </tr>
-                </thead>
-                <tbody id="tbVecl">
-                    @if (ViewBag.Order.VehiclwInformations != null)
-                    {
-                        @for (int i = 0; i < ViewBag.Order.VehiclwInformations.Count; i++)
+﻿@model WebDispacher.ViewModels.ShippingViewModel
+
+<body>
+    <div class="admin Billing">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="tabContente">
+                        <div class="title text-info-padding-5">
+                            <a href="#" onclick="history.back();">Back to Orders</a>
+                        </div>
+                        <h2 style="margin-block: 15px;">Create Order</h2>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="tabContente">
+                        <form action="SavaOrder" method="post">
+                            <input id="idOrder" type="text" name="Id" style="display:none;" value="@Model.Id" />
+                            <div class="w1">
+                                <label for="">
+                                    Load ID
+                                    <input type="text" id="idLoad" name="IdOrder" value="@Model.IdOrder">
+                                </label>
+                                <label for="">
+                                    Status
+                                    <select name="status" id="statusId">
+                                        <option value="NewLoad">NewLoad</option>
+                                        <option value="Picked up">Picked up</option>
+                                        <option value="Delivered">Delivered</option>
+                                    </select>
+                                </label>
+                                <label for="">
+                                    Contact
+                                    <input type="text" id="contactId" name="ContactC" value="@Model.ContactC">
+                                </label>
+                                <label for="">
+                                    Phone
+                                    <input type="tel" id="phoneC" name="PhoneC" value="@Model.PhoneC">
+                                </label>
+                                <h3>Pickup Information</h3>
+                                <label for="">
+                                    Name
+                                    <input type="text" id="nameP" value="@Model.NameP" placeholder="Name" name="NameP">
+                                </label>
+                                <label for="">
+                                    Contact
+                                    <input type="text" id="contactNameP" name="ContactNameP" value="@Model.ContactNameP" placeholder="Contact name">
+                                </label>
+                                <label for="">
+                                    Address
+                                    <input type="text" id="addressP" name="AddresP" value="@Model.AddresP" placeholder="Address" required>
+                                </label>
+                                <label for="">
+                                    City
+                                    <input type="text" id="cityP" name="CityP" value="@Model.CityP" placeholder="City" required>
+                                </label>
+                                <label for="">
+                                    State
+                                    <input type="text" id="stateP" name="StateP" value="@Model.StateP" pattern="[A-Z]{2}" placeholder="XX - State" required>
+                                </label>
+                                <label for="">
+                                    Zip
+                                    <input type="text" id="zipP" name="ZipP" value="@Model.ZipP" pattern="[0-9]{5}" placeholder="XXXXX - Zip code" required>
+                                </label>
+                                <label for="">
+                                    Phone
+                                    <input type="tel" id="phoneP" name="PhoneP" placeholder="XXXXXXXXXX - Phone number" pattern="[0-9]{4,12}" value="@Model.PhoneP" required>
+                                </label>
+                                <label for="">
+                                    Email
+                                    <input type="text" id="emailP" name="EmailP" type="email" value="@Model.EmailP" placeholder="Email" required>
+                                </label>
+                                <label for="">
+                                    Scheduled pickup date
+                                    <input type="text" id="scheduledPickupDateP" name="PickupExactly" value="@Model.PickupExactly">
+                                </label>
+                            </div>
+                            <div class="w1">
+                                <label style="margin-bottom: 7px;" for="">
+                                    Instructions
+                                    <textarea type="text" id="instructions" class="textarea-resize-none" name="Titl1DI" style="height:192px;">@Model.Titl1DI</textarea>
+                                </label>
+                                <label for="">
+                                    Fax
+                                    <input type="text" id="faxC" name="FaxC" value="@Model.FaxC">
+                                </label>
+                                <label for="">
+                                    Iccmc
+                                    <input type="text" id="iccmcC" name="IccmcC" value="@Model.IccmcC">
+                                </label>
+                                <h3>Delivery Information</h3>
+                                <label for="">
+                                    Name
+                                    <input type="text" id="nameD" name="NameD" value="@Model.NameD" placeholder="Name">
+                                </label>
+                                <label for="">
+                                    Contact
+                                    <input type="text" id="contactD" name="ContactNameD" value="@Model.ContactNameD" placeholder="Contact name">
+                                </label>
+                                <label for="">
+                                    Address
+                                    <input type="text" id="addressD" name="AddresD" value="@Model.AddresD" placeholder="Address" required>
+                                </label>
+                                <label for="">
+                                    City
+                                    <input type="text" id="cityD" name="CityD" value="@Model.CityD" placeholder="City" required>
+                                </label>
+                                <label for="">
+                                    State
+                                    <input type="text" id="stateD" name="StateD" pattern="[A-Z]{2}" value="@Model.StateD" placeholder="XX - State" required>
+                                </label>
+                                <label for="">
+                                    Zip
+                                    <input type="text" id="zipD" name="ZipD" value="@Model.ZipD" pattern="[0-9]{5}" placeholder="XXXXX - Zip code" required>
+                                </label>
+                                <label for="">
+                                    Phone
+                                    <input name="PhoneD" id="phoneD" placeholder="XXXXXXXXXX - Phone number" type="tel" pattern="[0-9]{4,12}" value="@Model.PhoneD" required>
+                                </label>
+                                <label for="">
+                                    Email
+                                    <input name="EmailD" id="emailD" type="email" value="@Model.EmailD" placeholder="Email" required>
+                                </label>
+                            </div>
+                            <div class="w1">
+                                <h3>Payment Information</h3>
+                                <label for="">
+                                    Payment method
+                                    <select id="paymentMethod" name="TotalPaymentToCarrier" required>
+                                        <option value="COP">COP</option>
+                                        <option value="COD">COD</option>
+                                        <option value="1 days">1 days</option>
+                                        <option value="2 days">2 days</option>
+                                        <option value="5 days">5 days</option>
+                                        <option value="10 days">10 days</option>
+                                        <option value="15 days">15 days</option>
+                                    </select>
+                                </label>
+                                <label for="">
+                                    Price
+                                    <input type="text" id="price" name="PriceListed" value="@Model.PriceListed" required>
+                                </label>
+                                <label for="">
+                                    Broker fee
+                                    <input type="text" id="brokerFee" name="BrokerFee" value="@Model.BrokerFee">
+                                </label>
+                                <input class="btn1" type="submit" value="Save Order" />
+                                <button class="btn2">Archive Order</button>
+                                <button class="btn3">Delete Order</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-12" style="padding-bottom: 20px">
+                    <div class="title">
+                        <h1>Vehicles</h1>
+                        <button class="btn1" onclick="AddVech(this)">Add Vehicle</button>
+                    </div>
+                    <div class="table">
+                        <div class="tr blue">
+                            <div class="td">№</div>
+                            <div class="td">VIN</div>
+                            <div class="td">Year</div>
+                            <div class="td">Make</div>
+                            <div class="td">Model</div>
+                            <div class="td">Type</div>
+                            <div class="td">Color</div>
+                            <div class="td">Lot number</div>
+                            <div class="td">&nbsp;</div>
+                            <div class="td">&nbsp;</div>
+                            <div class="td">&nbsp;</div>
+                            <div class="td">&nbsp;</div>
+                        </div>
+                        @if (Model.VehiclwInformations != null)
                         {
-                    <tr id="@ViewBag.Order.VehiclwInformations[i].Id">
-                        <td>@i</td>
-                        <td><input class="inpTextTr" type="text" value="@ViewBag.Order.VehiclwInformations[i].VIN" /></td>
-                        <td><input class="inpTextTr" type="text" value="@ViewBag.Order.VehiclwInformations[i].Year" /></td>
-                        <td><input class="inpTextTr" type="text" value="@ViewBag.Order.VehiclwInformations[i].Make" /></td>
-                        <td><input class="inpTextTr" type="text" value="@ViewBag.Order.VehiclwInformations[i].Model" /></td>
-                        <td>
-                            <select>
-                                <option>@ViewBag.Order.VehiclwInformations[i].Type</option>
-                                <option>Sedan</option>
-                                <option>Suv</option>
-                                <option>Coupe</option>
-                                <option>PickUp</option>
-                                <option>Tricycle</option>
-                                <option>Sport bike</option>
-                                <option>Touring motorcycle</option>
-                                <option>Cruise motorcycle</option>
-                            </select>
-                        </td>
-                        <td><input class="inpTextTr" type="text" value="@ViewBag.Order.VehiclwInformations[i].Color" /></td>
-                        <td><input class="inpTextTr" type="text" value="@ViewBag.Order.VehiclwInformations[i].Lot" /></td>
-                        <td><input class="inpTextTr btnD" type="button" value="-" onclick="RemoveVech(this)" /></td>
-                        <td><input class="inpTextTr btnD" type="button" value="S" onclick="SaveVech(this)" /></td>
-                    </tr>
+                            @for (int i = 0; i < Model.VehiclwInformations.Count; i++)
+                            {
+                                <form action="SavaVech" method="POST" class="tr" id="@Model.VehiclwInformations[i].Id">
+                                    <div class="td">@i</div>
+                                    <div class="td"><input type='text' name="VIN" value="@Model.VehiclwInformations[i].VIN" /></div>
+                                    <div class="td"><input type='text' name="Year" value="@Model.VehiclwInformations[i].Year" /></div>
+                                    <div class="td"><input type='text' name="Make" value="@Model.VehiclwInformations[i].Make" /></div>
+                                    <div class="td"><input type='text' name="Model" value="@Model.VehiclwInformations[i].Model" /></div>
+                                    <div class="td">
+                                        <select name="Type">
+                                            <option>@Model.VehiclwInformations[i].Type</option>
+                                            <option>Sedan</option>
+                                            <option>Suv</option>
+                                            <option>Coupe</option>
+                                            <option>PickUp</option>
+                                            <option>Tricycle</option>
+                                            <option>Sport bike</option>
+                                            <option>Touring motorcycle</option>
+                                            <option>Cruise motorcycle</option>
+                                        </select>
+                                    </div>
+                                    <div class="td"><input type='text' name="Color" value="@Model.VehiclwInformations[i].Color" /></div>
+                                    <div class="td"><input type='text' name="LotNumber" value="@Model.VehiclwInformations[i].Lot" /></div>
+                                    <div class="td"><input type='text' class="delete delete-border-cursor" onclick="DeleteVech(@Model.VehiclwInformations[i].Id)"/></div>
+                                    <div class="td"><input type='submit' class="delete-border-cursor" value="Save" /></div>
+                                    <input type="text" name="idVech" style="display:none;" value="@Model.VehiclwInformations[i].Id" />
+                                    <input type="text" name="idOrder" style="display:none;" value="@Model.Id" />
+                                </form>
+                            }
                         }
-                    }
-                </tbody>
-            </table>
-            <input class="btnAddandRevoveVech btnD" type="button" value="+" onclick="AddVech(this)" />
-        </div>
-        <hr style="border-color:rgba(228, 228, 228, 0.40);margin:10px;" />
-        <div class="contentBody">
-            <div class="content">
-                <h2 style="color:rgb(51, 51, 51);margin-bottom:2px;">Payment Information</h2>
-                <p class="inpLabe">Payment method</p>
-                <select name="paymentMethod" class="dropDown" required>
-                    <option value="">------------------------------------</option>
-                    <option value="COP">COP</option>
-                    <option value="COD">COD</option>
-                    <option value="1 days">1 days</option>
-                    <option value="2 days">2 days</option>
-                    <option value="5 days">5 days</option>
-                    <option value="10 days">10 days</option>
-                    <option value="15 days">15 days</option>
-                </select>
-                <p class="inpLabe">Price</p>
-                <input name="price" class="inpText validation" type="text" value="@ViewBag.Order.PriceListed" required/>
-            </div>
-            <div class="content">
-                <p class="inpLabe">Broker Fee</p>
-                <input name="brokerFee" class="inpText" type="text" value="@ViewBag.Order.BrokerFee" />
-                <div style="display:flex;">
-                    <input class="btnSave" value="Save" type="submit" />
-                    <a class="btnArchived" href="Config.BaseReqvesteUrl/Dashbord/Order/ArchivedOrder?id=@ViewBag.Order.Id">Archive</a>
-                    <a class="btnDeleted" href="Config.BaseReqvesteUrl/Dashbord/Order/DeletedOrder?id=@ViewBag.Order.Id&status=NewLoad">Deleted</a>
+                    </div>
                 </div>
             </div>
         </div>
-    </form>
-</div>
+    </div>
+</body>
+
 <script>
-    function SaveVech(btnE) {
-        let idVech = btnE.parentElement.parentElement.id;
-        let VIN = btnE.parentElement.parentElement.children[1].children[0].value;
-        let Year = btnE.parentElement.parentElement.children[2].children[0].value;
-        let Make = btnE.parentElement.parentElement.children[3].children[0].value;
-        let Model = btnE.parentElement.parentElement.children[4].children[0].value;
-        let Type = btnE.parentElement.parentElement.children[5].children[0].value;
-        let Color = btnE.parentElement.parentElement.children[6].children[0].value;
-        let LotNumber = btnE.parentElement.parentElement.children[7].children[0].value;
-        let Req = "idVech=" + idVech + "&VIN=" + VIN + "&Year=" + Year + "&Make=" + Make + "&Model=" + Model + "&Type=" + Type + "&Color=" + Color + "&LotNumber=" + LotNumber; 
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function (e) {
-            if (this.readyState == 4 && this.status == 200) {
-                alert(this.responseText);
-            }
-        };
-        xhttp.open("POST", "@ViewBag.BaseUrl/Dashbord/Order/SavaVech", true);
-        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhttp.setRequestHeader('Accept-Encoding', 'br');
-        xhttp.send(Req);
+$(document).ready(function() {
+    if ("@Model.CurrentStatus" != null)
+    { 
+        $('#statusId option[value="@Model.CurrentStatus"]').prop('selected', true);
     }
-
-    function RemoveVech(btnE) {
-        let idVech = btnE.parentElement.parentElement.id;
-        let Req = "idVech=" + idVech;
-        let tdElms = btnE.parentElement.parentElement.parentElement;
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function (e) {
-            if (this.readyState == 4 && this.status == 200) {
-                alert(this.responseText);
-            }
-        };
-        xhttp.open("POST", "@ViewBag.BaseUrl/Dashbord/Order/RemoveVech", true);
-        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhttp.setRequestHeader('Accept-Encoding', 'br');
-        xhttp.send(Req);
-        tdElms.removeChild(FindId(tdElms.children, idVech));
+    if ("@Model.TotalPaymentToCarrier" != null)
+    { 
+        $('#paymentMethod option[value="@Model.TotalPaymentToCarrier"]').prop('selected', true);
     }
-
-    function FindId(elms, idVech) {
-        let tdElm;
-        for (let i = 0; i < elms.length; i++) {
-            if (elms[i].id == idVech) {
-                tdElm = elms[i];
-                break;
-            }
-        }
-        return tdElm;
-    }
+});
 
     function AddVech(btnE) {
-        let idOrder = btnE.parentElement.children[0].value;
-        var xhttp = new XMLHttpRequest();
-        let Req = "idOrder=" + idOrder;
-        xhttp.onreadystatechange = function (e) {
-            if (this.readyState == 4 && this.status == 200) {
-                alert(this.responseText);
-                location.reload(true);
-            }
-        };
-        xhttp.open("POST", "@ViewBag.BaseUrl/Dashbord/Order/AddVech", true);
-        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhttp.setRequestHeader('Accept-Encoding', 'br');
-        xhttp.send(Req);
+        const loadId = document.getElementById('idLoad').value;
+        const status = document.getElementById('statusId').value;
+        const nameP = document.getElementById('nameP').value;
+        const contactNameP = document.getElementById('contactNameP').value;
+        const addressP = document.getElementById('addressP').value;
+        const cityP = document.getElementById('cityP').value;
+        const stateP = document.getElementById('stateP').value;
+        const zipP = document.getElementById('zipP').value;
+        const phoneP = document.getElementById('phoneP').value;
+        const emailP = document.getElementById('emailP').value;
+        const scheduledPickupDateP = document.getElementById('scheduledPickupDateP').value;
+        const instructions = document.getElementById('instructions').value;
+        const nameD = document.getElementById('nameD').value;
+        const contactD = document.getElementById('contactD').value;
+        const addressD = document.getElementById('addressD').value;
+        const cityD = document.getElementById('cityD').value;
+        const stateD = document.getElementById('stateD').value;
+        const zipD = document.getElementById('zipD').value;
+        const phoneD = document.getElementById('phoneD').value;
+        const emailD = document.getElementById('emailD').value;
+        const paymentMethod = document.getElementById('paymentMethod').value;
+        const price = document.getElementById('price').value;
+        const brokerFee = document.getElementById('brokerFee').value;
+        const faxC = document.getElementById('faxC').value;
+        const iccmcC = document.getElementById('iccmcC').value;
+        const contactC = document.getElementById('contactId').value;
+        const phoneC = document.getElementById('phoneC').value;
+        
+        let idOrder = document.getElementById('idOrder').value;
+             var xhttp = new XMLHttpRequest();
+             let Req = "idOrder=" + idOrder;
+             xhttp.onreadystatechange = function (e) {
+                 console.log(this.readyState);
+                 if (this.readyState === 4 && this.status === 200) {
+                     alert(this.responseText);
+                     var url = `@ViewBag.BaseUrl/Dashbord/Order/EditReload?Id=${idOrder}&stasus=${status}&idOrder=${loadId}&NameP=${nameP}`+
+                                                 `&ContactNameP=${contactNameP}&Address=${addressP}&CityP=${cityP}&StateP=${stateP}&CurrentStatus=${status}` +
+                                                 `&ZipP=${zipP}&PhoneP=${phoneP}&EmailP=${emailP}&PickupExactly=${scheduledPickupDateP}&Titl1DI=${instructions}` +
+                                                 `&NameD=${nameD}&ContactNameD=${contactD}&AddressD=${addressD}&CityD=${cityD}&StateD=${stateD}&ZipD=${zipD}&PhoneD=${phoneD}` +
+                                                 `&EmailD=${emailD}&TotalPaymentToCarrier=${paymentMethod}&PriceListed=${price}&BrokerFee=${brokerFee}&FaxC=${faxC}` +
+                                                 `&IccmcC=${iccmcC}&ContactC=${contactC}&PhoneC=${phoneC}`;
+                    window.location.href = url;
+                 }
+             };
+             xhttp.open("POST", "@ViewBag.BaseUrl/Dashbord/Order/AddVech", true);
+             xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+             xhttp.setRequestHeader('Accept-Encoding', 'br');
+             xhttp.send(Req);
     }
+    
+    function DeleteVech(btnE) {
+        const loadId = document.getElementById('idLoad').value;
+                const status = document.getElementById('statusId').value;
+                const nameP = document.getElementById('nameP').value;
+                const contactNameP = document.getElementById('contactNameP').value;
+                const addressP = document.getElementById('addressP').value;
+                const cityP = document.getElementById('cityP').value;
+                const stateP = document.getElementById('stateP').value;
+                const zipP = document.getElementById('zipP').value;
+                const phoneP = document.getElementById('phoneP').value;
+                const emailP = document.getElementById('emailP').value;
+                const scheduledPickupDateP = document.getElementById('scheduledPickupDateP').value;
+                const instructions = document.getElementById('instructions').value;
+                const nameD = document.getElementById('nameD').value;
+                const contactD = document.getElementById('contactD').value;
+                const addressD = document.getElementById('addressD').value;
+                const cityD = document.getElementById('cityD').value;
+                const stateD = document.getElementById('stateD').value;
+                const zipD = document.getElementById('zipD').value;
+                const phoneD = document.getElementById('phoneD').value;
+                const emailD = document.getElementById('emailD').value;
+                const paymentMethod = document.getElementById('paymentMethod').value;
+                const price = document.getElementById('price').value;
+                const brokerFee = document.getElementById('brokerFee').value;
+                const faxC = document.getElementById('faxC').value;
+                const iccmcC = document.getElementById('iccmcC').value;
+                const contactC = document.getElementById('contactId').value;
+                const phoneC = document.getElementById('phoneC').value;
+                
+               
+                let idOrder = document.getElementById('idOrder').value;
+                
+            let Req = "idVech=" + btnE;
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function (e) {
+                if (this.readyState == 4 && this.status == 200) {
+                    alert(this.responseText);
+                     var url = `@ViewBag.BaseUrl/Dashbord/Order/EditReload?Id=${idOrder}&stasus=${status}&idOrder=${loadId}&NameP=${nameP}`+
+                                                 `&ContactNameP=${contactNameP}&Address=${addressP}&CityP=${cityP}&StateP=${stateP}&CurrentStatus=${status}` +
+                                                 `&ZipP=${zipP}&PhoneP=${phoneP}&EmailP=${emailP}&PickupExactly=${scheduledPickupDateP}&Titl1DI=${instructions}` +
+                                                 `&NameD=${nameD}&ContactNameD=${contactD}&AddressD=${addressD}&CityD=${cityD}&StateD=${stateD}&ZipD=${zipD}&PhoneD=${phoneD}` +
+                                                 `&EmailD=${emailD}&TotalPaymentToCarrier=${paymentMethod}&PriceListed=${price}&BrokerFee=${brokerFee}&FaxC=${faxC}` +
+                                                 `&IccmcC=${iccmcC}&ContactC=${contactC}&PhoneC=${phoneC}`;
+                    window.location.href = url;
+                                   
+                }
+            };
+            xhttp.open("POST", "@ViewBag.BaseUrl/Dashbord/Order/RemoveVech", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.setRequestHeader('Accept-Encoding', 'br');
+            xhttp.send(Req);
+            tdElms.removeChild(FindId(tdElms.children, idVech));
+        }
 </script>
-        <style>
-            * {
-                margin: 0px;
-            }
 
-            .validation:invalid {
-                border-color: red;
-            }
-
-            .validation:valid {
-                border-color: #4ad73b;
-            }
-
-            .btnAddandRevoveVech {
-                border: none;
-                width: 30px;
-                background-color: #f9a038;
-                color: #000000;
-            }
-
-            .btnSave {
-                margin:2px;
-                background-color: #323b85;
-                border-style: double;
-                border-color: #8faac3;
-                border-radius: 10px;
-                color: white;
-                width: 100px;
-                height: 40px;
-                border-style: double;
-            }
-
-            .btnArchived {
-                margin: 2px;
-                background-color: #329703;
-                border-color: #33db26;
-                border-radius: 10px;
-                color: white;
-                padding: 7px;
-                font-size: 17px;
-                border-style: double;
-            }
-
-            .btnDeleted {
-                margin: 2px;
-                background-color: #b51616;
-                border-color: #893030;
-                border-radius: 10px;
-                color: white;
-                padding: 7px;
-                font-size: 17px;
-                text-align: center;
-                border-style: double;
-            }
-
-            btnSave:hover {
-                background-color: #8c8ac2;
-            }
-
-
-            .btnD:hover {
-                background: rgba(243, 167, 76, 0.29);
-            }
-
-            .dropDown {
-                width: 100%;
-                height: 30px;
-                border-width: 1px;
-                border-style: solid;
-                border-radius: 4px;
-                padding: 2px;
-                font-size: 18px;
-                color: rgb(51, 51, 51);
-                border-color: rgba(51, 51, 51, 0.4);
-                margin-bottom: 15px;
-            }
-
-            .inpTextTr {
-                border: none;
-                width: 97%;
-                background-color: rgba(228, 228, 228, 0.40);
-                color: rgb(51, 51, 51);
-                padding: 5px;
-            }
-
-            tr {
-                display: table-row;
-                vertical-align: inherit;
-                border-color: inherit;
-            }
-
-            td, th {
-                text-align: center;
-                color: rgb(51, 51, 51);
-            }
-
-            td {
-                background-color: rgba(228, 228, 228, 0.40);
-
-            }
-
-            .table {
-                width: 100%;
-                max-width: 100%;
-                margin-bottom: 20px;
-            }
-
-            .headTabe {
-                font-size: 21px;
-                margin-left: 10px;
-                color: rgb(51, 51, 51);
-            }
-
-                .bodyTable {
-                margin: 15px;
-            }
-
-            .inpLabe {
-                font-size: 18px;
-                color: rgb(51, 51, 51);
-                margin-top:10px;
-            }
-
-            .inpText {
-                width: 100%;
-                height: 25px;
-                border-width: 1px;
-                border-style: solid;
-                border-radius: 4px;
-                padding: 2px;
-                font-size: 16px;
-                color: rgb(51, 51, 51);
-                border-color: rgba(51, 51, 51, 0.24);
-                margin-bottom: 15px;
-            }
-
-            .content {
-                width: 40%;
-            }
-            
-            .contentCenrer {
-                width: 90%;
-            }
-
-            .contentBody {
-                display:flex;
-                justify-content:space-around;
-            }
-
-            .backBtn {
-                background: none;
-                border: none;
-                font-size: 17px;
-                color: #ffd7a6;
-                margin-bottom: 20px;
-            }
-
-            .body {
-                margin-top: 30px;
-                margin-left: 5px;
-                margin-right: 5px;
-                padding: 10px;
-            }
-        </style>
+<style>
+    .Billing .table .td input,.Billing .table .td select{
+    text-align:center;
+    width:95%;
+    padding:6px 0;
+    border:1px solid #c4c9d5;
+    border-radius:10px!important;
+    background:#fff;
+    margin:0;
+    font-weight:400;
+    color:#007bff;
+    font-size:20px;
+    }
+</style>

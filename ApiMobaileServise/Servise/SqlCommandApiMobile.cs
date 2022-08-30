@@ -102,6 +102,7 @@ namespace ApiMobaileServise.Servise
         {
             Shipping shipping = context.Shipping
                   .Where(s => s.Id == idShipping)
+                  .Include(s => s.VehiclwInformations)
                   .FirstOrDefault();
             return shipping;
         }
@@ -453,6 +454,16 @@ namespace ApiMobaileServise.Servise
             return lastInspectionDriver;
         }
 
+        internal void SetInstractionShipingById(string idShiping)
+        {
+            Shipping shipping = context.Shipping.FirstOrDefault(s => s.Id.ToString() == idShiping);
+            if(shipping != null)
+            {
+                shipping.IsInstructinRead = true;
+                context.SaveChanges();
+            }
+        }
+
         internal bool SetTralerAndTruck(string token, string plateTrailer, string plateTruck, string nowCheck)
         {
             Truck truck = context.Trucks.FirstOrDefault(t => t.PlateTruk == plateTruck);
@@ -623,7 +634,6 @@ namespace ApiMobaileServise.Servise
         public Shipping GetShippingPhotInDb(string idShip)
         {
             Shipping shipping = context.Shipping.Where(s => s.Id.ToString() == idShip)
-                .Include("VehiclwInformations.PhotoInspections.Damages")
                 .Include("VehiclwInformations.Scan")
                 .Include("VehiclwInformations.PhotoInspections.Photos")
                 .FirstOrDefault();
@@ -780,10 +790,21 @@ namespace ApiMobaileServise.Servise
             return taskLoad.Id.ToString();
         }
 
-        public async void SaveFeedBackInDb(Feedback feedback)
+        public async Task<Feedback> GetFeedbackFromShippingId(string shippingId)
         {
-            context.Feedbacks.Add(feedback);
-            await context.SaveChangesAsync();
+            return await context.Feedbacks.FirstOrDefaultAsync(x => x.ShippingId == shippingId);
+        }
+
+        public async Task SaveFeedBackInDb(Feedback feedback, string shippingId)
+        {
+            var shipping = await context.Shipping.FirstOrDefaultAsync(x => x.Id == shippingId);
+            if (shipping != null)
+            {
+                feedback.ShippingId = shipping.Id;
+                feedback.DriverId = shipping.IdDriver;
+                context.Feedbacks.Add(feedback);
+                await context.SaveChangesAsync();
+            }
         }
 
         public void ReCurentStatus(string idShip, string status)

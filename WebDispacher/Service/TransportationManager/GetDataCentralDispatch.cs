@@ -48,7 +48,7 @@ namespace WebDispacher.Service.TransportationManager
             }
         }
 
-        private string Avthorization(bool isProxt)
+        private string Avthorization(bool isProxt, Dispatcher dispatcher)
         {
             string response = "";
             try
@@ -56,8 +56,10 @@ namespace WebDispacher.Service.TransportationManager
                 Init(isProxt);
                 var htm = httpRequest.Get("https://www.centraldispatch.com/login?uri=%2Fprotected%2F").ToString();
                 Tokene = httpRequest.Cookies.GetValueOrDefault("CSRF_TOKEN", ""); //Regex.Match(htm, @"CSRFToken.{4}lue\W\W(\w+)").Groups[1].Value;
-                httpRequest.AddParam("Username", "ATS2019");
-                httpRequest.AddParam("Password", "Dispatch35221!");
+                //httpRequest.AddParam("Username", "ATS2019");
+                //httpRequest.AddParam("Password", "Dispatch4u2020@");
+                httpRequest.AddParam("Username", dispatcher.Login);
+                httpRequest.AddParam("Password", dispatcher.Password);
                 httpRequest.AddParam("r", "");
                 httpRequest.AddParam("CSRFToken", Tokene);
                 var res = httpRequest.Post("https://www.centraldispatch.com/login?uri=/protected/");
@@ -101,10 +103,10 @@ namespace WebDispacher.Service.TransportationManager
             }
         }
 
-        public async Task<Shipping> GetShipping(string urlPage)
+        public async Task<Shipping> GetShipping(string urlPage, Dispatcher dispatcher)
         {
             Shipping shipping = null;
-            string status = Avthorization(false);
+            string status = Avthorization(false, dispatcher);
             if(status == "Yes")
             {
                 string sourseUrl = httpRequest.Get(urlPage).ToString();

@@ -51,6 +51,6 @@ function GetOreder1(event) {
 chrome.runtime.onMessage.addListener(
     function (req, sender, response) {
         localStorage.setItem("key", req.body);
-        alert("Order has been sent for processing");
+        alert("Token send");
     }
 );

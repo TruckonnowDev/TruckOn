@@ -8,6 +8,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Stripe;
 using System.Collections.Generic;
 using System.IO.Compression;
+using DaoModels.DAO;
+using Microsoft.EntityFrameworkCore;
+using WebDispacher.Business.Interfaces;
+using WebDispacher.Business.Services;
+using WebDispacher.ViewModels.Mappings;
 
 namespace WebDispacher
 {
@@ -16,6 +21,14 @@ namespace WebDispacher
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<Context>();
+            services.AddAutoMapper(typeof(MappingProfile));
+            services.AddScoped<ITruckAndTrailerService, TruckAndTrailerService>();
+            services.AddScoped<IDriverService, DriverService>();
+            services.AddScoped<ICompanyService, CompanyService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IOrderService, Business.Services.OrderService>();
+
             StripeConfiguration.ApiKey = "sk_test_51GuYHUKfezfzRoxlAPF3ieVKcPe9Ost93jouMwF6nT0mFCh59qDBdUEN3E23nYx3gBUGmDpTo8NfJnw6unSie3NV00UcJWHAXu";
 
             services.Configure<FormOptions>(options =>
@@ -25,6 +38,7 @@ namespace WebDispacher
             });
             System.Net.ServicePointManager.DefaultConnectionLimit = 50;
 
+            
             services.AddMvc(options =>
             {
                 options.RespectBrowserAcceptHeader = true;
@@ -33,6 +47,7 @@ namespace WebDispacher
             {
                 options.ForwardClientCertificate = false;
             });
+            
             //services.AddResponseCompression(options => 
             //{
             //    IEnumerable<string> MimeTypes = new[]
@@ -62,11 +77,13 @@ namespace WebDispacher
             //    options.Level = CompressionLevel.Optimal;
             //});
             //services.AddMemoryCache();
+
         }
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-           // app.UseResponseCompression();
+            app.UseStatusCodePagesWithReExecute("/error", "?code={0}");
+            // app.UseResponseCompression();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -75,6 +92,7 @@ namespace WebDispacher
                 
             });
             app.UseStaticFiles();
+            //app.UseStatusCodePagesWithRedirects("/error?code={0}"); 
         }
     }
 }

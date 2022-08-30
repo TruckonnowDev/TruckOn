@@ -4,247 +4,283 @@ using System.Linq;
 using System.Threading.Tasks;
 using DaoModels.DAO.Models;
 using Microsoft.AspNetCore.Mvc;
+using WebDispacher.Business.Interfaces;
+using WebDispacher.Constants;
 using WebDispacher.Service;
 
 namespace WebDispacher.Controellers
 {
     public class RAController : Controller
     {
-        ManagerDispatch managerDispatch = new ManagerDispatch();
+        private readonly IUserService userService;
+        private readonly IDriverService driverService;
+
+        public RAController(
+            IUserService userService, 
+            IDriverService driverService)
+        {
+            this.driverService = driverService;
+            this.userService = userService;
+        }
         public IActionResult Index()
         {
-            IActionResult actionResult = null;
-            ViewData["TextError"] = "";
+            ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-            if (Request.Cookies.ContainsKey("KeyAvtho"))
+            
+            if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
             {
-                actionResult = Redirect("/Dashbord/Order/NewLoad");
+                return Redirect("/Dashbord/Order/NewLoad");
             }
-            else
-            {
-                ViewData["TypeNavBar"] = "AllUsers";
-                actionResult = View("Index");
-            }
-            return actionResult;
+
+            ViewData[NavConstants.TypeNavBar] = NavConstants.AllUsers;
+            
+            return View("Index");
         }
 
         [HttpGet]
         [Route("try_for_free")]
         public IActionResult TryForFree()
         {
-            IActionResult actionResult = null;
-            ViewData["TextError"] = "";
+            ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-            if (Request.Cookies.ContainsKey("KeyAvtho"))
+            
+            if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
             {
-                actionResult = Redirect("/Dashbord/Order/NewLoad");
+                return Redirect("/Dashbord/Order/NewLoad");
             }
-            else
-            {
-                ViewData["TypeNavBar"] = "NavTry_for_free";
-                actionResult = View("try_for_free");
-            }
-            return actionResult;
+
+            ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
+            
+            return View("try_for_free");
         }
 
         [HttpGet]
         [Route("carrier-login")]
         public IActionResult CarrierLogin(string error)
         {
-            IActionResult actionResult = null;
-            ViewData["TextError"] = "";
+            ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-            if (Request.Cookies.ContainsKey("KeyAvtho"))
+            
+            if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
             {
-                actionResult = Redirect("/Dashbord/Order/NewLoad");
+                return Redirect("/Dashbord/Order/NewLoad");
             }
-            else
-            {
-                ViewData["TypeNavBar"] = "NavTry_for_free";
-                ViewData["TextError"] = error;
-                ViewData["reg"] = "/carrier-reg";
-                actionResult = View("carrier-login");
-            }
-            return actionResult;
+
+            ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
+            ViewData[NavConstants.TextError] = error;
+            ViewData[NavConstants.Reg] = NavConstants.CarrierReg;
+            
+            return View("carrier-login");
         }
 
         [HttpGet]
         [Route("shipper-login")]
         public IActionResult ShipperLogin(string error)
         {
-            IActionResult actionResult = null;
-            ViewData["TextError"] = "";
+            ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-            if (Request.Cookies.ContainsKey("KeyAvtho"))
+            
+            if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
             {
-                actionResult = Redirect("/Dashbord/Order/NewLoad");
+                return Redirect("/Dashbord/Order/NewLoad");
             }
-            else
-            {
-                ViewData["TypeNavBar"] = "NavTry_for_free";
-                ViewData["TextError"] = error;
-                ViewData["reg"] = "/shipper-reg";
-                actionResult = View("shipper-login");
-            }
-            return actionResult;
+
+            ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
+            ViewData[NavConstants.TextError] = error;
+            ViewData[NavConstants.Reg] = NavConstants.ShipperReg;
+            
+            return View("shipper-login");
         }
 
         [HttpGet]
         [Route("carrier-reg")]
         public IActionResult CarrierReg(string error)
         {
-            IActionResult actionResult = null;
-            ViewData["TextError"] = "";
+            ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-            if (Request.Cookies.ContainsKey("KeyAvtho"))
+            
+            if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
             {
-                actionResult = Redirect("/Dashbord/Order/NewLoad");
+                return Redirect("/Dashbord/Order/NewLoad");
             }
-            else
-            {
-                ViewData["TypeNavBar"] = "NavTry_for_free";
-                ViewData["TextError"] = error;
-                actionResult = View("carrier-reg");
-            }
-            return actionResult;
+
+            ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
+            ViewData[NavConstants.TextError] = error;
+            
+            return View("carrier-reg");
         }
 
         [HttpGet]
         [Route("shipper-reg")]
         public IActionResult ShipperReg(string error)
         {
-            IActionResult actionResult = null;
-            ViewData["TextError"] = "";
+            ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-            if (Request.Cookies.ContainsKey("KeyAvtho"))
+            
+            if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
             {
-                actionResult = Redirect("/Dashbord/Order/NewLoad");
+                return Redirect("/Dashbord/Order/NewLoad");
             }
-            else
-            {
-                ViewData["TypeNavBar"] = "NavTry_for_free";
-                ViewData["TextError"] = error;
-                actionResult = View("shipper-reg");
-            }
-            return actionResult;
+
+            ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
+            ViewData[NavConstants.TextError] = error;
+            
+            return View("shipper-reg");
         }
 
+        [HttpGet]
+        [Route("recovery-password-send-mail")]
+        public IActionResult RecoveryPasswordSendMail(string error)
+        {
+            ViewData[NavConstants.TextError] = string.Empty;
+            ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+            
+            if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+            {
+                return Redirect("/Dashbord/Order/NewLoad");
+            }
+
+            ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
+            ViewData[NavConstants.TextError] = error;
+            
+            return View("SendMailRecoveryPassword");
+        }
+
+        [HttpPost]
+        [Route("recovery-password-send-mail")]
+        public IActionResult RecoveryPasswordCheckkMail(string email)
+        {
+            ViewData[NavConstants.TextError] = string.Empty;
+            ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+            
+            var isEmail = userService.CheckEmail(email);
+
+            return Redirect(isEmail ? Config.BaseReqvesteUrl : $"/recovery-password-send-mail?error=No user found with this mail");
+        }
 
         [HttpPost]
         public IActionResult Avthorization(string Email, string Password, string accept)
         {
             IActionResult actionResult = null;
-            ViewData["TypeNavBar"] = "NavTry_for_free";
+            ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
             try
             {
                 if (Email == null || Password == null)
                     throw new Exception();
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                if (managerDispatch.Avthorization(Email, Password))
+                if (userService.Authorization(Email, Password))
                 {
-                    ViewData["hidden"] = "";
-                    actionResult = Redirect("/Dashbord/Order/NewLoad");
-                    int key = managerDispatch.Createkey(Email, Password);
-                    Commpany Commpany = managerDispatch.GetUserByKeyUser(key);
-                    Response.Cookies.Append("KeyAvtho", key.ToString());
-                    Response.Cookies.Append("CommpanyId", Commpany.Id.ToString());
-                    Response.Cookies.Append("CommpanyName", Commpany.Name);
+                    ViewData[NavConstants.Hidden] = string.Empty;
+
+                    var key = userService.CreateKey(Email, Password);
+                    var Commpany = userService.GetUserByKeyUser(key);
+                    
+                    Response.Cookies.Append(CookiesKeysConstants.CarKey, key.ToString());
+                    Response.Cookies.Append(CookiesKeysConstants.CompanyIdKey, Commpany.Id.ToString());
+                    Response.Cookies.Append(CookiesKeysConstants.CompanyNameKey, Commpany.Name);
+                    
+                    return Redirect("/Dashbord/Order/NewLoad");
                 }
-                else
-                {
-                    ViewData["hidden"] = "hidden";
-                    ViewData["TextError"] = "Password or mail have been entered incorrectly";
-                    string error = "Password or mail have been entered incorrectly";
-                    actionResult = Redirect($"/carrier-login?error={error}");
-                }
+
+                ViewData[NavConstants.Hidden] = NavConstants.Hidden;
+                ViewData[NavConstants.TextError] = UserConstants.PasswordEmailIncorrectly;
+                var error = UserConstants.PasswordEmailIncorrectly;
+                    
+                actionResult = Redirect($"/carrier-login?error={error}");
 
             }
             catch (Exception e)
             {
-                ViewData["hidden"] = "hidden";
-                string error = "Password or mail have been entered incorrectly";
-                actionResult = Redirect($"/carrier-login?error={error}");
+                ViewData[NavConstants.Hidden] = NavConstants.Hidden;
+                var error = UserConstants.PasswordEmailIncorrectly;
+                
+                return Redirect($"/carrier-login?error={error}");
             }
+            
             return actionResult;
+        }
+
+        [HttpGet]
+        [Route("Exsit")]
+        public IActionResult Exisit()
+        {
+            Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+            Response.Cookies.Delete(CookiesKeysConstants.CompanyIdKey);
+            Response.Cookies.Delete(CookiesKeysConstants.CompanyNameKey);
+            
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [HttpGet]
         [Route("Avthorization/Exst")]
         public string AvthorizationExst(string Email, string Password)
         {
-            string actionResult = null;
-            ViewData["TypeNavBar"] = "AllUsers";
             try
             {
                 if (Email == null || Password == null)
                     throw new Exception();
-                if (managerDispatch.Avthorization(Email, Password))
+                
+                if (userService.Authorization(Email, Password))
                 {
-                    Users users = managerDispatch.GetUserByEmailAndPasswrod(Email, Password);
-                    if(users != null && users.KeyAuthorized != null && users.KeyAuthorized != "")
+                    var users = userService.GetUserByEmailAndPasswrod(Email, Password);
+                    if(users?.KeyAuthorized != null && users.KeyAuthorized != string.Empty)
                     {
-                        actionResult = users.KeyAuthorized;
-                    }
-                    else
-                    {
-                        actionResult = "";
+                        return users.KeyAuthorized;
                     }
                 }
-                else
-                {
-                    actionResult = "";
-                }
-
             }
             catch (Exception e)
             {
-                actionResult = "";
+                return string.Empty;
             }
-            return actionResult;
+            
+            return string.Empty;
         }
 
         [HttpGet]
         [Route("Recovery/Password")]
-        [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
-        public IActionResult RecoveryPassword(string idDriver, string token)
+        public IActionResult RecoveryPassword(string idDriver, string idUser, string token)
         {
-            IActionResult actionResult = null;
-            ViewData["TypeNavBar"] = "AllUsers";
+            ViewData[NavConstants.TypeNavBar] = NavConstants.AllUsers;
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 ViewBag.IdDriver = idDriver;
+                ViewBag.IdUser = idUser;
                 ViewBag.Token = token;
-                ViewBag.isStateActual = managerDispatch.CheckTokenFoDriver(idDriver, token);
-                ViewData["hidden"] = "hidden";
-                actionResult = View("RecoveryPassword");
+                ViewBag.isStateActual = idDriver != null 
+                    ? driverService.CheckTokenFoDriver(idDriver, token) : userService.CheckTokenFoUser(idUser, token);
+                ViewData[NavConstants.Hidden] = NavConstants.Hidden;
+                
+                return View("RecoveryPassword");
             }
             catch (Exception)
             {
             }
-            return actionResult;
+            
+            return null;
         }
 
         [HttpPost]
         [Route("Restore/Password")]
-        [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
-        public async Task<IActionResult> RestorePassword(string newPassword, string idDriver, string token)
+        public async Task<IActionResult> RestorePassword(string newPassword, string idDriver, string idUser, string token)
         {
-            IActionResult actionResult = null;
-            ViewData["TypeNavBar"] = "AllUsers";
+            ViewData[NavConstants.TypeNavBar] = NavConstants.AllUsers;
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 ViewBag.IdDriver = idDriver;
                 ViewBag.Token = token;
-                ViewBag.isStateActual = await managerDispatch.ResetPasswordFoDriver(newPassword, idDriver, token);
-                ViewData["hidden"] = "hidden";
-                actionResult = View("RecoveryPassword");
+                ViewBag.isStateActual = idDriver != null ? await driverService.ResetPasswordFoDriver(newPassword, idDriver, token) : await userService.ResetPasswordFoUser(newPassword, idUser, token);
+                ViewData[NavConstants.Hidden] = NavConstants.Hidden;
+                
+                return View("RecoveryPassword");
             }
             catch (Exception)
             {
             }
-            return actionResult;
+            
+            return null;
         }
     }
 }

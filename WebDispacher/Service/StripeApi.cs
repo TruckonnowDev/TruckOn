@@ -4,13 +4,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebDispacher.Mosels;
+using WebDispacher.Models;
 
 namespace WebDispacher.Service
 {
     public class StripeApi
     {
-        internal Customer CreateCustomer(string nameCommpany, int idCompany)
+        internal Customer CreateCustomer(string nameCommpany, int idCompany, string emailCommpany)
         {
             Customer customer = null;
             try
@@ -20,21 +20,22 @@ namespace WebDispacher.Service
                 {
                     Name = $"{nameCommpany}_{idCompany}",
                     Metadata = new Dictionary<string, string>()
-                {
-                    {"nameCommpany",  nameCommpany },
-                    {"idCompany", idCompany.ToString() }
-                }
+                    {
+                        {"nameCommpany",  nameCommpany },
+                        {"idCompany", idCompany.ToString() }
+                    },
+                    Email = emailCommpany,
                 };
                 customer = customerService.Create(customerOptions);
             }
-            catch
+            catch(Exception e)
             {
 
             }
             return customer;
         }
 
-        internal Subscription CreateSupsctibe(string customer)
+        internal Subscription CreateSupsctibe(string customer, int periodDays)
         {
             Subscription subscription = null;
             try
@@ -46,16 +47,62 @@ namespace WebDispacher.Service
                     {
                         new SubscriptionItemOptions()
                         {
-                            Plan = "price_1H3j8FKfezfzRoxll5DR2VGl",
+                            Plan = "price_1IiO19KfezfzRoxlm1wjJ31N",
+                            Quantity = 0,
                         }
                     },
-                    TrialPeriodDays = 30
+                    TrialPeriodDays = periodDays,
+                    
                 };
                 var subscriptionService = new Stripe.SubscriptionService();
                 subscription = subscriptionService.Create(subscriptionOptions);
             }
-            catch { }
+            catch (Exception eeee)
+            {
+
+            }
             return subscription;
+        }
+
+        internal Subscription UpdateSupsctibe(int countDriver, string idItem)
+        {
+            Subscription subscription = null;
+            try
+            {
+                var options = new SubscriptionItemUpdateOptions
+                {
+                    Quantity = countDriver
+
+                };
+                var service = new SubscriptionItemService();
+                service.Update(idItem, options);
+            }
+            catch (Exception eeee)
+            {
+
+            }
+            return subscription;
+        }
+
+        internal ResponseStripe GetSubscriptionSTById(string idSubscribeST)
+        {
+            ResponseStripe responseStripe = new ResponseStripe()
+            {
+                Content = null,
+                IsError = false,
+                Message = ""
+            };
+            try
+            {
+                var service = new SubscriptionService();
+                responseStripe.Content = service.Get(idSubscribeST);
+            } 
+            catch (Exception e)
+            {
+                responseStripe.Message = e.Message;
+                responseStripe.IsError = true;
+            }
+            return responseStripe;
         }
 
         internal List<PaymentMethod> GetPaymentMethodsByCustomerST(string idCustomerST)
@@ -114,7 +161,7 @@ namespace WebDispacher.Service
                         Number = number,
                         ExpMonth = expMM,
                         ExpYear = expYYYY,
-                        Cvc = cvc
+                        Cvc = cvc,
                     },
                     Metadata = new Dictionary<string, string>
                     {
@@ -123,7 +170,7 @@ namespace WebDispacher.Service
                         { "expMM", expMM.ToString() },
                         { "expYYYY", expYYYY.ToString() },
                         { "cvc", cvc },
-                        {"default_payment_method", "unchecked" }
+                        {"default_payment_method", "checked" }
                     }
 
                 };
@@ -136,6 +183,90 @@ namespace WebDispacher.Service
 
                 responseStripe.Message = e.Message;
                 responseStripe.IsError = true;
+            }
+            return responseStripe;
+        }
+
+        internal void CanceleSubscribe(string idSubscribeST)
+        {
+            var service = new SubscriptionService();
+            service.Cancel(idSubscribeST, null);
+        }
+
+        internal Subscription CreateSupsctibeNext(string idCustomerST, string idPrice, string periodDays, DateTime currentPeriodEnd)
+        {
+            Subscription subscription = null;
+            try
+            {
+                SubscriptionCreateOptions subscriptionOptions = new SubscriptionCreateOptions
+                {
+                    Customer = idCustomerST,
+                    Items = new List<SubscriptionItemOptions>()
+                    {
+                        new SubscriptionItemOptions()
+                        {
+                            Plan = idPrice,
+                        }
+                    },
+                    TrialPeriodDays = (currentPeriodEnd.Date - DateTime.Now).Days + 1,
+
+                };
+                var subscriptionService = new Stripe.SubscriptionService();
+                subscription = subscriptionService.Create(subscriptionOptions);
+            }
+            catch (Exception eeee)
+            {
+
+            }
+            return subscription;
+        }
+
+        internal void UpdateSubscribeCancelAtPeriodEnd(string idSubscribeST, bool cancelAtPeriodEnd)
+        {
+            try
+            {
+                var options = new SubscriptionUpdateOptions
+                {
+                    CancelAtPeriodEnd = cancelAtPeriodEnd,
+                };
+                var service = new SubscriptionService();
+                service.Update(idSubscribeST, options); 
+            }
+            catch
+            {
+
+            }
+        }
+
+        internal ResponseStripe CreateSupsctibe(string idPrice, Customer_ST customer_ST)
+        {
+            ResponseStripe responseStripe = new ResponseStripe()
+            {
+                Message = "",
+                IsError = false,
+                Content = null,
+            };
+            try
+            {
+                SubscriptionCreateOptions subscriptionOptions = new SubscriptionCreateOptions
+                {
+                    Customer = customer_ST.IdCustomerST,
+                    Items = new List<SubscriptionItemOptions>()
+                    {
+                        new SubscriptionItemOptions()
+                        {
+                            Plan = idPrice,
+                        }
+                    },
+
+                };
+                var subscriptionService = new Stripe.SubscriptionService();
+                responseStripe.Content = subscriptionService.Create(subscriptionOptions);
+            }
+            catch (Exception e)
+            {
+                responseStripe.IsError = true;
+                responseStripe.Message = e.Message;
             }
             return responseStripe;
         }

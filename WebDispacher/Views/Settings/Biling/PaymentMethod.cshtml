@@ -1,173 +1,42 @@
-﻿
-<div class="body">
-    <div style="display:flex;">
-        <input class="btnCreateoPaymentMethod" type="button" value="Add Payment Method" onclick="window.location.href='/Settings/Biling/AddPaymentMethod';" />
+﻿<body>
+<div class="admin Billing">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="title">
+                        <h1 class="text-info-header-1">Payment Method</h1>
+                        <button class="btn1" onclick="window.location.href='/Settings/Biling/AddPaymentMethod';">Add Payment Method</button>
+                    </div>
+            </div>
+            <div class="col-md-12">
+                @if (ViewBag.PaymentMethods != null)
+                {
+                    foreach (var paymentMethod in ViewBag.PaymentMethods)
+                    {
+                        <div class="lineal"></div>
+                        <div class="left">
+                            <div class="contact">
+                                <p><strong>Credit number: </strong> •••• •••• •••• @paymentMethod.Last4</p>
+                                <p><strong>Name on card: </strong> @paymentMethod.Name</p>
+                                <p><strong>Expiration date: </strong> @paymentMethod.ExpMonth/@paymentMethod.ExpYear</p>
+                            </div>
+                        </div>
+                        <div class="right">
+                            <button class="btn3" onclick="window.location.href='/Settings/Biling/DeletePaymentMethod?idPayment=@paymentMethod.Id'">Delete</button>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
     </div>
-    <nav>
-        <input class="btnSt activeBtn" style="width:165px;" type="button" value="Payment Method" onclick="window.location.href='/Settings/Biling/PaymentMethod';" />
-    </nav>
-    <div class="contentBody">
-           @if(ViewBag.PaymentMethods != null)
-           {
-               foreach(var paymentMethod in ViewBag.PaymentMethods)
-               {
-                   <div class="cardConteiner">
-                       <div class="infoCardConteiner" >
-                           <h3>@paymentMethod.Country</h3>
-                           <h3>@paymentMethod.Brand</h3>
-                       </div>
-                       <div class="numberCardConteiner">
-                           <p><h2 style=" letter-spacing: 2px;">•••• •••• •••• @paymentMethod.Last4</h2></p>
-                           <div class="containerControl">
-                               <div style="margin-top:15px;display:flex;">
-                                   @if (paymentMethod.IsDefault)
-                                   {
-                                       <input type="radio" style="margin-top:4px;" onclick="SelectDefauldPaymentMethod('@paymentMethod.Id')" checked name="card" />
-                                   }
-                                   else
-                                   {
-                                       <input type="radio" style="margin-top:4px;" onclick="SelectDefauldPaymentMethod('@paymentMethod.Id')" name="card" />
-                                   }
-                               </div>
-                               <input type="button" style="margin-top:8px;"  class="btnSave" value="Delete card" onclick="window.location.href='/Settings/Biling/DeletePaymentMethod?idPayment=@paymentMethod.Id'" />
-                           </div>
-                       </div>
-                       <div class="infoCardConteiner">
-                           <h3>@paymentMethod.Name</h3>
-                           <div style="display:flex;">
-                               <h3>@paymentMethod.ExpMonth</h3>
-                               <h3>/</h3>
-                               <h3>@paymentMethod.ExpYear</h3>
-                           </div>
-                           <h3>cvv: @paymentMethod.CvcCheck</h3>
-                       </div>
-                   </div>
-               }
-           }
-    </div>
-
 </div>
-<script>
-    function SelectDefauldPaymentMethod(idPayment) {
-        let url = "@ViewBag.BaseUrl/Settings/Biling/SelectDefauldPaymentMethod";
-        let xmlHttp = new XMLHttpRequest();
-        var body = 'idPayment=' + encodeURIComponent(idPayment);
-        xmlHttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status != 200) {
-                alert("Server error, try again later");
-            }
-            else if (this.readyState == 4 && this.status == 200) {
-
-            }
-        };
-        xmlHttp.open("POST", url, true);
-        xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xmlHttp.send(body);
-    }
-</script>
+</body>
 
 <style>
-    * {
-        margin: 0px;
+    p {
+    color: #000000;
     }
-
-    .containerControl {
-        display:flex;
-        justify-content:  space-between;
-        padding-top:10px;
+    .btn1{
+    width: 25%;
     }
-
-    .btnSave {
-        color: rgba(45,45,45,0.88);
-        background: none;
-        display: inline-block;
-        padding: 3px;
-        font-size: 16px;
-        font-weight: 400;
-        text-align: center;
-        border: 1px solid;
-        border-radius: 4px;
-        width: 90px;
-    }
-
-    .cardConteiner {
-        border-width: 2px;
-        border-color: rgba(45,45,45,0.9);
-        border-style: groove;
-        width: 400px;
-        border-radius:15px;
-        height: 200px;
-        padding:20px;
-    }
-
-    .numberCardConteiner {
-        padding: 20px;
-        height:90px;
-    }
-
-    .infoCardConteiner {
-        display: flex;
-        justify-content: space-between;
-        padding-left: 20px;
-    }
-
-    .contentBody {
-        width: 100%;
-        height: 100px;
-        border-top: solid;
-        border-width: 1px;
-        border-color: rgba(51, 51, 51, 0.3);
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-around;
-        padding-top: 20px;
-    }
-
-    .body {
-               margin-top: 30px;
-               margin-left: 5px;
-               margin-right: 5px;
-           padding: 10px;
-           }
-
-    .btnCreateoPaymentMethod {
-           color: white;
-               background-color: darkgray;
-           display: inline-block;
-           padding: 10px;
-               font-size: 14px;
-               font-weight: 400;
-               text-align: center;
-           border: 2px solid;
-               border-radius: 7px;
-               margin-bottom: 10px;
-               margin-left: 14px;
-           }
-
-        .btnCreateoPaymentMethod:hover {
-           transition: 0.3s;
-               background-color: rgb(51, 51, 51);
-           }
-
-    .btnSt {
-               margin-left: 5px;
-           border: none;
-           width: 120px;
-           height: 40px;
-               background-color: white;
-               font-size: 20px;
-           color: rgb(51, 51, 51);
-               border-color: rgba(51, 51, 51, 1);
-           }
-
-    .activeBtn {
-               border-radius: 1px;
-               border-top: solid;
-               border-right: solid;
-               border-left: solid;
-               border-width: 1.3px;
-           position: relative;
-           top: 2px;
-               border-color: rgba(51, 51, 51, 0.3);
-           }
 </style>

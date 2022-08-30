@@ -15,7 +15,7 @@ namespace DaoModels.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.14-servicing-32113")
+                .HasAnnotation("ProductVersion", "2.1.3-rtm-32065")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -532,15 +532,25 @@ namespace DaoModels.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("DriverId");
+
                     b.Property<string>("How_Are_You_Satisfied_With_Service");
 
                     b.Property<string>("How_did_the_driver_perform");
+
+                    b.Property<string>("ShippingId");
 
                     b.Property<string>("Would_You_Like_To_Get_An_notification_If_We_Have_Any_Promotion");
 
                     b.Property<string>("Would_You_Use_Our_Company_Again");
 
                     b.HasKey("id");
+
+                    b.HasIndex("DriverId");
+
+                    b.HasIndex("ShippingId")
+                        .IsUnique()
+                        .HasFilter("[ShippingId] IS NOT NULL");
 
                     b.ToTable("Feedbacks");
                 });
@@ -630,6 +640,8 @@ namespace DaoModels.Migrations
                     b.Property<string>("Date");
 
                     b.Property<int>("IdDriver");
+
+                    b.Property<int>("IdUser");
 
                     b.Property<string>("Token");
 
@@ -891,6 +903,8 @@ namespace DaoModels.Migrations
 
                     b.Property<string>("InternalLoadID");
 
+                    b.Property<bool>("IsInstructinRead");
+
                     b.Property<bool>("IsProblem");
 
                     b.Property<string>("LastUpdated");
@@ -948,15 +962,15 @@ namespace DaoModels.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("CurrentPeriodEnd");
+                    b.Property<int>("ActiveType");
 
-                    b.Property<DateTime>("CurrentPeriodStart");
+                    b.Property<int>("IdCompany");
 
-                    b.Property<DateTime>("DateCreated");
+                    b.Property<string>("IdCustomerST");
 
-                    b.Property<string>("IdCustomer");
+                    b.Property<string>("IdItemSubscribeST");
 
-                    b.Property<string>("IdSubscribe");
+                    b.Property<string>("IdSubscribeST");
 
                     b.Property<string>("Status");
 
@@ -1192,6 +1206,18 @@ namespace DaoModels.Migrations
                     b.HasOne("DaoModels.DAO.Models.Geolocations", "geolocations")
                         .WithMany()
                         .HasForeignKey("geolocationsID");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.Feedback", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.Driver", "Driver")
+                        .WithMany("Feedbacks")
+                        .HasForeignKey("DriverId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("DaoModels.DAO.Models.Shipping")
+                        .WithOne("Feedback")
+                        .HasForeignKey("DaoModels.DAO.Models.Feedback", "ShippingId");
                 });
 
             modelBuilder.Entity("DaoModels.DAO.Models.InspectionDriver", b =>

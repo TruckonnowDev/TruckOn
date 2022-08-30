@@ -1,1719 +1,280 @@
-﻿@using System.Drawing;
-@using System.IO;
-@using System.Linq;
-
-<div class="body">
-    <div class="filling">
-        <div>
-            <p class="idStlP">Load ID: @ViewBag.Shipp.Id</p>
-            <div class="routeBlock">
-                <p class="routeInfP">@ViewBag.Shipp.AddresP, @ViewBag.Shipp.CityP, @ViewBag.Shipp.StateP, @ViewBag.Shipp.ZipP </p>
-                <p class="routeInfP">@ViewBag.Shipp.AddresD, @ViewBag.Shipp.CityD, @ViewBag.Shipp.StateD, @ViewBag.Shipp.ZipD </p>
-            </div>
-            <p class="nameVehStlP">@ViewBag.Vehiclw.Year @ViewBag.Vehiclw.Make @ViewBag.Vehiclw.Model</p>
-            @if (ViewBag.Vehiclw.Ask != null)
-            {
-                <p class="typeVehStlP">Type: @ViewBag.Vehiclw.Ask.TypeVehicle</p>
-            }
-        </div>
-        <hr />
-        <div class="inspectionBlock">
-            @if (@ViewBag.Vehiclw.Scan != null)
-            {
-                <img class="img Photola" src="data:image/gif;base64,@ViewBag.Vehiclw.Scan.Base64" onclick="ShowAlert(11)" />
-            }
-            <p class="headStlP">Pickup Inspection</p>
-            <br />
-            <p class="headPhoto">Photo inspection</p>
-            @if (ViewBag.Vehiclw.PhotoInspections != null)
-            {
-                <div class="blockAllPhoto">
-
-                    @for (int i = 0; i < ViewBag.Vehiclw.PhotoInspections.Count; i++)
-                    {
-                        if (ViewBag.Vehiclw.PhotoInspections[i].CurrentStatusPhoto == "PikedUp")
-                        {
-                            @for (int j = 0; j < ViewBag.Vehiclw.PhotoInspections[i].Photos.Count; j++)
-                            {
-                                byte[] image = Convert.FromBase64String(@ViewBag.Vehiclw.PhotoInspections[i].Photos[j].Base64);
-                                MemoryStream ms = new MemoryStream(image);
-                                Image img = Image.FromStream(ms);
-                                if (img.Height > img.Width)
-                                {
-                                    <img class="img Photove" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.PhotoInspections[i].Photos[j].path&type=jpg" onclick="ShowAlert(0)" />
-                                }
-                                else
-                                {
-                                    <img class="img Photola" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.PhotoInspections[i].Photos[j].path&type=jpg" onclick="ShowAlert(0)" />
-                                }
-                            }
-                        }
-                    }
-                </div>
-            }
-            else
-            {
-                <p class="noPhotoP">No Photo</p>
-            }
-            <hr />
-            <p class="headPhoto">Any personal or additional  items with or in vehicle</p>
-            @if (ViewBag.Vehiclw.Ask != null)
-            {
-                <div class="blockAllPhoto">
-                    @if (ViewBag.Vehiclw.Ask.Any_personal_or_additional_items_with_or_in_vehicle != null && ViewBag.Vehiclw.Ask.Any_personal_or_additional_items_with_or_in_vehicle.Count != 0)
-                    {
-                        for (int i = 0; i < ViewBag.Vehiclw.Ask.Any_personal_or_additional_items_with_or_in_vehicle.Count; i++)
-                        {
-                            byte[] image = Convert.FromBase64String(ViewBag.Vehiclw.Ask.Any_personal_or_additional_items_with_or_in_vehicle[i].Base64);
-                            if (image != null && image.Length != 0)
-                            {
-                                MemoryStream ms = new MemoryStream(image);
-                                Image img = Image.FromStream(ms);
-                                if (img.Height > img.Width)
-                                {
-                                    <img class="img Photove" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.Ask.Any_personal_or_additional_items_with_or_in_vehicle[i].path&type=jpg" onclick="ShowAlert(1)" />
-                                }
-                                else
-                                {
-                                    <img class="img Photola" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.Ask.Any_personal_or_additional_items_with_or_in_vehicle[i].path&type=jpg" onclick="ShowAlert(1)" />
-                                }
-                            }
-                            else
-                            {
-                                <p>No photo found;</p>
-                            }
-                        }
-                    }
-                    else
-                    {
-                        <p class="noPhotoP">No Photo</p>
-                    }
-                </div>
-            }
-            else
-            {
-                <p class="noPhotoP">No Photo</p>
-            }
-            <hr />
-            <p class="headPhoto">App will force driver to take pictures of each strap</p>
-            @if (ViewBag.Vehiclw.Ask1 != null)
-            {
-                <div class="blockAllPhoto">
-                    @if (ViewBag.Vehiclw.Ask1.App_will_force_driver_to_take_pictures_of_each_strap != null && ViewBag.Vehiclw.Ask1.App_will_force_driver_to_take_pictures_of_each_strap.Count != 0)
-                    {
-                        for (int i = 0; i < ViewBag.Vehiclw.Ask1.App_will_force_driver_to_take_pictures_of_each_strap.Count; i++)
-                        {
-                            byte[] image = Convert.FromBase64String(ViewBag.Vehiclw.Ask1.App_will_force_driver_to_take_pictures_of_each_strap[i].Base64);
-                            if (image != null && image.Length != 0)
-                            {
-                                MemoryStream ms = new MemoryStream(image);
-                                Image img = Image.FromStream(ms);
-                                if (img.Height > img.Width)
-                                {
-                                    <img class="img Photove" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.Ask1.App_will_force_driver_to_take_pictures_of_each_strap[i].path&type=jpg" onclick="ShowAlert(2)" />
-                                }
-                                else
-                                {
-                                    <img class="img Photola" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.Ask1.App_will_force_driver_to_take_pictures_of_each_strap[i].path&type=jpg" onclick="ShowAlert(2)" />
-                                }
-                            }
-                            else
-                            {
-                                <p>No photo found;</p>
-                            }
-                        }
-                    }
-                    else
-                    {
-                        <p class="noPhotoP">No Photo</p>
-                    }
-                </div>
-            }
-            else
-            {
-                <p class="noPhotoP">No Photo</p>
-            }
-            <hr />
-            <p class="headPhoto">Photo after loading in the truck</p>
-            @if (ViewBag.Vehiclw.Ask1 != null)
-            {
-                <div class="blockAllPhoto">
-                    @if (ViewBag.Vehiclw.Ask1.Photo_after_loading_in_the_truck != null && ViewBag.Vehiclw.Ask1.Photo_after_loading_in_the_truck.Count != 0)
-                    {
-                        for (int i = 0; i < ViewBag.Vehiclw.Ask1.Photo_after_loading_in_the_truck.Count; i++)
-                        {
-                            byte[] image = Convert.FromBase64String(ViewBag.Vehiclw.Ask1.Photo_after_loading_in_the_truck[i].Base64);
-                            if (image != null && image.Length != 0)
-                            {
-                                MemoryStream ms = new MemoryStream(image);
-                                Image img = Image.FromStream(ms);
-                                if (img.Height > img.Width)
-                                {
-                                    <img class="img Photove" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.Ask1.Photo_after_loading_in_the_truck[i].path&type=jpg" onclick="ShowAlert(3    )" />
-                                }
-                                else
-                                {
-                                    <img class="img Photola" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.Ask1.Photo_after_loading_in_the_truck[i].path&type=jpg" onclick="ShowAlert(3)" />
-                                }
-                            }
-                            else
-                            {
-                                <p>No photo found;</p>
-                            }
-                        }
-                    }
-                    else
-                    {
-                        <p class="noPhotoP">No Photo</p>
-                    }
-                </div>
-            }
-            else
-            {
-                <p class="noPhotoP">No Photo</p>
-            }
-            <hr />
-            <p class="headPhoto">Customer painting Pickup</p>
-            @if (ViewBag.Shipp.AskFromUser != null)
-            {
-                <div class="blockAllPhoto">
-                    @if (ViewBag.Shipp.AskFromUser.App_will_ask_for_signature_of_the_client_signature != null)
-                    {
-                        byte[] image = Convert.FromBase64String(ViewBag.Shipp.AskFromUser.App_will_ask_for_signature_of_the_client_signature.Base64);
-                        if (image != null && image.Length != 0)
-                        {
-                            MemoryStream ms = new MemoryStream(image);
-                            Image img = Image.FromStream(ms);
-                            if (img.Height > img.Width)
-                            {
-                                <img class="img Photove" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.AskFromUser.App_will_ask_for_signature_of_the_client_signature.path&type=jpg" onclick="ShowAlert(4)" />
-                            }
-                            else
-                            {
-                                <img class="img Photola" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.AskFromUser.App_will_ask_for_signature_of_the_client_signature.path&type=jpg" onclick="ShowAlert(4)" />
-                            }
-                        }
-                        else
-                        {
-                            <p>No photo found;</p>
-                        }
-
-                    }
-                    else
-                    {
-                        <p class="noPhotoP">No Photo</p>
-                    }
-                </div>
-            }
-            else
-            {
-                <p class="noPhotoP">No Photo</p>
-            }
-            <hr />
-            <p class="headPhoto">Payment Photo Pickup</p>
-            @if (ViewBag.Shipp.AskFromUser != null)
-            {
-                <div class="blockAllPhoto">
-                    @if (ViewBag.Shipp.AskFromUser.PhotoPay != null)
-                    {
-                        byte[] image = Convert.FromBase64String(ViewBag.Shipp.AskFromUser.PhotoPay.Base64);
-                        if (image != null && image.Length != 0)
-                        {
-                            MemoryStream ms = new MemoryStream(image);
-                            Image img = Image.FromStream(ms);
-                            if (img.Height > img.Width)
-                            {
-                                <img class="img Photove" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.AskFromUser.PhotoPay.path&type=jpg" onclick="ShowAlert(5)" />
-                            }
-                            else
-                            {
-                                <img class="img Photola" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.Shipp.AskFromUser.PhotoPay.path&type=jpg" onclick="ShowAlert(5)" />
-                            }
-                        }
-                        else
-                        {
-                            <p>No photo found;</p>
-                        }
-
-                    }
-                    else
-                    {
-                        <p class="noPhotoP">No Photo</p>
-                    }
-                </div>
-            }
-            else
-            {
-                <p class="noPhotoP">No Photo</p>
-            }
-            <hr />
-            <hr />
-            <p class="headStlP">Delivery Inspection</p>
-            <br />
-            <p class="headPhoto">Photo inspection</p>
-            @if (ViewBag.Vehiclw.PhotoInspections != null)
-            {
-                <div class="blockAllPhoto">
-                    @for (int i = 0; i < ViewBag.Vehiclw.PhotoInspections.Count; i++)
-                    {
-                        if (ViewBag.Vehiclw.PhotoInspections[i].CurrentStatusPhoto == "Delyvery")
-                        {
-                            @for (int j = 0; j < ViewBag.Vehiclw.PhotoInspections[i].Photos.Count; j++)
-                            {
-                                byte[] image = Convert.FromBase64String(@ViewBag.Vehiclw.PhotoInspections[i].Photos[j].Base64);
-                                MemoryStream ms = new MemoryStream(image);
-                                Image img = Image.FromStream(ms);
-                                if (img.Height > img.Width)
-                                {
-                                    <img class="img Photove" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.PhotoInspections[i].Photos[j].path&type=jpg" onclick="ShowAlert(6)" />
-                                }
-                                else
-                                {
-                                    <img class="img Photola" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.PhotoInspections[i].Photos[j].path&type=jpg" onclick="ShowAlert(6)" />
-                                }
-                            }
-                        }
-                    }
-                </div>
-            }
-            else
-            {
-                <p class="noPhotoP">No Photo</p>
-            }
-            <hr />
-            <p class="headPhoto">Picture Id of the person taking the delivery</p>
-            @if (ViewBag.Vehiclw.AskDelyvery != null)
-            {
-                <div class="blockAllPhoto">
-                    @if (ViewBag.Vehiclw.AskDelyvery.Please_take_a_picture_Id_of_the_person_taking_the_delivery != null && ViewBag.Vehiclw.AskDelyvery.Please_take_a_picture_Id_of_the_person_taking_the_delivery.Count != 0)
-                    {
-                        for (int i = 0; i < ViewBag.Vehiclw.AskDelyvery.Please_take_a_picture_Id_of_the_person_taking_the_delivery.Count; i++)
-                        {
-                            byte[] image = Convert.FromBase64String(ViewBag.Vehiclw.AskDelyvery.Please_take_a_picture_Id_of_the_person_taking_the_delivery[i].Base64);
-                            if (image != null && image.Length != 0)
-                            {
-                                MemoryStream ms = new MemoryStream(image);
-                                Image img = Image.FromStream(ms);
-                                if (img.Height > img.Width)
-                                {
-                                    <img class="img Photove" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.AskDelyvery.Please_take_a_picture_Id_of_the_person_taking_the_delivery[i].path&type=jpg" onclick="ShowAlert(7)" />
-                                }
-                                else
-                                {
-                                    <img class="img Photola" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.AskDelyvery.Please_take_a_picture_Id_of_the_person_taking_the_delivery[i].path&type=jpg" onclick="ShowAlert(7)" />
-                                }
-                            }
-                            else
-                            {
-                                <p>No photo found;</p>
-                            }
-                        }
-                    }
-                    else
-                    {
-                        <p class="noPhotoP">No Photo</p>
-                    }
-                </div>
-            }
-            else
-            {
-                <p class="noPhotoP">No Photo</p>
-            }
-            <hr />
-            <p class="headPhoto">Customer Vehicle Inspection</p>
-            @if (ViewBag.Shipp.askForUserDelyveryM != null)
-            {
-                <div class="blockAllPhoto">
-                    @if (ViewBag.Shipp.askForUserDelyveryM.Have_you_inspected_the_vehicle_For_any_additional_imperfections_other_than_listed_at_the_pick_up_photo != null && ViewBag.Shipp.askForUserDelyveryM.Have_you_inspected_the_vehicle_For_any_additional_imperfections_other_than_listed_at_the_pick_up_photo.Count != 0)
-                    {
-                        for (int i = 0; i < ViewBag.Shipp.askForUserDelyveryM.Have_you_inspected_the_vehicle_For_any_additional_imperfections_other_than_listed_at_the_pick_up_photo.Count; i++)
-                        {
-                            byte[] image = Convert.FromBase64String(ViewBag.Shipp.askForUserDelyveryM.Have_you_inspected_the_vehicle_For_any_additional_imperfections_other_than_listed_at_the_pick_up_photo[i].Base64);
-                            if (image != null && image.Length != 0)
-                            {
-                                MemoryStream ms = new MemoryStream(image);
-                                Image img = Image.FromStream(ms);
-                                if (img.Height > img.Width)
-                                {
-                                    <img class="img Photove" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.askForUserDelyveryM.Have_you_inspected_the_vehicle_For_any_additional_imperfections_other_than_listed_at_the_pick_up_photo[i].path&type=jpg" onclick="ShowAlert(8)" />
-                                }
-                                else
-                                {
-                                    <img class="img Photola" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.askForUserDelyveryM.Have_you_inspected_the_vehicle_For_any_additional_imperfections_other_than_listed_at_the_pick_up_photo[i].path&type=jpg" onclick="ShowAlert(8)" />
-                                }
-                            }
-                            else
-                            {
-                                <p>No photo found;</p>
-                            }
-                        }
-                    }
-                    else
-                    {
-                        <p class="noPhotoP">No Photo</p>
-                    }
-                </div>
-            }
-            else
-            {
-                <p class="noPhotoP">No Photo</p>
-            }
-            <hr />
-            <p class="headPhoto">Customer painting Delivery</p>
-            @if (ViewBag.Shipp.askForUserDelyveryM != null)
-            {
-                <div class="blockAllPhoto">
-                    @if (ViewBag.Shipp.askForUserDelyveryM.App_will_ask_for_signature_of_the_client_signature != null)
-                    {
-                        byte[] image = Convert.FromBase64String(ViewBag.Shipp.askForUserDelyveryM.App_will_ask_for_signature_of_the_client_signature.Base64);
-                        if (image != null && image.Length != 0)
-                        {
-                            MemoryStream ms = new MemoryStream(image);
-                            Image img = Image.FromStream(ms);
-                            if (img.Height > img.Width)
-                            {
-                                <img class="img Photove" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.askForUserDelyveryM.App_will_ask_for_signature_of_the_client_signature.path&type=jpg" onclick="ShowAlert(9)" />
-                            }
-                            else
-                            {
-                                <img class="img Photola" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.askForUserDelyveryM.App_will_ask_for_signature_of_the_client_signature.path&type=jpg" onclick="ShowAlert(9)" />
-                            }
-                        }
-                        else
-                        {
-                            <p>No photo found;</p>
-                        }
-
-                    }
-                    else
-                    {
-                        <p class="noPhotoP">No Photo</p>
-                    }
-                </div>
-            }
-            else
-            {
-                <p class="noPhotoP">No Photo</p>
-            }
-            <hr />
-            <p class="headPhoto">Payment Photo Delivery</p>
-            @if (ViewBag.Shipp.askForUserDelyveryM != null)
-            {
-                <div class="blockAllPhoto">
-                    @if (ViewBag.Shipp.askForUserDelyveryM.PhotoPay != null)
-                    {
-                        byte[] image = Convert.FromBase64String(ViewBag.Shipp.askForUserDelyveryM.PhotoPay.Base64);
-                        if (image != null && image.Length != 0)
-                        {
-                            MemoryStream ms = new MemoryStream(image);
-                            Image img = Image.FromStream(ms);
-                            if (img.Height > img.Width)
-                            {
-                                <img class="img Photove" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.askForUserDelyveryM.PhotoPay.path&type=jpg" onclick="ShowAlert(10)" />
-                            }
-                            else
-                            {
-                                <img class="img Photola" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.askForUserDelyveryM.PhotoPay.path&type=jpg" onclick="ShowAlert(10)" />
-                            }
-                        }
-                        else
-                        {
-                            <p>No photo found;</p>
-                        }
-
-                    }
-                    else
-                    {
-                        <p class="noPhotoP">No Photo</p>
-                    }
-                </div>
-            }
-            else
-            {
-                <p class="noPhotoP">No Photo</p>
-            }
-            <hr />
-            <hr />
-        </div>
-    </div>
+﻿<body>
+<div class="admin Pickup">
+<div class="container">
+<div class="title">
+    <a href="#" onclick="history.back();">Back to Orders</a>
 </div>
-<dialog id="dialog0">
-    <content class="ng-modal-wrapper">
-        <span class="close" onclick="HiddenDialog(0)">&times;</span>
-        <div class="modal-dialog">
-            <div class="modal-dialog-content ng-scope multiple">
-                <h1>Pickup photo inspection</h1>
-                <div class="modal-dialog-content">
-                    <div>
-                        <div class="container">
-                            @if (ViewBag.Vehiclw.PhotoInspections != null)
-                            {
-                                int indexPhoto = 0;
-                                @for (int i = 0; i < ViewBag.Vehiclw.PhotoInspections.Count; i++)
-                                {
-                                    if (ViewBag.Vehiclw.PhotoInspections[i].CurrentStatusPhoto == "PikedUp")
-                                    {
-                                        @for (int j = 0; j < ViewBag.Vehiclw.PhotoInspections[i].Photos.Count; j++)
-                                        {
-                                            indexPhoto++;
-                                            <div class="mySlides mySlides0">
-                                                <div class="numbertext">@indexPhoto</div>
-                                                <img class="imgModal" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.PhotoInspections[i].Photos[j].path&type=jpg" style="width:100%">
-                                            </div>
-                                        }
-                                    }
-                                }
-                                <a class="prev" onclick="plusSlides(-1)">❮</a>
-                                <a class="next" onclick="plusSlides(1)">❯</a>
-                            }
+<div class="title">
 
-
-                            <div class="column">
-                                @if (ViewBag.Vehiclw.PhotoInspections != null)
-                                {
-                                    int indexPhoto = 0;
-                                    @for (int i = 0; i < ViewBag.Vehiclw.PhotoInspections.Count; i++)
-                                    {
-                                        if (ViewBag.Vehiclw.PhotoInspections[i].CurrentStatusPhoto == "PikedUp")
-                                        {
-                                            @for (int j = 0; j < ViewBag.Vehiclw.PhotoInspections[i].Photos.Count; j++)
-                                            {
-                                                indexPhoto++;
-                                                <img class="demo demo0 cursor imgModal" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.PhotoInspections[i].Photos[j].path&type=jpg" style="margin:5px;width:7%;" onclick="currentSlide(@indexPhoto)">
-                                            }
-                                        }
-                                    }
-                                }
-                            </div>
-                        </div>
+    <h1 class="nameVehStlP text-info-header-1"> @ViewBag.Vehiclw.Make @ViewBag.Vehiclw.Model @ViewBag.Vehiclw.Year</h1>
+</div>
+<p class="text-info-p-1">
+    <b>Load id:</b> <span> @ViewBag.Shipp.Id</span>
+</p>
+<p class="text-info-p-1">
+    <b>Origin:</b> <span>@ViewBag.Shipp.AddresP, @ViewBag.Shipp.CityP, @ViewBag.Shipp.StateP, @ViewBag.Shipp.ZipP</span>
+</p>
+<p class="text-info-p-1">
+    <b>Destionation:</b> <span>@ViewBag.Shipp.AddresD, @ViewBag.Shipp.CityD, @ViewBag.Shipp.StateD, @ViewBag.Shipp.ZipD</span>
+</p>
+@if (ViewBag.Vehiclw.Ask != null)
+{
+    <p class="text-info-p-1">
+        <b>Type:</b> <span>@ViewBag.Vehiclw.Ask.TypeVehicle</span>
+    </p>
+}
+<h1 class="title text-info-header-1">Pickup Inspection</h1>
+<div class="row image-group">
+    @if (ViewBag.Vehiclw.PhotoInspections != null)
+    {
+        @for (int i = 0; i < ViewBag.Vehiclw.PhotoInspections.Count; i++)
+        {
+            if (ViewBag.Vehiclw.PhotoInspections[i].CurrentStatusPhoto == "PikedUp")
+            {
+                @for (int j = 0; j < ViewBag.Vehiclw.PhotoInspections[i].Photos.Count; j++)
+                {
+                    <div class="col-md-3" style="width: 263px;height: 148px; margin-bottom:10px">
+                        <img class="image-border-10" alt="" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.PhotoInspections[i].Photos[j].path&type=jpg" width="263" height="148">
                     </div>
-                </div>
-                <script>
-                    var slideIndex = 1;
-                    showSlides(slideIndex);
-
-                    function plusSlides(n) {
-                        showSlides(slideIndex += n);
-                    }
-
-                    function currentSlide(n) {
-                        showSlides(slideIndex = n);
-                    }
-
-                    function showSlides(n) {
-                        let i;
-                        let slides = document.getElementsByClassName("mySlides0");
-                        let dots = document.getElementsByClassName("demo0");
-                        if (n > slides.length) { slideIndex = 1 }
-                        if (n < 1) { slideIndex = slides.length }
-                        for (i = 0; i < slides.length; i++) {
-                            slides[i].style.display = "none";
-                        }
-                        for (i = 0; i < dots.length; i++) {
-                            dots[i].className = dots[i].className.replace(" active", "");
-                        }
-                        if (slides && slides.length != 0) {
-                            slides[slideIndex - 1].style.display = "block";
-                        }
-                        if (dots && dots.length != 0) {
-                            dots[slideIndex - 1].className += " active";
-                        }
-                    }
-                </script>
-            </div>
-        </div>
-    </content>
-</dialog>
-<dialog id="dialog1">
-    <content class="ng-modal-wrapper">
-        <span class="close" onclick="HiddenDialog(1)">&times;</span>
-        <div class="modal-dialog">
-            <div class="modal-dialog-content ng-scope multiple">
-                <h1>Any personal or additional  items with or in vehicle</h1>
-                <div class="modal-dialog-content">
-                    <div>
-                        <div class="container">
-                            @if (ViewBag.Vehiclw.Ask.Any_personal_or_additional_items_with_or_in_vehicle != null && ViewBag.Vehiclw.Ask.Any_personal_or_additional_items_with_or_in_vehicle.Count != 0)
-                            {
-                                int indexPhoto = 0;
-                                @for (int i = 0; i < ViewBag.Vehiclw.Ask.Any_personal_or_additional_items_with_or_in_vehicle.Count; i++)
-                                {
-                                    indexPhoto++;
-                                    <div class="mySlides1 mySlides">
-                                        <div class="numbertext">@indexPhoto</div>
-                                        <img class="imgModal" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.Ask.Any_personal_or_additional_items_with_or_in_vehicle[i].path&type=jpg" style="width:100%">
-                                    </div>
-                                }
-                                @if (ViewBag.Vehiclw.Ask.Any_personal_or_additional_items_with_or_in_vehicle.Count > 1)
-                                {
-                                    <a class="prev" onclick="plusSlides1(-1)">❮</a>
-                                    <a class="next" onclick="plusSlides1(1)">❯</a>
-                                }
-
-                            }
-
-
-                            <div class="column">
-                                @if (ViewBag.Vehiclw.Ask.Any_personal_or_additional_items_with_or_in_vehicle != null && ViewBag.Vehiclw.Ask.Any_personal_or_additional_items_with_or_in_vehicle.Count > 1)
-                                {
-                                    int indexPhoto = 0;
-                                    @for (int i = 0; i < ViewBag.Vehiclw.Ask.Any_personal_or_additional_items_with_or_in_vehicle.Count; i++)
-                                    {
-                                        indexPhoto++;
-                                        <img class="demo1 demo cursor imgModal" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.Ask.Any_personal_or_additional_items_with_or_in_vehicle[i].path&type=jpg" style="margin:5px;width:7%;" onclick="currentSlide1(@indexPhoto)">
-                                    }
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <script>
-                    var slideIndex = 1;
-                    showSlides1(slideIndex);
-
-                    function plusSlides1(n) {
-                        showSlides1(slideIndex += n);
-                    }
-
-                    function currentSlide1(n) {
-                        showSlides1(slideIndex = n);
-                    }
-
-                    function showSlides1(n) {
-                        let i;
-                        let slides = document.getElementsByClassName("mySlides1");
-                        let dots = document.getElementsByClassName("demo1");
-                        if (n > slides.length) { slideIndex = 1 }
-                        if (n < 1) { slideIndex = slides.length }
-                        for (i = 0; i < slides.length; i++) {
-                            slides[i].style.display = "none";
-                        }
-                        for (i = 0; i < dots.length; i++) {
-                            dots[i].className = dots[i].className.replace(" active", "");
-                        }
-                        if (slides && slides.length != 0) {
-                            slides[slideIndex - 1].style.display = "block";
-                        }
-                        if (dots && dots.length != 0) {
-                            dots[slideIndex - 1].className += " active";
-                        }
-                    }
-                </script>
-            </div>
-        </div>
-    </content>
-</dialog>
-<dialog id="dialog2">
-    <content class="ng-modal-wrapper">
-        <span class="close" onclick="HiddenDialog(2)">&times;</span>
-        <div class="modal-dialog">
-            <div class="modal-dialog-content ng-scope multiple">
-                <h1>App will force driver to take pictures of each strap</h1>
-                <div class="modal-dialog-content">
-                    <div>
-                        <div class="container">
-                            @if (ViewBag.Vehiclw.Ask1.App_will_force_driver_to_take_pictures_of_each_strap != null && ViewBag.Vehiclw.Ask1.App_will_force_driver_to_take_pictures_of_each_strap.Count != 0)
-                            {
-                                int indexPhoto = 0;
-                                @for (int i = 0; i < ViewBag.Vehiclw.Ask1.App_will_force_driver_to_take_pictures_of_each_strap.Count; i++)
-                                {
-                                    indexPhoto++;
-                                    <div class="mySlides mySlides2">
-                                        <div class="numbertext">@indexPhoto</div>
-                                        <img class="imgModal" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.Ask1.App_will_force_driver_to_take_pictures_of_each_strap[i].path&type=jpg" style="width:100%">
-                                    </div>
-                                }
-                                @if (ViewBag.Vehiclw.Ask1.App_will_force_driver_to_take_pictures_of_each_strap.Count > 1)
-                                {
-                                    <a class="prev" onclick="plusSlides2(-1)">❮</a>
-                                    <a class="next" onclick="plusSlides2(1)">❯</a>
-                                }
-
-                            }
-                            <div class="column">
-                                @if (ViewBag.Vehiclw.Ask1.App_will_force_driver_to_take_pictures_of_each_strap != null && ViewBag.Vehiclw.Ask1.App_will_force_driver_to_take_pictures_of_each_strap.Count > 1)
-                                {
-                                    int indexPhoto = 0;
-                                    @for (int i = 0; i < ViewBag.Vehiclw.Ask1.App_will_force_driver_to_take_pictures_of_each_strap.Count; i++)
-                                    {
-                                        indexPhoto++;
-                                        <img class="demo2 demo cursor imgModal" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.Ask1.App_will_force_driver_to_take_pictures_of_each_strap[i].path&type=jpg" style="margin:5px;width:7%;" onclick="currentSlide2(@indexPhoto)">
-                                    }
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <script>
-                    var slideIndex = 1;
-                    showSlides2(slideIndex);
-
-                    function plusSlides2(n) {
-                        showSlides2(slideIndex += n);
-                    }
-
-                    function currentSlide2(n) {
-                        showSlides2(slideIndex = n);
-                    }
-
-                    function showSlides2(n) {
-                        let i;
-                        let slides = document.getElementsByClassName("mySlides2");
-                        let dots = document.getElementsByClassName("demo2");
-                        if (n > slides.length) { slideIndex = 1 }
-                        if (n < 1) { slideIndex = slides.length }
-                        for (i = 0; i < slides.length; i++) {
-                            slides[i].style.display = "none";
-                        }
-                        for (i = 0; i < dots.length; i++) {
-                            dots[i].className = dots[i].className.replace(" active", "");
-                        }
-                        if (slides && slides.length != 0) {
-                            slides[slideIndex - 1].style.display = "block";
-                        }
-                        if (dots && dots.length != 0) {
-                            dots[slideIndex - 1].className += " active";
-                        }
-                    }
-                </script>
-            </div>
-        </div>
-    </content>
-</dialog>
-<dialog id="dialog3">
-    <content class="ng-modal-wrapper">
-        <span class="close" onclick="HiddenDialog(3)">&times;</span>
-        <div class="modal-dialog">
-            <div class="modal-dialog-content ng-scope multiple">
-                <h1>Photo after loading in the truck</h1>
-                <div class="modal-dialog-content">
-                    <div>
-                        <div class="container">
-                            @if (ViewBag.Vehiclw.Ask1.Photo_after_loading_in_the_truck != null && ViewBag.Vehiclw.Ask1.Photo_after_loading_in_the_truck.Count != 0)
-                            {
-                                int indexPhoto = 0;
-                                @for (int i = 0; i < ViewBag.Vehiclw.Ask1.Photo_after_loading_in_the_truck.Count; i++)
-                                {
-                                    indexPhoto++;
-                                    <div class="mySlides mySlides3">
-                                        <div class="numbertext">@indexPhoto</div>
-                                        <img class="imgModal" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.Ask1.Photo_after_loading_in_the_truck[i].path&type=jpg" style="width:100%">
-                                    </div>
-                                }
-                                @if (ViewBag.Vehiclw.Ask1.Photo_after_loading_in_the_truck.Count > 1)
-                                {
-                                    <a class="prev" onclick="plusSlides3(-1)">❮</a>
-                                    <a class="next" onclick="plusSlides3(1)">❯</a>
-                                }
-                            }
-                            <div class="column">
-                                @if (ViewBag.Vehiclw.Ask1.Photo_after_loading_in_the_truck != null && ViewBag.Vehiclw.Ask1.Photo_after_loading_in_the_truck.Count > 1)
-                                {
-                                    int indexPhoto = 0;
-                                    @for (int i = 0; i < ViewBag.Vehiclw.Ask1.Photo_after_loading_in_the_truck.Count; i++)
-                                    {
-                                        indexPhoto++;
-                                        <img class="demo3 demo cursor imgModal" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.Ask1.Photo_after_loading_in_the_truck[i].path&type=jpg" style="margin:5px;width:7%;" onclick="currentSlide3(@indexPhoto)">
-                                    }
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <script>
-                    var slideIndex = 1;
-                    showSlides3(slideIndex);
-
-                    function plusSlides3(n) {
-                        showSlides3(slideIndex += n);
-                    }
-
-                    function currentSlide3(n) {
-                        showSlides3(slideIndex = n);
-                    }
-
-                    function showSlides3(n) {
-                        let i;
-                        let slides = document.getElementsByClassName("mySlides3");
-                        let dots = document.getElementsByClassName("demo3");
-                        if (n > slides.length) { slideIndex = 1 }
-                        if (n < 1) { slideIndex = slides.length }
-                        for (i = 0; i < slides.length; i++) {
-                            slides[i].style.display = "none";
-                        }
-                        for (i = 0; i < dots.length; i++) {
-                            dots[i].className = dots[i].className.replace(" active", "");
-                        }
-                        if (slides && slides.length != 0) {
-                            slides[slideIndex - 1].style.display = "block";
-                        }
-                        if (dots && dots.length != 0) {
-                            dots[slideIndex - 1].className += " active";
-                        }
-                    }
-                </script>
-            </div>
-        </div>
-    </content>
-</dialog>
-<dialog id="dialog4">
-    <content class="ng-modal-wrapper">
-        <span class="close" onclick="HiddenDialog(4)">&times;</span>
-        <div class="modal-dialog">
-            <div class="modal-dialog-content ng-scope multiple">
-                <h1>Customer painting Pickup</h1>
-                <div class="modal-dialog-content">
-                    <div>
-                        <div class="container">
-                            @if (ViewBag.Shipp.AskFromUser != null && ViewBag.Shipp.AskFromUser.App_will_ask_for_signature_of_the_client_signature != null)
-                            {
-                                int indexPhoto = 0;
-                                indexPhoto++;
-                                <div class="mySlides mySlides4">
-                                    <div class="numbertext">@indexPhoto</div>
-                                    <img class="imgModal" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.AskFromUser.App_will_ask_for_signature_of_the_client_signature.path&type=jpg" style="width:100%">
-                                </div>
-                            }
-                            <div class="column">
-                                @if (ViewBag.Shipp.AskFromUser != null && ViewBag.Shipp.AskFromUser.App_will_ask_for_signature_of_the_client_signature != null)
-                                {
-                                    int indexPhoto = 0;
-                                    indexPhoto++;
-                                    <img class="demo4 demo cursor imgModal" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.AskFromUser.App_will_ask_for_signature_of_the_client_signature.path&type=jpg" style="margin:5px;width:7%;" onclick="currentSlide4(@indexPhoto)">
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <script>
-                    var slideIndex = 1;
-                    showSlides4(slideIndex);
-
-                    function plusSlides4(n) {
-                        showSlides4(slideIndex += n);
-                    }
-
-                    function currentSlide4(n) {
-                        showSlides4(slideIndex = n);
-                    }
-
-                    function showSlides4(n) {
-                        let i;
-                        let slides = document.getElementsByClassName("mySlides4");
-                        let dots = document.getElementsByClassName("demo4");
-                        if (n > slides.length) { slideIndex = 1 }
-                        if (n < 1) { slideIndex = slides.length }
-                        for (i = 0; i < slides.length; i++) {
-                            slides[i].style.display = "none";
-                        }
-                        for (i = 0; i < dots.length; i++) {
-                            dots[i].className = dots[i].className.replace(" active", "");
-                        }
-                        if (slides && slides.length != 0) {
-                            slides[slideIndex - 1].style.display = "block";
-                        }
-                        if (dots && dots.length != 0) {
-                            dots[slideIndex - 1].className += " active";
-                        }
-                    }
-                </script>
-            </div>
-        </div>
-    </content>
-</dialog>
-<dialog id="dialog5">
-    <content class="ng-modal-wrapper">
-        <span class="close" onclick="HiddenDialog(5)">&times;</span>
-        <div class="modal-dialog">
-            <div class="modal-dialog-content ng-scope multiple">
-                <h1> Payment Photo Pickup</h1>
-                <div class="modal-dialog-content">
-                    <div>
-                        <div class="container">
-                            @if (ViewBag.Shipp.AskFromUser != null && ViewBag.Shipp.AskFromUser.PhotoPay != null)
-                            {
-                                int indexPhoto = 0;
-                                indexPhoto++;
-                                <div class="mySlides mySlides5">
-                                    <div class="numbertext">@indexPhoto</div>
-                                    <img class="imgModal" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.AskFromUser.PhotoPay.path&type=jpg" style="width:100%">
-                                </div>
-                            }
-                            <div class="column">
-                                @if (ViewBag.Shipp.AskFromUser != null && ViewBag.Shipp.AskFromUser.PhotoPay != null)
-                                {
-                                    int indexPhoto = 0;
-                                    indexPhoto++;
-                                    <img class="demo5 demo cursor imgModal" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.AskFromUser.PhotoPay.path&type=jpg" style="margin:5px;width:7%;" onclick="currentSlide5(@indexPhoto)">
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <script>
-                    var slideIndex = 1;
-                    showSlides5(slideIndex);
-
-                    function plusSlides5(n) {
-                        showSlides5(slideIndex += n);
-                    }
-
-                    function currentSlide5(n) {
-                        showSlides5(slideIndex = n);
-                    }
-
-                    function showSlides5(n) {
-                        let i;
-                        let slides = document.getElementsByClassName("mySlides5");
-                        let dots = document.getElementsByClassName("demo5");
-                        if (n > slides.length) { slideIndex = 1 }
-                        if (n < 1) { slideIndex = slides.length }
-                        for (i = 0; i < slides.length; i++) {
-                            slides[i].style.display = "none";
-                        }
-                        for (i = 0; i < dots.length; i++) {
-                            dots[i].className = dots[i].className.replace(" active", "");
-                        }
-                        if (slides && slides.length != 0) {
-                            slides[slideIndex - 1].style.display = "block";
-                        }
-                        if (dots && dots.length != 0) {
-                            dots[slideIndex - 1].className += " active";
-                        }
-                    }
-                </script>
-            </div>
-        </div>
-    </content>
-</dialog>
-<dialog id="dialog6">
-    <content class="ng-modal-wrapper">
-        <span class="close" onclick="HiddenDialog(6)">&times;</span>
-        <div class="modal-dialog">
-            <div class="modal-dialog-content ng-scope multiple">
-                <h1>Delivery photo inspection</h1>
-                <div class="modal-dialog-content">
-                    <div>
-                        <div class="container">
-                            @if (ViewBag.Vehiclw.PhotoInspections != null)
-                            {
-                                int indexPhoto = 0;
-                                @for (int i = 0; i < ViewBag.Vehiclw.PhotoInspections.Count; i++)
-                                {
-                                    if (ViewBag.Vehiclw.PhotoInspections[i].CurrentStatusPhoto == "Delyvery")
-                                    {
-                                        @for (int j = 0; j < ViewBag.Vehiclw.PhotoInspections[i].Photos.Count; j++)
-                                        {
-                                            indexPhoto++;
-                                            <div class="mySlides6">
-                                                <div class="numbertext">@indexPhoto</div>
-                                                <img class="imgModal" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.PhotoInspections[i].Photos[j].path&type=jpg" style="width:100%">
-                                            </div>
-                                        }
-                                    }
-                                }
-                                <a class="prev" onclick="plusSlides6(-1)">❮</a>
-                                <a class="next" onclick="plusSlides6(1)">❯</a>
-                            }
-
-
-                            <div class="column">
-                                @if (ViewBag.Vehiclw.PhotoInspections != null)
-                                {
-                                    int indexPhoto = 0;
-                                    @for (int i = 0; i < ViewBag.Vehiclw.PhotoInspections.Count; i++)
-                                    {
-                                        if (ViewBag.Vehiclw.PhotoInspections[i].CurrentStatusPhoto == "Delyvery")
-                                        {
-                                            @for (int j = 0; j < ViewBag.Vehiclw.PhotoInspections[i].Photos.Count; j++)
-                                            {
-                                                indexPhoto++;
-                                                <img class="demo6 cursor imgModal" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.PhotoInspections[i].Photos[j].path&type=jpg" style="margin:5px;width:7%;" onclick="currentSlide6(@indexPhoto)">
-                                            }
-                                        }
-                                    }
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <script>
-                    var slideIndex = 1;
-                    showSlides6(slideIndex);
-
-                    function plusSlides6(n) {
-                        showSlides6(slideIndex += n);
-                    }
-
-                    function currentSlide6(n) {
-                        showSlides6(slideIndex = n);
-                    }
-
-                    function showSlides6(n) {
-                        let i;
-                        let slides = document.getElementsByClassName("mySlides6");
-                        let dots = document.getElementsByClassName("demo6");
-                        if (n > slides.length) { slideIndex = 1 }
-                        if (n < 1) { slideIndex = slides.length }
-                        for (i = 0; i < slides.length; i++) {
-                            slides[i].style.display = "none";
-                        }
-                        for (i = 0; i < dots.length; i++) {
-                            dots[i].className = dots[i].className.replace(" active", "");
-                        }
-                        if (slides && slides.length != 0) {
-                            slides[slideIndex - 1].style.display = "block";
-                        }
-                        if (dots && dots.length != 0) {
-                            dots[slideIndex - 1].className += " active";
-                        }
-                    }
-                </script>
-            </div>
-        </div>
-    </content>
-</dialog>
-<dialog id="dialog7">
-    <content class="ng-modal-wrapper">
-        <span class="close" onclick="HiddenDialog(7)">&times;</span>
-        <div class="modal-dialog">
-            <div class="modal-dialog-content ng-scope multiple">
-                <h1>Picture Id of the person taking the delivery</h1>
-                <div class="modal-dialog-content">
-                    <div>
-                        <div class="container">
-                            @if (ViewBag.Vehiclw.AskDelyvery != null && ViewBag.Vehiclw.AskDelyvery.Please_take_a_picture_Id_of_the_person_taking_the_delivery != null && ViewBag.Vehiclw.AskDelyvery.Please_take_a_picture_Id_of_the_person_taking_the_delivery.Count != 0)
-                            {
-                                int indexPhoto = 0;
-                                @for (int i = 0; i < ViewBag.Vehiclw.AskDelyvery.Please_take_a_picture_Id_of_the_person_taking_the_delivery.Count; i++)
-                                {
-                                    indexPhoto++;
-                                    <div class="mySlides mySlides7">
-                                        <div class="numbertext">@indexPhoto</div>
-                                        <img class="imgModal" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.AskDelyvery.Please_take_a_picture_Id_of_the_person_taking_the_delivery[i].path&type=jpg" style="width:100%">
-                                    </div>
-                                }
-                                @if (ViewBag.Vehiclw.AskDelyvery.Please_take_a_picture_Id_of_the_person_taking_the_delivery.Count > 1)
-                                {
-                                    <a class="prev" onclick="plusSlides7(-1)">❮</a>
-                                    <a class="next" onclick="plusSlides7(1)">❯</a>
-                                }
-                            }
-                            <div class="column">
-                                @if (ViewBag.Vehiclw.AskDelyvery != null && ViewBag.Vehiclw.AskDelyvery.Please_take_a_picture_Id_of_the_person_taking_the_delivery != null && ViewBag.Vehiclw.AskDelyvery.Please_take_a_picture_Id_of_the_person_taking_the_delivery.Count > 1)
-                                {
-                                    int indexPhoto = 0;
-                                    @for (int i = 0; i < ViewBag.Vehiclw.AskDelyvery.Please_take_a_picture_Id_of_the_person_taking_the_delivery.Count; i++)
-                                    {
-                                        indexPhoto++;
-                                        <img class="demo7 demo cursor imgModal" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.AskDelyvery.Please_take_a_picture_Id_of_the_person_taking_the_delivery[i].path&type=jpg" style="margin:5px;width:7%;" onclick="currentSlide7(@indexPhoto)">
-                                    }
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <script>
-                    var slideIndex = 1;
-                    showSlides7(slideIndex);
-
-                    function plusSlides7(n) {
-                        showSlides7(slideIndex += n);
-                    }
-
-                    function currentSlide3(n) {
-                        showSlides7(slideIndex = n);
-                    }
-
-                    function showSlides7(n) {
-                        let i;
-                        let slides = document.getElementsByClassName("mySlides7");
-                        let dots = document.getElementsByClassName("demo7");
-                        if (n > slides.length) { slideIndex = 1 }
-                        if (n < 1) { slideIndex = slides.length }
-                        for (i = 0; i < slides.length; i++) {
-                            slides[i].style.display = "none";
-                        }
-                        for (i = 0; i < dots.length; i++) {
-                            dots[i].className = dots[i].className.replace(" active", "");
-                        }
-                        if (slides && slides.length != 0) {
-                            slides[slideIndex - 1].style.display = "block";
-                        }
-                        if (dots && dots.length != 0) {
-                            dots[slideIndex - 1].className += " active";
-                        }
-                    }
-                </script>
-            </div>
-        </div>
-    </content>
-</dialog>
-<dialog id="dialog8">
-    <content class="ng-modal-wrapper">
-        <span class="close" onclick="HiddenDialog(8)">&times;</span>
-        <div class="modal-dialog">
-            <div class="modal-dialog-content ng-scope multiple">
-                <h1>Customer Vehicle Inspection</h1>
-                <div class="modal-dialog-content">
-                    <div>
-                        <div class="container">
-                            @if (ViewBag.Shipp.askForUserDelyveryM != null && ViewBag.Shipp.askForUserDelyveryM.Have_you_inspected_the_vehicle_For_any_additional_imperfections_other_than_listed_at_the_pick_up_photo != null && ViewBag.Shipp.askForUserDelyveryM.Have_you_inspected_the_vehicle_For_any_additional_imperfections_other_than_listed_at_the_pick_up_photo.Count != 0)
-                            {
-                                int indexPhoto = 0;
-                                @for (int i = 0; i < ViewBag.Shipp.askForUserDelyveryM.Have_you_inspected_the_vehicle_For_any_additional_imperfections_other_than_listed_at_the_pick_up_photo.Count; i++)
-                                {
-                                    indexPhoto++;
-                                    <div class="mySlides mySlides8">
-                                        <div class="numbertext">@indexPhoto</div>
-                                        <img class="imgModal" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.askForUserDelyveryM.Have_you_inspected_the_vehicle_For_any_additional_imperfections_other_than_listed_at_the_pick_up_photo[i].path&type=jpg" style="width:100%">
-                                    </div>
-                                }
-                                @if (ViewBag.Shipp.askForUserDelyveryM.Have_you_inspected_the_vehicle_For_any_additional_imperfections_other_than_listed_at_the_pick_up_photo.Count > 1)
-                                {
-                                    <a class="prev" onclick="plusSlides8(-1)">❮</a>
-                                    <a class="next" onclick="plusSlides8(1)">❯</a>
-                                }
-                            }
-                            <div class="column">
-                                @if (ViewBag.Shipp.askForUserDelyveryM != null && ViewBag.Shipp.askForUserDelyveryM.Have_you_inspected_the_vehicle_For_any_additional_imperfections_other_than_listed_at_the_pick_up_photo != null && ViewBag.Shipp.askForUserDelyveryM.Have_you_inspected_the_vehicle_For_any_additional_imperfections_other_than_listed_at_the_pick_up_photo.Count > 1)
-                                {
-                                    int indexPhoto = 0;
-                                    @for (int i = 0; i < ViewBag.Shipp.askForUserDelyveryM.Have_you_inspected_the_vehicle_For_any_additional_imperfections_other_than_listed_at_the_pick_up_photo.Count; i++)
-                                    {
-                                        indexPhoto++;
-                                        <img class="demo8 demo cursor imgModal" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.askForUserDelyveryM.Have_you_inspected_the_vehicle_For_any_additional_imperfections_other_than_listed_at_the_pick_up_photo[i].path&type=jpg" style="margin:5px;width:7%;" onclick="currentSlide8(@indexPhoto)">
-                                    }
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <script>
-                    var slideIndex = 1;
-                    showSlides8(slideIndex);
-
-                    function plusSlides8(n) {
-                        showSlides8(slideIndex += n);
-                    }
-
-                    function currentSlide8(n) {
-                        showSlides8(slideIndex = n);
-                    }
-
-                    function showSlides8(n) {
-                        let i;
-                        let slides = document.getElementsByClassName("mySlides8");
-                        let dots = document.getElementsByClassName("demo8");
-                        if (n > slides.length) { slideIndex = 1 }
-                        if (n < 1) { slideIndex = slides.length }
-                        for (i = 0; i < slides.length; i++) {
-                            slides[i].style.display = "none";
-                        }
-                        for (i = 0; i < dots.length; i++) {
-                            dots[i].className = dots[i].className.replace(" active", "");
-                        }
-                        if (slides && slides.length != 0) {
-                            slides[slideIndex - 1].style.display = "block";
-                        }
-                        if (dots && dots.length != 0) {
-                            dots[slideIndex - 1].className += " active";
-                        }
-                    }
-                </script>
-            </div>
-        </div>
-    </content>
-</dialog>
-<dialog id="dialog9">
-    <content class="ng-modal-wrapper">
-        <span class="close" onclick="HiddenDialog(9)">&times;</span>
-        <div class="modal-dialog">
-            <div class="modal-dialog-content ng-scope multiple">
-                <h1>Customer painting Delivery</h1>
-                <div class="modal-dialog-content">
-                    <div>
-                        <div class="container">
-                            @if (ViewBag.Shipp.askForUserDelyveryM != null && ViewBag.Shipp.askForUserDelyveryM.App_will_ask_for_signature_of_the_client_signature != null)
-                            {
-                                int indexPhoto = 0;
-                                indexPhoto++;
-                                <div class="mySlides mySlides9">
-                                    <div class="numbertext">@indexPhoto</div>
-                                    <img class="imgModal" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.askForUserDelyveryM.App_will_ask_for_signature_of_the_client_signature.path&type=jpg" style="width:100%">
-                                </div>
-                            }
-                            <div class="column">
-                                @if (ViewBag.Shipp.askForUserDelyveryM != null && ViewBag.Shipp.askForUserDelyveryM.App_will_ask_for_signature_of_the_client_signature != null)
-                                {
-                                    int indexPhoto = 0;
-                                    indexPhoto++;
-                                    <img class="demo9 demo cursor imgModal" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.askForUserDelyveryM.App_will_ask_for_signature_of_the_client_signature.path&type=jpg" style="margin:5px;width:7%;" onclick="currentSlide9(@indexPhoto)">
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <script>
-                    var slideIndex = 1;
-                    showSlides9(slideIndex);
-
-                    function plusSlides9(n) {
-                        showSlides9(slideIndex += n);
-                    }
-
-                    function currentSlide9(n) {
-                        showSlides9(slideIndex = n);
-                    }
-
-                    function showSlides9(n) {
-                        let i;
-                        let slides = document.getElementsByClassName("mySlides9");
-                        let dots = document.getElementsByClassName("demo9");
-                        if (n > slides.length) { slideIndex = 1 }
-                        if (n < 1) { slideIndex = slides.length }
-                        for (i = 0; i < slides.length; i++) {
-                            slides[i].style.display = "none";
-                        }
-                        for (i = 0; i < dots.length; i++) {
-                            dots[i].className = dots[i].className.replace(" active", "");
-                        }
-                        if (slides && slides.length != 0) {
-                            slides[slideIndex - 1].style.display = "block";
-                        }
-                        if (dots && dots.length != 0) {
-                            dots[slideIndex - 1].className += " active";
-                        }
-                    }
-                </script>
-            </div>
-        </div>
-    </content>
-</dialog>
-<dialog id="dialog10">
-    <content class="ng-modal-wrapper">
-        <span class="close" onclick="HiddenDialog(10)">&times;</span>
-        <div class="modal-dialog">
-            <div class="modal-dialog-content ng-scope multiple">
-                <h1>Customer painting Delivery</h1>
-                <div class="modal-dialog-content">
-                    <div>
-                        <div class="container">
-                            @if (ViewBag.Shipp.askForUserDelyveryM != null && ViewBag.Shipp.askForUserDelyveryM.PhotoPay != null)
-                            {
-                                int indexPhoto = 0;
-                                indexPhoto++;
-                                <div class="mySlides mySlides10">
-                                    <div class="numbertext">@indexPhoto</div>
-                                    <img class="imgModal" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.askForUserDelyveryM.PhotoPay.path&type=jpg" style="width:100%">
-                                </div>
-                            }
-                            <div class="column">
-                                @if (ViewBag.Shipp.askForUserDelyveryM != null && ViewBag.Shipp.askForUserDelyveryM.PhotoPay != null)
-                                {
-                                    int indexPhoto = 0;
-                                    indexPhoto++;
-                                    <img class="demo10 demo cursor imgModal" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.askForUserDelyveryM.PhotoPay.path&type=jpg" style="margin:5px;width:7%;" onclick="currentSlide10(@indexPhoto)">
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <script>
-                    var slideIndex = 1;
-                    showSlides10(slideIndex);
-
-                    function plusSlides10(n) {
-                        showSlides10(slideIndex += n);
-                    }
-
-                    function currentSlide10(n) {
-                        showSlides10(slideIndex = n);
-                    }
-
-                    function showSlides10(n) {
-                        let i;
-                        let slides = document.getElementsByClassName("mySlides10");
-                        let dots = document.getElementsByClassName("demo10");
-                        if (n > slides.length) { slideIndex = 1 }
-                        if (n < 1) { slideIndex = slides.length }
-                        for (i = 0; i < slides.length; i++) {
-                            slides[i].style.display = "none";
-                        }
-                        for (i = 0; i < dots.length; i++) {
-                            dots[i].className = dots[i].className.replace(" active", "");
-                        }
-                        if (slides && slides.length != 0) {
-                            slides[slideIndex - 1].style.display = "block";
-                        }
-                        if (dots && dots.length != 0) {
-                            dots[slideIndex - 1].className += " active";
-                        }
-                    }
-                </script>
-            </div>
-        </div>
-    </content>
-</dialog>
-<dialog id="dialog11">
-    <content class="ng-modal-wrapper">
-        <span class="close" onclick="HiddenDialog(11)">&times;</span>
-        <div class="modal-dialog">
-            <div class="modal-dialog-content ng-scope multiple">
-                <div class="modal-dialog-content">
-                    <div>
-                        <div class="container">
-                            @if (@ViewBag.Vehiclw.Scan != null)
-                            {
-                                int indexPhoto = 0;
-                                indexPhoto++;
-                                <div class="mySlides mySlides11">
-                                    <div class="numbertext">@indexPhoto</div>
-                                    <img class="imgModal" src="data:image/gif;base64,@ViewBag.Vehiclw.Scan.Base64" style="width:100%">
-                                </div>
-                            }
-                        <div class="column">
-                            @if (@ViewBag.Vehiclw.Scan != null)
-
-                            {
-                                int indexPhoto = 0;
-                                indexPhoto++;
-                                <img class="demo11 demo cursor imgModal" src="data:image/gif;base64,@ViewBag.Vehiclw.Scan.Base64" style="margin:5px;width:7%;" onclick="currentSlide11(@indexPhoto)">
-                            }
-                        </div>
-                        </div>
-                    </div>
-                </div>
-                <script>
-                    var slideIndex = 1;
-                    showSlides11(slideIndex);
-
-                    function plusSlides11(n) {
-                        showSlides11(slideIndex += n);
-                    }
-
-                    function currentSlide11(n) {
-                        showSlides11(slideIndex = n);
-                    }
-
-                    function showSlides11(n) {
-                        let i;
-                        let slides = document.getElementsByClassName("mySlides11");
-                        let dots = document.getElementsByClassName("demo11");
-                        if (n > slides.length) { slideIndex = 1 }
-                        if (n < 1) { slideIndex = slides.length }
-                        for (i = 0; i < slides.length; i++) {
-                            slides[i].style.display = "none";
-                        }
-                        for (i = 0; i < dots.length; i++) {
-                            dots[i].className = dots[i].className.replace(" active", "");
-                        }
-                        if (slides && slides.length != 0) {
-                            slides[slideIndex - 1].style.display = "block";
-                        }
-                        if (dots && dots.length != 0) {
-                            dots[slideIndex - 1].className += " active";
-                        }
-                    }
-                </script>
-            </div>
-        </div>
-    </content>
-</dialog>
-
-<script>
-
-    function ShowAlert(numAlert) {
-        let dialog = document.getElementById('dialog' + numAlert);
-        dialog.show();
+                }
+            }
+        }
     }
-
-    function HiddenDialog(numAlert) {
-        let dialog = document.getElementById('dialog' + numAlert);
-        dialog.close();
+    else
+    {
+        <p class="col-md-3">No Photo</p>
     }
-</script>
-<style type="text/css">
-    * {
-        margin: 0px;
+</div>
+<h3 class="text-info-h3">Any personal or additional items with or in vehicle</h3>
+<div class="row image-group">
+    @if (ViewBag.Vehiclw.Ask != null)
+    {
+        @if (ViewBag.Vehiclw.Ask.Any_personal_or_additional_items_with_or_in_vehicle != null && ViewBag.Vehiclw.Ask.Any_personal_or_additional_items_with_or_in_vehicle.Count != 0)
+        {
+            for (int i = 0; i < ViewBag.Vehiclw.Ask.Any_personal_or_additional_items_with_or_in_vehicle.Count; i++)
+            {
+                <div class="col-md-3" style="width: 263px;height: 148px;margin-bottom:10px">
+                    <img class="image-border-10" alt="" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.Ask.Any_personal_or_additional_items_with_or_in_vehicle[i].path&type=jpg" width="263" height="148">
+                </div>
+            }
+        }
+        else
+        {
+            <p class="col-md-3">No Photo</p>
+        }
     }
-    /**/
-    .imgModal {
-        vertical-align: middle;
+    else
+    {
+        <p class="col-md-3">No Photo</p>
     }
-
-    .container {
-        position: relative;
+</div>
+<div>
+    <h3 class="text-info-h3">App will force driver to take pictures of each strap</h3>
+</div>
+<div class="row image-group">
+    @if (ViewBag.Vehiclw.Ask1 != null)
+    {
+        @if (ViewBag.Vehiclw.Ask1.App_will_force_driver_to_take_pictures_of_each_strap != null && ViewBag.Vehiclw.Ask1.App_will_force_driver_to_take_pictures_of_each_strap.Count != 0)
+        {
+            for (int i = 0; i < ViewBag.Vehiclw.Ask1.App_will_force_driver_to_take_pictures_of_each_strap.Count; i++)
+            {
+                <div class="col-md-3" style="width: 263px;height: 148px;margin-bottom:10px">
+                    <img class="image-border-10" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.Ask1.App_will_force_driver_to_take_pictures_of_each_strap[i].path&type=jpg" width="263" height="148"/>
+                </div>
+            }
+        }
+        else
+        {
+            <p class="col-md-3">No Photo</p>
+        }
     }
-
-    .mySlides {
-        display: none;
+    else
+    {
+        <p class="col-md-3">No Photo</p>
     }
-
-    .cursor {
-        cursor: pointer;
+</div>
+<div>
+    <h3 class="text-info-h3">Photo after loading in the truck</h3>
+</div>
+<div class="row image-group">
+    @if (ViewBag.Vehiclw.Ask1 != null)
+    {
+        @if (ViewBag.Vehiclw.Ask1.Photo_after_loading_in_the_truck != null && ViewBag.Vehiclw.Ask1.Photo_after_loading_in_the_truck.Count != 0)
+        {
+            for (int i = 0; i < ViewBag.Vehiclw.Ask1.Photo_after_loading_in_the_truck.Count; i++)
+            {
+                <div class="col-md-3" style="width: 263px;height: 148px;margin-bottom:10px">
+                    <img class="image-border-10" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.Ask1.Photo_after_loading_in_the_truck[i].path&type=jpg" width="263" height="148"/>
+                </div>
+            }
+        }
+        else
+        {
+            <p class="col-md-3">No Photo</p>
+        }
     }
-
-    .prev,
-    .next {
-        cursor: pointer;
-        position: absolute;
-        top: 40%;
-        width: auto;
-        padding: 16px;
-        margin-top: -50px;
-        color: white;
-        font-weight: bold;
+    else
+    {
+        <p class="col-md-3">No Photo</p>
+    }
+</div>
+<div>
+    <h3 class="text-info-h3">Customer painting Pickup</h3>
+</div>
+<div class="row image-group">
+    @if (ViewBag.Shipp.AskFromUser != null)
+    {
+        @if (ViewBag.Shipp.AskFromUser.App_will_ask_for_signature_of_the_client_signature != null)
+        {
+            <div class="col-md-3" style="width: 263px;height: 148px;margin-bottom:10px">
+                <img class="image-border-10" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.AskFromUser.App_will_ask_for_signature_of_the_client_signature.path&type=jpg" width="263" height="148"/>
+            </div>
+        }
+        else
+        {
+            <p class="col-md-3">No Photo</p>
+        }
+    }
+    else
+    {
+        <p class="col-md-3">No Photo</p>
+    }
+</div>
+<div>
+    <h3 class="text-info-h3">Payment Photo Pickup</h3>
+</div>
+<div class="row image-group">
+    @if (ViewBag.Shipp.AskFromUser != null)
+    {
+        @if (ViewBag.Shipp.AskFromUser.PhotoPay != null)
+        {
+            <div class="col-md-3" style="width: 263px;height: 148px;margin-bottom:10px">
+                <img class="image-border-10" src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.AskFromUser.PhotoPay.path&type=jpg" width="263" height="148"/>
+            </div>
+        }
+        else
+        {
+            <p class="col-md-3">No Photo</p>
+        }
+    }
+    else
+    {
+        <p class="col-md-3">No Photo</p>
+    }
+</div>   
+<h1 class="title text-info-header-1">Delivery Inspection</h1>
+<div class="row image-group">
+    @if (ViewBag.Vehiclw.PhotoInspections != null)
+    {
+        @for (int i = 0; i < ViewBag.Vehiclw.PhotoInspections.Count; i++)
+        {
+            if (ViewBag.Vehiclw.PhotoInspections[i].CurrentStatusPhoto == "Delyvery")
+            {
+                @for (int j = 0; j < ViewBag.Vehiclw.PhotoInspections[i].Photos.Count; j++)
+                {
+                    <div class="col-md-3" style="width: 263px;height: 148px;margin-bottom:10px">
+                        <img src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.PhotoInspections[i].Photos[j].path&type=jpg" width="263" height="148"/>
+                    </div>
+                }
+            }
+        }
+    }
+    else
+    {
+        <p class="col-md-3">No Photo</p>
+    }
+</div>
+<h3 class="text-info-h3">Picture Id of the person taking the delivery</h3>
+<div class="row image-group">
+    @if (ViewBag.Vehiclw.AskDelyvery != null)
+    {
+        @if (ViewBag.Vehiclw.AskDelyvery.Please_take_a_picture_Id_of_the_person_taking_the_delivery != null && ViewBag.Vehiclw.AskDelyvery.Please_take_a_picture_Id_of_the_person_taking_the_delivery.Count != 0)
+        {
+            for (int i = 0; i < ViewBag.Vehiclw.AskDelyvery.Please_take_a_picture_Id_of_the_person_taking_the_delivery.Count; i++)
+            {
+                <div class="col-md-3" style="width: 263px;height: 148px;margin-bottom:10px">
+                    <img src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Vehiclw.AskDelyvery.Please_take_a_picture_Id_of_the_person_taking_the_delivery[i].path&type=jpg" width="263" height="148"/>
+                </div>
+            }
+        }
+        else
+        {
+            <p class="col-md-3">No Photo</p>
+        }
+    }
+    else
+    {
+        <p class="col-md-3">No Photo</p>
+    }
+</div>
+<h3 class="text-info-h3">Customer Vehicle Inspection</h3>
+<div class="row image-group">
+    @if (ViewBag.Shipp.askForUserDelyveryM != null)
+    {
+        @if (ViewBag.Shipp.askForUserDelyveryM.Have_you_inspected_the_vehicle_For_any_additional_imperfections_other_than_listed_at_the_pick_up_photo != null && ViewBag.Shipp.askForUserDelyveryM.Have_you_inspected_the_vehicle_For_any_additional_imperfections_other_than_listed_at_the_pick_up_photo.Count != 0)
+        {
+            for (int i = 0; i < ViewBag.Shipp.askForUserDelyveryM.Have_you_inspected_the_vehicle_For_any_additional_imperfections_other_than_listed_at_the_pick_up_photo.Count; i++)
+            {
+                <div class="col-md-3" style="width: 263px;height: 148px;margin-bottom:10px">
+                    <img src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.askForUserDelyveryM.Have_you_inspected_the_vehicle_For_any_additional_imperfections_other_than_listed_at_the_pick_up_photo[i].path&type=jpg" width="263" height="148"/>
+                </div>
+            }
+        }
+        else
+        {
+            <p class="col-md-3">No Photo</p>
+        }
+    }
+    else
+    {
+        <p class="col-md-3">No Photo</p>
+    }
+</div>
+<h3 class="text-info-h3">Customer painting Delivery</h3>
+<div class="row image-group">
+    @if (ViewBag.Shipp.askForUserDelyveryM != null)
+    {
+        @if (ViewBag.Shipp.askForUserDelyveryM.App_will_ask_for_signature_of_the_client_signature != null)
+        {
+            <div class="col-md-3" style="width: 263px;height: 148px;margin-bottom:10px">
+                <img src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.askForUserDelyveryM.App_will_ask_for_signature_of_the_client_signature.path&type=jpg" width="263" height="148"/>
+            </div>
+        }
+        else
+        {
+            <p class="col-md-3">No Photo</p>
+        }
+    }
+    else
+    {
+        <p class="col-md-3">No Photo</p>
+    }
+</div>
+<h3 class="text-info-h3">Payment Photo Delivery</h3>
+<div class="row image-group">
+    @if (ViewBag.Shipp.askForUserDelyveryM != null)
+    {
+        @if (ViewBag.Shipp.askForUserDelyveryM.PhotoPay != null)
+        {
+            <div class="col-md-3" style="width: 263px;height: 148px;margin-bottom:10px">
+                <img src="@ViewBag.BaseUrl/Dashbord/Image?name=@ViewBag.Shipp.askForUserDelyveryM.PhotoPay.path&type=jpg" width="263" height="148"/>
+            </div>
+        }
+        else
+        {
+            <p class="col-md-3">No Photo</p>
+        }
+    }
+    else
+    {
+        <p class="col-md-3">No Photo</p>
+    }
+</div>
+</div>
+</div>
+</body>
+<style>
+    p{
         font-size: 20px;
-        border-radius: 0 3px 3px 0;
-        user-select: none;
-        -webkit-user-select: none;
-        transition: 0.3s;
-    }
-
-    .next {
-        right: 0;
-        border-radius: 3px 0 0 3px;
-    }
-
-        .prev:hover,
-        .next:hover {
-            background-color: #ff4614;
-        }
-
-    .numbertext {
-        color: #f2f2f2;
-        font-size: 12px;
-        padding: 8px 12px;
-        position: absolute;
-        top: 0;
-    }
-
-    .caption-container {
-        text-align: center;
-        background-color: #222;
-        padding: 2px 16px;
-        color: white;
-    }
-
-    .demo {
-        opacity: 0.6;
-    }
-
-        .active,
-        .demo:hover {
-            opacity: 1;
-        }
-    /**/
-    dialog {
-        position: fixed;
-        z-index: 9500;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.1);
-        overflow-y: auto;
-        font-size: 0;
-        text-align: center;
-    }
-
-    .green {
-        border: 1px solid #95f816;
-        outline: none;
-        color: #95f816;
-    }
-
-    .red {
-        border: 1px solid #ff4614;
-        outline: none;
-        color: #ff4614;
-    }
-
-    .blue {
-        border: 1px solid #3df;
-        outline: none;
-        color: #3df;
-    }
-
-    .ng-modal-wrapper {
-        display: inline-block;
-        vertical-align: middle;
-        width: 100%;
-        position: relative;
-    }
-
-    modal-dialog .modal-dialog-content.multiple {
-        padding-bottom: 0;
-    }
-
-    .modal-dialog .modal-dialog-content {
-        font-size: 20px;
-    }
-
-    .modal-dialog .modal-dialog-content {
-        transition: height 0.25s linear;
-    }
-
-    .modal-dialog {
-        position: absolute;
-        left: 20%;
-        top: 80px;
-        margin-bottom: 20px;
-        width: 60%;
-        text-align: left;
-        background-color: rgba(242, 242, 242, 0.80);
-        -moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
-        -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
-        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
-        -moz-border-radius: 10px;
-        -webkit-border-radius: 10px;
-        border-radius: 10px;
-        transition: height 0.25s linear;
-        overflow: hidden;
-    }
-
-        .modal-dialog .modal-dialog-content h1 {
-            font-size: 19px;
-            line-height: 22px;
-            letter-spacing: -.026em;
-            font-family: 'SF UI Text Medium', 'SF UI Text Light', 'Helvetica Neue', 'HelveticaNeue', Helvetica, Arial, Verdana, sans-serif;
-            font-weight: 500;
-            margin-bottom: 14px;
-        }
-
-        .modal-dialog .modal-dialog-content h1 {
-            font-size: 19px;
-            line-height: 22px;
-            letter-spacing: -.026em;
-            font-family: 'SF UI Text Medium', 'SF UI Text Light', 'Helvetica Neue', 'HelveticaNeue', Helvetica, Arial, Verdana, sans-serif;
-            font-weight: 500;
-            margin-bottom: 14px;
-        }
-
-        .modal-dialog .modal-dialog-content + .modal-dialog-content {
-            padding-top: 0;
-        }
-
-        .modal-dialog .modal-dialog-content {
-            padding-top: 20px;
-            font-size: 15px;
-        }
-
-        .modal-dialog .modal-dialog-content {
-            transition: height 0.25s linear;
-        }
-
-    .modal-buttons {
-        border-top: 1px solid #e5e5e5;
-        padding: 15px;
-        display: inline-block;
-        width: 100%;
-        zoom: 1;
-    }
-
-        .modal-buttons button, input {
-            margin-top: 0;
-        }
-
-        button.btnModal, a.btn.btnModal, .modal-buttons > ul li a.btnModal {
-            font-family: 'SF UI Text Medium', 'SF UI Text Light', 'Helvetica Neue', 'HelveticaNeue', Helvetica, Arial, Verdana, sans-serif;
-            font-weight: 500;
-        }
-
-        .modal-dialog button, .modal-dialog input, .modal-dialog label, a.btn, .modal-buttons > ul li a {
-            position: relative;
-            display: inline-block;
-            vertical-align: middle;
-            cursor: pointer;
-            padding: 3px 10px 4px;
-            -moz-border-radius: 3px;
-            -webkit-border-radius: 3px;
-            border-radius: 3px;
-            margin-top: 2px;
-            background: none;
-            font-size: 15px;
-            line-height: 19px;
-            letter-spacing: -.016em;
-            -moz-transition-property: all;
-            -o-transition-property: all;
-            -webkit-transition-property: all;
-            transition-property: all;
-            -moz-transition-duration: 300ms;
-            -o-transition-duration: 300ms;
-            -webkit-transition-duration: 300ms;
-            transition-duration: 300ms;
-        }
-
-        .modal-buttons .right-buttons {
-            float: right;
-        }
-
-    .noPhotoP {
-        color: rgba(66, 58, 58, 0.66);
-        font-size: 20px;
-        margin: 5px;
-    }
-
-    .headPhoto {
-        color: rgba(59, 51, 51, 0.87);
-        font-size: 23px;
-    }
-
-    .blockAllPhoto {
-        padding: 5px;
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-    }
-
-    .img {
-        margin: 5px;
-        border-width: 1px;
-        padding: 5px;
-        border-style: groove;
-        image-rendering: optimizeSpeed;
-    }
-
-        .img:hover {
-            opacity: 0.7;
-        }
-
-    .Photola {
-        height: 19%;
-        width: 19%;
-    }
-
-    .Photove {
-        height: 10%;
-        width: 10%;
-    }
-
-    @@media (max-width: 600px) {
-        .Photove {
-            height: 10%;
-            width: 100%;
-        }
-
-        .Photola {
-            height: 100%;
-            width: 100%;
-        }
-    }
-
-    .inspectionBlock {
-        margin: 10px;
-    }
-
-    .routeBlock {
-        margin: 5px;
-    }
-
-    .idStlP {
-        color: #421f0e;
-        font-size: 20px;
-        margin: 20px;
-    }
-
-    .headStlP {
-        color: black;
-        font-size: 27px;
-        margin: 20px, 20px, 20px, 0px;
-    }
-
-    .nameVehStlP {
-        color: #e29334;
-        font-size: 25px;
-        margin: 20px, 20px, 20px, 0px;
-    }
-
-    .typeVehStlP {
-        color: #e29334;
-        font-size: 22px;
-        margin: 20px;
-    }
-
-    .routeInfP {
-        margin: 10px;
-        font-size: 17px;
-        color: #f3a74c;
-    }
-
-    .body {
-        margin-top: 30px;
-        margin-left: 5px;
-        margin-right: 5px;
-    }
-
-    .filling {
-        width: 100%;
-    }
-
-    .modal {
-        display: none; /* Hidden by default */
-        position: fixed; /* Stay in place */
-        z-index: 1; /* Sit on top */
-        padding-top: 300px; /* Location of the box */
-        width: 100%; /* Full width */
-        height: 100%; /* Full height */
-        overflow: auto; /* Enable scroll if needed */
-        background-color: rgb(0,0,0); /* Fallback color */
-        background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
-    }
-
-    .modal-content {
-        margin: auto;
-        display: block;
-        width: 80%;
-        margin-top: 50px
-    }
-
-    #caption {
-        margin: auto;
-        display: block;
-        width: 80%;
-        max-width: 700px;
-        text-align: center;
-        color: #ccc;
-        padding: 10px 0;
-        height: 150px;
-    }
-
-    .modal-content, #caption {
-        animation-name: zoom;
-        animation-duration: 0.6s;
-    }
-
-    @@keyframes zoom {
-        from {
-            transform: scale(0)
-        }
-
-        to {
-            transform: scale(1)
-        }
-    }
-
-    .close {
-        position: absolute;
-        top: 55px;
-        right: 35px;
-        color: #676767;
-        font-size: 40px;
-        font-weight: bold;
-        transition: 0.3s;
-    }
-
-        .close:hover,
-        .close:focus {
-            color: #ff4614;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-    @@media only screen and (max-width: 700px) {
-        .modal-content {
-            width: 100%;
-        }
     }
 </style>

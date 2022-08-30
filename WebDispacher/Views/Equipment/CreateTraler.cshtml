@@ -1,288 +1,213 @@
-﻿
-
-<div class="body">
-    <input class="backBtn" type="button" value="← Back to Orders" onclick="history.back();" />
-    <div style="display:flex;justify-content:space-around;">
-        <form style="width:45%;" action="" method="post" enctype="multipart/form-data" asp-for="FileUpload.FormFiles">
-            <div class="content">
-                <h2 style="color: rgb(51, 51, 51);margin-bottom:2px;">Add New Trailer</h2>
-                <p class="inpLabe">Name Trailer</p>
-                <input name="name" class="inpText validation" type="text" required />
-                <p class="inpLabe">Type</p>
-                <select name="typeTrailer" class="inpText validation" type="text" onchange="SelectTrailer(this.options[this.selectedIndex].value)" required>
-                    <option value="">Choose a trailer type</option>
-                    <option value="GooseneckTrailerTwoVehicles">Gooseneck trailer for two vehicles</option>
-                    <option value="EnclosedTrailerTwoVehicles">Enclosed trailer for two vehicles</option>
-                    <option value="a1CarGooseneckTrailer">1 Car Gooseneck Trailer</option>
-                    <option value="A3CarEnclosedGooseneckTrailer">3 Car Enclosed Gooseneck Trailer</option>
-                    <option value="Bumperpook24_34ftFlatbed">Bumperpook 24_34ft Flatbed</option>
-                    <option value="Bumperpool1CarEnclosedTrailer">Bumperpool 1 Car Enclosed Trailer</option>
-                    <option value="Bumperpool2CarEnclosedTraile">Bumperpool 2 Car Enclosed Traile</option>
-                    <option value="Bumperpool16_20FtFlatbed">Bumperpool 16_20Ft Flatbed</option>
-                    <option value="CarEnclosedTrailer">Car Enclosed Trailer</option>
-                    <option value="Gooseneck3CarLowTrailer">Gooseneck 3 Car Low Trailer</option>
-                    <option value="Gooseneck24-34FtFlatbed">Gooseneck 24_34 Ft Flatbed</option>
-                    <option value="Gooseneck3CarWedgeTrailer">Gooseneck 3 Car Wedge Trailer</option>
-                    <option value="Gooseneck5CarOpenTrailer">Gooseneck 5 Car Open Trailer</option>
-                    <option value="Gooseneck6CarOpenTrailer">Gooseneck 6 Car Open Trailer</option>
-                    <option value="BumperPool2CarTrailer">Bumper Pool 2 Car Trailer</option>
-                </select>
-                <p class="inpLabe">Year</p>
-                <input name="year" class="inpText" type="text" />
-                <p class="inpLabe">Make</p>
-                <input name="make" class="inpText" type="text" />
-                <p class="inpLabe">How Long</p>
-                <input name="howLong" class="inpText" type="text" />
-                <p class="inpLabe">Vin#</p>
-                <input name="vin" class="inpText" type="text" />
-                <p class="inpLabe">Owner</p>
-                <input name="owner" class="inpText" type="text" />
-                <p class="inpLabe">Color</p>
-                <input name="color" class="inpText" type="text" />
-                <p class="inpLabe">Plate</p>
-                <input name="plate" class="inpText validation" type="text" required />
-                <p class="inpLabe">Plate Exp Trailer</p>
-                <input name="exp" class="inpText" type="text" />
-                <p class="inpLabe">ANNUAL INS</p>
-                <input name="annualIns" class="inpText" type="text" />
-                <p class="inpLabe">Document Trailer registration</p>
-                <div class="inpText">
-                    <label for="docLoad1" class="btnModal" style="margin-left:5px;">Select document Trailer registration</label>
-                    <input id="docLoad1" style="display: none;" type="file" name="trailerRegistrationDoc" onchange="LoadFile(this, 1)" accept="application/pdf, image/jpeg, image/jpg" required>
-                    <span id="nameNoLoadDoc1" class="spanModal" style="align-self:center;margin-left:5px;color:#ff4614;">You can upload files only in pdf, jpg and jepg</span>
-                    <span id="nameLoadDoc1" class="spanModal" style="align-self:center;margin-left:5px;color:#95f816;" hidden></span>
+﻿<body>
+    <div class="admin truc">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="tabContent">
+                        <div class="title">
+                                    <a href="#" onclick="history.back();">Back to Equipment</a>
+                                </div>
+                        <div class="title">
+                            <h1 class="text-info-header-1">Add New Trailer</h1>
+                        </div>
+                        <form action="" method="post" enctype="multipart/form-data">
+                            <label class="big-label" for="">
+                                Name Trailer
+                                <input type="text" class="height-input" name="Name" required>
+                            </label>
+                            <label class="big-label" for="">
+                                Type Trailer <br />
+                                <select class="height-input input-select" name="Type" onchange="SelectTrailer(this.options[this.selectedIndex].value)" required>
+                                    <option value="">Choose a trailer type</option>
+                                    <option value="Bumperpool2CarEeclosedTraile">Bumperpool 2 Car Eeclosed Traile</option>
+                                    @*<option value="GooseneckTrailerTwoVehicles">Gooseneck trailer for two vehicles</option>
+                                    <option value="EnclosedTrailerTwoVehicles">Enclosed trailer for two vehicles</option>
+                                    <option value="a1CarGooseneckTrailer">1 Car Gooseneck Trailer</option>
+                                    <option value="A3CarEnclosedGooseneckTrailer">3 Car Enclosed Gooseneck Trailer</option>
+                                    <option value="Bumperpook24_34ftFlatbed">Bumperpook 24_34ft Flatbed</option>
+                                    <option value="Bumperpool1CarEnclosedTrailer">Bumperpool 1 Car Enclosed Trailer</option>
+                                    <option value="Bumperpool2CarEnclosedTraile">Bumperpool 2 Car Enclosed Traile</option>
+                                    <option value="Bumperpool16_20FtFlatbed">Bumperpool 16_20Ft Flatbed</option>
+                                    <option value="CarEnclosedTrailer">Car Enclosed Trailer</option>
+                                    <option value="Gooseneck3CarLowTrailer">Gooseneck 3 Car Low Trailer</option>
+                                    <option value="Gooseneck24-34FtFlatbed">Gooseneck 24_34 Ft Flatbed</option>
+                                    <option value="Gooseneck3CarWedgeTrailer">Gooseneck 3 Car Wedge Trailer</option>
+                                    <option value="Gooseneck5CarOpenTrailer">Gooseneck 5 Car Open Trailer</option>
+                                    <option value="Gooseneck6CarOpenTrailer">Gooseneck 6 Car Open Trailer</option>
+                                    <option value="BumperPool2CarTrailer">Bumper Pool 2 Car Trailer</option>*@
+                                </select>
+                            </label>
+                            <label class="big-label" for="">
+                                Year
+                                <input type="text" class="height-input" name="Year">
+                            </label>
+                            <label class="big-label" for="">
+                                Make
+                                <input type="text" class="height-input" name="Make">
+                            </label>
+                            <label class="big-label" for="">
+                                Model
+                                <input type="text" class="height-input" name="Model">
+                            </label>
+                            <label class="big-label" for="">
+                                How Long
+                                <input type="text" class="height-input" name="HowLong">
+                            </label>
+                            <label class="big-label" for="">
+                                Vin#
+                                <input type="text" class="height-input" name="Vin">
+                            </label>
+                            <label class="big-label" for="">
+                                Owner
+                                <input type="text" class="height-input" name="Owner">
+                            </label>
+                            <label class="big-label" for="">
+                                Color
+                                <input type="text" class="height-input" name="Color">
+                            </label>
+                            <label class="big-label" for="">
+                                Plate Trailer
+                                <input type="text" class="height-input" name="Plate" required>
+                            </label>
+                            <label class="big-label" for="">
+                                Plate Exp Trailer
+                                <input type="text" class="height-input" name="Exp">
+                            </label>
+                            <label class="big-label" for="">
+                                ANNUAL INS
+                                <input type="text" class="height-input" name="AnnualIns">
+                            </label>
+                            <div class="full-label">
+                                <p class="a-label">Document Trailer registration</p>
+                                <a class="pt-1 pb-1">You can upload files only in pdf, jpg and jpeg</a>
+                                <div>
+                                    <div class="file-group big-label">
+                                        <div class="row">
+                                            <div class="col-md-8 label-input d-flex align-items-center">
+                                                <div onclick="ClearFile(`fi1`, 'fl1');" class="fi" id="fl1"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                            
+                                                <div class="select-button-1 d-flex justify-content-end">
+                                                    <label>
+                                                        Select document
+                                                        <input class="height-input" id="fi1" type="file" onchange="GetFileName(this.value, 'fl1');" name="trailerRegistrationDoc" accept="application/pdf, image/jpeg, image/jpg" required>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="full-label">
+                                <p class="a-label">Document Trailer annual inspection</p>
+                                <a class="pt-1 pb-1">You can upload files only in pdf, jpg and jpeg</a>
+                                <div>
+                                    <div class="file-group big-label">
+                                        <div class="row">
+                                            <div class="col-md-8 label-input d-flex align-items-center">
+                                                <div onclick="ClearFile(`fi2`, 'fl2');" class="fi" id="fl2"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                            
+                                                <div class="select-button-1 d-flex justify-content-end">
+                                                    <label>
+                                                        Select document
+                                                        <input class="height-input" id="fi2" type="file" onchange="GetFileName(this.value, 'fl2');" name="trailerAnnualInspectionDoc" accept="application/pdf, image/jpeg, image/jpg" required>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="full-label">
+                                <p class="a-label">Document Lease agreement (optional)</p>
+                                <a class="pt-1 pb-1">You can upload files only in pdf, jpg and jpeg</a>
+                                <div>
+                                    <div class="file-group big-label">
+                                        <div class="row">
+                                            <div class="col-md-8 label-input d-flex align-items-center">
+                                                <div onclick="ClearFile(`fi3`, 'fl3');" class="fi" id="fl3"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="select-button-1 d-flex justify-content-end">
+                                                    <label>
+                                                        Select document
+                                                        <input class="height-input" id="fi3" type="file" onchange="GetFileName(this.value, 'fl3');" name="leaseAgreementDoc" accept="application/pdf, image/jpeg, image/jpg">
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="height-input btn1 big-label big-font-size">Save Info</button>
+                        </form>
+                    </div>
                 </div>
-                <p class="inpLabe">Document Trailer annual inspection</p>
-                <div class="inpText">
-                    <label for="docLoad2" class="btnModal" style="margin-left:5px;">Select document Trailer annual inspection</label>
-                    <input id="docLoad2" style="display: none;" type="file" name="trailerAnnualInspectionDoc" onchange="LoadFile(this, 2)" accept="application/pdf, image/jpeg, image/jpg" required>
-                    <span id="nameNoLoadDoc2" class="spanModal" style="align-self:center;margin-left:5px;color:#ff4614;">You can upload files only in pdf, jpg and jepg</span>
-                    <span id="nameLoadDoc2" class="spanModal" style="align-self:center;margin-left:5px;color:#95f816;" hidden></span>
+                <div class="col-md-6">
+                    <div id="Bumperpool2CarEeclosedTraile" class="row" style="display:none;">
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool2CarEeclosedTraile/Bumperpool2CarEeclosedTraile1.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool2CarEeclosedTraile/Bumperpool2CarEeclosedTraile2.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool2CarEeclosedTraile/Bumperpool2CarEeclosedTraile3.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool2CarEeclosedTraile/Bumperpool2CarEeclosedTraile4.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool2CarEeclosedTraile/Bumperpool2CarEeclosedTraile5.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool2CarEeclosedTraile/Bumperpool2CarEeclosedTraile6.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool2CarEeclosedTraile/Bumperpool2CarEeclosedTraile7.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool2CarEeclosedTraile/Bumperpool2CarEeclosedTraile8.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool2CarEeclosedTraile/Bumperpool2CarEeclosedTraile9.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool2CarEeclosedTraile/Bumperpool2CarEeclosedTraile10.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool2CarEeclosedTraile/Bumperpool2CarEeclosedTraile11.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool2CarEeclosedTraile/Bumperpool2CarEeclosedTraile12.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool2CarEeclosedTraile/Bumperpool2CarEeclosedTraile13.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool2CarEeclosedTraile/Bumperpool2CarEeclosedTraile14.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool2CarEeclosedTraile/Bumperpool2CarEeclosedTraile15.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool2CarEeclosedTraile/Bumperpool2CarEeclosedTraile16.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool2CarEeclosedTraile/Bumperpool2CarEeclosedTraile17.png&type=png" alt="">
+                        </div>
+                    </div>
                 </div>
-                <p class="inpLabe">Document Lease agreement (optional)</p>
-                <div class="inpText">
-                    <label for="docLoad3" class="btnModal" style="margin-left:5px;">Select document Lease agreement</label>
-                    <input id="docLoad3" style="display: none;" type="file" name="leaseAgreementDoc" onchange="LoadFile(this, 3)" accept="application/pdf, image/jpeg, image/jpg">
-                    <span id="nameNoLoadDoc3" class="spanModal" style="align-self:center;margin-left:5px;color:#ff4614;">You can upload files only in pdf, jpg and jepg</span>
-                    <span id="nameLoadDoc3" class="spanModal" style="align-self:center;margin-left:5px;color:#95f816;" hidden></span>
-                </div>
-            </div>
-            <input class="btnSave" value="Save" type="submit" />
-        </form>
-        <div style="width:45%;">
-            <div id="GooseneckTrailerTwoVehicles" style="display:none;flex-wrap:wrap;justify-content:flex-start;">
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/GooseneckTrailerTwoVehicles/GooseneckTrailerTwoVehicles1.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/GooseneckTrailerTwoVehicles/GooseneckTrailerTwoVehicles2.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/GooseneckTrailerTwoVehicles/GooseneckTrailerTwoVehicles3.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/GooseneckTrailerTwoVehicles/GooseneckTrailerTwoVehicles4.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/GooseneckTrailerTwoVehicles/GooseneckTrailerTwoVehicles5.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/GooseneckTrailerTwoVehicles/GooseneckTrailerTwoVehicles6.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/GooseneckTrailerTwoVehicles/GooseneckTrailerTwoVehicles7.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/GooseneckTrailerTwoVehicles/GooseneckTrailerTwoVehicles8.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/GooseneckTrailerTwoVehicles/GooseneckTrailerTwoVehicles9.png&type=png" />
-            </div>
-            <div id="EnclosedTrailerTwoVehicles" style="display:none;flex-wrap:wrap;justify-content:flex-start;">
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/EnclosedTrailerTwoVehicles/EnclosedTrailerTwoVehicles1.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/EnclosedTrailerTwoVehicles/EnclosedTrailerTwoVehicles2.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/EnclosedTrailerTwoVehicles/EnclosedTrailerTwoVehicles3.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/EnclosedTrailerTwoVehicles/EnclosedTrailerTwoVehicles4.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/EnclosedTrailerTwoVehicles/EnclosedTrailerTwoVehicles5.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/EnclosedTrailerTwoVehicles/EnclosedTrailerTwoVehicles9.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/EnclosedTrailerTwoVehicles/EnclosedTrailerTwoVehicles10.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/EnclosedTrailerTwoVehicles/EnclosedTrailerTwoVehicles11.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/EnclosedTrailerTwoVehicles/EnclosedTrailerTwoVehicles12.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/EnclosedTrailerTwoVehicles/EnclosedTrailerTwoVehicles13.png&type=png" />
-            </div>
-            <div id="a1CarGooseneckTrailer" style="display:none;flex-wrap:wrap;justify-content:flex-start;">
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/a1CarGooseneckTrailer/a1CarGooseneckTrailer1.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/a1CarGooseneckTrailer/a1CarGooseneckTrailer2.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/a1CarGooseneckTrailer/a1CarGooseneckTrailer3.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/a1CarGooseneckTrailer/a1CarGooseneckTrailer4.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/a1CarGooseneckTrailer/a1CarGooseneckTrailer5.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/a1CarGooseneckTrailer/a1CarGooseneckTrailer9.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/a1CarGooseneckTrailer/a1CarGooseneckTrailer10.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/a1CarGooseneckTrailer/a1CarGooseneckTrailer11.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/a1CarGooseneckTrailer/a1CarGooseneckTrailer12.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/a1CarGooseneckTrailer/a1CarGooseneckTrailer13.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/a1CarGooseneckTrailer/a1CarGooseneckTrailer14.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/a1CarGooseneckTrailer/a1CarGooseneckTrailer15.png&type=png" />
-            </div>
-            <div id="A3CarEnclosedGooseneckTrailer" style="display:none;flex-wrap:wrap;justify-content:flex-start;">
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/A3CarEnclosedGooseneckTrailer/A3CarEnclosedGooseneckTrailer1.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/A3CarEnclosedGooseneckTrailer/A3CarEnclosedGooseneckTrailer2.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/A3CarEnclosedGooseneckTrailer/A3CarEnclosedGooseneckTrailer3.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/A3CarEnclosedGooseneckTrailer/A3CarEnclosedGooseneckTrailer4.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/A3CarEnclosedGooseneckTrailer/A3CarEnclosedGooseneckTrailer5.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/A3CarEnclosedGooseneckTrailer/A3CarEnclosedGooseneckTrailer9.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/A3CarEnclosedGooseneckTrailer/A3CarEnclosedGooseneckTrailer10.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/A3CarEnclosedGooseneckTrailer/A3CarEnclosedGooseneckTrailer11.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/A3CarEnclosedGooseneckTrailer/A3CarEnclosedGooseneckTrailer12.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/A3CarEnclosedGooseneckTrailer/A3CarEnclosedGooseneckTrailer13.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/A3CarEnclosedGooseneckTrailer/A3CarEnclosedGooseneckTrailer14.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/A3CarEnclosedGooseneckTrailer/A3CarEnclosedGooseneckTrailer15.png&type=png" />
-            </div>
-            <div id="Bumperpook24_34ftFlatbed" style="display:none;flex-wrap:wrap;justify-content:flex-start;">
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpook24_34ftFlatbed/Bumperpook24_34ftFlatbed1.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpook24_34ftFlatbed/Bumperpook24_34ftFlatbed2.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpook24_34ftFlatbed/Bumperpook24_34ftFlatbed3.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpook24_34ftFlatbed/Bumperpook24_34ftFlatbed4.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpook24_34ftFlatbed/Bumperpook24_34ftFlatbed5.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpook24_34ftFlatbed/Bumperpook24_34ftFlatbed6.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpook24_34ftFlatbed/Bumperpook24_34ftFlatbed7.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpook24_34ftFlatbed/Bumperpook24_34ftFlatbed8.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpook24_34ftFlatbed/Bumperpook24_34ftFlatbed9.png&type=png" />
-            </div>
-            <div id="Bumperpool1CarEnclosedTrailer" style="display:none;flex-wrap:wrap;justify-content:flex-start;">
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool1CarEnclosedTrailer/Bumperpool1CarEnclosedTrailer1.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool1CarEnclosedTrailer/Bumperpool1CarEnclosedTrailer2.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool1CarEnclosedTrailer/Bumperpool1CarEnclosedTrailer3.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool1CarEnclosedTrailer/Bumperpool1CarEnclosedTrailer4.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool1CarEnclosedTrailer/Bumperpool1CarEnclosedTrailer5.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool1CarEnclosedTrailer/Bumperpool1CarEnclosedTrailer6.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool1CarEnclosedTrailer/Bumperpool1CarEnclosedTrailer7.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool1CarEnclosedTrailer/Bumperpool1CarEnclosedTrailer8.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool1CarEnclosedTrailer/Bumperpool1CarEnclosedTrailer10.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool1CarEnclosedTrailer/Bumperpool1CarEnclosedTrailer11.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool1CarEnclosedTrailer/Bumperpool1CarEnclosedTrailer12.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool1CarEnclosedTrailer/Bumperpool1CarEnclosedTrailer13.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool1CarEnclosedTrailer/Bumperpool1CarEnclosedTrailer14.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool1CarEnclosedTrailer/Bumperpool1CarEnclosedTrailer15.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool1CarEnclosedTrailer/Bumperpool1CarEnclosedTrailer16.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool1CarEnclosedTrailer/Bumperpool1CarEnclosedTrailer17.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool1CarEnclosedTrailer/Bumperpool1CarEnclosedTrailer18.png&type=png" />
-            </div>
-            <div id="Bumperpool2CarEnclosedTraile" style="display:none;flex-wrap:wrap;justify-content:flex-start;">
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool2CarEnclosedTraile/Bumperpool2CarEnclosedTraile1.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool2CarEnclosedTraile/Bumperpool2CarEnclosedTraile2.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool2CarEnclosedTraile/Bumperpool2CarEnclosedTraile3.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool2CarEnclosedTraile/Bumperpool2CarEnclosedTraile4.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool2CarEnclosedTraile/Bumperpool2CarEnclosedTraile5.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool2CarEnclosedTraile/Bumperpool2CarEnclosedTraile6.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool2CarEnclosedTraile/Bumperpool2CarEnclosedTraile7.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool2CarEnclosedTraile/Bumperpool2CarEnclosedTraile8.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool2CarEnclosedTraile/Bumperpool2CarEnclosedTraile10.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool2CarEnclosedTraile/Bumperpool2CarEnclosedTraile11.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool2CarEnclosedTraile/Bumperpool2CarEnclosedTraile12.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool2CarEnclosedTraile/Bumperpool2CarEnclosedTraile13.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool2CarEnclosedTraile/Bumperpool2CarEnclosedTraile14.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool2CarEnclosedTraile/Bumperpool2CarEnclosedTraile15.png&type=png" />
-            </div>
-            <div id="Bumperpool16_20FtFlatbed" style="display:none;flex-wrap:wrap;justify-content:flex-start;">
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool16_20FtFlatbed/Bumperpool16_20FtFlatbed1.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool16_20FtFlatbed/Bumperpool16_20FtFlatbed2.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool16_20FtFlatbed/Bumperpool16_20FtFlatbed3.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool16_20FtFlatbed/Bumperpool16_20FtFlatbed4.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool16_20FtFlatbed/Bumperpool16_20FtFlatbed5.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool16_20FtFlatbed/Bumperpool16_20FtFlatbed6.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool16_20FtFlatbed/Bumperpool16_20FtFlatbed7.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool16_20FtFlatbed/Bumperpool16_20FtFlatbed8.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Bumperpool16_20FtFlatbed/Bumperpool16_20FtFlatbed9.png&type=png" />
-            </div>
-            <div id="CarEnclosedTrailer" style="display:none;flex-wrap:wrap;justify-content:flex-start;">
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/CarEnclosedTrailer/CarEnclosedTrailer1.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/CarEnclosedTrailer/CarEnclosedTrailer2.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/CarEnclosedTrailer/CarEnclosedTrailer3.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/CarEnclosedTrailer/CarEnclosedTrailer4.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/CarEnclosedTrailer/CarEnclosedTrailer5.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/CarEnclosedTrailer/CarEnclosedTrailer6.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/CarEnclosedTrailer/CarEnclosedTrailer7.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/CarEnclosedTrailer/CarEnclosedTrailer8.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/CarEnclosedTrailer/CarEnclosedTrailer9.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/CarEnclosedTrailer/CarEnclosedTrailer10.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/CarEnclosedTrailer/CarEnclosedTrailer11.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/CarEnclosedTrailer/CarEnclosedTrailer12.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/CarEnclosedTrailer/CarEnclosedTrailer13.png&type=png" />
-            </div>
-            <div id="Gooseneck3CarLowTrailer" style="display:none;flex-wrap:wrap;justify-content:flex-start;">
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck3CarLowTrailer/Gooseneck3CarLowTrailer1.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck3CarLowTrailer/Gooseneck3CarLowTrailer2.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck3CarLowTrailer/Gooseneck3CarLowTrailer3.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck3CarLowTrailer/Gooseneck3CarLowTrailer4.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck3CarLowTrailer/Gooseneck3CarLowTrailer5.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck3CarLowTrailer/Gooseneck3CarLowTrailer6.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck3CarLowTrailer/Gooseneck3CarLowTrailer7.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck3CarLowTrailer/Gooseneck3CarLowTrailer8.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck3CarLowTrailer/Gooseneck3CarLowTrailer9.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck3CarLowTrailer/Gooseneck3CarLowTrailer10.png&type=png" />
-            </div>
-            <div id="Gooseneck24-34FtFlatbed" style="display:none;flex-wrap:wrap;justify-content:flex-start;">
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck24-34FtFlatbed/Gooseneck24-34FtFlatbed1.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck24-34FtFlatbed/Gooseneck24-34FtFlatbed2.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck24-34FtFlatbed/Gooseneck24-34FtFlatbed3.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck24-34FtFlatbed/Gooseneck24-34FtFlatbed4.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck24-34FtFlatbed/Gooseneck24-34FtFlatbed5.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck24-34FtFlatbed/Gooseneck24-34FtFlatbed6.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck24-34FtFlatbed/Gooseneck24-34FtFlatbed7.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck24-34FtFlatbed/Gooseneck24-34FtFlatbed8.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck24-34FtFlatbed/Gooseneck24-34FtFlatbed9.png&type=png" />
-            </div>
-            <div id="Gooseneck3CarWedgeTrailer" style="display:none;flex-wrap:wrap;justify-content:flex-start;">
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck3CarWedgeTrailer/Gooseneck3CarWedgeTrailer1.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck3CarWedgeTrailer/Gooseneck3CarWedgeTrailer2.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck3CarWedgeTrailer/Gooseneck3CarWedgeTrailer3.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck3CarWedgeTrailer/Gooseneck3CarWedgeTrailer4.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck3CarWedgeTrailer/Gooseneck3CarWedgeTrailer5.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck3CarWedgeTrailer/Gooseneck3CarWedgeTrailer6.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck3CarWedgeTrailer/Gooseneck3CarWedgeTrailer7.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck3CarWedgeTrailer/Gooseneck3CarWedgeTrailer8.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck3CarWedgeTrailer/Gooseneck3CarWedgeTrailer9.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck3CarWedgeTrailer/Gooseneck3CarWedgeTrailer10.png&type=png" />
-            </div>
-            <div id="Gooseneck5CarOpenTrailer" style="display:none;flex-wrap:wrap;justify-content:flex-start;">
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck5CarOpenTrailer/Gooseneck5CarOpenTrailer1.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck5CarOpenTrailer/Gooseneck5CarOpenTrailer2.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck5CarOpenTrailer/Gooseneck5CarOpenTrailer3.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck5CarOpenTrailer/Gooseneck5CarOpenTrailer4.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck5CarOpenTrailer/Gooseneck5CarOpenTrailer5.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck5CarOpenTrailer/Gooseneck5CarOpenTrailer6.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck5CarOpenTrailer/Gooseneck5CarOpenTrailer7.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck5CarOpenTrailer/Gooseneck5CarOpenTrailer8.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck5CarOpenTrailer/Gooseneck5CarOpenTrailer9.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck5CarOpenTrailer/Gooseneck5CarOpenTrailer10.png&type=png" />
-            </div>
-            <div id="Gooseneck6CarOpenTrailer" style="display:none;flex-wrap:wrap;justify-content:flex-start;">
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck6CarOpenTrailer/Gooseneck6CarOpenTrailer1.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck6CarOpenTrailer/Gooseneck6CarOpenTrailer2.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck6CarOpenTrailer/Gooseneck6CarOpenTrailer3.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck6CarOpenTrailer/Gooseneck6CarOpenTrailer4.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck6CarOpenTrailer/Gooseneck6CarOpenTrailer5.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck6CarOpenTrailer/Gooseneck6CarOpenTrailer6.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck6CarOpenTrailer/Gooseneck6CarOpenTrailer7.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/Gooseneck6CarOpenTrailer/Gooseneck6CarOpenTrailer8.png&type=png" />
-            </div>
-            <div id="BumperPool2CarTrailer" style="display:none;flex-wrap:wrap;justify-content:flex-start;">
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/BumperPool2CarTrailer/BumperPool2CarTrailer1.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/BumperPool2CarTrailer/BumperPool2CarTrailer2.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/BumperPool2CarTrailer/BumperPool2CarTrailer3.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/BumperPool2CarTrailer/BumperPool2CarTrailer4.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/BumperPool2CarTrailer/BumperPool2CarTrailer5.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/BumperPool2CarTrailer/BumperPool2CarTrailer6.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/BumperPool2CarTrailer/BumperPool2CarTrailer7.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/BumperPool2CarTrailer/BumperPool2CarTrailer8.png&type=png" />
-                <img class="img" src="@ViewBag.BaseUrl/Equipment/Image?name=../TrailerPattern/BumperPool2CarTrailer/BumperPool2CarTrailer9.png&type=png" />
             </div>
         </div>
     </div>
-</div>
+</body>
 
 <script>
     var curentSelectPattern;
-
-    function LoadFile(fille, numDock) {
-        let pref = fille.files[0].name.substr(fille.files[0].name.lastIndexOf(".") + 1);
-        let nameLoadDocEl = document.getElementById("nameLoadDoc" + numDock);
-        let nameNoLoadDocEl = document.getElementById("nameNoLoadDoc" + numDock);
-        if (pref == "pdf" || pref == "jpg" || pref == "jepg") {
-            nameNoLoadDocEl.hidden = "hidden";
-            nameLoadDocEl.hidden = "";
-            nameLoadDocEl.textContent = fille.files[0].name;
-        }
-        else {
-            nameNoLoadDocEl.hidden = "";
-            nameLoadDocEl.hidden = "hidden";
-            fille.value = "";
-        }
-    }
 
     function SelectTrailer(value) {
         if (curentSelectPattern || value == "") {
@@ -295,103 +220,3 @@
         }
     }
 </script>
-
-
-<style>
-    * {
-        margin: 0px;
-    }
-
-    .img {
-        margin: 5px;
-        padding: 5px;
-        image-rendering: optimizeSpeed;
-        width: 29%;
-    }
-
-        .img:hover {
-            opacity: 0.7;
-        }
-
-
-    .validation:invalid {
-        border-color: red;
-    }
-
-    .validation:valid {
-        border-color: #4ad73b;
-    }
-
-    .btnSave {
-        color: rgba(45,45,45,0.88);
-        background: none;
-        display: inline-block;
-        padding: 7px;
-        font-size: 16px;
-        font-weight: 400;
-        text-align: center;
-        border: 1px solid;
-        border-radius: 4px;
-        width: 130px;
-    }
-
-    btnSave:hover {
-        background-color: rgba(45,45,45,0.98);
-        transition: 0.5s;
-    }
-
-    .btnD:hover {
-        background: rgba(243, 167, 76, 0.29);
-    }
-
-    .inpTextTr {
-        border: none;
-        width: 97%;
-        background-color: rgba(243, 167, 76, 0.09);
-        color: #f3a74c;
-    }
-
-    .inpLabe {
-        font-size: 18px;
-        color: rgb(51, 51, 51);
-        margin-top: 10px;
-        margin-left: 5px;
-    }
-
-    .inpText {
-        width: 100%;
-        height: 25px;
-        border-width: 1px;
-        border-style: double;
-        border-radius: 4px;
-        padding: 2px;
-        font-size: 16px;
-        color: rgb(51, 51, 51);
-        border-color: rgba(51, 51, 51, 0.24);
-        margin-bottom: 15px;
-    }
-
-    .content {
-        width: 100%;
-    }
-
-    .contentBody {
-        display: flex;
-        justify-content: space-around;
-    }
-
-    .backBtn {
-        background: none;
-        border: none;
-        font-size: 17px;
-        color: #ffd7a6;
-        margin-bottom: 20px;
-    }
-
-    .body {
-        margin-top: 30px;
-        margin-left: 5px;
-        margin-right: 5px;
-        padding: 10px;
-    }
-</style>

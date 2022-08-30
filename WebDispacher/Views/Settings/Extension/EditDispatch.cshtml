@@ -1,106 +1,40 @@
-﻿<div class="body">
-    <input class="backBtn" type="button" value="← Back" onclick="history.back();" />
-    <form style="width:45%;" action="" method="post" enctype="multipart/form-data" asp-for="FileUpload.FormFiles">
-        <div class="content">
-            <h2 style="color: rgb(51, 51, 51);margin-bottom:2px;">Add New Dispatcher</h2>
-            <input hidden name="idDispatch" value="@ViewBag.Dispatcher.Id" class="inpText validation" type="text" required />
-            <p class="inpLabe">Type Dispatcher</p>
-            <select name="typeDispatcher" class="inpText validation" type="text" onchange="SelectTrailer(this.options[this.selectedIndex].value)" required>
-                <option value="">Choose a dispatcher type</option>
-                <option selected value="Central Dispatch">Central Dispatch</option>
-            </select>
-            <p class="inpLabe">Login Dispatch</p>
-            <input name="login" value="@ViewBag.Dispatcher.Login" class="inpText validation" type="text" required />
-            <p class="inpLabe">Password Dispatch</p>
-            <input name="password" value="@ViewBag.Dispatcher.Password" class="inpText validation" type="text" required />
+﻿@model WebDispacher.ViewModels.Dispatcher.DispatcherViewModel
+
+<body>
+    <div class="admin">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="tabContent">
+                        <div class="title">
+                            <a href="#" onclick="history.back();">Back to Dispatcher</a>
+                        </div>
+                        <div class="title">
+                            <h1 class="text-info-header-1">Edit Dispatcher</h1>
+                        </div>
+                        <form action="" method="post" enctype="multipart/form-data">
+                            <input hidden name="Id" value="@Model.Id" class="inpText validation" type="text" required/>
+                            <label for="">
+                                Type Dispatcher
+                                <select class="height-input input-select" name="Type" required>
+                                    <option value="">Choose a dispatcher type</option>
+                                    <option value="Central Dispatch">Central Dispatch</option>
+                                </select>
+                            </label>
+                            <label for="">
+                                Login Dispatch
+                                <input type="text" name="Login" value="@Model.Login">
+                            </label>
+                            <label for="">
+                                Password Dispatch
+                                <input type="text" name="Password" value="@Model.Password">
+                            </label>
+
+                            <input type="submit" value="Save Info" class="btn1"/>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-        <input class="btnSave" value="Save" type="submit" />
-    </form>
-</div>
-
-<style>
-    * {
-        margin: 0px;
-    }
-
-    .validation:invalid {
-        border-color: red;
-    }
-
-    .validation:valid {
-        border-color: #4ad73b;
-    }
-
-    .btnSave {
-        color: rgba(45,45,45,0.88);
-        background: none;
-        display: inline-block;
-        padding: 7px;
-        font-size: 16px;
-        font-weight: 400;
-        text-align: center;
-        border: 1px solid;
-        border-radius: 4px;
-        width: 130px;
-    }
-
-    btnSave:hover {
-        background-color: rgba(45,45,45,0.98);
-        transition: 0.5s;
-    }
-
-    .content {
-        width: 100%;
-    }
-
-    .contentBody {
-        display: flex;
-        justify-content: space-around;
-    }
-
-    .backBtn {
-        background: none;
-        border: none;
-        font-size: 17px;
-        color: #ffd7a6;
-        margin-bottom: 20px;
-    }
-
-    .body {
-        margin-top: 30px;
-        margin-left: 5px;
-        margin-right: 5px;
-        padding: 10px;
-    }
-    .btnD:hover {
-        background: rgba(243, 167, 76, 0.29);
-    }
-
-    .inpTextTr {
-        border: none;
-        width: 97%;
-        background-color: rgba(243, 167, 76, 0.09);
-        color: #f3a74c;
-    }
-
-    .inpLabe {
-        font-size: 18px;
-        color: rgb(51, 51, 51);
-        margin-top: 10px;
-        margin-left: 5px;
-    }
-
-    .inpText {
-        width: 100%;
-        height: 25px;
-        border-width: 1px;
-        border-style: double;
-        border-radius: 4px;
-        padding: 2px;
-        font-size: 16px;
-        color: rgb(51, 51, 51);
-        border-color: rgba(51, 51, 51, 0.24);
-        margin-bottom: 15px;
-    }
-
-</style>
+    </div>
+</body>

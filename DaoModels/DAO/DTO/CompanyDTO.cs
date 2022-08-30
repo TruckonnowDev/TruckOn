@@ -7,5 +7,7 @@
         public bool Active { get; set; }
         public string DateRegistration { get; set; }
         public string Type { get; set; }
+        public string SubscriptionStatus { get; set; }
+        public string SubscriptionName { get; set; }
     }
 }

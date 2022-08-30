@@ -1,0 +1,170 @@
+﻿@model WebDispacher.ViewModels.Truck.TruckViewModel
+
+<body>
+    <div class="admin truc">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="tabContent">
+                        <div class="title">
+                            <a href="#" onclick="history.back();">Back to Equipment</a>
+                        </div>
+                        <div class="title">
+                            <h1 class="text-info-header-1">Edit truck</h1>
+                        </div>
+                        <form action="" method="post" enctype="multipart/form-data">
+                        <input type="text" name="Id" required value="@Model.Id" style="display:none;" />
+                            <label class="big-label" for="">
+                                Name Truck
+                                <input class="height-input" type="text" name="NameTruck" required value="@Model.NameTruck">
+                            </label>
+                            <label class="big-label" for="">
+                                Type Truck <br />
+                                <select class="height-input input-select" name="Type" onchange="SelectTruck(this.options[this.selectedIndex].value)" required>
+                                    <option value="@Model.Type">@Model.Type</option>
+                                    <option value="PickUpDually4TiresInTheBackMustHave4Door">Pick up Dually (4 tires in the bacK) must have 4 door</option>
+                                    @*<option value="PickupFourWheel">Four-wheel pickup dually</option>
+                                        <option value="FourDoorTruckChassisOpenFrame">Four-door truck with double chassis and open frame</option>
+                                        <option value="BoxTruckSingleWheel">Box Truck Single Wheel</option>
+                                        <option value="BoxTruckWheelDually">Box Truck Wheel Dually</option>
+                                        <option value="CargiVanChasissDuallyOrSingleWheel">Cargi Van Chasiss Dually Or Single Wheel</option>
+                                        <option value="CargoVanMustHaveWithDually">Cargo Van Must Have With Dually</option>
+                                        <option value="PickUpDuallyChassisOpenFrameInTheBackMustHave2">Pick Up Dually Chassis Open Frame In The Back Must Have 2</option>
+                                        <option value="PickUpDuallyChassisMustHave2Door">Pick Up Dually Chassis Must Have 2 Door</option>
+                                        <option value="PickUpDuallyChassisMustHave4Door">Pick Up Dually Chassis Must Have 4 Door</option>
+                                        <option value="PickUpDuallyFlatbed4Door">Pick Up Dually Flatbed 4 Door</option>
+                                        <option value="PickUpDuallyFlatbedMustHave2Door">Pick Up Dually Flatbed Must Have 2 Door</option>*@
+                                </select>
+                            </label>
+                            <label class="big-label" for="">
+                                Year
+                                <input class="height-input" type="text" name="Year" value="@Model.Year" />
+                            </label>
+                            <label class="big-label" for="">
+                                Make
+                                <input class="height-input" type="text" name="Make" value="@Model.Make" />
+                            </label>
+                            <label class="big-label" for="">
+                                Model
+                                <input class="height-input" type="text" name="Model" value="@Model.Model" />
+                            </label>
+                            <label class="big-label" for="">
+                                State
+                                <input class="height-input" type="text" name="State" value="@Model.State" />
+                            </label>
+                            <label class="big-label" for="">
+                                Plate Exp
+                                <input class="height-input" type="text" name="Exp" value="@Model.Exp" />
+                            </label>
+                            <label class="big-label" for="">
+                                Vin#
+                                <input class="height-input" type="text" name="Vin" value="@Model.Vin" />
+                            </label>
+                            <label class="big-label" for="">
+                                Owner
+                                <input class="height-input" type="text" name="Owner" value="@Model.Owner" />
+                            </label>
+                            <label class="big-label" for="">
+                                Plate Truck
+                                <input class="height-input" type="text" name="PlateTruck" required value="@Model.PlateTruck" />
+                            </label>
+                            <label class="big-label" for="">
+                                Color
+                                <input class="height-input" type="text" name="ColorTruck" value="@Model.ColorTruck" >
+                            </label>
+                            <button class="btn1 big-label height-input big-font-size">Save Info</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div id="PickUpDually4TiresInTheBackMustHave4Door" class="row" style="display:none;">
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door1.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door2.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door3.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door4.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door5.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door6.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door7.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door8.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door9.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door10.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door11.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door12.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door13.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door14.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door15.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door16.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door17.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door18.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door19.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door20.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door21.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door22.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door23.png&type=png" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    var curentSelectPattern;
+
+    function SelectTruck(value) {
+        if (curentSelectPattern || value == "") {
+            curentSelectPattern.style.display = "none";
+        }
+        let selectTypeDiv = document.getElementById(value);
+        if (selectTypeDiv) {
+            selectTypeDiv.style.display = "flex";
+            curentSelectPattern = selectTypeDiv;
+        }
+    }
+</script>

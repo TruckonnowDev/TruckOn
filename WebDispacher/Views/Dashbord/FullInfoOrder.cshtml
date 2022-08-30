@@ -1,252 +1,123 @@
-﻿<div class="body">
-    <input class="backBtn" type="button" value="← Back to Orders" onclick="history.back();" />
-    <div style="display:flex;">
-        <div style="width:77%">
-            <div class="headData">
-                <span class="inpHead">Load id: @ViewBag.Order.idOrder</span>
-                <span class="inpHead">Price: @ViewBag.Order.TotalPaymentToCarrier</span>
-                <span class="inpHead">Status: @ViewBag.Order.CurrentStatus</span>
-            </div>
-            <div class="bodyTable">
-                <h4 class="headTabe">Vehicles</h4>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>VIN</th>
-                            <th>Year</th>
-                            <th>Make</th>
-                            <th>Model</th>
-                            <th>Type</th>
-                            <th>Color</th>
-                            <th>Lot Number</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (ViewBag.Order.VehiclwInformations != null)
-                        {
-                            @for (int i = 0; i < ViewBag.Order.VehiclwInformations.Count; i++)
-                            {
-                                <tr>
-                                    <td>@i</td>
-                                    <td>@ViewBag.Order.VehiclwInformations[i].VIN</td>
-                                    <td>@ViewBag.Order.VehiclwInformations[i].Year</td>
-                                    <td>@ViewBag.Order.VehiclwInformations[i].Make</td>
-                                    <td>@ViewBag.Order.VehiclwInformations[i].Model</td>
-                                    <td>@ViewBag.Order.VehiclwInformations[i].Type</td>
-                                    <td>@ViewBag.Order.VehiclwInformations[i].Color</td>
-                                    <td>@ViewBag.Order.VehiclwInformations[i].Lot</td>
-                                </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
-            </div>
-            <div class="fullData">
-                <div class="panel">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Origin</h3>
+﻿@model WebDispacher.ViewModels.ShippingViewModel
+<body xmlns="http://www.w3.org/1999/html">
+<div class="admin Billing">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="title text-info-padding-5">
+                    <a href="#" onclick="history.back();">Back to Orders</a>
                     </div>
-                    <div class="outer">
-                        <p class="list-group-item">
-                            @ViewBag.Order.AddresP, @ViewBag.Order.CityP,
-                            <br /> @ViewBag.Order.StateP, @ViewBag.Order.ZipP
-                        </p>
-                        <hr style="border-color:rgba(228, 228, 228, 0.40);border-width:.78px;" />
-                        <span class="list-group-item">Contact: @ViewBag.Order.ContactNameP</span>
-                        <span class="list-group-item">Phone: @ViewBag.Order.PhoneP</span>
-                        <span class="list-group-item">Pickup date: @ViewBag.Order.PickupExactly</span>
-                    </div>
+                <div class="title text-info-padding-5">
+
+                    <h1 class="text-info-header-1">Information About the Order</h1>
                 </div>
-                <div class="panel">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Destination</h3>
-                    </div>
-                    <div class="outer">
-                        <p class="list-group-item">
-                            @ViewBag.Order.AddresD, @ViewBag.Order.CityD,
-                            <br /> @ViewBag.Order.StateD, @ViewBag.Order.ZipD
-                        </p>
-                        <hr style="border-color:rgba(228, 228, 228, 0.40);border-width:.78px;" />
-                        <span class="list-group-item">Contact: @ViewBag.Order.ContactNameD</span>
-                        <span class="list-group-item">Phone: @ViewBag.Order.PhoneD</span>
-                        <span class="list-group-item">Delivery date: @ViewBag.Order.DeliveryEstimated</span>
-                    </div>
+                <p class="text-info-p-1 text-info-padding-5"><b>Load id:</b> <span>@Model.IdOrder</span></p>
+                <p class="text-info-p-1 text-info-padding-5"><b>Price:</b> <span>@Model.PriceListed</span></p>
+                <p class="text-info-p-1 text-info-padding-5"><b>Status:</b> <span>@Model.CurrentStatus</span></p>
+                <div class="text-r">
+                    <p class="text-info-header-3 text-info-padding-5"><b>Vehicles</b></p>
                 </div>
-                <div class="panel">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Payment Information</h3>
-                    </div>
-                    <div class="outer">
-                        <span class="list-group-item">Price: @ViewBag.Order.PriceListed</span>
-                        <span class="list-group-item">Payment Method: @ViewBag.Order.TotalPaymentToCarrier</span>
-                        <hr style="border-color:rgba(228, 228, 228, 0.40);border-width:.78px;" />
-                        <span class="list-group-item">@ViewBag.Order.OnDeliveryToCarrier</span>
-                    </div>
-                </div>
-            </div>
-            <div class="fullData">
-                <div class="panel">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Customer</h3>
-                    </div>
-                    <div class="outer">
-                        <span class="list-group-item">Contact: @ViewBag.Order.ContactC</span>
-                        <span class="list-group-item">Phone: @ViewBag.Order.PhoneC</span>
-                        <span class="list-group-item">Fax: @ViewBag.Order.FaxC</span>
-                        <span class="list-group-item">Iccmc: @ViewBag.Order.IccmcC</span>
-                    </div>
-                </div>
-                <div class="panel">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Instructions</h3>
-                    </div>
-                    <div class="outer">
-                        <span class="list-group-item">@ViewBag.Order.Titl1DI</span>
-                    </div>
-                </div>
-            </div>
-            <p><h2>BOL</h2></p>
-            @if (ViewBag.Order.VehiclwInformations != null)
-            {
-                @for (int i = 0; i < ViewBag.Order.VehiclwInformations.Count; i++)
-                {
-                    <p><a href="@ViewBag.BaseUrl/Photo/BOL/@ViewBag.Order.VehiclwInformations[i].Id">@ViewBag.Order.VehiclwInformations[i].Make @ViewBag.Order.VehiclwInformations[i].Model @ViewBag.Order.VehiclwInformations[i].Year </a></p>
-                    <p>@ViewBag.BaseUrl/Photo/BOL/@ViewBag.Order.VehiclwInformations[i].Id</p>
-                    <hr />
-                }
-            }
-        </div>
-        <div class="panel" style="width:23%;">
-            <div class="panel-heading">
-                <h3 class="panel-title">Action history</h3>
-            </div>
-            <div class="outer" style="overflow-y:auto;height:80vh;overflow-x:hidden;">
-                @for (int i = 0; i < ViewBag.Historys.Count; i++)
-                {
-                    <div class="outer">
-                        <span class="list-group-item">@ViewBag.Historys[i].Action</span>
-                        <span class="list-group-item">Date Action: @ViewBag.Historys[i].DateAction</span>
-                        <hr style="border-color:rgba(228, 228, 228, 0.40);border-width:.78px;" />
-                    </div>
-                    @if (ViewBag.Historys.Count - 1 != i)
+                <table>
+                    <tr class="blue">
+                        <td>№</td>
+                        <td>VIN</td>
+                        <td>Year</td>
+                        <td>Make</td>
+                        <td>Model</td>
+                        <td>Type</td>
+                        <td>Color</td>
+                        <td>Lot number</td>
+                    </tr>
+                    @if (Model.VehiclwInformations != null)
                     {
-                        <hr style="border-color:rgba(0, 0, 0, 0.36);border-width:1px;margin-left:50%;margin-right:50%;height:10px;margin-top:5px;;margin-bottom:5px; " />
+                        @for (int i = 0; i < Model.VehiclwInformations.Count; i++)
+                        {
+                            <tr>
+                                <td>@i</td>
+                                <td>@Model.VehiclwInformations[i].VIN</td>
+                                <td>@Model.VehiclwInformations[i].Year</td>
+                                <td>@Model.VehiclwInformations[i].Make</td>
+                                <td>@Model.VehiclwInformations[i].Model</td>
+                                <td>@Model.VehiclwInformations[i].Type</td>
+                                <td>@Model.VehiclwInformations[i].Color</td>
+                                <td>@Model.VehiclwInformations[i].Lot</td>
+                            </tr>
+                        }
                     }
-                }
+                </table>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="text-r">
+                            <h3 class="text-info-header-3 text-info-padding-5">Origin</h3>
+                            <p class="text-info-p"> @Model.AddresP, @Model.CityP, @Model.StateP, @Model.ZipP <br>
+                                <b>Contact: </b>@Model.ContactNameP <br><b>Phone:</b> @Model.PhoneP <br><b>Pickup date: </b>@Model.PickupExactly</p>
+                        </div>
+
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-r">
+                            <h3 class="text-info-header-3">Destination</h3>
+                            <p class="text-info-p">@Model.AddresD, @Model.CityD, @Model.StateD, @Model.ZipD <br>
+                                <b>Contact:</b> @Model.ContactNameD<br><b>Phone:</b> @Model.PhoneD<br><b>Delivery date:</b> @Model.DeliveryEstimated</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-r">
+                            <h3 class="text-info-header-3">Payment Information</h3>
+                            <p class="text-info-p">
+                                <b>Price:</b> @Model.PriceListed<br> <b>Payment Method:</b> @Model.TotalPaymentToCarrier<br> 
+                                <b>On Delivery to Carrier: </b> @Model.OnDeliveryToCarrier
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-r">
+                            <h3 class="text-info-header-3">Customer</h3>
+                            <p class="text-info-p">
+                                <b>Contact:</b> @Model.ContactC<br>
+                                <b>Phone:</b> @Model.PhoneC<br>
+                                <b>Fax:</b> @Model.FaxC<br>
+                                <b>Iccmc:</b> @Model.IccmcC
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-r">
+                            <h3 class="text-info-header-3">Instructions</h3>
+                            <p class="text-info-p">@Model.Titl1DI</p>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="text-r">
+                            <h3 class="text-info-header-3">BOL</h3>
+                            @if (Model.VehiclwInformations != null)
+                            {
+                                @foreach (var t in Model.VehiclwInformations)
+                                {
+                                    @:<a href="@ViewBag.BaseUrl/Photo/BOL/@t.Id">@t.Make @t.Model @t.Year</a><br>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="right-bar-about">
+                    <h3 class="text-info-header-3">Action history</h3>
+                    @for (var i = 0; i < ViewBag.Historys.Count; i++)
+                    {
+                        <div class="one text-info-p">
+                            <p>@ViewBag.Historys[i].Action</p>
+                            <p>Date Action: @ViewBag.Historys[i].DateAction</p>
+                        </div>  
+                    }
+                </div>
             </div>
         </div>
     </div>
 </div>
+</body>
 
-        <style>
-            * {
-                margin: 0px;
-            }
+<style>
 
-            .outer {
-                border-style: solid;
-                border-width: 1px;
-                border-color: rgba(228, 228, 228, 0.60);
-            }
-
-            .panel-title {
-                font-size: 20px;
-                color:#363636;
-            }
-
-            .panel-heading {
-                padding: 10px 15px;
-                border-top-left-radius: 3px;
-                border-top-right-radius: 3px;
-                background: rgba(228, 228, 228, 0.40);
-            }
-
-            .list-group-item {
-                display: block;
-                padding: 8px 20px;
-                width: 100%;
-                font-family: Arial;
-                font-size: 16px;
-                line-height: 22px;
-                width: 95%;
-            }
-
-            .panel {
-                border-radius: 4px;
-                margin:5px;
-                max-width: 70%;
-            }
-
-            .bodyTable {
-                margin: 15px;
-            }
-
-            .headTabe {
-                font-size: 21px;
-                margin-left: 10px;
-                color: #363636;
-            }
-
-            tr {
-                display: table-row;
-                vertical-align: inherit;
-                border-color: inherit;
-            }
-
-
-            .table {
-                width: 100%;
-                max-width: 100%;
-                margin-bottom: 20px;
-            }
-
-            td, th {
-                text-align: center;
-                height: 27px;
-                color:#363636;
-            }
-
-            td {
-                background-color: rgba(228, 228, 228, 0.40);
-            }
-
-            .fullData {
-                display: flex;
-                justify-content: space-between;
-                padding: 25px;
-            }
-
-            .headData {
-                padding: 10px;
-                border-width: 1px;
-                border-radius: 6px;
-                background-color: rgba(228, 228, 228, 0.40);
-                display: flex;
-                justify-content: space-around;
-            }
-
-            .inpHead {
-                font-size: 19px;
-                color: #363636;
-            }
-
-            .body {
-                margin-top: 30px;
-                margin-left: 5px;
-                margin-right: 5px;
-                padding: 0px;
-            }
-
-            .backBtn {
-                background: none;
-                border: none;
-                font-size: 17px;
-                color: #ffd7a6;
-                margin-bottom: 20px;
-            }
-
-                .backBtn:hover {
-                    color: #f3a74c;
-                }
-        </style>
+</style>

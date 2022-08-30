@@ -1,0 +1,34 @@
+﻿<body>
+    <div class="admin Pickup">
+        <div class="container">
+            <div class="col-md-8">
+                <div class="title">
+                    <h1>Inspection</h1>
+                </div>
+                <p><b>Driver:</b> <span> @ViewBag.Drivers.FullName</span></p>
+                <p><b>Inspection truck:</b> <span> @ViewBag.InspectionTruck.Date</span></p>
+                <p><b>Truck:</b> <span>@ViewBag.Truck</span></p>
+                <p><b>Trailer:</b> <span>@ViewBag.Trailer</span></p>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>Photo inspection</h3>
+                </div>
+                @for (int i = 0; i < ViewBag.InspectionTruck.PhotosTruck.Count; i++)
+                {
+                    try
+                    {
+                            <div class="col-md-3" style="width: 263px;height: 148px;margin-bottom:10px">
+                                <img src="@ViewBag.BaseUrl/Driver/Image?name=@ViewBag.InspectionTruck.PhotosTruck[i].path&type=jpg" width="263" height="148" />
+                            </div>
+                    }
+                    catch
+                    {
+                        <p>No Photo</p>
+                    }
+
+                }
+            </div>
+        </div>
+    </div>
+</body>

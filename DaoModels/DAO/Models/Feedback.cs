@@ -9,6 +9,5 @@
         public string Would_You_Use_Our_Company_Again  { get; set; }
         public string Would_You_Like_To_Get_An_notification_If_We_Have_Any_Promotion { get; set; }
         public string How_did_the_driver_perform { get; set; }
-        public virtual Driver Driver { get; set; }
     }
 }

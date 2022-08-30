@@ -70,6 +70,13 @@ namespace MDispatch.ViewModels.PageAppMV
             set => SetProperty(ref idShipping, value);
         }
 
+        private Models.Feedback _feedback;
+        public Models.Feedback Feedback
+        {
+            get => _feedback;
+            set => SetProperty(ref _feedback, value);
+        }
+
         private int count = 0;
         public int Count
         {
@@ -177,10 +184,13 @@ namespace MDispatch.ViewModels.PageAppMV
 
         public async void Init()
         {
+            
             string description = null;
             int state = 0;
             Shipping shipping = null;
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
+            Inspection inspection = new Inspection();
+            var feedback = inspection.GetFeedback(token, idShipping);
             if (StatusInspection == "Assigned")
             {
                 IsInspection = true;

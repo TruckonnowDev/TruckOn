@@ -380,6 +380,29 @@ namespace MDispatch.Service
             }
         }
 
+        public Feedback GetFeedback(string token, string shippingId)
+        {
+            IRestResponse response = null;
+            string content = null;
+            try
+            {
+                RestClient client = new RestClient(Config.BaseReqvesteUrl);
+                RestRequest request = new RestRequest("Mobile/Get/FeedBack", Method.GET);
+                client.Timeout = 60000;
+                request.AddHeader("Accept", "application/json");
+                request.AddParameter("token", token);
+                request.AddParameter("shippingId", shippingId);
+                response = client.Execute(request);
+                content = response.Content;
+                HTTPResponse httpResponse = JsonConvert.DeserializeObject<HTTPResponse>(content);
+                return new Feedback();
+            }
+            catch (Exception)
+            {
+                throw new Exception();
+            }
+        }
+
         public int SaveAsk(string token, string id, Ask1 ask1, ref string description)
         {
             IRestResponse response = null;

@@ -23,6 +23,7 @@ using MDispatch.View;
 using MDispatch.Service.Helpers;
 using System;
 using MDispatch.Helpers;
+using System.Windows.Input;
 
 namespace MDispatch.ViewModels.PageAppMV
 {
@@ -76,6 +77,15 @@ namespace MDispatch.ViewModels.PageAppMV
             get => _feedback;
             set => SetProperty(ref _feedback, value);
         }
+
+        private bool _hasFeedback;
+        public bool HasFeedback
+        {
+            get => _hasFeedback;
+            set => SetProperty(ref _hasFeedback, value);
+        }
+
+        public ICommand FeedbackCommand => new Command(OnFeedbackCommand);
 
         private int count = 0;
         public int Count
@@ -182,6 +192,20 @@ namespace MDispatch.ViewModels.PageAppMV
             await Navigation.PushAsync(new VechicleDetails(vehiclwInformation, managerDispatchMob));
         }
 
+        private async void OnFeedbackCommand()
+        {
+            if (Feedback != null &&
+                Feedback.id != 0)
+            {
+                await Navigation.PushAsync(new View.Inspection.Feedback(
+                    managerDispatchMob, Shipping.VehiclwInformations.Find(v => v.Id == IdShipping), null, Feedback));
+            }
+            else
+            {
+                await PopupNavigation.PushAsync(new Alert("You have no feedback on this shipping.", Navigation));
+            }
+        }
+
         public async void Init()
         {
             
@@ -190,7 +214,13 @@ namespace MDispatch.ViewModels.PageAppMV
             Shipping shipping = null;
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
             Inspection inspection = new Inspection();
-            var feedback = inspection.GetFeedback(token, idShipping);
+            var feedback = await inspection.GetFeedback(token, idShipping);
+            if (feedback != null &&
+                feedback.id != 0)
+            {
+                HasFeedback = true;
+                Feedback = feedback;
+            }
             if (StatusInspection == "Assigned")
             {
                 IsInspection = true;

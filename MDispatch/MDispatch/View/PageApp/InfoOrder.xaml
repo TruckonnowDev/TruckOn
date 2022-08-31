@@ -8,9 +8,18 @@
              x:Name="ctp">
     <ContentPage.Content>
         <StackLayout x:Name="body">
-        <ScrollView>
+            <Label Text="Feedback"
+                   IsVisible="{Binding HasFeedback}"
+                   FontFamily="{StaticResource OpenSans-Regular}"
+                   TextColor="#101010"
+                   HorizontalOptions="End">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding FeedbackCommand}"/>
+                </Label.GestureRecognizers>
+            </Label>
+            <ScrollView>
             <StackLayout Padding="24, 2, 24, 35" x:Name="bodyBlock">
-                <StackLayout Padding="0, 8, 0, 11" IsVisible="True" x:Name="bloc1">
+                    <StackLayout Padding="0, 8, 0, 11" IsVisible="True" x:Name="bloc1">
                     <Label x:Name="countVeclLbl"
                            VerticalTextAlignment="Center"
                            FontSize="16"

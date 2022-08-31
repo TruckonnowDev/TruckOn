@@ -14,9 +14,11 @@ namespace MDispatch.View.Inspection
 	{
         FeedBackMV feedBackMV = null;
 
-        public Feedback (ManagerDispatchMob managerDispatchMob, VehiclwInformation vehiclwInformation, object payMVInspaction)
+        public Feedback (ManagerDispatchMob managerDispatchMob, VehiclwInformation vehiclwInformation, object payMVInspaction,
+            Models.Feedback feedback = null)
 		{
-            feedBackMV = new FeedBackMV(managerDispatchMob, vehiclwInformation, Navigation, payMVInspaction);
+            feedBackMV = new FeedBackMV(managerDispatchMob, vehiclwInformation, Navigation, payMVInspaction,
+                feedback);
 			InitializeComponent ();
             BindingContext = feedBackMV;
             Init();
@@ -24,6 +26,8 @@ namespace MDispatch.View.Inspection
 
         private void Init()
         {
+            if (feedBackMV.HasFeedback)
+                return;
             feedBackMV.Feedback = new Models.Feedback();
             feedBackMV.Feedback.How_Are_You_Satisfied_With_Service = "0";
             feedBackMV.Feedback.Would_You_Use_Our_Company_Again = "No";

@@ -260,7 +260,7 @@ namespace MDispatch.Service
                 else if(typeInspection == "FeedBack")
                 {
                     inspection = new Inspection();
-                    stateInspection = inspection.SaveAsk(token, (Models.Feedback)obj, ref description);
+                    stateInspection = inspection.SaveAsk(token, (Models.Feedback)obj, ref description, idShiping);
                 }
                 else if(typeInspection == "AskDelyvery")
                 {

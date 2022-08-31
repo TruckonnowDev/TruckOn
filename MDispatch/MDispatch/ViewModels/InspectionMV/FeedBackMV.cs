@@ -24,8 +24,25 @@ namespace MDispatch.ViewModels.InspectionMV
         public INavigation Navigation { get; set; }
         private object paymmpayMVInspactionant = null;
 
-        public FeedBackMV(ManagerDispatchMob managerDispatchMob, VehiclwInformation vehiclwInformation, INavigation navigation, object paymmpayMVInspactionant)
+        public FeedBackMV(ManagerDispatchMob managerDispatchMob, 
+            VehiclwInformation vehiclwInformation, 
+            INavigation navigation, 
+            object paymmpayMVInspactionant,
+            Models.Feedback feedback = null)
         {
+            if (feedback != null &&
+                feedback.id != 0)
+            {
+                Feedback = new Models.Feedback
+                {
+                    How_Are_You_Satisfied_With_Service = feedback.How_Are_You_Satisfied_With_Service,
+                    How_did_the_driver_perform = feedback.How_did_the_driver_perform,
+                    id = feedback.id,
+                    Would_You_Like_To_Get_An_notification_If_We_Have_Any_Promotion = feedback.Would_You_Like_To_Get_An_notification_If_We_Have_Any_Promotion,
+                    Would_You_Use_Our_Company_Again = feedback.Would_You_Use_Our_Company_Again,
+                };
+                HasFeedback = true;
+            }
             this.paymmpayMVInspactionant = paymmpayMVInspactionant;
             this.managerDispatchMob = managerDispatchMob;
             Navigation = navigation;
@@ -37,6 +54,13 @@ namespace MDispatch.ViewModels.InspectionMV
         {
             get => feedback;
             set => SetProperty(ref feedback, value);
+        }
+
+        private bool _hasFeedback;
+        public bool HasFeedback
+        {
+            get => _hasFeedback;
+            set => SetProperty(ref _hasFeedback, value);
         }
 
         private VehiclwInformation vehiclwInformation = null;
@@ -65,8 +89,20 @@ namespace MDispatch.ViewModels.InspectionMV
             {
                 await Task.Run(() =>
                 {
-                    managerDispatchMob.AskWork("SendCouponMail", token, null, Email, ref description);
-                    state = managerDispatchMob.AskWork("FeedBack", token, null, Feedback, ref description);
+                    if (paymmpayMVInspactionant is LiabilityAndInsuranceMV)
+                    {
+                        managerDispatchMob.AskWork("SendCouponMail", token, null, Email, ref description);
+                        state = managerDispatchMob.AskWork("FeedBack", token, null, Feedback, ref description, (paymmpayMVInspactionant as LiabilityAndInsuranceMV).IdShip);
+                    }
+                    else if(paymmpayMVInspactionant is AskForUsersDelyveryMW)
+                    {
+                        managerDispatchMob.AskWork("SendCouponMail", token, null, Email, ref description);
+                        state = managerDispatchMob.AskWork("FeedBack", token, null, Feedback, ref description, (paymmpayMVInspactionant as AskForUsersDelyveryMW).IdShip);
+                    }
+                    else
+                    {
+                        throw new System.Exception();
+                    }
                 });
                 await PopupNavigation.PopAsync(true);
                 if (state == 1)

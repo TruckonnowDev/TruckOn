@@ -9,7 +9,9 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Compression;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace MDispatch.Service
 {
@@ -350,7 +352,7 @@ namespace MDispatch.Service
             }
         }
 
-        public int SaveAsk(string token, Feedback feedback, ref string description)
+        public int SaveAsk(string token, Feedback feedback, ref string description, string idShipping)
         {
             IRestResponse response = null;
             string content = null;
@@ -363,6 +365,7 @@ namespace MDispatch.Service
                 request.AddHeader("Accept", "application/json");
                 request.AddParameter("token", token);
                 request.AddParameter("jsonStrAsk", Compress(strJsonAsk));
+                request.AddParameter("shippingId", idShipping);
                 response = client.Execute(request);
                 content = response.Content;
             }
@@ -380,27 +383,42 @@ namespace MDispatch.Service
             }
         }
 
-        public Feedback GetFeedback(string token, string shippingId)
+        public async Task<Feedback> GetFeedback(string token, string shippingId)
         {
-            IRestResponse response = null;
-            string content = null;
-            try
+            var client = new HttpClient();
+            HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, Config.BaseReqvesteUrl + "Mobile/Get/FeedBack");
+            req.Content = new FormUrlEncodedContent(new Dictionary<string, string>
             {
-                RestClient client = new RestClient(Config.BaseReqvesteUrl);
-                RestRequest request = new RestRequest("Mobile/Get/FeedBack", Method.GET);
-                client.Timeout = 60000;
-                request.AddHeader("Accept", "application/json");
-                request.AddParameter("token", token);
-                request.AddParameter("shippingId", shippingId);
-                response = client.Execute(request);
-                content = response.Content;
-                HTTPResponse httpResponse = JsonConvert.DeserializeObject<HTTPResponse>(content);
-                return new Feedback();
-            }
-            catch (Exception)
+                { "token", token },
+                { "shippingId", shippingId },
+            });
+            var response = await client.SendAsync(req);
+            if (response.IsSuccessStatusCode)
             {
-                throw new Exception();
+                var content = await response.Content.ReadAsStringAsync();
+                var httpResponse = JsonConvert.DeserializeObject<HTTPResponse>(content);
+                Feedback feedback = JsonConvert.DeserializeObject<Feedback>(httpResponse.ResponseStr.ToString());
+                return feedback;
             }
+            return new Feedback();
+            //IRestResponse response = null;
+            //string content = null;
+            //try
+            //{
+            //    RestClient client = new RestClient(Config.BaseReqvesteUrl);
+            //    RestRequest request = new RestRequest("Mobile/Get/FeedBack", Method.GET);
+            //    client.Timeout = 60000;
+            //    request.AddHeader("Accept", "application/json");
+            //    request.AddParameter("token", token);
+            //    request.AddParameter("shippingId", shippingId);
+            //    response = client.Execute(request);
+            //    content = response.Content;
+            //    return new Feedback();
+            //}
+            //catch (Exception)
+            //{
+            //    throw new Exception();
+            //}
         }
 
         public int SaveAsk(string token, string id, Ask1 ask1, ref string description)
@@ -913,6 +931,16 @@ namespace MDispatch.Service
                     .Value<string>("Description");
                 return 2;
             }
+        }
+
+        private HTTPResponse GetData(string content)
+        {
+            content = content.Replace("\\", "");
+            content = content.Remove(0, 1);
+            content = content.Remove(content.Length - 1);
+            var responseAppS = JObject.Parse(content);
+            string status = responseAppS.Value<string>("Status");
+            return new HTTPResponse();
         }
 
         private ImageCodecInfo GetEncoder(ImageFormat format)

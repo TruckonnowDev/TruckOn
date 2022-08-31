@@ -2,8 +2,11 @@
 <Application xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MDispatch.App"
-             xmlns:shadowFrame="clr-namespace:MDispatch.NewElement.FrameCusstomise">
+             xmlns:shadowFrame="clr-namespace:MDispatch.NewElement.FrameCusstomise" xmlns:converters="clr-namespace:MDispatch.Converters">
 	<Application.Resources>
+        <ResourceDictionary>
+            <converters:InverseBoolConverter x:Key="inverseBoolConverter"/>
+        </ResourceDictionary>
         <OnPlatform x:TypeArguments="x:String" x:Key="OpenSans-Bold">
             <On Platform="Android" Value="OpenSans-Bold.ttf#Open-Sans" />
             <On Platform="iOS" Value="OpenSans-Bold" />

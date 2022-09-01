@@ -800,9 +800,17 @@ namespace ApiMobaileServise.Servise
             var shipping = await context.Shipping.FirstOrDefaultAsync(x => x.Id == shippingId);
             if (shipping != null)
             {
-                feedback.ShippingId = shipping.Id;
-                feedback.DriverId = shipping.IdDriver;
-                context.Feedbacks.Add(feedback);
+                if (context.Feedbacks.Any(x => x.ShippingId == shippingId))
+                {
+                    feedback.id = context.Feedbacks.First(x => x.ShippingId == shippingId).id;
+                    context.Feedbacks.Update(feedback);
+                }
+                else
+                {
+                    feedback.ShippingId = shipping.Id;
+                    feedback.DriverId = shipping.IdDriver;
+                    context.Feedbacks.Add(feedback);
+                }
                 await context.SaveChangesAsync();
             }
         }

@@ -13,6 +13,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using WebDispacher.Business.Interfaces;
 using WebDispacher.Dao;
 using WebDispacher.Models;
 using WebDispacher.Models.Subscription;
@@ -284,6 +285,7 @@ namespace WebDispacher.Service
             return users;
         }
 
+        /* UserService */
         internal void AddUserToDispatch(Users users)
         {
             _sqlEntityFramworke.AddUserToDispatchDB(users);
@@ -344,9 +346,8 @@ namespace WebDispacher.Service
                 IdCompany = idCompany,
                 key = GetHash(),
             };
+            
             _sqlEntityFramworke.CreateDispatchDB(dispatcher);
-
-
         }
 
         public string GetHash()
@@ -478,6 +479,7 @@ namespace WebDispacher.Service
             return responseStripe;
         }
 
+        /* CompanyService */
         private bool CheckFirstPaymentMethodInCompany(string idCompany)
         {
             bool isFirstPaymentMethodInCompany = false;
@@ -488,7 +490,8 @@ namespace WebDispacher.Service
             }
             return isFirstPaymentMethodInCompany;
         }
-
+        
+        /* CompanyService */
         internal ResponseStripe SelectDefaultPaymentMethod(string idPayment, string idCompany = null, Customer_ST customer_ST = null)
         {
             if(customer_ST == null)
@@ -514,6 +517,7 @@ namespace WebDispacher.Service
             return (Trailer)_sqlEntityFramworke.GetTrailerById(idTrailer);
         }
 
+        /* CompanyService */
         internal void InitStripeForCompany(string nameCommpany, string emailCommpany, int idCompany)
         {
             Customer_ST customer_ST = new Customer_ST();
@@ -553,7 +557,8 @@ namespace WebDispacher.Service
                 SelectDefaultPaymentMethod(idPaymentNewSelect, idCompany);
             }
         }
-
+        
+        /* TruckAndTrailerService */
         private ITr GetTr(int idTr, string typeTransport)
         {
             ITr tr = null;
@@ -568,6 +573,7 @@ namespace WebDispacher.Service
             return tr;
         }
 
+        /* UserService */
         private List<Layouts> GetLayoutsByTransportVehicle(ITransportVehicle transportVehicle)
         {
             List<Layouts> layouts = new List<Layouts>();
@@ -735,7 +741,8 @@ namespace WebDispacher.Service
         {
             _sqlEntityFramworke.LayoutDownDb(idLayout, idTransported);
         }
-
+        
+        /* UserService */
         private bool ValidCompanyRoute(TypeCompany typeCompany, string route)
         {
             bool validCompany = false;
@@ -763,7 +770,8 @@ namespace WebDispacher.Service
             }
             return shipping;
         }
-
+        
+        /* Company service */
         private ITransportationDispatch GetTransportationDispatch(string typeDispatch)
         {
             ITransportationDispatch transportationDispatch = null;

@@ -2,56 +2,72 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using DaoModels.DAO.DTO;
+using DaoModels.DAO.Models;
+using WebDispacher.Business.Interfaces;
+using WebDispacher.Constants;
 using WebDispacher.Service;
+using WebDispacher.ViewModels.Company;
 
 namespace WebDispacher.Controellers
 {
     [Route("Company")]
     public class CommpanyController : Controller
     {
-        ManagerDispatch managerDispatch = new ManagerDispatch();
+        private readonly IUserService userService;
+        private readonly ICompanyService companyService;
+        private readonly IDriverService driverService;
+
+        public CommpanyController(
+            IUserService userService,
+            IDriverService driverService,
+            ICompanyService companyService)
+        {
+            this.driverService = driverService;
+            this.companyService = companyService;
+            this.userService = userService;
+        }
 
         [HttpGet]
         [Route("Companies")]
         public IActionResult GetCompanies()
         {
-            IActionResult actionResult = null;
             try
             {
-                string key = null;
-                string idCompany = null;
-                string companyName = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Company"))
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
+                
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Company))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                    
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
+                    
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
-                    ViewBag.Companies = managerDispatch.GetCompanies();
-                    actionResult = View("Companies");
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
+                    ViewBag.Companies = companyService.GetCompaniesDTO();
+                    
+                    return View("Companies");
                 }
-                else
+
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception e)
             {
 
             }
-            return actionResult;
+            
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [HttpGet]
@@ -59,224 +75,227 @@ namespace WebDispacher.Controellers
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public IActionResult CreateCompany()
         {
-            IActionResult actionResult = null;
             try
             {
-                string key = null;
-                string idCompany = null;
-                string companyName = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Company"))
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
+                
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Company))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                    
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
+                    
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
-                    //ViewBag.Subscriptions = managerDispatch.GetSubscriptions();
-                    actionResult = View("CreateCommpany");
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
+                    //ViewBag.Subscriptions = companyService.GetSubscriptions();
+                    
+                    return View("CreateCommpany");
                 }
-                else
+
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception e)
             {
 
             }
-            return actionResult;
+            
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [HttpPost]
         [Route("CreateCompany")]
-        public IActionResult CreateCompany(string nameCommpany, string emailCommpany, List<IFormFile> MCNumberConfirmation, IFormFile IFTA, IFormFile KYU,
+        public IActionResult CreateCompany(CreateCompanyViewModel company, List<IFormFile> MCNumberConfirmation, IFormFile IFTA, IFormFile KYU,
             IFormFile logbookPapers, IFormFile COI, IFormFile permits)
         {
-            IActionResult actionResult = null;
-            ViewData["TypeNavBar"] = "BaseCommpany";
-            try
+            ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
+            
+            if (ModelState.IsValid && IFTA != null && KYU != null && logbookPapers != null && COI != null && permits != null && MCNumberConfirmation.Count != 0)
             {
-                string key = null;
-                string idCompany = null;
-                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Company"))
+                try
                 {
-                    managerDispatch.AddCommpany(nameCommpany, emailCommpany, MCNumberConfirmation[0], IFTA, KYU, logbookPapers, COI, permits);
-                    actionResult = Redirect($"{Config.BaseReqvesteUrl}/Company/Companies");
-                }
-                else
-                {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
-                }
-            }
-            catch (Exception e)
-            {
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
 
+                    if (userService.CheckPermissions(key, idCompany, RouteConstants.Company))
+                    {
+                        companyService.AddCompany(company, MCNumberConfirmation[0], IFTA, KYU, logbookPapers, COI,
+                            permits);
+
+                        return Redirect($"{Config.BaseReqvesteUrl}/Company/Companies");
+                    }
+
+                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    {
+                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                    }
+                }
+                catch (Exception e)
+                {
+
+                }
             }
-            return actionResult;
+            else
+            {
+                return Redirect($"{Config.BaseReqvesteUrl}/Company/Companies");
+            }
+
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [Route("Remove")]
         public IActionResult RemoveCompany(string id)
         {
-            IActionResult actionResult = null;
-            ViewData["TypeNavBar"] = "BaseCommpany";
+            ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
             try
             {
-                string key = null;
-                string idCompany = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Company"))
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Company))
                 {
-                    managerDispatch.RemoveCompany(id);
-                    actionResult = Redirect($"{Config.BaseReqvesteUrl}/Company/Companies");
+                    driverService.RemoveCompany(id);
+                    
+                    return Redirect($"{Config.BaseReqvesteUrl}/Company/Companies");
                 }
-                else
+
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception)
             {
 
             }
-            return actionResult;
+            
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [Route("Doc")]
         public async Task<IActionResult> GoToViewCompanykDoc(string id)
         {
-            IActionResult actionResult = null;
-            ViewData["TypeNavBar"] = "BaseCommpany";
+            ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
             try
             {
-                string key = null;
-                string idCompany = null;
-                string companyName = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Company"))
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
+                
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Company))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                    
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
+                    
                     ViewBag.NameCompany = companyName;
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
-                    ViewBag.CompanyDoc = await managerDispatch.GetCompanyDoc(id);
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
+                    ViewBag.CompanyDoc = await companyService.GetCompanyDoc(id);
                     ViewBag.CompanyId = id;
-                    actionResult = View("CompanyDocuments");
+                    
+                    return View("CompanyDocuments");
                 }
-                else
+
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception e)
             {
 
             }
-            return actionResult;
+            
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [Route("SaveDoc")]
-        public void SaveDoc(IFormFile uploadedFile, string nameDoc, string id)
+        public IActionResult SaveDoc(IFormFile uploadedFile, string nameDoc, string id)
         {
-            try
+            if (!string.IsNullOrEmpty(nameDoc) && !string.IsNullOrEmpty(id) && uploadedFile != null)
             {
-                string key = null;
-                string idCompany = null;
-                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Company"))
+                try
                 {
-                    managerDispatch.SaveDocCpmmpany(uploadedFile, nameDoc, id);
-                }
-                else
-                {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+
+                    if (userService.CheckPermissions(key, idCompany, RouteConstants.Company))
                     {
-                        Response.Cookies.Delete("KeyAvtho");
+                        companyService.SaveDocCompany(uploadedFile, nameDoc, id);
+
+                        return Redirect($"{Config.BaseReqvesteUrl}/Company/Doc?id={id}");
+                    }
+
+                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    {
+                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                     }
                 }
-            }
-            catch (Exception e)
-            {
+                catch (Exception e)
+                {
 
+                }
             }
+            else
+            {
+                return Redirect($"{Config.BaseReqvesteUrl}/Company/Companies");
+            }
+
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [Route("RemoveDoc")]
         public IActionResult RemoveDoc(string idDock, string id)
         {
-            IActionResult actionResult = null;
-            ViewData["TypeNavBar"] = "BaseCommpany";
+            ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
             try
             {
-                string key = null;
-                string idCompany = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Company"))
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Company))
                 {
-                    managerDispatch.RemoveDocCompany(idDock);
-                    actionResult = Redirect($"{Config.BaseReqvesteUrl}/Company/Doc?id={id}");
+                    companyService.RemoveDocCompany(idDock);
+                    
+                    return Redirect($"{Config.BaseReqvesteUrl}/Company/Doc?id={id}");
                 }
-                else
+
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception e)
             {
 
             }
-            return actionResult;
+            
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [Route("GetDock")]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public IActionResult GetDock(string docPath, string type)
         {
-            IActionResult actionResult = null;
             var imageFileStream = System.IO.File.OpenRead(docPath);
-            actionResult = File(imageFileStream, type);
-            return actionResult;
+            
+            return File(imageFileStream, type);
         }
 
         [HttpGet]
@@ -284,53 +303,50 @@ namespace WebDispacher.Controellers
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public IActionResult GetUsers(int idCompanySelect)
         {
-            IActionResult actionResult = null;
             try
             {
-                string key = null;
-                string idCompany = null;
-                string companyName = null;
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue("KeyAvtho", out key);
-                Request.Cookies.TryGetValue("CommpanyId", out idCompany);
-                Request.Cookies.TryGetValue("CommpanyName", out companyName);
-                if (managerDispatch.CheckKey(key) && managerDispatch.IsPermission(key, idCompany, "Company"))
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out  var companyName);
+                
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Company))
                 {
-                    bool isCancelSubscribe = managerDispatch.GetCancelSubscribe(idCompany);
+                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                    
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
-                    ViewData["TypeNavBar"] = managerDispatch.GetTypeNavBar(key, idCompany);
-                    ViewBag.Users = managerDispatch.GetUsers(idCompanySelect);
-                    ViewBag.Companies = managerDispatch.GetCompanies();
+                    
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
+                    ViewBag.Users = companyService.GetUsers(idCompanySelect);
+                    ViewBag.Companies = companyService.GetCompaniesDTO();
                     ViewBag.IdCompanySelect = idCompanySelect;
-                    actionResult = View("AllUsers");
+                    
+                    return View("AllUsers");
                 }
-                else
+
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
                 {
-                    if (Request.Cookies.ContainsKey("KeyAvtho"))
-                    {
-                        Response.Cookies.Delete("KeyAvtho");
-                    }
-                    actionResult = Redirect(Config.BaseReqvesteUrl);
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception e)
             {
 
             }
-            return actionResult;
+            
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [Route("GetDockPDF")]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public IActionResult GetDockPDF(string docPath)
         {
-            IActionResult actionResult = null;
             var imageFileStream = System.IO.File.OpenRead(docPath);
-            actionResult = File(imageFileStream, "application/pdf");
-            return actionResult;
+            
+            return File(imageFileStream, DocAndFileConstants.ContentTypePdf);
         }
     }
 }

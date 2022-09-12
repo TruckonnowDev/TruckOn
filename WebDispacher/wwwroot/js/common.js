@@ -65,11 +65,32 @@ $(function() {
 });
 
 function ClearFile(str,labelId){
-    console.log('magic!');
+    var elemFile = document.getElementById(labelId);
+    var parent = elemFile.parentElement.parentElement.parentElement;
     var input = document.getElementById(str);
     var label = document.getElementById(labelId);
     input.value = '';
     label.innerHTML = "";
+    if($(input).prop('required')){
+        parent.classList.remove("green-valid");
+        parent.classList.add("red-valid");
+    }
+    
+}
+
+function CheckValid(elementFileId,elementInputId){
+    var input = document.getElementById(elementInputId);
+
+    var elemFile1 = document.getElementById(elementFileId);
+    var parent = elemFile1.parentElement.parentElement.parentElement;
+
+    if (input.value){
+        parent.classList.remove("red-valid");
+        parent.classList.add("green-valid");
+    } else {
+        parent.classList.remove("green-valid");
+        parent.classList.add("red-valid");
+    }
 }
 
 function GetFileName(str,id){

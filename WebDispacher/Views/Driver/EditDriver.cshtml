@@ -1,4 +1,6 @@
-﻿<body>
+﻿@model WebDispacher.ViewModels.Driver.DriverViewModel
+
+<body>
     <div class="admin">
         <div class="container">
             <div class="row">
@@ -14,29 +16,29 @@
                         <form action="" method="post">
                             <label class="big-label" for="">
                                 Full name
-                                <input class="height-input" type="text" name="fullName" value="@ViewBag.Driver.FullName" required>
+                                <input class="height-input" type="text" name="FullName" value="@Model.FullName" required>
                             </label>
                             <label class="big-label" for="">
                                 Email address
-                                <input class="height-input" type="email" name="emailAddress" value="@ViewBag.Driver.EmailAddress" required>
+                                <input class="height-input" type="email" name="EmailAddress" value="@Model.EmailAddress" required>
                             </label>
                             <label class="big-label" for="">
                                 Password
-                                <input class="height-input" type="text" name="password" value="@ViewBag.Driver.Password" required>
+                                <input class="height-input" type="text" name="Password" value="@Model.Password" required>
                             </label>
                             <label class="big-label" for="">
                                 Phone number
-                                <input class="height-input" type="text" name="phoneNumbe" placeholder="XXXXXXXXXX" pattern="[0-9]{4,12}" value="@ViewBag.Driver.PhoneNumber" required>
+                                <input class="height-input" type="text" name="PhoneNumber" placeholder="XXXXXXXXXX" pattern="[0-9]{4,12}" value="@Model.PhoneNumber" required>
                             </label>
                             <label class="big-label" for="">
                                 Trailer capacity
-                                <input class="height-input" type="text" name="trailerCapacity" value="@ViewBag.Driver.TrailerCapacity" required>
+                                <input class="height-input" type="text" name="TrailerCapacity" value="@Model.TrailerCapacity" required>
                             </label>
                             <label class="big-label pb-3" for="">
                                 Driver's license number
-                                <input class="height-input" type="text" name="driversLicenseNumber" value="@ViewBag.Driver.DriversLicenseNumber" required>
+                                <input class="height-input" type="text" name="DriversLicenseNumber" value="@Model.DriversLicenseNumber" required>
                             </label>
-                            <input name="id" value="@ViewBag.Driver.Id" style="display:none"/>
+                            <input name="id" value="@Model.Id" style="display:none"/>
                             <input class="btn1 height-input big-font-size big-label" type="submit" value="Save Info"/>
                         </form>
                     </div>

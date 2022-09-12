@@ -1,4 +1,6 @@
-﻿<body>
+﻿@model WebDispacher.ViewModels.Truck.TruckViewModel
+
+<body>
     <div class="admin truc">
         <div class="container">
             <div class="row">
@@ -10,16 +12,16 @@
                         <div class="title">
                             <h1 class="text-info-header-1">Edit truck</h1>
                         </div>
-                        <input type="text" name="idTruck" required value="@ViewBag.Truck.Id" style="display:none;" />
                         <form action="" method="post" enctype="multipart/form-data">
-                            <label for="">
+                        <input type="text" name="Id" required value="@Model.Id" style="display:none;" />
+                            <label class="big-label" for="">
                                 Name Truck
-                                <input type="text" name="nameTruk" required value="@ViewBag.Truck.NameTruk">
+                                <input class="height-input" type="text" name="NameTruck" required value="@Model.NameTruck">
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Type Truck <br />
-                                <select name="typeTruk" onchange="SelectTruck(this.options[this.selectedIndex].value)" required style="width:500px;">
-                                    <option value="@ViewBag.Truck.Type">@ViewBag.Truck.Type</option>
+                                <select class="height-input input-select" name="Type" onchange="SelectTruck(this.options[this.selectedIndex].value)" required>
+                                    <option value="@Model.Type">@Model.Type</option>
                                     <option value="PickUpDually4TiresInTheBackMustHave4Door">Pick up Dually (4 tires in the bacK) must have 4 door</option>
                                     @*<option value="PickupFourWheel">Four-wheel pickup dually</option>
                                         <option value="FourDoorTruckChassisOpenFrame">Four-door truck with double chassis and open frame</option>
@@ -34,43 +36,43 @@
                                         <option value="PickUpDuallyFlatbedMustHave2Door">Pick Up Dually Flatbed Must Have 2 Door</option>*@
                                 </select>
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Year
-                                <input type="text" name="yera" value="@ViewBag.Truck.Yera" />
+                                <input class="height-input" type="text" name="Year" value="@Model.Year" />
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Make
-                                <input type="text" name="make" value="@ViewBag.Truck.Make" />
+                                <input class="height-input" type="text" name="Make" value="@Model.Make" />
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Model
-                                <input type="text" name="model" value="@ViewBag.Truck.Model" />
+                                <input class="height-input" type="text" name="Model" value="@Model.Model" />
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 State
-                                <input type="text" name="state" value="@ViewBag.Truck.Satet" />
+                                <input class="height-input" type="text" name="State" value="@Model.State" />
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Plate Exp
-                                <input type="text" name="exp" value="@ViewBag.Truck.Exp" />
+                                <input class="height-input" type="text" name="Exp" value="@Model.Exp" />
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Vin#
-                                <input type="text" name="vin" value="@ViewBag.Truck.Vin" />
+                                <input class="height-input" type="text" name="Vin" value="@Model.Vin" />
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Owner
-                                <input type="text" name="owner" value="@ViewBag.Truck.Owner" />
+                                <input class="height-input" type="text" name="Owner" value="@Model.Owner" />
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Plate Truck
-                                <input type="text" name="plateTruk" required value="@ViewBag.Truck.PlateTruk" />
+                                <input class="height-input" type="text" name="PlateTruck" required value="@Model.PlateTruck" />
                             </label>
-                            <label for="">
+                            <label class="big-label" for="">
                                 Color
-                                <input type="text" name="color" value="@ViewBag.Truck.ColorTruk" >
+                                <input class="height-input" type="text" name="ColorTruck" value="@Model.ColorTruck" >
                             </label>
-                            <button class="btn1">Save Info</button>
+                            <button class="btn1 big-label height-input big-font-size">Save Info</button>
                         </form>
                     </div>
                 </div>

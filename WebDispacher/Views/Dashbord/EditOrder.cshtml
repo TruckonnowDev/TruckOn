@@ -1,4 +1,5 @@
-﻿
+﻿@model WebDispacher.ViewModels.ShippingViewModel
+
 <body>
     <div class="admin Billing">
         <div class="container">
@@ -6,19 +7,19 @@
                 <div class="col-md-12">
                     <div class="tabContente">
                         <div class="title text-info-padding-5">
-                                            <a href="#" onclick="history.back();">Back to Orders</a>
-                                            </div>
+                            <a href="#" onclick="history.back();">Back to Orders</a>
+                        </div>
                         <h2 style="margin-block: 15px;">Create Order</h2>
                     </div>
                 </div>
                 <div class="col-md-12">
                     <div class="tabContente">
                         <form action="SavaOrder" method="post">
-                            <input id="idOrder" type="text" name="idOrder" style="display:none;" value="@ViewBag.Order.Id" />
+                            <input id="idOrder" type="text" name="Id" style="display:none;" value="@Model.Id" />
                             <div class="w1">
                                 <label for="">
                                     Load ID
-                                    <input type="text" id="idLoad" name="idLoad" value="@ViewBag.Order.idOrder">
+                                    <input type="text" id="idLoad" name="IdOrder" value="@Model.IdOrder">
                                 </label>
                                 <label for="">
                                     Status
@@ -30,102 +31,102 @@
                                 </label>
                                 <label for="">
                                     Contact
-                                    <input type="text" id="contactId" name="contactId" value="@ViewBag.Order.ContactC">
+                                    <input type="text" id="contactId" name="ContactC" value="@Model.ContactC">
                                 </label>
                                 <label for="">
                                     Phone
-                                    <input type="tel" id="phoneC" name="phoneC" value="@ViewBag.Order.PhoneC">
+                                    <input type="tel" id="phoneC" name="PhoneC" value="@Model.PhoneC">
                                 </label>
                                 <h3>Pickup Information</h3>
                                 <label for="">
                                     Name
-                                    <input type="text" id="nameP" value="@ViewBag.Order.NameP" placeholder="Name" name="nameP">
+                                    <input type="text" id="nameP" value="@Model.NameP" placeholder="Name" name="NameP">
                                 </label>
                                 <label for="">
                                     Contact
-                                    <input type="text" id="contactNameP" name="contactP" value="@ViewBag.Order.ContactNameP" placeholder="Contact name">
+                                    <input type="text" id="contactNameP" name="ContactNameP" value="@Model.ContactNameP" placeholder="Contact name">
                                 </label>
                                 <label for="">
                                     Address
-                                    <input type="text" id="addressP" name="addressP" value="@ViewBag.Order.AddresP" placeholder="Address" required>
+                                    <input type="text" id="addressP" name="AddresP" value="@Model.AddresP" placeholder="Address" required>
                                 </label>
                                 <label for="">
                                     City
-                                    <input type="text" id="cityP" name="cityP" value="@ViewBag.Order.CityP" placeholder="City" required>
+                                    <input type="text" id="cityP" name="CityP" value="@Model.CityP" placeholder="City" required>
                                 </label>
                                 <label for="">
                                     State
-                                    <input type="text" id="stateP" name="stateP" value="@ViewBag.Order.StateP" pattern="[A-Z]{2}" placeholder="XX - State" required>
+                                    <input type="text" id="stateP" name="StateP" value="@Model.StateP" pattern="[A-Z]{2}" placeholder="XX - State" required>
                                 </label>
                                 <label for="">
                                     Zip
-                                    <input type="text" id="zipP" name="zipP" value="@ViewBag.Order.ZipP" pattern="[0-9]{5}" placeholder="XXXXX - Zip code" required>
+                                    <input type="text" id="zipP" name="ZipP" value="@Model.ZipP" pattern="[0-9]{5}" placeholder="XXXXX - Zip code" required>
                                 </label>
                                 <label for="">
                                     Phone
-                                    <input type="tel" id="phoneP" name="phoneP" placeholder="XXXXXXXXXX - Phone number" pattern="[0-9]{4,12}" value="@ViewBag.Order.PhoneP" required>
+                                    <input type="tel" id="phoneP" name="PhoneP" placeholder="XXXXXXXXXX - Phone number" pattern="[0-9]{4,12}" value="@Model.PhoneP" required>
                                 </label>
                                 <label for="">
                                     Email
-                                    <input type="text" id="emailP" name="emailP" type="email" value="@ViewBag.Order.EmailP" placeholder="Email" required>
+                                    <input id="emailP" name="EmailP" type="email" value="@Model.EmailP" placeholder="Email" required>
                                 </label>
                                 <label for="">
                                     Scheduled pickup date
-                                    <input type="text" id="scheduledPickupDateP" name="scheduledPickupDateP" value="@ViewBag.Order.PickupExactly">
+                                    <input type="text" id="scheduledPickupDateP" name="PickupExactly" value="@Model.PickupExactly">
                                 </label>
                             </div>
                             <div class="w1">
                                 <label style="margin-bottom: 7px;" for="">
                                     Instructions
-                                    <textarea type="text" id="instructions" name="instructions" style="height:192px;">@ViewBag.Order.Titl1DI</textarea>
+                                    <textarea type="text" id="instructions" class="textarea-resize-none" name="Titl1DI" style="height:192px;">@Model.Titl1DI</textarea>
                                 </label>
                                 <label for="">
                                     Fax
-                                    <input type="text" id="faxC" name="faxC" value="@ViewBag.Order.FaxC">
+                                    <input type="text" id="faxC" name="FaxC" value="@Model.FaxC">
                                 </label>
                                 <label for="">
                                     Iccmc
-                                    <input type="text" id="iccmcC" name="iccmcC" value="@ViewBag.Order.IccmcC">
+                                    <input type="text" id="iccmcC" name="IccmcC" value="@Model.IccmcC">
                                 </label>
                                 <h3>Delivery Information</h3>
                                 <label for="">
                                     Name
-                                    <input type="text" id="nameD" name="nameD" value="@ViewBag.Order.NameD" placeholder="Name">
+                                    <input type="text" id="nameD" name="NameD" value="@Model.NameD" placeholder="Name">
                                 </label>
                                 <label for="">
                                     Contact
-                                    <input type="text" id="contactD" name="contactD" value="@ViewBag.Order.ContactNameD" placeholder="Contact name">
+                                    <input type="text" id="contactD" name="ContactNameD" value="@Model.ContactNameD" placeholder="Contact name">
                                 </label>
                                 <label for="">
                                     Address
-                                    <input type="text" id="addressD" name="addressD" value="@ViewBag.Order.AddresD" placeholder="Address" required>
+                                    <input type="text" id="addressD" name="AddresD" value="@Model.AddresD" placeholder="Address" required>
                                 </label>
                                 <label for="">
                                     City
-                                    <input type="text" id="cityD" name="cityD" value="@ViewBag.Order.CityD" placeholder="City" required>
+                                    <input type="text" id="cityD" name="CityD" value="@Model.CityD" placeholder="City" required>
                                 </label>
                                 <label for="">
                                     State
-                                    <input type="text" id="stateD" name="stateD" pattern="[A-Z]{2}" value="@ViewBag.Order.StateD" placeholder="XX - State" required>
+                                    <input type="text" id="stateD" name="StateD" pattern="[A-Z]{2}" value="@Model.StateD" placeholder="XX - State" required>
                                 </label>
                                 <label for="">
                                     Zip
-                                    <input type="text" id="zipD" name="zipD" value="@ViewBag.Order.ZipD" pattern="[0-9]{5}" placeholder="XXXXX - Zip code" required>
+                                    <input type="text" id="zipD" name="ZipD" value="@Model.ZipD" pattern="[0-9]{5}" placeholder="XXXXX - Zip code" required>
                                 </label>
                                 <label for="">
                                     Phone
-                                    <input name="phoneD" id="phoneD" placeholder="XXXXXXXXXX - Phone number" type="tel" pattern="[0-9]{4,12}" value="@ViewBag.Order.PhoneD" required>
+                                    <input name="PhoneD" id="phoneD" placeholder="XXXXXXXXXX - Phone number" type="tel" pattern="[0-9]{4,12}" value="@Model.PhoneD" required>
                                 </label>
                                 <label for="">
                                     Email
-                                    <input name="emailD" id="emailD" type="email" value="@ViewBag.Order.EmailD" placeholder="Email" required>
+                                    <input name="EmailD" id="emailD" type="email" value="@Model.EmailD" placeholder="Email" required>
                                 </label>
                             </div>
                             <div class="w1">
                                 <h3>Payment Information</h3>
                                 <label for="">
                                     Payment method
-                                    <select id="paymentMethod" name="paymentMethod" required>
+                                    <select id="paymentMethod" name="TotalPaymentToCarrier" required>
                                         <option value="COP">COP</option>
                                         <option value="COD">COD</option>
                                         <option value="1 days">1 days</option>
@@ -137,11 +138,11 @@
                                 </label>
                                 <label for="">
                                     Price
-                                    <input type="text" id="price" name="price" value="@ViewBag.Order.PriceListed" required>
+                                    <input type="text" id="price" name="PriceListed" value="@Model.PriceListed" required>
                                 </label>
                                 <label for="">
                                     Broker fee
-                                    <input type="text" id="brokerFee" name="brokerFee" value="@ViewBag.Order.BrokerFee">
+                                    <input type="text" id="brokerFee" name="BrokerFee" value="@Model.BrokerFee">
                                 </label>
                                 <input class="btn1" type="submit" value="Save Order" />
                                 <button class="btn2">Archive Order</button>
@@ -170,19 +171,19 @@
                             <div class="td">&nbsp;</div>
                             <div class="td">&nbsp;</div>
                         </div>
-                        @if (ViewBag.Order.VehiclwInformations != null)
+                        @if (Model.VehiclwInformations != null)
                         {
-                            @for (int i = 0; i < ViewBag.Order.VehiclwInformations.Count; i++)
+                            @for (int i = 0; i < Model.VehiclwInformations.Count; i++)
                             {
-                                <form action="SavaVech" method="POST" class="tr" id="@ViewBag.Order.VehiclwInformations[i].Id">
+                                <form action="SavaVech" method="POST" class="tr" id="@Model.VehiclwInformations[i].Id">
                                     <div class="td">@i</div>
-                                    <div class="td"><input type='text' name="VIN" value="@ViewBag.Order.VehiclwInformations[i].VIN" /></div>
-                                    <div class="td"><input type='text' name="Year" value="@ViewBag.Order.VehiclwInformations[i].Year" /></div>
-                                    <div class="td"><input type='text' name="Make" value="@ViewBag.Order.VehiclwInformations[i].Make" /></div>
-                                    <div class="td"><input type='text' name="Model" value="@ViewBag.Order.VehiclwInformations[i].Model" /></div>
+                                    <div class="td"><input type='text' name="VIN" value="@Model.VehiclwInformations[i].VIN" /></div>
+                                    <div class="td"><input type='text' name="Year" value="@Model.VehiclwInformations[i].Year" /></div>
+                                    <div class="td"><input type='text' name="Make" value="@Model.VehiclwInformations[i].Make" /></div>
+                                    <div class="td"><input type='text' name="Model" value="@Model.VehiclwInformations[i].Model" /></div>
                                     <div class="td">
                                         <select name="Type">
-                                            <option>@ViewBag.Order.VehiclwInformations[i].Type</option>
+                                            <option>@Model.VehiclwInformations[i].Type</option>
                                             <option>Sedan</option>
                                             <option>Suv</option>
                                             <option>Coupe</option>
@@ -193,12 +194,12 @@
                                             <option>Cruise motorcycle</option>
                                         </select>
                                     </div>
-                                    <div class="td"><input type='text' name="Color" value="@ViewBag.Order.VehiclwInformations[i].Color" /></div>
-                                    <div class="td"><input type='text' name="LotNumber" value="@ViewBag.Order.VehiclwInformations[i].Lot" /></div>
-                                    <div class="td"><input type='text' class="delete" /></div>
-                                    <div class="td"><input type='submit' value="Save" /></div>
-                                    <input type="text" name="idVech" style="display:none;" value="@ViewBag.Order.VehiclwInformations[i].Id" />
-                                    <input type="text" name="idOrder" style="display:none;" value="@ViewBag.Order.Id" />
+                                    <div class="td"><input type='text' name="Color" value="@Model.VehiclwInformations[i].Color" /></div>
+                                    <div class="td"><input type='text' name="LotNumber" value="@Model.VehiclwInformations[i].Lot" /></div>
+                                    <div class="td"><input type='text' class="delete delete-border-cursor" onclick="DeleteVech(@Model.VehiclwInformations[i].Id)"/></div>
+                                    <div class="td"><input type='submit' class="delete-border-cursor" value="Save" /></div>
+                                    <input type="text" name="idVech" style="display:none;" value="@Model.VehiclwInformations[i].Id" />
+                                    <input type="text" name="idOrder" style="display:none;" value="@Model.Id" />
                                 </form>
                             }
                         }
@@ -211,13 +212,13 @@
 
 <script>
 $(document).ready(function() {
-    if ("@ViewBag.Order.CurrentStatus" != null)
+    if ("@Model.CurrentStatus" != null)
     { 
-        $('#statusId option[value="@ViewBag.Order.CurrentStatus"]').prop('selected', true);
+        $('#statusId option[value="@Model.CurrentStatus"]').prop('selected', true);
     }
-    if ("@ViewBag.Order.TotalPaymentToCarrier" != null)
+    if ("@Model.TotalPaymentToCarrier" != null)
     { 
-            $('#paymentMethod option[value="@ViewBag.Order.TotalPaymentToCarrier"]').prop('selected', true);
+        $('#paymentMethod option[value="@Model.TotalPaymentToCarrier"]').prop('selected', true);
     }
 });
 
@@ -245,19 +246,24 @@ $(document).ready(function() {
         const paymentMethod = document.getElementById('paymentMethod').value;
         const price = document.getElementById('price').value;
         const brokerFee = document.getElementById('brokerFee').value;
-       
+        const faxC = document.getElementById('faxC').value;
+        const iccmcC = document.getElementById('iccmcC').value;
+        const contactC = document.getElementById('contactId').value;
+        const phoneC = document.getElementById('phoneC').value;
+        
         let idOrder = document.getElementById('idOrder').value;
-        console.log("idOrder: " + idOrder);
              var xhttp = new XMLHttpRequest();
              let Req = "idOrder=" + idOrder;
              xhttp.onreadystatechange = function (e) {
-                 if (this.readyState == 4 && this.status == 200) {
+                 console.log(this.readyState);
+                 if (this.readyState === 4 && this.status === 200) {
                      alert(this.responseText);
-                     var url = `@ViewBag.BaseUrl/Dashbord/Order/EditReload?id=${idOrder}&stasus=${status}&idOrder=${loadId}&NameP=${nameP}`+
+                     var url = `@ViewBag.BaseUrl/Dashbord/Order/EditReload?Id=${idOrder}&status=${status}&idOrder=${loadId}&NameP=${nameP}`+
                                                  `&ContactNameP=${contactNameP}&Address=${addressP}&CityP=${cityP}&StateP=${stateP}&CurrentStatus=${status}` +
-                                                 `&ZipP=${zipP}&PhoneP=${phoneP}&EmailP=${emailP}&PickupExactly=${scheduledPickupDateP}&Instructions=${instructions}` +
+                                                 `&ZipP=${zipP}&PhoneP=${phoneP}&EmailP=${emailP}&PickupExactly=${scheduledPickupDateP}&Titl1DI=${instructions}` +
                                                  `&NameD=${nameD}&ContactNameD=${contactD}&AddressD=${addressD}&CityD=${cityD}&StateD=${stateD}&ZipD=${zipD}&PhoneD=${phoneD}` +
-                                                 `&EmailD=${emailD}&TotalPaymentToCarrier=${paymentMethod}&PriceListed=${price}&BrokerFee=${brokerFee}`;
+                                                 `&EmailD=${emailD}&TotalPaymentToCarrier=${paymentMethod}&PriceListed=${price}&BrokerFee=${brokerFee}&FaxC=${faxC}` +
+                                                 `&IccmcC=${iccmcC}&ContactC=${contactC}&PhoneC=${phoneC}`;
                     window.location.href = url;
                  }
              };
@@ -266,4 +272,73 @@ $(document).ready(function() {
              xhttp.setRequestHeader('Accept-Encoding', 'br');
              xhttp.send(Req);
     }
+    
+    function DeleteVech(btnE) {
+        const loadId = document.getElementById('idLoad').value;
+                const status = document.getElementById('statusId').value;
+                const nameP = document.getElementById('nameP').value;
+                const contactNameP = document.getElementById('contactNameP').value;
+                const addressP = document.getElementById('addressP').value;
+                const cityP = document.getElementById('cityP').value;
+                const stateP = document.getElementById('stateP').value;
+                const zipP = document.getElementById('zipP').value;
+                const phoneP = document.getElementById('phoneP').value;
+                const emailP = document.getElementById('emailP').value;
+                const scheduledPickupDateP = document.getElementById('scheduledPickupDateP').value;
+                const instructions = document.getElementById('instructions').value;
+                const nameD = document.getElementById('nameD').value;
+                const contactD = document.getElementById('contactD').value;
+                const addressD = document.getElementById('addressD').value;
+                const cityD = document.getElementById('cityD').value;
+                const stateD = document.getElementById('stateD').value;
+                const zipD = document.getElementById('zipD').value;
+                const phoneD = document.getElementById('phoneD').value;
+                const emailD = document.getElementById('emailD').value;
+                const paymentMethod = document.getElementById('paymentMethod').value;
+                const price = document.getElementById('price').value;
+                const brokerFee = document.getElementById('brokerFee').value;
+                const faxC = document.getElementById('faxC').value;
+                const iccmcC = document.getElementById('iccmcC').value;
+                const contactC = document.getElementById('contactId').value;
+                const phoneC = document.getElementById('phoneC').value;
+                
+               
+                let idOrder = document.getElementById('idOrder').value;
+                
+            let Req = "idVech=" + btnE;
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function (e) {
+                if (this.readyState == 4 && this.status == 200) {
+                    alert(this.responseText);
+                     var url = `@ViewBag.BaseUrl/Dashbord/Order/EditReload?Id=${idOrder}&stasus=${status}&idOrder=${loadId}&NameP=${nameP}`+
+                                                 `&ContactNameP=${contactNameP}&Address=${addressP}&CityP=${cityP}&StateP=${stateP}&CurrentStatus=${status}` +
+                                                 `&ZipP=${zipP}&PhoneP=${phoneP}&EmailP=${emailP}&PickupExactly=${scheduledPickupDateP}&Titl1DI=${instructions}` +
+                                                 `&NameD=${nameD}&ContactNameD=${contactD}&AddressD=${addressD}&CityD=${cityD}&StateD=${stateD}&ZipD=${zipD}&PhoneD=${phoneD}` +
+                                                 `&EmailD=${emailD}&TotalPaymentToCarrier=${paymentMethod}&PriceListed=${price}&BrokerFee=${brokerFee}&FaxC=${faxC}` +
+                                                 `&IccmcC=${iccmcC}&ContactC=${contactC}&PhoneC=${phoneC}`;
+                    window.location.href = url;
+                                   
+                }
+            };
+            xhttp.open("POST", "@ViewBag.BaseUrl/Dashbord/Order/RemoveVech", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.setRequestHeader('Accept-Encoding', 'br');
+            xhttp.send(Req);
+            tdElms.removeChild(FindId(tdElms.children, idVech));
+        }
 </script>
+
+<style>
+    .Billing .table .td input,.Billing .table .td select{
+    text-align:center;
+    width:95%;
+    padding:6px 0;
+    border:1px solid #c4c9d5;
+    border-radius:10px!important;
+    background:#fff;
+    margin:0;
+    font-weight:400;
+    color:#007bff;
+    font-size:20px;
+    }
+</style>

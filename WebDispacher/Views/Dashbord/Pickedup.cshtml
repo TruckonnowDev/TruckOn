@@ -1,35 +1,53 @@
-﻿<div class="admin">
+﻿@using WebDispacher.Constants
+
+<div class="admin">
     <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="title">
-                    <h1>Orders</h1>
-                </div>
-            </div>
-        </div>
+       <div class="row">
+           <div class="col-md-12">
+               <div class="title">
+                   <h1>Orders</h1>
+                   <button class="btn1 mr-3" onClick='location.href="/Dashbord/Order/Creat"'>Create Order</button>
+                   <a style="background-color: white;color:#686F7C;" data-toggle="collapse" href="#search-form" role="button" aria-expanded="false" aria-controls="search-form">Search Orders
+                       <span>&#709;</span></a>
+               </div>
+               <div class="collapse multi-collapse" id="search-form">
+                   <div style="margin-top: 15px;" class="card border card-body">
+                       <form method="get" action="/Dashbord/Order/Pickedup">
+                           <input class="type-button" type="text" value="@ViewBag.LoadId" id="loadId-input" name="loadId" placeholder="Load id">
+                           <input class="type-button" type="text" value="@ViewBag.Name" id="name-input" name="name" placeholder="Name">
+                           <input class="type-button" type="text" value="@ViewBag.Address" id="address-input" name="address" placeholder="Address">
+                           <input class="type-button" type="text" value="@ViewBag.Phone" id="phone-input" name="phone" placeholder="Phone number">
+                           <input class="type-button" type="text" value="@ViewBag.Email" id="email-input" name="email" placeholder="Email">
+                           <input class="type-button" type="text" value="@ViewBag.price" id="price-input" name="price" placeholder="Price">
+                           <button type="submit" class="btn1 btn-modal mt-2">Search</button>
+                       </form>
+                   </div>
+               </div>
+           </div>
+       </div>
         <div class="row">
             <div class="col-md-12">
                 <div id="tabs">
-                    <div class="tab" onclick="window.location.href='@Url.Action("NewLoad", "Dashbord")';">New load</div>
-                    <div class="tab" onclick="window.location.href='@Url.Action("Assigned", "Dashbord")';">Assigned</div>
-                    <div class="tab whiteborder" onclick="window.location.href = '@Url.Action("Pickedup", "Dashbord")';">Picked up</div>
-                    <div class="tab" onclick="window.location.href='@Url.Action("Delivered", "Dashbord")';">Delivered</div>
-                    <div class="tab" onclick="window.location.href='@Url.Action("Billed", "Dashbord")';">Billed</div>
-                    <div class="tab" onclick="window.location.href='@Url.Action("Paid", "Dashbord")';">Paid</div>
-                    <div class="tab" onclick="window.location.href='@Url.Action("Archived", "Dashbord")';">Archived</div>
-                    <div class="tab" onclick="window.location.href='@Url.Action("Deleted", "Dashbord")';">Deleted</div>
+                    <div class="tab" onclick="window.location.href='@Url.Action("NewLoad", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price})';">New load</div>
+                    <div class="tab" onclick="window.location.href='@Url.Action("Assigned", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">Assigned</div>
+                    <div class="tab whiteborder" onclick="window.location.href = '@Url.Action("Pickedup", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">Picked up</div>
+                    <div class="tab" onclick="window.location.href='@Url.Action("Delivered", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">Delivered</div>
+                    <div class="tab" onclick="window.location.href='@Url.Action("Billed", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">Billed</div>
+                    <div class="tab" onclick="window.location.href='@Url.Action("Paid", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">Paid</div>
+                    <div class="tab" onclick="window.location.href='@Url.Action("Archived", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">Archived</div>
+                    <div class="tab" onclick="window.location.href='@Url.Action("Deleted", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">Deleted</div>
                     <div class="tabContent">
                         @for (int i = 0; i < ViewBag.Orders.Count; i++)
                         {
                             <div class="one-line">
                                 <div class="top-line">
                                     <div class="left">
-                                        <button class="btn3" onClick='location.href="/Dashbord/Order/FullInfoOrder?id=@ViewBag.Orders[i].Id&stasus=Pickedup"'>Load ID: @ViewBag.Orders[i].idOrder</button>
+                                        <button class="btn3" onClick='location.href="@Url.Action( "FullInfoOrder", new { id = ViewBag.Orders[i].Id, status = OrderConstants.OrderStatusPickedUp } )"'>Load ID: @ViewBag.Orders[i].idOrder</button>
                                         <div class="text"><img src="~/img/dolar.svg" alt=""> @ViewBag.Orders[i].PriceListed</div>
                                         <div class="text"><img src="~/img/clock.svg" alt=""> @ViewBag.Orders[i].TotalPaymentToCarrier</div>
                                     </div>
                                     <div class="right">
-                                        <a class="btn3" href="/Dashbord/Order/Edit?id=@ViewBag.Orders[i].Id&stasus=Pickedup">Edit</a>
+                                        <a class="btn3" href="@Url.Action("EditOrder", new { id = ViewBag.Orders[i].Id, status = OrderConstants.OrderStatusPickedUp } )">Edit</a>
                                         @*<select onchange="SelectAssining1(this.options[this.selectedIndex].value, '@ViewBag.BaseUrl')" class="btn3">
                                             <option value="">-----------------------</option>
                                             <option value="@ViewBag.Orders[i].Id,Unassign">Unassign</option>
@@ -38,7 +56,8 @@
                                                 <option value="@ViewBag.Orders[i].Id,@ViewBag.Drivers[j].Id">@ViewBag.Drivers[j].FullName</option>
                                             }
                                         </select>*@
-                                        <a class="btn3" href=@Url.Action("DeletedOrder", new { id = ViewBag.Orders[i].Id, status ="Picked up"})>Delete</a>
+                                        <a class="btn3" href=@Url.Action("ArchivedOrder", new { id = ViewBag.Orders[i].Id, status = OrderConstants.OrderStatusPickedUp,
+                                                                 filters = $"loadId={ViewBag.LoadId}&name={ViewBag.Name}&address={ViewBag.Address}&phone={ViewBag.Phone}&email={@ViewBag.Email}&price={@ViewBag.price}"})>Delete</a>
                                     </div>
                                 </div>
                                 <div class="info-line">
@@ -81,3 +100,27 @@
     <script src="~/js/orders.js"></script>
 </div>
 
+<script>
+ $(document).ready(function() {
+     const loadId= $('#loadId-input').val();
+     const name= $('#name-input').val();
+     const address= $('#address-input').val();
+     const phone= $('#phone-input').val();
+     const email= $('#email-input').val();
+     const price= $('#price-input').val();
+     
+     if (loadId !== "" || name !== "" || address !== "" 
+        || phone !== "" || email !== "" 
+        || price !== "")
+     {
+            $("#search-form").addClass('show')
+     }
+ });
+</script>
+
+<style>
+    input::placeholder {
+        color: #c4c9d5;
+        font-size: 16px;
+    }
+</style>

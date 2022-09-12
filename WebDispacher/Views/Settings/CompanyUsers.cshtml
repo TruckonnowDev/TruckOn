@@ -32,7 +32,7 @@
                                             <td>@ViewBag.Users[i].CompanyName</td>
                                             <td>@ViewBag.Users[i].Date</td>
                                             <td>
-                                                <img src="~/img/pen.svg" alt="" >
+                                                <img src="~/img/pen.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Settings/User/Edit?id=@ViewBag.Users[i].Id'">
                                                 <img src="~/img/delet.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Settings/User/Remove?idUser=@ViewBag.Users[i].Id'">
                                             </td>
                                         </tr>

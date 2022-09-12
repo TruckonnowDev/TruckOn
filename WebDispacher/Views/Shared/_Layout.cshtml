@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using WebDispacher.Constants
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -24,46 +25,46 @@
 
 </head>
 <body>
-    @if (ViewData["TypeNavBar"] == "AllUsers")
+    @if (ViewData[NavConstants.TypeNavBar] == NavConstants.AllUsers)
     {
         @await Html.PartialAsync("~/Views/PartView/NavAllUsers.cshtml");
     }
-    @if (ViewData["TypeNavBar"] == "BaseAllUsers")
+    @if (ViewData[NavConstants.TypeNavBar] == NavConstants.BaseAllUsers)
     {
         @await Html.PartialAsync("~/Views/PartView/NavBaseAllUsers.cshtml");
     }
-    else if (ViewData["TypeNavBar"] == "BaseCommpany")
+    else if (ViewData[NavConstants.TypeNavBar] == NavConstants.BaseCompany)
     {
         @await Html.PartialAsync("~/Views/PartView/NavBaseCommpany.cshtml");
     }
-    else if (ViewData["TypeNavBar"] == "NormaCommpany")
+    else if (ViewData[NavConstants.TypeNavBar] == NavConstants.NormalCompany)
     {
         @await Html.PartialAsync("~/Views/PartView/NavNormalCompany.cshtml");
     }
-    else if (ViewData["TypeNavBar"] == "BaseCommpanySettings")
+    else if (ViewData[NavConstants.TypeNavBar] == NavConstants.TypeNavBaseCompanySettings)
     {
         @await Html.PartialAsync("~/Views/PartView/NavSettingsBaseCompany.cshtml");
     }
-    else if (ViewData["TypeNavBar"] == "NormaCommpanySettings")
+    else if (ViewData[NavConstants.TypeNavBar] == NavConstants.TypeNavNormalCompanySettings)
     {
         @await Html.PartialAsync("~/Views/PartView/NavSettingsNormalCompany.cshtml");
     }
-    else if (ViewData["TypeNavBar"] == "NavTry_for_free")
+    else if (ViewData[NavConstants.TypeNavBar] == NavConstants.NavTryForFree)
     {
         @await Html.PartialAsync("~/Views/PartView/NavTry_for_free.cshtml");
     }
-    else if (ViewData["TypeNavBar"] == "CancelSubscribe")
+    else if (ViewData[NavConstants.TypeNavBar] == NavConstants.CancelSubscribe)
     {
         @await Html.PartialAsync("~/Views/PartView/NavSettingsCacelSubscribe.cshtml");
     }
-    else if (ViewData["TypeNavBar"] == "Error")
+    else if (ViewData[NavConstants.TypeNavBar] == NavConstants.Error)
     {
     }
     @RenderBody()
     <script>
         $(document).ready(function () {
             //$("body").fadeIn(1000);
-            window.onbeforeunload = function () { $("body").fadeOut(200); }
+            window.onload = function () { $("body").fadeIn(400); }
         });
     </script>
 </body>

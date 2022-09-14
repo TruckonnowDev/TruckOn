@@ -1,39 +1,41 @@
-﻿<div class="register-page">
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+<div class="register-page">
     <div class="container">
         <div class="row">
-
             <div class="col-md-6">
                 <div class="left-text">
-                    <h1>Manage transport while moving cars faster and more efficiently.</h1>
+                    <h1>@Localizer["Header"]</h1>
                     <div class="regShipperMap">
                     </div>
                 </div>
             </div>
-
             <div class="col-md-6">
                 <div class="right-form">
                     <form action="">
                         <label for="" class="w50">
-                            First Name
+                            @Localizer["FormFirstName"]
                             <input type="text">
                         </label>
                         <label for="" class="w50">
-                            Last Name
+                            @Localizer["FormLastName"]
                             <input type="text">
                         </label>
                         <label for="">
-                            Company Name
+                            @Localizer["FormCompanyName"]
                             <input type="text">
                         </label>
                         <label for="">
-                            Email
+                            @Localizer["Email"]
                             <input type="email">
                         </label>
                         <label for="">
-                            Phone Number
-                            <input type="tel" id="phone"/>
+                            @Localizer["PhoneNumber"]
+                            <input type="tel" id="phone" />
                         </label>
-                        <label for="">How many cars do you move per month?</label>
+                        <label for="">@Localizer["HowManyCars"]?</label>
                         <div class="cheked">
                             <label for=""><input type="radio" name="" id="">1 - 100</label>
                             <label for=""><input type="radio" name="" id="">101 - 500</label>
@@ -41,11 +43,11 @@
                             <label for=""><input type="radio" name="" id="">1 000+</label>
                         </div>
                         <label for="">
-                            How did you hear about us? <span>(Optional)</span>
+                            @Localizer["HowAboutUs"]? <span>(@Localizer["Optional"])</span>
                             <input type="text">
                         </label>
-                        <input type="submit" value="Request Access" class="btn1-big">
-                        <p>By creating your account you accept our <a href="">Terms & Conditions</a> and <a href="">Privacy Policy</a></p>
+                        <input type="submit" value="@Localizer["RequestAccess"]" class="btn1-big">
+                        <p>@Localizer["Agreements"] <a href="">@Localizer["TermsConditions"]</a> @Localizer["And"] <a href="">@Localizer["PrivacyPolicy"]</a></p>
                     </form>
                 </div>
             </div>

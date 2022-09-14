@@ -1,0 +1,286 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="BodyFifthBlock" xml:space="preserve">
+    <value>Любой человек, использующий это приложение, будет иметь полный доступ в любую точку мира с помощью простого логина и пароля</value>
+  </data>
+  <data name="BodySecondBlock" xml:space="preserve">
+    <value>Наше приложение возьмет на себя полный контроль над автомобильным транспортом от А до Я. Наше высокотехнологичное приложение гарантирует, что ваш водитель не пропустит ни одного шага, назначенного администратором вашей компании.</value>
+  </data>
+  <data name="BodySixthBlock" xml:space="preserve">
+    <value>Super Dispatch - это самое простое в использовании, наиболее совместимое и надежное приложение для водителей на автомобильном транспорте</value>
+  </data>
+  <data name="BodyTenthBlock" xml:space="preserve">
+    <value>Чтобы связаться с нами, вы можете позвонить по указанному номеру</value>
+  </data>
+  <data name="ContactUs" xml:space="preserve">
+    <value>Связаться</value>
+  </data>
+  <data name="DescriptionPackage" xml:space="preserve">
+    <value>Пустой текст</value>
+  </data>
+  <data name="DescriptionPackageItem" xml:space="preserve">
+    <value>Для получения дополнительной информации, пожалуйста</value>
+  </data>
+  <data name="DispatcherFirstBlock" xml:space="preserve">
+    <value>Диспетчер</value>
+  </data>
+  <data name="DriverFirstBlock" xml:space="preserve">
+    <value>Водитель</value>
+  </data>
+  <data name="FirstBodyColSeventhBlock" xml:space="preserve">
+    <value>Продавайте и покупайте оборудование у авторитетных компаний, используя это приложение</value>
+  </data>
+  <data name="FirstBodyThirdBlock" xml:space="preserve">
+    <value>Администратор выберет, какой уровень проверки водитель должен выполнить при получении или доставке. Администратор может выбрать от 1 до 40 полностью детализированных изображений после проверки. На всех снимках будут обозначены части кузова автомобиля и интерьер, чтобы помочь водителю сделать более качественные снимки. Приложение автоматически настроит качество изображения на хорошо заметные дефекты, чтобы водителю было легче выбирать дефекты и размещать их в приложении.</value>
+  </data>
+  <data name="FirstHeaderColSeventhBlock" xml:space="preserve">
+    <value>Рынок</value>
+  </data>
+  <data name="FirstHeaderThirdBlock" xml:space="preserve">
+    <value>Осмотр перевозимого транспортного средства</value>
+  </data>
+  <data name="FirstPartHeaderNinthBlock" xml:space="preserve">
+    <value>Новый способ транспортировки,</value>
+  </data>
+  <data name="FirstPlusSixthBlock" xml:space="preserve">
+    <value>Отправка электронных счетов-фактур в течение нескольких секунд</value>
+  </data>
+  <data name="FooterFirstPartEighthBlock" xml:space="preserve">
+    <value>Для оплаты, пожалуйста, зарегистрируйтесь, заполнив</value>
+  </data>
+  <data name="FooterSecondBlock" xml:space="preserve">
+    <value>Приложение доступно в Market и IOS</value>
+  </data>
+  <data name="FooterSecordPartEighthBlock" xml:space="preserve">
+    <value>Форму</value>
+  </data>
+  <data name="FourthPlusSixthBlock" xml:space="preserve">
+    <value>Оцифрованные проверки транспортных средств и неограниченное количество фотографий</value>
+  </data>
+  <data name="GreatWorkExperienceBody" xml:space="preserve">
+    <value>Более 10 лет опыта перевозки автомобилей
+вкладывается в это простое в использовании приложение и портал. Вы будете иметь полный контроль над своим бизнесом с помощью простых в использовании инструментов, центров и партнеров, которые помогут вам вести свой бизнес плавно и высокоэффективно.</value>
+  </data>
+  <data name="GreatWorkExperienceHeader" xml:space="preserve">
+    <value>Большой Опыт Работы</value>
+  </data>
+  <data name="HeaderEighthBlock" xml:space="preserve">
+    <value>Цены и пакеты услуг</value>
+  </data>
+  <data name="HeaderFifthBlock" xml:space="preserve">
+    <value>Полный доступ</value>
+  </data>
+  <data name="HeaderFirstBlock" xml:space="preserve">
+    <value>С этим приложением ни один бизнес не будет слишком маленьким</value>
+  </data>
+  <data name="HeaderFourthBlock" xml:space="preserve">
+    <value>Перевозка автомобилей стала проще.</value>
+  </data>
+  <data name="HeaderSecondBlock" xml:space="preserve">
+    <value>Возьмем под свой полный контроль</value>
+  </data>
+  <data name="HeaderSeventhBlock" xml:space="preserve">
+    <value>Некоторые другие особенности</value>
+  </data>
+  <data name="HeaderSixthBlock" xml:space="preserve">
+    <value>Водители Любят Truckonnow</value>
+  </data>
+  <data name="LargeFleetFirstBlock" xml:space="preserve">
+    <value>Большой автопарк</value>
+  </data>
+  <data name="MediumFleetFirstBlock" xml:space="preserve">
+    <value>Средний автопарк</value>
+  </data>
+  <data name="ModalDescription" xml:space="preserve">
+    <value>Пожалуйста, заполните краткую форму, и мы
+будет на связи с молниеносной скоростью.
+Или вы можете позвонить по указанному номеру</value>
+  </data>
+  <data name="ModalFooterDescription" xml:space="preserve">
+    <value>Перевозка Автомобилей Стала Проще.
+</value>
+  </data>
+  <data name="ModalFooterFirstItem" xml:space="preserve">
+    <value>Кредитная карта не требуется</value>
+  </data>
+  <data name="ModalFooterSecondItem" xml:space="preserve">
+    <value>Отмените в любое время</value>
+  </data>
+  <data name="ModalFormEmail" xml:space="preserve">
+    <value>Ваша электронная почта</value>
+  </data>
+  <data name="ModalFormMessage" xml:space="preserve">
+    <value>Ваше сообщение</value>
+  </data>
+  <data name="ModalFormName" xml:space="preserve">
+    <value>Ваше имя</value>
+  </data>
+  <data name="ModalFormSubmit" xml:space="preserve">
+    <value>Отправить</value>
+  </data>
+  <data name="ModalHeader" xml:space="preserve">
+    <value>Cвязаться</value>
+  </data>
+  <data name="NamePackage" xml:space="preserve">
+    <value>Пакет имен</value>
+  </data>
+  <data name="PointTwoFourthBlock" xml:space="preserve">
+    <value>Отмените в любое время</value>
+  </data>
+  <data name="PointTwoNinthBlock" xml:space="preserve">
+    <value>Отмените в любое время</value>
+  </data>
+  <data name="PointОneFourthBlock" xml:space="preserve">
+    <value>Кредитная карта не требуется</value>
+  </data>
+  <data name="PointОneNinthBlock" xml:space="preserve">
+    <value>Кредитная карта не требуется</value>
+  </data>
+  <data name="SecondBodyColSeventhBlock" xml:space="preserve">
+    <value>Когда вы нанимаете водителя, вы можете управлять его грузовиком в кредит. Выполните проверку истории работы, любых связанных с этим претензий, а также вы можете оставить отзыв о любом водителе, который работал в вашей компании</value>
+  </data>
+  <data name="SecondBodyThirdBlock" xml:space="preserve">
+    <value>Владельцы компаний будут ежедневно получать информацию о том, что происходит с их оборудованием, приложение предоставит водителю 6-часовое окно для ежедневного осмотра автомобиля компании. Если водитель этого не сделает, он не будет использовать приложение до завершения проверки. После водителя не останется никаких повреждений. Администратор компании будет иметь полный контроль над тем, какие подробные фотографии они хотят отправить водителю для проведения осмотра, например: интерьер, мили, подсветка приборной панели, кузов грузовика, все жидкости, под капотом, шины, хранение в кровати, электрическое подключение, подключение грузовика и прицепа, кузов прицепа, прицеп, шины, запасные части и многое другое</value>
+  </data>
+  <data name="SecondHeaderColSeventhBlock" xml:space="preserve">
+    <value>Проверка водителя</value>
+  </data>
+  <data name="SecondHeaderThirdBlock" xml:space="preserve">
+    <value>Оборудование компании</value>
+  </data>
+  <data name="SecondPartHeaderNinthBlock" xml:space="preserve">
+    <value>Автомобили с Truckonnow TMS</value>
+  </data>
+  <data name="SecondPlusSixthBlock" xml:space="preserve">
+    <value>Бесплатное приложение было разработано для владельцев-операторов</value>
+  </data>
+  <data name="ThirdBodyColSeventhBlock" xml:space="preserve">
+    <value>Найдите на карте самый авторитетный магазин вокруг вас! Этот портал позволяет вам просматривать и делиться своим опытом, чтобы избежать каких-либо плохих магазинов в будущем</value>
+  </data>
+  <data name="ThirdHeaderColSeventhBlock" xml:space="preserve">
+    <value>Ремонтная поддержка</value>
+  </data>
+  <data name="ThirdPlusSixthBlock" xml:space="preserve">
+    <value>Импортируйте заказы непосредственно с досок загрузки и брокеров</value>
+  </data>
+  <data name="TryForFree" xml:space="preserve">
+    <value>Попробовать бесплатно</value>
+  </data>
+</root>

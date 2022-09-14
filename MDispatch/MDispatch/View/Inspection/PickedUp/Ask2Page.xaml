@@ -17,7 +17,46 @@
         <ScrollView>
             <StackLayout Spacing="12"
                          Padding="24, 20, 24, 20">
-                <shadowFrame:ShadowFrame x:Name="askBlock1"
+
+                    <shadowFrame:ShadowFrame x:Name="blockAskPay"
+                                         Style="{StaticResource Key=frameAsk}"
+                                         IsVisible="{Binding IsProblem}">
+                        <StackLayout Spacing="10">
+                            <Label Text="{x:Static helperLang:LanguageHelper.AskBlockDriverPayTitle}"
+                               Style="{StaticResource Key=labelTitleAsk}"/>
+                            <StackLayout>
+                                <StackLayout Orientation="Horizontal"
+                                         Spacing="13">
+                                    <Button 
+                                        x:Name="btnNumberOffice"
+                                        Text="+17734305155"
+                                        TextColor="Red"
+                                        Clicked="PhoneNumber_clicked"
+                                        Style="{StaticResource btnAsk}"/>
+                                </StackLayout>
+                                <Label Text="{x:Static helperLang:LanguageHelper.DescriptionDriverPayTitle}"
+                                   FontSize="14"
+                                   TextColor="#FF2C2C"
+                                   FontFamily="{StaticResource OpenSans-Regular}">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="PhoneNumber_clicked"/>
+                                    </Label.GestureRecognizers>
+                                </Label>
+                                <BoxView HeightRequest="1"
+                                         BackgroundColor="LightGray"/>
+                                <Label Text="Please contact us if driver did not pay fot the carriage!"
+                                   FontSize="14"
+                                   TextColor="#FF2C2C"
+                                   FontFamily="{StaticResource OpenSans-Regular}">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="PhoneNumber_clicked"/>
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </StackLayout>
+                        </StackLayout>
+                    </shadowFrame:ShadowFrame>
+
+                    <shadowFrame:ShadowFrame x:Name="askBlock1"
                                          Style="{StaticResource Key=frameAsk}">
                     <StackLayout Spacing="10">
                         <Label Text="{x:Static helperLang:LanguageHelper.AskBlockManyKeysTotalTitle}"

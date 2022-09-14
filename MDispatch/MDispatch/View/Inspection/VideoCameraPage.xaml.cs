@@ -57,7 +57,9 @@ namespace MDispatch.View.Inspection
                     path = $"../Video/{((LiabilityAndInsuranceMV)paymmant).IdVech}/RecountPay.mp4",
                     VideoBase64 = Convert.ToBase64String(result.Result)
                 };
-                await Navigation.PushAsync(new Ask2Page(((LiabilityAndInsuranceMV)paymmant).managerDispatchMob, ((LiabilityAndInsuranceMV)paymmant).IdVech, ((LiabilityAndInsuranceMV)paymmant).IdShip, ((LiabilityAndInsuranceMV)paymmant).initDasbordDelegate));
+                bool isProblem = await ((LiabilityAndInsuranceMV)paymmant).CheckProplem();
+
+                await Navigation.PushAsync(new Ask2Page(((LiabilityAndInsuranceMV)paymmant).managerDispatchMob, ((LiabilityAndInsuranceMV)paymmant).IdVech, ((LiabilityAndInsuranceMV)paymmant).IdShip, ((LiabilityAndInsuranceMV)paymmant).initDasbordDelegate, isProblem));
                 ((LiabilityAndInsuranceMV)paymmant).SaveRecountVideo();
             }
 

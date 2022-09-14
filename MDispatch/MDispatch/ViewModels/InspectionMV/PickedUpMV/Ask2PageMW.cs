@@ -23,13 +23,15 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
         public INavigation Navigation { get; set; }
         public InitDasbordDelegate initDasbordDelegate = null;
 
-        public Ask2PageMW(ManagerDispatchMob managerDispatchMob, string idVech, string idShip, INavigation navigation, InitDasbordDelegate initDasbordDelegate)
+        public Ask2PageMW(ManagerDispatchMob managerDispatchMob, string idVech, string idShip, INavigation navigation, InitDasbordDelegate initDasbordDelegate, bool isProblem)
         {
+            OnInitialize();
             this.initDasbordDelegate = initDasbordDelegate;
             this.managerDispatchMob = managerDispatchMob;
             Navigation = navigation;
             IdShip = idShip;
             IdVech = idVech;
+            IsProblem = isProblem;
         }
 
         public string IdShip { get; set; }
@@ -40,6 +42,13 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
         {
             get => ask2;
             set => SetProperty(ref ask2, value);
+        }
+
+        private bool _isProblem;
+        public bool IsProblem
+        {
+            get => _isProblem;
+            set => SetProperty(ref _isProblem, value);
         }
 
         [System.Obsolete]
@@ -80,6 +89,11 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                     HelpersView.CallError(LanguageHelper.TechnicalWorkServiceAlert);
                 }
             }
+        }
+
+        private async void OnInitialize()
+        {
+            await PopupNavigation.PushAsync(new Alert("Please contact our support to fix an issue according this number: 17734305155", Navigation));
         }
 
         [Obsolete]

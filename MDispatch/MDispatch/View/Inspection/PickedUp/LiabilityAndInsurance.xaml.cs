@@ -26,13 +26,14 @@ namespace MDispatch.View.Inspection.PickedUp
         public LiabilityAndInsuranceMV liabilityAndInsuranceMV = null;
         private IPaymmant Paymmant = null;
         private Timer timer = null;
-
+        private bool _isProblem;
         [Obsolete]
         public LiabilityAndInsurance (ManagerDispatchMob managerDispatchMob, string idVech, string idShip, InitDasbordDelegate initDasbordDelegate, string OnDeliveryToCarrier, string totalPaymentToCarrier, bool isproplem)
 		{
             liabilityAndInsuranceMV = new LiabilityAndInsuranceMV(managerDispatchMob, idVech, idShip, Navigation, initDasbordDelegate, this);
             InitializeComponent ();
             BindingContext = liabilityAndInsuranceMV;
+            _isProblem = isproplem;
             InitElemnt(isproplem);
             InitPayment(OnDeliveryToCarrier, totalPaymentToCarrier);
         }
@@ -452,7 +453,7 @@ namespace MDispatch.View.Inspection.PickedUp
                             }
                             else
                             {
-                                await Navigation.PushAsync(new Ask2Page(liabilityAndInsuranceMV.managerDispatchMob, liabilityAndInsuranceMV.IdVech, liabilityAndInsuranceMV.IdShip, liabilityAndInsuranceMV.initDasbordDelegate));
+                                await Navigation.PushAsync(new Ask2Page(liabilityAndInsuranceMV.managerDispatchMob, liabilityAndInsuranceMV.IdVech, liabilityAndInsuranceMV.IdShip, liabilityAndInsuranceMV.initDasbordDelegate, _isProblem));
                             }
                         }
                     }
@@ -520,6 +521,22 @@ namespace MDispatch.View.Inspection.PickedUp
             //liabilityAndInsuranceMV.SetProblem();
             //timer = new Timer(new TimerCallback(CheckProplem), null, 10000, 10000);
 
+            if (Paymmant != null)
+            {
+                isAsk2 = Paymmant.IsAskPaymmant;
+            }
+            if (isSignatureAsk && isAsk2)
+            {
+                if (!Paymmant.IsAskPaymmant)
+                    await Paymmant.Pay();
+                liabilityAndInsuranceMV.SaveSigAndMethodPay();
+            }
+            else
+            {
+                await PopupNavigation.PushAsync(new Alert(LanguageHelper.AskErrorAlert, null));
+                CheckAsk();
+            }
+            liabilityAndInsuranceMV.SetProblem();
             //lReport.IsVisible = true;
             //if (Paymmant != null)
             //{

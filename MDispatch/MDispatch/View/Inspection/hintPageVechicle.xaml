@@ -21,46 +21,58 @@
     <StackLayout VerticalOptions="Center"
                  HorizontalOptions="FillAndExpand"
                  Margin="5">
-        <Frame CornerRadius="6" Padding="25, 24, 25, 5" Margin="24" HasShadow="True">
-            <StackLayout Spacing="0">
-                <Label x:Name="lHint"
+        
+        <Frame CornerRadius="6"  HasShadow="True"
+               Padding="25, 24, 25, 5" 
+                         Margin="24">
+            <StackLayout>
+                <BoxView HeightRequest="1"
+                         Margin="-20, 0"
+                         VerticalOptions="Center"
+                         BackgroundColor="Black"/>
+                <StackLayout Spacing="0"
+                         >
+
+                    <Label x:Name="lHint"
                        TextColor="#101010"
                        FontSize="16"
                        VerticalOptions="Center"
                        HorizontalTextAlignment="Center"
                        FontFamily="{StaticResource OpenSans-Bold}"/>
-                <FlexLayout JustifyContent="Center"
+                    <FlexLayout JustifyContent="Center"
                             Margin="0, 15, 0, 20">
-                    <Label x:Name="lMake"
+                        <Label x:Name="lMake"
                            TextColor="#101010"
-                           FontSize="14"
+                           FontSize="16"
                            VerticalOptions="Center"
                            HorizontalTextAlignment="Center"
                            FontFamily="{StaticResource OpenSans-Regular}"/>
-                    <Label x:Name="lModel"
+                        <Label x:Name="lModel"
                            TextColor="#101010"
-                           FontSize="14"
+                           FontSize="16"
                            VerticalOptions="Center"
                            HorizontalTextAlignment="Center"
                            FontFamily="{StaticResource OpenSans-Regular}"/>
-                    <Label x:Name="lYear"
+                        <Label x:Name="lYear"
                            TextColor="#101010"
-                           FontSize="14"
+                           FontSize="16"
                            VerticalOptions="Center"
                            HorizontalTextAlignment="Center"
                            FontFamily="{StaticResource OpenSans-Regular}"/>
-                </FlexLayout>
-                <BoxView HeightRequest="1"
+                    </FlexLayout>
+                    <BoxView HeightRequest="1"
                          BackgroundColor="#E6E6E6"
                          Margin="10, 0, 10, 0"/>
-                <FlexLayout JustifyContent="SpaceEvenly">
-                    <Button Text="{x:Static helperLang:LanguageHelper.ContinuetnBtnText}"
+                    <FlexLayout JustifyContent="SpaceEvenly">
+                        <Button Text="{x:Static helperLang:LanguageHelper.ContinuetnBtnText}"
                             BackgroundColor="White"
                             TextColor="#2C5DEB"
                             FontFamily="{StaticResource OpenSans-Bold}"
-                            FontSize="16"
+                            FontSize="17"
                             Clicked="Button_Clicked"/>
-                </FlexLayout>
+                    </FlexLayout>
+                </StackLayout>
+
             </StackLayout>
         </Frame>
     </StackLayout>

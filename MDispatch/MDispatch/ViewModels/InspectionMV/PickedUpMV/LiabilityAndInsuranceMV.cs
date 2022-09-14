@@ -172,7 +172,8 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
                     }
                     else
                     {
-                        await Navigation.PushAsync(new Ask2Page(this.managerDispatchMob, this.IdVech, this.IdShip, this.initDasbordDelegate));
+                        var isProblem = await CheckProplem();
+                        await Navigation.PushAsync(new Ask2Page(this.managerDispatchMob, this.IdVech, this.IdShip, this.initDasbordDelegate, isProblem));
                     }
                     if (Navigation.NavigationStack.Count > 2)
                     {
@@ -371,7 +372,8 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
 
         public async void GoToContinue()
         {
-            await Navigation.PushAsync(new Ask2Page(managerDispatchMob, IdVech, IdShip, initDasbordDelegate));
+            var isProblem = await CheckProplem();
+            await Navigation.PushAsync(new Ask2Page(managerDispatchMob, IdVech, IdShip, initDasbordDelegate, isProblem));
             if (Navigation.NavigationStack.Count > 1)
             {
                 Navigation.RemovePage(Navigation.NavigationStack[1]);

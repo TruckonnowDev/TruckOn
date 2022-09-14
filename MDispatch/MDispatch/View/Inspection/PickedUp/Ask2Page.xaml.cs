@@ -10,6 +10,7 @@ using Rg.Plugins.Popup.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using static MDispatch.Service.ManagerDispatchMob;
@@ -21,9 +22,9 @@ namespace MDispatch.View.Inspection.PickedUp
     {
         private Ask2PageMW ask2PageMW = null;
 
-        public Ask2Page(ManagerDispatchMob managerDispatchMob, string idVech, string idShip, InitDasbordDelegate initDasbordDelegate)
+        public Ask2Page(ManagerDispatchMob managerDispatchMob, string idVech, string idShip, InitDasbordDelegate initDasbordDelegate, bool isProblem)
         {
-            ask2PageMW = new Ask2PageMW(managerDispatchMob, idVech, idShip, Navigation, initDasbordDelegate);
+            ask2PageMW = new Ask2PageMW(managerDispatchMob, idVech, idShip, Navigation, initDasbordDelegate, isProblem);
             ask2PageMW.Ask2 = new Ask2();
             InitializeComponent();
             BindingContext = ask2PageMW;
@@ -190,6 +191,10 @@ namespace MDispatch.View.Inspection.PickedUp
         }
         #endregion  
 
+        private void PhoneNumber_clicked(object sender, EventArgs e)
+        {
+            PhoneDialer.Open("+17734305155");
+        }
 
         [Obsolete]
         private async void ToolbarItem_Clicked(object sender, EventArgs e)

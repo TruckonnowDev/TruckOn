@@ -147,7 +147,7 @@
         public string AskBlockMusteMileageTitle => "Exact mileage after loading (Must type miles)";
         public string PlaceholderMusteMileage => "Mileage";
 
-        public string AskBlockImperfectionsWileLoadingTitle => "Did you notice any mechanical imperfections wile loading?";
+        public string AskBlockImperfectionsWileLoadingTitle => "Did you notice any mechanical imperfections while loading?";
         public string PlaceholderMechanicalDefects => "Enter Mechanical defects";
 
         public string AskBlockMethodExitTitle => "What method of exit did you use?";

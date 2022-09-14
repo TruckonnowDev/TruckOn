@@ -46,7 +46,8 @@ namespace MDispatch.View.Inspection
             }
             else
             {
-                await Navigation.PushAsync(new Ask2Page(((LiabilityAndInsuranceMV)paymmant).managerDispatchMob, ((LiabilityAndInsuranceMV)paymmant).IdVech, ((LiabilityAndInsuranceMV)paymmant).IdShip, ((LiabilityAndInsuranceMV)paymmant).initDasbordDelegate));
+                bool isProblem = await ((LiabilityAndInsuranceMV)paymmant).CheckProplem();
+                await Navigation.PushAsync(new Ask2Page(((LiabilityAndInsuranceMV)paymmant).managerDispatchMob, ((LiabilityAndInsuranceMV)paymmant).IdVech, ((LiabilityAndInsuranceMV)paymmant).IdShip, ((LiabilityAndInsuranceMV)paymmant).initDasbordDelegate, isProblem));
                 ((LiabilityAndInsuranceMV)paymmant).AddPhoto(result.Result);
             }
         }

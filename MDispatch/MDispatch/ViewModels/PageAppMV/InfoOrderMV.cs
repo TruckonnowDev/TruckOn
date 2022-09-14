@@ -367,13 +367,14 @@ namespace MDispatch.ViewModels.PageAppMV
                 }
                 else
                 {
-                    await Navigation.PushAsync(new Ask2Page(liabilityAndInsuranceMV.managerDispatchMob, liabilityAndInsuranceMV.IdVech, liabilityAndInsuranceMV.IdShip, liabilityAndInsuranceMV.initDasbordDelegate));
+                    bool isProblem = await liabilityAndInsuranceMV.CheckProplem();
+                    await Navigation.PushAsync(new Ask2Page(liabilityAndInsuranceMV.managerDispatchMob, liabilityAndInsuranceMV.IdVech, liabilityAndInsuranceMV.IdShip, liabilityAndInsuranceMV.initDasbordDelegate, isProblem));
                 }
                 Navigation.RemovePage(Navigation.NavigationStack[1]);
             }
             else if(Shipping.Ask2 == null)
             {
-                Ask2Page ask2Page = new Ask2Page(managerDispatchMob, vehiclwInformation1.Id, shipping.Id, initDasbordDelegate);
+                Ask2Page ask2Page = new Ask2Page(managerDispatchMob, vehiclwInformation1.Id, shipping.Id, initDasbordDelegate, shipping.IsProblem);
                 await Navigation.PushAsync(ask2Page);
                 Navigation.RemovePage(Navigation.NavigationStack[1]);
             }

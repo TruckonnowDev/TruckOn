@@ -1,73 +1,77 @@
-﻿<body>
-<div class="admin">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="title">
-                    <h1>Equipment</h1>
-                    <button class="btn1" onclick="window.location.href='@Url.Action("CreateTruck", "Equipment")';">Add Truck</button>
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+<body>
+    <div class="admin">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="title">
+                        <h1>@Localizer["Header"]</h1>
+                        <button class="btn1" onclick="window.location.href='@Url.Action("CreateTruck", "Equipment")';">@Localizer["AddTruck"]</button>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div id="tabs">
-                    <div class="tab whiteborder" onclick="window.location.href='@Url.Action("Trucks", "Equipment")';">Trucks</div>
-                    <div class="tab" onclick="window.location.href='@Url.Action("Trailers", "Equipment")';">Trailers</div>
-                    <div class="tabContent">
-                        <table>
-                            <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Year</th>
-                                <th>Make</th>
-                                <th>Model</th>
-                                <th>Type</th>
-                                <th>Color</th>
-                                <th>Plate#</th>
-                                <th>State</th>
-                                <th>Plate Exp</th>
-                                <th>Vin #</th>
-                                <th style="padding: 10px 0;">Owner</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @for (int i = 0; i < ViewBag.Trucks.Count; i++)
-                            {
-                                <tr>
-                                    <td>@ViewBag.Trucks[i].NameTruk</td>
-                                    <td>@ViewBag.Trucks[i].Yera</td>
-                                    <td>@ViewBag.Trucks[i].Make</td>
-                                    <td>@ViewBag.Trucks[i].Model</td>
-                                    <td style="word-break: break-all">@ViewBag.Trucks[i].Type</td>
-                                    <td>@ViewBag.Trucks[i].ColorTruk</td>
-                                    <td>@ViewBag.Trucks[i].PlateTruk</td>
-                                    <td>@ViewBag.Trucks[i].Satet</td>
-                                    <td>@ViewBag.Trucks[i].Exp</td>
-                                    <td style="word-break: break-all">@ViewBag.Trucks[i].Vin</td>
-                                    <td>@ViewBag.Trucks[i].Owner</td>
-                                    <td style="padding: 10px 0;width: 10%">
-                                        <img src="~/img/arrow.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Driver/InspactionTrucks?idDriver=0&idTruck='+@ViewBag.Trucks[i].Id+'&idTrailer=0&date=0';"/>
-                                            <img src="~/img/pen.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/EditTruck?idTruck='+@ViewBag.Trucks[i].Id;">
-                                            <img src="~/img/setting.svg" alt="" onclick="window.location.href='@ViewBag.BaseUrl/Settings?idTr=@ViewBag.Trucks[i].Id&page=s&idProfile=0&typeTransport=Truck'">
-                                            <img src="~/img/doc.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/Truck/Doc?id='+@ViewBag.Trucks[i].Id;">
-                                            <img src="~/img/delet.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/Truck/Remove?id='+@ViewBag.Trucks[i].Id;">
-                                    </td>
-                                </tr>
-                            }
-                            </tbody>
-                        </table>
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="tabs">
+                        <div class="tab whiteborder" onclick="window.location.href='@Url.Action("Trucks", "Equipment")';">@Localizer["Trucks"]</div>
+                        <div class="tab" onclick="window.location.href='@Url.Action("Trailers", "Equipment")';">@Localizer["Trailers"]</div>
+                        <div class="tabContent">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>@Localizer["Name"]</th>
+                                        <th>@Localizer["Year"]</th>
+                                        <th>@Localizer["Make"]</th>
+                                        <th>@Localizer["Model"]</th>
+                                        <th>@Localizer["Type"]</th>
+                                        <th>@Localizer["Color"]</th>
+                                        <th>@Localizer["Plate"]#</th>
+                                        <th>@Localizer["State"]</th>
+                                        <th>@Localizer["PlateExp"]</th>
+                                        <th>@Localizer["Vin"] #</th>
+                                        <th style="padding: 10px 0;">@Localizer["Owner"]</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (int i = 0; i < ViewBag.Trucks.Count; i++)
+                                    {
+                                        <tr>
+                                            <td>@ViewBag.Trucks[i].NameTruk</td>
+                                            <td>@ViewBag.Trucks[i].Yera</td>
+                                            <td>@ViewBag.Trucks[i].Make</td>
+                                            <td>@ViewBag.Trucks[i].Model</td>
+                                            <td style="word-break: break-all">@ViewBag.Trucks[i].Type</td>
+                                            <td>@ViewBag.Trucks[i].ColorTruk</td>
+                                            <td>@ViewBag.Trucks[i].PlateTruk</td>
+                                            <td>@ViewBag.Trucks[i].Satet</td>
+                                            <td>@ViewBag.Trucks[i].Exp</td>
+                                            <td style="word-break: break-all">@ViewBag.Trucks[i].Vin</td>
+                                            <td>@ViewBag.Trucks[i].Owner</td>
+                                            <td style="padding: 10px 0;width: 10%">
+                                                <img src="~/img/arrow.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Driver/InspactionTrucks?idDriver=0&idTruck='+@ViewBag.Trucks[i].Id+'&idTrailer=0&date=0';" />
+                                                <img src="~/img/pen.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/EditTruck?idTruck='+@ViewBag.Trucks[i].Id;">
+                                                <img src="~/img/setting.svg" alt="" onclick="window.location.href='@ViewBag.BaseUrl/Settings?idTr=@ViewBag.Trucks[i].Id&page=s&idProfile=0&typeTransport=Truck'">
+                                                <img src="~/img/doc.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/Truck/Doc?id='+@ViewBag.Trucks[i].Id;">
+                                                <img src="~/img/delet.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/Truck/Remove?id='+@ViewBag.Trucks[i].Id;">
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </body>
 
 <style>
     img {
-    float:left;
+        float: left;
     }
 </style>

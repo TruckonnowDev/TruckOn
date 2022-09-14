@@ -1,4 +1,7 @@
 ﻿@model WebDispacher.ViewModels.Trailer.TrailerViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
 
 <body>
     <div class="admin truc">
@@ -6,77 +9,77 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="tabContent">
-                        <h2>Edit trailer</h2>
+                        <h2>@Localizer["EditTrailer"]</h2>
                         <form action="" method="post" enctype="multipart/form-data">
-                        <input type="text" name="Id" required value="@Model.Id" style="display:none;" />
+                            <input type="text" name="Id" required value="@Model.Id" style="display:none;" />
                             <label class="big-label" for="">
-                                Name Trailer
+                                @Localizer["NameTrailer"]
                                 <input type="text" class="height-input" name="Name" required value="@Model.Name" />
                             </label>
                             <label class="big-label" for="">
-                                Type Trailer <br />
+                                @Localizer["TypeTrailer"] <br />
                                 <select class="height-input input-select" name="Type" onchange="SelectTrailer(this.options[this.selectedIndex].value)" required>
                                     <option value="@Model.Type">@Model.Type</option>
                                     <option value="Bumperpool2CarEeclosedTraile">Bumper pool 2 Car Enclosed Trailer</option>
                                     @*<option value="GooseneckTrailerTwoVehicles">Gooseneck trailer for two vehicles</option>
-                                        <option value="EnclosedTrailerTwoVehicles">Enclosed trailer for two vehicles</option>
-                                        <option value="a1CarGooseneckTrailer">1 Car Gooseneck Trailer</option>
-                                        <option value="A3CarEnclosedGooseneckTrailer">3 Car Enclosed Gooseneck Trailer</option>
-                                        <option value="Bumperpook24_34ftFlatbed">Bumperpook 24_34ft Flatbed</option>
-                                        <option value="Bumperpool1CarEnclosedTrailer">Bumperpool 1 Car Enclosed Trailer</option>
-                                        <option value="Bumperpool2CarEnclosedTraile">Bumperpool 2 Car Enclosed Traile</option>
-                                        <option value="Bumperpool16_20FtFlatbed">Bumperpool 16_20Ft Flatbed</option>
-                                        <option value="CarEnclosedTrailer">Car Enclosed Trailer</option>
-                                        <option value="Gooseneck3CarLowTrailer">Gooseneck 3 Car Low Trailer</option>
-                                        <option value="Gooseneck24-34FtFlatbed">Gooseneck 24_34 Ft Flatbed</option>
-                                        <option value="Gooseneck3CarWedgeTrailer">Gooseneck 3 Car Wedge Trailer</option>
-                                        <option value="Gooseneck5CarOpenTrailer">Gooseneck 5 Car Open Trailer</option>
-                                        <option value="Gooseneck6CarOpenTrailer">Gooseneck 6 Car Open Trailer</option>
-                                        <option value="BumperPool2CarTrailer">Bumper Pool 2 Car Trailer</option>*@
+            <option value="EnclosedTrailerTwoVehicles">Enclosed trailer for two vehicles</option>
+            <option value="a1CarGooseneckTrailer">1 Car Gooseneck Trailer</option>
+            <option value="A3CarEnclosedGooseneckTrailer">3 Car Enclosed Gooseneck Trailer</option>
+            <option value="Bumperpook24_34ftFlatbed">Bumperpook 24_34ft Flatbed</option>
+            <option value="Bumperpool1CarEnclosedTrailer">Bumperpool 1 Car Enclosed Trailer</option>
+            <option value="Bumperpool2CarEnclosedTraile">Bumperpool 2 Car Enclosed Traile</option>
+            <option value="Bumperpool16_20FtFlatbed">Bumperpool 16_20Ft Flatbed</option>
+            <option value="CarEnclosedTrailer">Car Enclosed Trailer</option>
+            <option value="Gooseneck3CarLowTrailer">Gooseneck 3 Car Low Trailer</option>
+            <option value="Gooseneck24-34FtFlatbed">Gooseneck 24_34 Ft Flatbed</option>
+            <option value="Gooseneck3CarWedgeTrailer">Gooseneck 3 Car Wedge Trailer</option>
+            <option value="Gooseneck5CarOpenTrailer">Gooseneck 5 Car Open Trailer</option>
+            <option value="Gooseneck6CarOpenTrailer">Gooseneck 6 Car Open Trailer</option>
+            <option value="BumperPool2CarTrailer">Bumper Pool 2 Car Trailer</option>*@
                                 </select>
                             </label>
                             <label class="big-label" for="">
-                                Year
+                                @Localizer["Year"]
                                 <input class="height-input" type="text" name="Year" value="@Model.Year" />
                             </label>
                             <label class="big-label" for="">
-                                Make
+                                @Localizer["Make"]
                                 <input class="height-input" type="text" name="Make" value="@Model.Make" />
                             </label>
                             <label class="big-label" for="">
-                                Model
+                                @Localizer["Model"]
                                 <input class="height-input" type="text" name="model">
                             </label>
                             <label class="big-label" for="">
-                                How Long
+                                @Localizer["HowLong"]
                                 <input class="height-input" type="text" name="HowLong" value="@Model.HowLong" />
                             </label>
                             <label class="big-label" for="">
-                                Vin#
+                                @Localizer["Vin"]#
                                 <input class="height-input" type="text" name="Vin" value="@Model.Vin" />
                             </label>
                             <label class="big-label" for="">
-                                Owner
+                                @Localizer["Owner"]
                                 @* @Html.TextBoxFor(x => x.Owner, new { value="@Model.Owner"}) *@
                                 <input class="height-input" type="text" name="Owner" value="@Model.Owner" />
                             </label>
                             <label class="big-label" for="">
-                                Color
+                                @Localizer["Color"]
                                 <input class="height-input" type="text" name="Color" value="@Model.Color" />
                             </label>
                             <label class="big-label" for="">
-                                Plate Trailer
+                                @Localizer["PlateTrailer"]
                                 <input class="height-input" type="text" name="Plate" required value="@Model.Plate" />
                             </label>
                             <label class="big-label" for="">
-                                Plate Exp Trailer
+                                @Localizer["PlateTrailerExp"]
                                 <input class="height-input" type="text" name="Exp" value="@Model.Exp" />
                             </label>
                             <label class="big-label" for="">
-                                ANNUAL INS
+                                @Localizer["AnnualIns"]
                                 <input class="height-input" type="text" name="AnnualIns" value="@Model.AnnualIns" />
                             </label>
-                            <button class="height-input btn1 big-label big-font-size">Save Info</button>
+                            <button class="height-input btn1 big-label big-font-size">@Localizer["SaveInfo"]</button>
                         </form>
                     </div>
                 </div>

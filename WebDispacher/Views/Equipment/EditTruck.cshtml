@@ -1,4 +1,7 @@
 ﻿@model WebDispacher.ViewModels.Truck.TruckViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
 
 <body>
     <div class="admin truc">
@@ -7,19 +10,19 @@
                 <div class="col-md-6">
                     <div class="tabContent">
                         <div class="title">
-                            <a href="#" onclick="history.back();">Back to Equipment</a>
+                            <a href="#" onclick="history.back();">@Localizer["BackToEquipment"]</a>
                         </div>
                         <div class="title">
-                            <h1 class="text-info-header-1">Edit truck</h1>
+                            <h1 class="text-info-header-1">@Localizer["EditTruck"]</h1>
                         </div>
                         <form action="" method="post" enctype="multipart/form-data">
-                        <input type="text" name="Id" required value="@Model.Id" style="display:none;" />
+                            <input type="text" name="Id" required value="@Model.Id" style="display:none;" />
                             <label class="big-label" for="">
-                                Name Truck
+                                @Localizer["NameTruck"]
                                 <input class="height-input" type="text" name="NameTruck" required value="@Model.NameTruck">
                             </label>
                             <label class="big-label" for="">
-                                Type Truck <br />
+                                @Localizer["TypeTruck"] <br />
                                 <select class="height-input input-select" name="Type" onchange="SelectTruck(this.options[this.selectedIndex].value)" required>
                                     <option value="@Model.Type">@Model.Type</option>
                                     <option value="PickUpDually4TiresInTheBackMustHave4Door">Pick up Dually (4 tires in the bacK) must have 4 door</option>
@@ -37,42 +40,42 @@
                                 </select>
                             </label>
                             <label class="big-label" for="">
-                                Year
+                                @Localizer["Year"]
                                 <input class="height-input" type="text" name="Year" value="@Model.Year" />
                             </label>
                             <label class="big-label" for="">
-                                Make
+                                @Localizer["Make"]
                                 <input class="height-input" type="text" name="Make" value="@Model.Make" />
                             </label>
                             <label class="big-label" for="">
-                                Model
+                                @Localizer["Model"]
                                 <input class="height-input" type="text" name="Model" value="@Model.Model" />
                             </label>
                             <label class="big-label" for="">
-                                State
+                                @Localizer["State"]
                                 <input class="height-input" type="text" name="State" value="@Model.State" />
                             </label>
                             <label class="big-label" for="">
-                                Plate Exp
+                                @Localizer["PlateExp"]
                                 <input class="height-input" type="text" name="Exp" value="@Model.Exp" />
                             </label>
                             <label class="big-label" for="">
-                                Vin#
+                                @Localizer["Vin"]#
                                 <input class="height-input" type="text" name="Vin" value="@Model.Vin" />
                             </label>
                             <label class="big-label" for="">
-                                Owner
+                                @Localizer["Owner"]
                                 <input class="height-input" type="text" name="Owner" value="@Model.Owner" />
                             </label>
                             <label class="big-label" for="">
-                                Plate Truck
+                                @Localizer["PlateTruck"]
                                 <input class="height-input" type="text" name="PlateTruck" required value="@Model.PlateTruck" />
                             </label>
                             <label class="big-label" for="">
-                                Color
-                                <input class="height-input" type="text" name="ColorTruck" value="@Model.ColorTruck" >
+                                @Localizer["Color"]
+                                <input class="height-input" type="text" name="ColorTruck" value="@Model.ColorTruck">
                             </label>
-                            <button class="btn1 big-label height-input big-font-size">Save Info</button>
+                            <button class="btn1 big-label height-input big-font-size">@Localizer["SaveInfo"]</button>
                         </form>
                     </div>
                 </div>

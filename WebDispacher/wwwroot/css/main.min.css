@@ -678,7 +678,11 @@
 }
 
 .big-label {
-    width: 550px!important;
+    width: 600px!important;
+}
+
+.select-doc {
+    white-space: nowrap;
 }
 
 .height-input {
@@ -694,7 +698,7 @@ input[type="file"] {
 }
 
 .file-group {
-    height:73px;
+    height:77px;
     background:#fff;
     border:1px solid #c4c9d5;
     border-radius:10px;
@@ -706,8 +710,6 @@ input[type="file"] {
     line-height:1.2;
     color:#686f7c;
     margin-top:6px;
-    margin-bottom:6px;
-    margin-right:10px;
 }
 
 .file-group .select-button-1 label {
@@ -738,6 +740,7 @@ input[type="file"] {
 }
 
 .full-label {
+    width: 100%;
     margin-bottom: 15px;
 }
 

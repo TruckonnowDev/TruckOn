@@ -1,4 +1,8 @@
-﻿<header class="line">
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+<header class="line">
     <div class="container">
         <div class="row align-items-center justify-content-between">
             <div class="col-md-auto">
@@ -8,9 +12,9 @@
             </div>
             <div class="col-md-auto">
                 <ul class="menu top-nav_menu">
-                    <li><a href="/Settings/Biling/PaymentMethod">Biling</a></li>
-                    <li><a href="/Settings/Subscription/Subscriptions">Subscription</a></li>
-                    <li><a href="/Dashbord/Order/NewLoad">Back To Order</a></li>
+                    <li><a href="/Settings/Biling/PaymentMethod">@Localizer["Biling"]</a></li>
+                    <li><a href="/Settings/Subscription/Subscriptions">@Localizer["Subscription"]</a></li>
+                    <li><a href="/Dashbord/Order/NewLoad">@Localizer["BackToOrder"]</a></li>
                 </ul>
                 <div class="burger">
                     <button class="top-nav_btn hamburger hamburger--3dy">

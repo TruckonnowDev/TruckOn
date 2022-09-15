@@ -727,7 +727,7 @@ input[type="file"] {
 }
 
 .inp-file-width {
-    width:550px;
+    width:600px;
 }
 
 .full-label .a-label {
@@ -859,4 +859,8 @@ input[type="file"] {
 
 .fi {
     word-break: break-all;
+}
+
+.btn1-big-auto {
+    width: auto!important;
 }

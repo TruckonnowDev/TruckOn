@@ -864,3 +864,7 @@ input[type="file"] {
 .btn1-big-auto {
     width: auto!important;
 }
+
+.width-auto {
+    width: auto!important;
+}

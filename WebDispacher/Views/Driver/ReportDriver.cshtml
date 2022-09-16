@@ -1,122 +1,127 @@
-﻿<body>
-<div class="admin">
-    <div class="container"><div class="row">
-            <div class="col-md-12">
-                <div class="title">
-                    <h1>Drivers</h1></div></div></div>
-        <div class="row">
-            <div class="col-md-12">
-                <div id="tabs">
-                    <div class="tab" onclick="window.location.href='@Url.Action("Drivers", "Driver")';">Drivers</div>
-                    <div class="tab" onclick="window.location.href='@Url.Action("Check", "Driver")';">Driver check</div>
-                    <div class="tab whiteborder" onclick="window.location.href='@Url.Action("AddReport", "Driver")';">Report driver</div>
-                    <div class="tabContent">
-                        <form action="" method="post">
-                            <input style="display:none;" name="Experience" id="experienceInp" /><br />
-                            <label class="big-label" for="">
-                                Name Driver
-                                <input class="height-input" name="FullName" type="text" required>
-                            </label>
-                            <label class="big-label" for="">
-                                Driver's License Number
-                                <input class="height-input" name="DriversLicenseNumber" type="text" required>
-                            </label>
-                            <label class="big-label" for="">
-                                Number Of Accidents
-                                <input class="height-input" name="NumberOfAccidents" type="text" required>
-                            </label>
-                            <label class="big-label" for="">
-                                Dot Violations
-                                <input class="height-input" name="DotViolations" type="text" required>
-                            </label>
-                            <label class="big-label" for="">
-                                English Poor <span>(Drag the car to the right)</span>
-                                <input type="range" name="English" min="1" max="3" step="1" list="range-list">
-                                <div class="value"><p>Poor</p> <p>Middle</p> <p>Good</p></div>
-                            </label>
-                            <label class="big-label" for="">
-                                Returned equipmen
-                                <input type="range" name="ReturnedEquipmen" min="1" max="3" step="1" list="range-list">
-                                <div class="value"><p>Poor</p> <p>Middle</p> <p>Good</p></div>
-                            </label>
-                            <label class="big-label" for="">
-                                Working efficiency
-                                <input type="range" name="WorkingEfficiency" min="1" max="3" step="1" list="range-list">
-                                <div class="value"><p>Poor</p> <p>Middle</p> <p>Good</p></div>
-                            </label>
-                            <label class="big-label" for="">
-                                Eld knowledge
-                                <input type="range" name="EldKnowledge" min="1" max="3" step="1" list="range-list">
-                                <div class="value"><p>Poor</p> <p>Middle</p> <p>Good</p></div>
-                            </label>
-                            <label class="big-label" for="">
-                                Driving skills
-                                <input type="range" name="DrivingSkills" min="1" max="3" step="1" list="range-list">
-                                <div class="value"><p>Poor</p> <p>Middle</p> <p>Good</p></div>
-                            </label>
-                            <label class="big-label" for="">
-                                Payment handling
-                                <input type="range" name="PaymentHandling" min="1" max="3" step="1" list="range-list">
-                                <div class="value"><p>Poor</p> <p>Middle</p> <p>Good</p></div>
-                            </label>
-                            <label class="big-label" for="">
-                                Alcohol tendency
-                                <input type="range" name="AlcoholTendency" min="0" max="3" step="1" list="range-list">
-                                <div class="value"><p>None</p> <p>Poor</p> <p>Middle</p> <p>Good</p></div>
-                            </label>
-                            <label class="big-label" for="">
-                                Drug tendency
-                                <input type="range" name="DrugTendency" min="0" max="3" step="1" list="range-list">
-                                <div class="value"><p>None</p> <p>Poor</p> <p>Middle</p> <p>Good</p></div>
-                            </label>
-                            <label class="big-label" for="">
-                                Terminated <span class="text-gray">(boxes FIRED, Contract expiration, left truck without notice, disappeared)</span>
-                            </label>
-                            <div class="cheked">
-                                <label for=""><input type="radio" name="Terminated" required id="">Yes</label>
-                                <label for=""><input type="radio" name="Terminated" required id="">No</label>
-                            </div>
-                            <label for="">Experience with</label>
-                            <div class="cheked">
-                                <label for=""><input type="checkbox" value="Boxes" name="boxes" onclick="SelectExperience(this.value, this.checked)">Boxes</label>
-                                <label for=""><input type="checkbox" value="Enclosed car hauling" name="enclosedCarHauling" onclick="SelectExperience(this.value, this.checked)">Enclosed car hauling</label>
-                                <label for=""><input type="checkbox" value="Open car hauling" name="openCarHauling" onclick="SelectExperience(this.value, this.checked)">Open car hauling</label>
-                                <label for=""><input type="checkbox" value="Flatbed" name="flatbed" onclick="SelectExperience(this.value, this.checked)">Flatbed</label>
-                                <label for=""><input type="checkbox" value="Towing" name="towing" onclick="SelectExperience(this.value, this.checked)">Towing</label>
-                                <label for=""><input type="checkbox" value="Van" name="van" onclick="SelectExperience(this.value, this.checked)">Van</label>
-                                <label for=""><input type="checkbox" value="Reefer" name="reefer" onclick="SelectExperience(this.value, this.checked)">Reefer</label>
-                            </div>
-                            <label class="big-label" for="">
-                                Description
-                                <textarea name="Comment" cols="5" rows="10" required></textarea>
-                            </label>
-                            <input type="submit" value="Add Report Driver" class="btn1 big-label">
-                        </form>
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+<body>
+    <div class="admin">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="title">
+                        <h1>@Localizer["Drivers"]</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="tabs">
+                        <div class="tab" onclick="window.location.href='@Url.Action("Drivers", "Driver")';">@Localizer["Drivers"]</div>
+                        <div class="tab" onclick="window.location.href='@Url.Action("Check", "Driver")';">@Localizer["DriverCheck"]</div>
+                        <div class="tab whiteborder" onclick="window.location.href='@Url.Action("AddReport", "Driver")';">@Localizer["ReportDriver"]</div>
+                        <div class="tabContent">
+                            <form action="" method="post">
+                                <input style="display:none;" name="Experience" id="experienceInp" /><br />
+                                <label class="big-label" for="">
+                                    @Localizer["Name"]
+                                    <input class="height-input" name="FullName" type="text" required>
+                                </label>
+                                <label class="big-label" for="">
+                                    @Localizer["DriverLicenseNumber"]
+                                    <input class="height-input" name="DriversLicenseNumber" type="text" required>
+                                </label>
+                                <label class="big-label" for="">
+                                    @Localizer["NumberOfAccidents"]
+                                    <input class="height-input" name="NumberOfAccidents" type="text" required>
+                                </label>
+                                <label class="big-label" for="">
+                                    @Localizer["DotViolations"]
+                                    <input class="height-input" name="DotViolations" type="text" required>
+                                </label>
+                                <label class="big-label" for="">
+                                    @Localizer["English"] <span>(@Localizer["DragThePointRight"])</span>
+                                    <input type="range" name="English" min="1" max="3" step="1" list="range-list">
+                                    <div class="value"><p>@Localizer["Poor"]</p> <p>@Localizer["Middle"]</p> <p>@Localizer["Good"]</p></div>
+                                </label>
+                                <label class="big-label" for="">
+                                    @Localizer["ReturnedEquipment"]
+                                    <input type="range" name="ReturnedEquipmen" min="1" max="3" step="1" list="range-list">
+                                    <div class="value"><p>@Localizer["Poor"]</p> <p>@Localizer["Middle"]</p> <p>@Localizer["Good"]</p></div>
+                                </label>
+                                <label class="big-label" for="">
+                                    @Localizer["WorkingEfficiency"]
+                                    <input type="range" name="WorkingEfficiency" min="1" max="3" step="1" list="range-list">
+                                    <div class="value"><p>@Localizer["Poor"]</p> <p>@Localizer["Middle"]</p> <p>@Localizer["Good"]</p></div>
+                                </label>
+                                <label class="big-label" for="">
+                                    @Localizer["Eld"]
+                                    <input type="range" name="EldKnowledge" min="1" max="3" step="1" list="range-list">
+                                    <div class="value"><p>@Localizer["Poor"]</p> <p>@Localizer["Middle"]</p> <p>@Localizer["Good"]</p></div>
+                                </label>
+                                <label class="big-label" for="">
+                                    @Localizer["DriverSkills"]
+                                    <input type="range" name="DrivingSkills" min="1" max="3" step="1" list="range-list">
+                                    <div class="value"><p>@Localizer["Poor"]</p> <p>@Localizer["Middle"]</p> <p>@Localizer["Good"]</p></div>
+                                </label>
+                                <label class="big-label" for="">
+                                    @Localizer["PaymentHanding"]
+                                    <input type="range" name="PaymentHandling" min="1" max="3" step="1" list="range-list">
+                                    <div class="value"><p>@Localizer["Poor"]</p> <p>@Localizer["Middle"]</p> <p>@Localizer["Good"]</p></div>
+                                </label>
+                                <label class="big-label" for="">
+                                    @Localizer["AlcoholTendency"]
+                                    <input type="range" name="AlcoholTendency" min="0" max="3" step="1" list="range-list">
+                                    <div class="value"><p>@Localizer["None"]</p> <p>@Localizer["Poor"]</p> <p>@Localizer["Middle"]</p> <p>@Localizer["Good"]</p></div>
+                                </label>
+                                <label class="big-label" for="">
+                                    @Localizer["DrugTendency"]
+                                    <input type="range" name="DrugTendency" min="0" max="3" step="1" list="range-list">
+                                    <div class="value"><p>@Localizer["None"]</p> <p>@Localizer["Poor"]</p> <p>@Localizer["Middle"]</p> <p>@Localizer["Good"]</p></div>
+                                </label>
+                                <label class="big-label" for="">
+                                    @Localizer["Terminated"] <span class="text-gray">(@Localizer["TerminatedInfo"])</span>
+                                </label>
+                                <div class="cheked">
+                                    <label for=""><input type="radio" name="Terminated" required id="">@Localizer["Yes"]</label>
+                                    <label for=""><input type="radio" name="Terminated" required id="">@Localizer["No"]</label>
+                                </div>
+                                <label for="">@Localizer["Experience"]</label>
+                                <div class="cheked">
+                                    <label for=""><input type="checkbox" value="Boxes" name="boxes" onclick="SelectExperience(this.value, this.checked)">@Localizer["Boxes"]</label>
+                                    <label for=""><input type="checkbox" value="Enclosed car hauling" name="enclosedCarHauling" onclick="SelectExperience(this.value, this.checked)">@Localizer["EnclosedCarHauling"]</label>
+                                    <label for=""><input type="checkbox" value="Open car hauling" name="openCarHauling" onclick="SelectExperience(this.value, this.checked)">@Localizer["OpenCarHailing"]</label>
+                                    <label for=""><input type="checkbox" value="Flatbed" name="flatbed" onclick="SelectExperience(this.value, this.checked)">@Localizer["Flatbed"]</label>
+                                    <label for=""><input type="checkbox" value="Towing" name="towing" onclick="SelectExperience(this.value, this.checked)">@Localizer["Towing"]</label>
+                                    <label for=""><input type="checkbox" value="Van" name="van" onclick="SelectExperience(this.value, this.checked)">@Localizer["Van"]</label>
+                                    <label for=""><input type="checkbox" value="Reefer" name="reefer" onclick="SelectExperience(this.value, this.checked)">@Localizer["Reefer"]</label>
+                                </div>
+                                <label class="big-label" for="">
+                                    @Localizer["Description"]
+                                    <textarea name="Comment" cols="5" rows="10" required></textarea>
+                                </label>
+                                <input type="submit" value="@Localizer["AddReportDriver"]" class="btn1 big-label">
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </body>
 <script>
-function SelectExperience(value, Checked) {
-                if (Checked) {
-                    if (experienceInp.value === undefined) {
-                        experienceInp.value = "";
-                    }
-                    experienceInp.value +=  value + ", ";
-                }
-                else
-                {
-                    experienceInp.value = experienceInp.value.replace(value + ", ", "");
-                }
+    function SelectExperience(value, Checked) {
+        if (Checked) {
+            if (experienceInp.value === undefined) {
+                experienceInp.value = "";
             }
+            experienceInp.value += value + ", ";
+        }
+        else {
+            experienceInp.value = experienceInp.value.replace(value + ", ", "");
+        }
+    }
 </script>
 <style>
-    .text-gray{
-     color: #686f7c;
+    .text-gray {
+        color: #686f7c;
     }
-    
-    
 </style>

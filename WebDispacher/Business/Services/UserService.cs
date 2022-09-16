@@ -76,8 +76,8 @@ namespace WebDispacher.Business.Services
         
         public bool CheckEmail(string email)
         {
-            var isEmail = CheckEmail(email);
-            
+            var isEmail = CheckEmailDb(email);
+
             if (isEmail)
             { 
                 var token = CreateToken(email);
@@ -259,7 +259,12 @@ namespace WebDispacher.Business.Services
             db.User.Add(users);
             db.SaveChanges();
         }
-        
+
+        private bool CheckEmailDb(string email)
+        {
+            return db.User.FirstOrDefault(u => u.Login == email) != null;
+        }
+
         private int ResetPasswordFoUserDb(string newPassword, string idUser, string token)
         {
             var isStateActual = 0;

@@ -98,49 +98,10 @@
 	<resheader name="writer">
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
-	<data name="Header" xml:space="preserve">
-		<value>Equipment</value>
+	<data name="TruckDocument" xml:space="preserve">
+		<value>Truck Documents</value>
 	</data>
-	<data name="AddTruck" xml:space="preserve">
-		<value>Add Truck</value>
-	</data>
-	<data name="Trucks" xml:space="preserve">
-		<value>Trucks</value>
-	</data>
-	<data name="Trailers" xml:space="preserve">
-		<value>Trailers</value>
-	</data>
-	<data name="Name" xml:space="preserve">
-		<value>Name</value>
-	</data>
-	<data name="Year" xml:space="preserve">
-		<value>Year</value>
-	</data>
-	<data name="Make" xml:space="preserve">
-		<value>Make</value>
-	</data>
-	<data name="Model" xml:space="preserve">
-		<value>Model</value>
-	</data>
-	<data name="Type" xml:space="preserve">
-		<value>Type</value>
-	</data>
-	<data name="Color" xml:space="preserve">
-		<value>Color</value>
-	</data>
-	<data name="Plate" xml:space="preserve">
-		<value>Plate</value>
-	</data>
-	<data name="State" xml:space="preserve">
-		<value>State</value>
-	</data>
-	<data name="PlateExp" xml:space="preserve">
-		<value>Plate Exp</value>
-	</data>
-	<data name="Vin" xml:space="preserve">
-		<value>Vin</value>
-	</data>
-	<data name="Owner" xml:space="preserve">
-		<value>Owner</value>
+	<data name="TrailerDocument" xml:space="preserve">
+		<value>Trailer Documents</value>
 	</data>
 </root>

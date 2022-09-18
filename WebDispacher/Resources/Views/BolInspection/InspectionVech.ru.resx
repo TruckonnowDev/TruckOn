@@ -98,49 +98,55 @@
 	<resheader name="writer">
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
-	<data name="Header" xml:space="preserve">
-		<value>Equipment</value>
+	<data name="BackToOrders" xml:space="preserve">
+		<value>Вернуться к заказам</value>
 	</data>
-	<data name="AddTruck" xml:space="preserve">
-		<value>Add Truck</value>
+	<data name="CustomerPaintingDelivery" xml:space="preserve">
+		<value>Доставка покраски Клиенту</value>
 	</data>
-	<data name="Trucks" xml:space="preserve">
-		<value>Trucks</value>
+	<data name="CustomerPaintingPickup" xml:space="preserve">
+		<value>Принятие картины Клиентом</value>
 	</data>
-	<data name="Trailers" xml:space="preserve">
-		<value>Trailers</value>
+	<data name="CustomerVehicleIns" xml:space="preserve">
+		<value>Инспекция машины клиента</value>
 	</data>
-	<data name="Name" xml:space="preserve">
-		<value>Name</value>
+	<data name="DeliveryInspection" xml:space="preserve">
+		<value>Проверка доставки</value>
 	</data>
-	<data name="Year" xml:space="preserve">
-		<value>Year</value>
+	<data name="Destionation" xml:space="preserve">
+		<value>Место назначения</value>
 	</data>
-	<data name="Make" xml:space="preserve">
-		<value>Make</value>
+	<data name="LoadId" xml:space="preserve">
+		<value>Id загрузки</value>
 	</data>
-	<data name="Model" xml:space="preserve">
-		<value>Model</value>
+	<data name="MessageInfo" xml:space="preserve">
+		<value>Приложение заставит водителя сфотографировать каждый ремешок</value>
+	</data>
+	<data name="NoPhoto" xml:space="preserve">
+		<value>Нет фото</value>
+	</data>
+	<data name="Origin" xml:space="preserve">
+		<value>Происхождение</value>
+	</data>
+	<data name="PaymentPhotoDelivery" xml:space="preserve">
+		<value>Фото Оплаты Доставки</value>
+	</data>
+	<data name="PaymentPhotoPickup" xml:space="preserve">
+		<value>Принятие Фото Оплаты</value>
+	</data>
+	<data name="PersonalVehicle" xml:space="preserve">
+		<value>Любые личные или дополнительные предметы, находящиеся в транспортном средстве</value>
+	</data>
+	<data name="PhotoAfterLoadingInTruck" xml:space="preserve">
+		<value>Фото после погрузки в грузовик</value>
+	</data>
+	<data name="PickupIns" xml:space="preserve">
+		<value>Принятие Проверки</value>
 	</data>
 	<data name="Type" xml:space="preserve">
-		<value>Type</value>
+		<value>Тип</value>
 	</data>
-	<data name="Color" xml:space="preserve">
-		<value>Color</value>
-	</data>
-	<data name="Plate" xml:space="preserve">
-		<value>Plate</value>
-	</data>
-	<data name="State" xml:space="preserve">
-		<value>State</value>
-	</data>
-	<data name="PlateExp" xml:space="preserve">
-		<value>Plate Exp</value>
-	</data>
-	<data name="Vin" xml:space="preserve">
-		<value>Vin</value>
-	</data>
-	<data name="Owner" xml:space="preserve">
-		<value>Owner</value>
+	<data name="PictureIdPersonDelivery" xml:space="preserve">
+		<value>Удостоверение личности с фотографией лица, принимающего доставку</value>
 	</data>
 </root>

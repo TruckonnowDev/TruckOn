@@ -134,7 +134,7 @@
 	<data name="Plate" xml:space="preserve">
 		<value>Номер</value>
 	</data>
-	<data name="Plate Exp" xml:space="preserve">
+	<data name="PlateExp" xml:space="preserve">
 		<value>Номер Exp</value>
 	</data>
 	<data name="Vin" xml:space="preserve">

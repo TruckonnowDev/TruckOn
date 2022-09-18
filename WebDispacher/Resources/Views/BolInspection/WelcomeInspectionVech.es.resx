@@ -98,49 +98,58 @@
 	<resheader name="writer">
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
-	<data name="Header" xml:space="preserve">
-		<value>Equipment</value>
+	<data name="BackToOrder" xml:space="preserve">
+		<value>Volver al Pedido</value>
 	</data>
-	<data name="AddTruck" xml:space="preserve">
-		<value>Add Truck</value>
+	<data name="LoadId" xml:space="preserve">
+		<value>ID de carga</value>
 	</data>
-	<data name="Trucks" xml:space="preserve">
-		<value>Trucks</value>
+	<data name="Origin" xml:space="preserve">
+		<value>Origen</value>
 	</data>
-	<data name="Trailers" xml:space="preserve">
-		<value>Trailers</value>
-	</data>
-	<data name="Name" xml:space="preserve">
-		<value>Name</value>
-	</data>
-	<data name="Year" xml:space="preserve">
-		<value>Year</value>
-	</data>
-	<data name="Make" xml:space="preserve">
-		<value>Make</value>
-	</data>
-	<data name="Model" xml:space="preserve">
-		<value>Model</value>
+	<data name="Destionation" xml:space="preserve">
+		<value>Destino</value>
 	</data>
 	<data name="Type" xml:space="preserve">
-		<value>Type</value>
+		<value>Tipo</value>
 	</data>
-	<data name="Color" xml:space="preserve">
-		<value>Color</value>
+	<data name="PickupIns" xml:space="preserve">
+		<value>Inspección de Recogida</value>
 	</data>
-	<data name="Plate" xml:space="preserve">
-		<value>Plate</value>
+	<data name="NoPhoto" xml:space="preserve">
+		<value>Sin Foto</value>
 	</data>
-	<data name="State" xml:space="preserve">
-		<value>State</value>
+	<data name="PersonalVehicle" xml:space="preserve">
+		<value>Cualquier artículo personal o adicional con o en el vehículo</value>
 	</data>
-	<data name="PlateExp" xml:space="preserve">
-		<value>Plate Exp</value>
+	<data name="MessageInfo" xml:space="preserve">
+		<value>La aplicación obligará al conductor a tomar fotografías de cada correa</value>
 	</data>
-	<data name="Vin" xml:space="preserve">
-		<value>Vin</value>
+	<data name="PhotoAfterLoadingInTruck" xml:space="preserve">
+		<value>Foto después de cargar en el camión</value>
 	</data>
-	<data name="Owner" xml:space="preserve">
-		<value>Owner</value>
+	<data name="CustomerPaintingPickup" xml:space="preserve">
+		<value>Recogida de pintura del Cliente</value>
+	</data>
+	<data name="PaymentPhotoPickup" xml:space="preserve">
+		<value>Recogida de Fotos de Pago</value>
+	</data>
+	<data name="DeliveryInspection" xml:space="preserve">
+		<value>Inspección de Entrega</value>
+	</data>
+	<data name="PictureIdPersonDelivery" xml:space="preserve">
+		<value>Identificación con fotografía de la persona que realiza la entrega</value>
+	</data>
+	<data name="CustomerVehicleIns" xml:space="preserve">
+		<value>Inspección de Vehículos del Cliente</value>
+	</data>
+	<data name="CustomerPaintingDelivery" xml:space="preserve">
+		<value>Entrega de pintura al Cliente</value>
+	</data>
+	<data name="PaymentPhotoDelivery" xml:space="preserve">
+		<value>Pago y Entrega</value>
+	</data>
+	<data name="PhotoInspection" xml:space="preserve">
+		<value>Inspección fotográfica</value>
 	</data>
 </root>

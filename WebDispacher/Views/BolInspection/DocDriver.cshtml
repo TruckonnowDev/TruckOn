@@ -1,4 +1,8 @@
-﻿<div class="body">
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+<div class="body">
     <div class="contentBody">
         <div>
             @if (@ViewBag.Truck != null)
@@ -7,7 +11,7 @@
             }
             else
             {
-                <h2 class="headPhoto" style="font-size:25px;">Truck Document</h2> <br />
+                <h2 class="headPhoto" style="font-size:25px;">@Localizer["TruckDocument"]</h2> <br />
             }
             @for (int i = 0; i < ViewBag.TruckDoc.Count; i++)
             {
@@ -28,11 +32,11 @@
         <div>
             @if (@ViewBag.Trailer != null)
             {
-                <h2 class="headPhoto" style="font-size:25px;">Trailer Document @ViewBag.Trailer.Name @ViewBag.Trailer.Year @ViewBag.Trailer.Make @ViewBag.Trailer.Plate</h2> <br />
+                <h2 class="headPhoto" style="font-size:25px;">@Localizer["TrailerDocument"] @ViewBag.Trailer.Name @ViewBag.Trailer.Year @ViewBag.Trailer.Make @ViewBag.Trailer.Plate</h2> <br />
             }
             else
             {
-                <h2 class="headPhoto" style="font-size:25px;">Trailer Document</h2> <br />
+                <h2 class="headPhoto" style="font-size:25px;">@Localizer["TrailerDocument"]</h2> <br />
             }
             @for (int i = 0; i < ViewBag.TrailerDoc.Count; i++)
             {

@@ -20,9 +20,45 @@ namespace MDispatch.View.Inspection
             feedBackMV = new FeedBackMV(managerDispatchMob, vehiclwInformation, Navigation, payMVInspaction,
                 feedback);
 			InitializeComponent ();
+            if (feedback != null
+               && feedback.id != 0)
+            {
+                SetFeedbackValues(feedback);
+            }
             BindingContext = feedBackMV;
             Init();
 		}
+
+        private void SetFeedbackValues(Models.Feedback feedback)
+        {
+            if (feedback.Would_You_Use_Our_Company_Again.Equals("Yes"))
+            {
+                UseCompanyAgainYesBtn.IsEnabled = true;
+                UseCompanyAgainYesBtn.TextColor = Color.FromHex("#4fd2c2");
+            }
+            else if (feedback.Would_You_Use_Our_Company_Again.Equals("No"))
+            {
+                UseCompanyAgainNoBtn.IsEnabled = true;
+                UseCompanyAgainNoBtn.TextColor = Color.FromHex("#4fd2c2");
+            }
+            else
+            {
+                UseCompanyAgainMaybeBtn.IsEnabled = true;
+                UseCompanyAgainMaybeBtn.TextColor = Color.FromHex("#4fd2c2");
+            }
+
+            if (feedback.Would_You_Like_To_Get_An_notification_If_We_Have_Any_Promotion.Equals("Yes"))
+            {
+                satisfiedServiceYesBtn.IsEnabled = true;
+                satisfiedServiceYesBtn.TextColor = Color.FromHex("#4fd2c2");
+            }
+            else
+            {
+                satisfiedServiceNoBtn.IsEnabled = true;
+                satisfiedServiceNoBtn.TextColor = Color.FromHex("#4fd2c2");
+            }
+
+        }
 
         private void Init()
         {

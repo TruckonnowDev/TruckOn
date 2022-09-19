@@ -43,7 +43,7 @@ namespace MDispatch.View.TabPage.Tab
         [Obsolete]
         private async void TapGestureRecognizer_Tapped_1(object sender, EventArgs e)
         {
-            if (!activeMV.UnTimeOfInspection.ISMaybiInspection)
+            if (activeMV.UnTimeOfInspection.IsInspection)
             {
                 await PopupNavigation.PushAsync(new AskHint(activeMV));
             }

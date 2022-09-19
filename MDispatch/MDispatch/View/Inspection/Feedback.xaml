@@ -22,15 +22,8 @@
                             MinValue="0"
                             IsEnabled="{Binding HasFeedback, Converter={StaticResource inverseBoolConverter}}"
                             StepValue="1"
+                                Value="{Binding Feedback.How_Are_You_Satisfied_With_Service}"
                             PropertyChanged="AdvancedSlider_PropertyChanged" >
-                                <input:AdvancedSlider.Triggers>
-                                    <DataTrigger TargetType="input:AdvancedSlider"
-                                                 Binding="{Binding HasFeedback}"
-                                                 Value="True">
-                                        <Setter Property="Value"
-                                                Value="{Binding Feedback.How_Are_You_Satisfied_With_Service}"/>
-                                    </DataTrigger>
-                                </input:AdvancedSlider.Triggers>
                             </input:AdvancedSlider>
                     </StackLayout>
                 </shadowFrame:ShadowFrame>
@@ -43,12 +36,18 @@
                                      Spacing="13">
                             <Button Text="{x:Static helperLang:LanguageHelper.WithoutTranslationYesBtnText}"
                                     Clicked="Button_Clicked"
+                                    x:Name="UseCompanyAgainYesBtn"
+                                    IsEnabled="{Binding HasFeedback, Converter={StaticResource inverseBoolConverter}}"
                                     Style="{StaticResource btnAsk}"/>
                             <Button Text="{x:Static helperLang:LanguageHelper.WithoutTranslationMaybeBtnText}"
                                     Clicked="Button_Clicked"
+                                    x:Name="UseCompanyAgainMaybeBtn"
+                                    IsEnabled="{Binding HasFeedback, Converter={StaticResource inverseBoolConverter}}"
                                     Style="{StaticResource btnAsk}"/>
                             <Button Text="{x:Static helperLang:LanguageHelper.WithoutTranslationNoBtnText}"
                                     Clicked="Button_Clicked"
+                                    x:Name="UseCompanyAgainNoBtn"
+                                    IsEnabled="{Binding HasFeedback, Converter={StaticResource inverseBoolConverter}}"
                                     Style="{StaticResource btnAsk}"/>
                         </StackLayout>
                     </StackLayout>
@@ -62,9 +61,13 @@
                                      Spacing="13">
                             <Button Text="{x:Static helperLang:LanguageHelper.WithoutTranslationYesBtnText}"
                                     Clicked="Button_Clicked1"
+                                    x:Name="satisfiedServiceYesBtn"
+                                    IsEnabled="{Binding HasFeedback, Converter={StaticResource inverseBoolConverter}}"
                                     Style="{StaticResource btnAsk}"/>
                             <Button Text="{x:Static helperLang:LanguageHelper.WithoutTranslationNoBtnText}"
+                                    x:Name="satisfiedServiceNoBtn"
                                     Clicked="Button_Clicked1"
+                                    IsEnabled="{Binding HasFeedback, Converter={StaticResource inverseBoolConverter}}"
                                     Style="{StaticResource btnAsk}"/>
                         </StackLayout>
                     </StackLayout>
@@ -77,6 +80,7 @@
                             <input:AdvancedSlider
                             MaxValue="10"
                             MinValue="0"
+                                Value="{Binding Feedback.How_did_the_driver_perform}"
                             StepValue="1" >
                                 <input:AdvancedSlider.Triggers>
                                     <DataTrigger TargetType="input:AdvancedSlider"

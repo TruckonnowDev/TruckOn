@@ -93,7 +93,8 @@ namespace MDispatch.ViewModels.InspectionMV.PickedUpMV
 
         private async void OnInitialize()
         {
-            await PopupNavigation.PushAsync(new Alert("Please contact our support to fix an issue according this number: 17734305155", Navigation));
+            if (IsProblem)
+                await PopupNavigation.PushAsync(new Alert("Please contact our support to fix an issue according this number: 17734305155", Navigation));
         }
 
         [Obsolete]

@@ -104,7 +104,7 @@ namespace MDispatch.ViewModels.TAbbMV
                     await Task.Run(() =>
                     {
                         UnTimeOfInspection = new UnTimeOfInspection(description);
-                        if (!UnTimeOfInspection.ISMaybiInspection)
+                        if (UnTimeOfInspection.IsInspection)
                         {
                             Device.BeginInvokeOnMainThread(async () => await PopupNavigation.PushAsync(new AskHint(this)));
                         }

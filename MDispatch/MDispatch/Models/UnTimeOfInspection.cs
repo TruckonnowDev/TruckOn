@@ -1,4 +1,7 @@
 ﻿using MDispatch.Helpers;
+using MDispatch.Service;
+using MDispatch.Vidget.VM;
+using Plugin.Settings;
 using Prism.Mvvm;
 using System;
 
@@ -32,12 +35,34 @@ namespace MDispatch.Models
                     else
                     {
                         IsInspection = true;
+
+                        string token = CrossSettings.Current.GetValueOrDefault("Token", "");
+                        ManagerDispatchMob managerDispatchMob = new ManagerDispatchMob();
+                        int state;
+                        string description = null;
+                        bool isInspection = false;
+                        int indexPhoto = 1;
+                        TruckCar truckCar = null;
+                        state = managerDispatchMob.DriverWork("CheckInspeacktion", token, ref description, ref isInspection, ref indexPhoto, ref truckCar);
+                        if (indexPhoto == 2 && !isInspection)
+                            IsInspection = false;
                     }
                 }
                 else
                 {
                     ISMaybiInspection = false;
                     IsInspection = true;
+
+                    string token = CrossSettings.Current.GetValueOrDefault("Token", "");
+                    ManagerDispatchMob managerDispatchMob = new ManagerDispatchMob();
+                    int state;
+                    string description = null;
+                    bool isInspection = false;
+                    int indexPhoto = 1;
+                    TruckCar truckCar = null;
+                    state = managerDispatchMob.DriverWork("CheckInspeacktion", token, ref description, ref isInspection, ref indexPhoto, ref truckCar);
+                    if (indexPhoto == 2 && !isInspection)
+                        IsInspection = false;
                 }
             }
         }

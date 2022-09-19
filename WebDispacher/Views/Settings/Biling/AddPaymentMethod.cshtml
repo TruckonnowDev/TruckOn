@@ -1,4 +1,8 @@
-﻿@model WebDispacher.ViewModels.Payment.CardViewModel
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@model WebDispacher.ViewModels.Payment.CardViewModel
+
+@inject IViewLocalizer Localizer
 
 <div class="admin">
     <div class="container">
@@ -6,37 +10,37 @@
             <div class="col-md-12">
                 <div class="tabContent">
                     <div class="title">
-                        <a href="#" onclick="history.back();">Back to Billing</a>
+                        <a href="#" onclick="history.back();">@Localizer["BackToBilling"]</a>
                     </div>
                     <div class="body-card">
-                    <form action="" method="post" enctype="multipart/form-data">
-                        <label for="">
-                            Card number
-                            <input type="tel" value="@Model.Number" name="number" pattern="[0-9\s]{13,19}" required>
-                        </label>
-                        <div style="display:inline-flex;">
-                            <div class="elem-1">
-                                <label for="">
-                                    Name on card
-                                    <input value="@Model.Name" type="text" name="name" maxlength="25" required>
-                                </label>
+                        <form action="" method="post" enctype="multipart/form-data">
+                            <label for="">
+                                @Localizer["CardNumber"]
+                                <input type="tel" value="@Model.Number" name="number" pattern="[0-9\s]{13,19}" required>
+                            </label>
+                            <div style="display:inline-flex;">
+                                <div class="elem-1">
+                                    <label for="">
+                                        @Localizer["NameOnCard"]
+                                        <input value="@Model.Name" type="text" name="name" maxlength="25" required>
+                                    </label>
+                                </div>
+                                <div class="elem-2">
+                                    <label for="">
+                                        @Localizer["ExpirationDate"]
+                                        <input value="@Model.Expiry" type="tel" name="expiry" required>
+                                    </label>
+                                </div>
+                                <div class="elem-3">
+                                    <label for="">
+                                        CVV
+                                        <input type="number" name="cvc" pattern="{3,4}" value="@Model.Cvc" required>
+                                    </label>
+                                </div>
                             </div>
-                            <div class="elem-2">
-                                <label for="">
-                                    Expiration date
-                                    <input value="@Model.Expiry" type="tel" name="expiry" required>
-                                </label>
-                            </div>
-                            <div class="elem-3">
-                                <label for="">
-                                    CVV
-                                    <input type="number" name="cvc" pattern="{3,4}" value="@Model.Cvc" required>
-                                </label>
-                            </div>
-                        </div>
-                        <input class="btn1" type="submit" value="Add Card"/>
-                        <p style="color:red;">@ViewBag.TxtError</p>
-                    </form>
+                            <input class="btn1" type="submit" value="@Localizer["AddCard"]" />
+                            <p style="color:red;">@ViewBag.TxtError</p>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -64,28 +68,31 @@
 <script>
 </script>
 <style>
-label{
-width: 100%!important;
-}
-.btn1{
-width: 100%!important;
-}
- .elem-1{
- display: inline-block;
- margin-right: 3%;
- width: 48%;
- }
- 
- .elem-2{
-  display: inline-block;
-  margin-right: 3%;
-  width: 28%;
-  }
-  
-  .elem-3{
-   display: inline-block;
-   width: 18%;
-   }
+    label {
+        width: 100% !important;
+    }
+
+    .btn1 {
+        width: 100% !important;
+    }
+
+    .elem-1 {
+        display: inline-block;
+        margin-right: 3%;
+        width: 48%;
+    }
+
+    .elem-2 {
+        display: inline-block;
+        margin-right: 3%;
+        width: 28%;
+    }
+
+    .elem-3 {
+        display: inline-block;
+        width: 18%;
+    }
+
     * {
         margin: 0px;
     }
@@ -112,13 +119,13 @@ width: 100%!important;
     }
 
     .body-card {
-        position:absolute;
+        position: absolute;
         width: 550px;
-        left:28%;
+        left: 28%;
     }
 
     form {
-        border-spacing:10px;
+        border-spacing: 10px;
         display: flex;
         flex-wrap: wrap;
         margin: 20px;
@@ -134,7 +141,7 @@ width: 100%!important;
         color: rgb(51, 51, 51);
         border-color: rgba(51, 51, 51, 0.24);
         margin-bottom: 15px;
-        margin-right:10px;
+        margin-right: 10px;
     }
 
     .numberCard {
@@ -146,11 +153,11 @@ width: 100%!important;
     }
 
     .expire {
-        width: 30%!important;
+        width: 30% !important;
     }
 
     .cvv {
-        width: 17%!important;
+        width: 17% !important;
     }
 
     .validation:invalid {

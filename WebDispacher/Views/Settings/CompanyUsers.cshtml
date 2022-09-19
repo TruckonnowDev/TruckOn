@@ -1,11 +1,15 @@
-﻿<body>
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+<body>
     <div class="admin">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
                     <div class="title">
-                        <h1>Users</h1>
-                        <button class="btn1" onclick="window.location.href='@Url.Action("User", "Settings")' + '/CreateUser';">Add user</button>
+                        <h1>@Localizer["Users"]</h1>
+                        <button class="btn1" onclick="window.location.href='@Url.Action("User", "Settings")' + '/CreateUser';">@Localizer["AddUser"]</button>
                     </div>
                 </div>
             </div>
@@ -16,10 +20,10 @@
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>Login</th>
-                                        <th>Password</th>
-                                        <th>Company Name</th>
-                                        <th>Registration</th>
+                                        <th>@Localizer["Login"]</th>
+                                        <th>@Localizer["Password"]</th>
+                                        <th>@Localizer["CompanyName"]</th>
+                                        <th>@Localizer["Registration"]</th>
                                         <th></th>
                                     </tr>
                                 </thead>

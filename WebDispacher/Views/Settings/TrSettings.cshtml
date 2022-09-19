@@ -1,15 +1,19 @@
-﻿<body>
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+<body>
     <div class="cars">
         <div class="container">
             <div class="row">
                 <div class="admin">
                     <div class="col-md-12">
-                        <a href="#" onclick="history.back();">Back to Equipment</a>
+                        <a href="#" onclick="history.back();">@Localizer["BackToEquipment"]</a>
                         <div class="title">
-                            <h1 class="text-info-header-1">Сustomize the Layout</h1>
+                            <h1 class="text-info-header-1">@Localizer["CustomizeTheLayout"]</h1>
                         </div>
                     </div>
-                    </div>
+                </div>
                 <div class="col-md-12 admin">
                     <div id="tabs">
                         @foreach (var SetingTruck in ViewBag.SetingsTruck)
@@ -19,19 +23,19 @@
                                 <div class="tab whiteborder">
                                     <span onclick="window.location.href='@Url.Action("", "Settings")?idTr=@ViewBag.IdTr&idProfile=@SetingTruck.Id&typeTransport=@SetingTruck.TypeTransportVehikle';"
                                           ondblclick="window.location.href='@Url.Action("", "Settings")/RemoveProfile?idProfile=+ @SetingTruck.Id&typeTransport=@SetingTruck.TypeTransportVehikle&idTr=@ViewBag.IdTr';">@SetingTruck.Name</span>
-                                    <input style="margin-left:10px;" type="radio" name="tabSet" checked="@SetingTruck.IsUsed" onclick="SelectProfile(@SetingTruck.Id, '@SetingTruck.TypeTransportVehikle', @ViewBag.IdTr)">
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="tab">
-                                    <span onclick="window.location.href='@Url.Action("", "Settings")?idTr=@ViewBag.IdTr&idProfile=@SetingTruck.Id&typeTransport=@SetingTruck.TypeTransportVehikle';"
-                                          ondblclick="window.location.href='@Url.Action("", "Settings")/RemoveProfile?idProfile=+ @SetingTruck.Id&typeTransport=@SetingTruck.TypeTransportVehikle&idTr=@ViewBag.IdTr';">@SetingTruck.Name</span>
-                                    <input style="margin-left:10px;" type="radio" name="tabSet" checked="@SetingTruck.IsUsed" onclick="SelectProfile(@SetingTruck.Id, '@SetingTruck.TypeTransportVehikle', @ViewBag.IdTr)">
-                                </div>
-                            }
-                        }
-                        <img class="tab-add-elem" src="img/addCross.svg" onclick="window.location.href='@Url.Action("AddProfile", "Settings")?idTr=@ViewBag.IdTr&typeTransport=@ViewBag.TypeTransport'"/>
+                                        <input style="margin-left:10px;" type="radio" name="tabSet" checked="@SetingTruck.IsUsed" onclick="SelectProfile(@SetingTruck.Id, '@SetingTruck.TypeTransportVehikle', @ViewBag.IdTr)">
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="tab">
+                                        <span onclick="window.location.href='@Url.Action("", "Settings")?idTr=@ViewBag.IdTr&idProfile=@SetingTruck.Id&typeTransport=@SetingTruck.TypeTransportVehikle';"
+                                              ondblclick="window.location.href='@Url.Action("", "Settings")/RemoveProfile?idProfile=+ @SetingTruck.Id&typeTransport=@SetingTruck.TypeTransportVehikle&idTr=@ViewBag.IdTr';">@SetingTruck.Name</span>
+                                            <input style="margin-left:10px;" type="radio" name="tabSet" checked="@SetingTruck.IsUsed" onclick="SelectProfile(@SetingTruck.Id, '@SetingTruck.TypeTransportVehikle', @ViewBag.IdTr)">
+                                        </div>
+                                    }
+                                }
+                        <img class="tab-add-elem" src="img/addCross.svg" onclick="window.location.href='@Url.Action("AddProfile", "Settings")?idTr=@ViewBag.IdTr&typeTransport=@ViewBag.TypeTransport'" />
                         <div class="tabContent">
                             <div class="row">
                                 @foreach (var layout in ViewBag.SelectSetingTruck.TransportVehicle.Layouts)
@@ -51,15 +55,15 @@
                                             {
                                                 @if (layout.OrdinalIndex != 1)
                                                 {
-                                                    <img src="~/img/prev.svg" alt="" style="margin-right: 20px" onclick="MovingLayoutUP(@layout.Id, @ViewBag.SelectSetingTruck.TransportVehicle.Id, this)"/>
+                                                    <img src="~/img/prev.svg" alt="" style="margin-right: 20px" onclick="MovingLayoutUP(@layout.Id, @ViewBag.SelectSetingTruck.TransportVehicle.Id, this)" />
                                                 }
                                                 @if (layout.IsUsed)
                                                 {
-                                                    <img src="~/img/glass.svg" alt="" onclick="CheckChange(this.src, @layout.Id, this)"/>
+                                                    <img src="~/img/glass.svg" alt="" onclick="CheckChange(this.src, @layout.Id, this)" />
                                                 }
                                                 else
                                                 {
-                                                    <img src="~/img/glass-not.svg" alt="" onclick="CheckChange(this.src, @layout.Id, this)"/>
+                                                    <img src="~/img/glass-not.svg" alt="" onclick="CheckChange(this.src, @layout.Id, this)" />
                                                 }
                                                 @if (layout.OrdinalIndex != ViewBag.SelectSetingTruck.TransportVehicle.Layouts.Count)
                                                 {
@@ -74,7 +78,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
-                                    <button onclick="window.location.href='@ViewBag.BaseUrl/Settings/Trucks'" class="text-info-header-2 btn1">Use these Settings</button>
+                                    <button onclick="window.location.href='@ViewBag.BaseUrl/Settings/Trucks'" class="text-info-header-2 btn1">@Localizer["UseTheseSettings"]</button>
                                 </div>
                             </div>
                         </div>
@@ -184,7 +188,7 @@
 </script>
 
 <style>
-    .tab-add-elem{
+    .tab-add-elem {
         padding-left: 1%;
         cursor: pointer;
     }

@@ -7,7 +7,7 @@
         <div>
             @if (@ViewBag.Truck != null)
             {
-                <h2 class="headPhoto" style="font-size:25px;">Truck Document @ViewBag.Truck.NameTruk @ViewBag.Truck.Yera @ViewBag.Truck.Make @ViewBag.Truck.Model @ViewBag.Truck.PlateTruk</h2> <br />
+            <h2 class="headPhoto" style="font-size:25px;">@Localizer["TruckDocument"] @ViewBag.Truck.NameTruk @ViewBag.Truck.Yera @ViewBag.Truck.Make @ViewBag.Truck.Model @ViewBag.Truck.PlateTruk</h2> <br />
             }
             else
             {

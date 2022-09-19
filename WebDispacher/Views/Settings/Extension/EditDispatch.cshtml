@@ -1,4 +1,8 @@
-﻿@model WebDispacher.ViewModels.Dispatcher.DispatcherViewModel
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@model WebDispacher.ViewModels.Dispatcher.DispatcherViewModel
+
+@inject IViewLocalizer Localizer
 
 <body>
     <div class="admin">
@@ -7,30 +11,30 @@
                 <div class="col-md-12">
                     <div class="tabContent">
                         <div class="title">
-                            <a href="#" onclick="history.back();">Back to Dispatcher</a>
+                            <a href="#" onclick="history.back();">@Localizer["BackToDispatcher"]</a>
                         </div>
                         <div class="title">
-                            <h1 class="text-info-header-1">Edit Dispatcher</h1>
+                            <h1 class="text-info-header-1">@Localizer["EditDispatcher"]</h1>
                         </div>
                         <form action="" method="post" enctype="multipart/form-data">
-                            <input hidden name="Id" value="@Model.Id" class="inpText validation" type="text" required/>
+                            <input hidden name="Id" value="@Model.Id" class="inpText validation" type="text" required />
                             <label for="">
-                                Type Dispatcher
+                                @Localizer["TypeDispatcher"]
                                 <select class="height-input input-select" name="Type" required>
-                                    <option value="">Choose a dispatcher type</option>
+                                    <option value="">@Localizer["ChooseDispatcherType"]</option>
                                     <option value="Central Dispatch">Central Dispatch</option>
                                 </select>
                             </label>
                             <label for="">
-                                Login Dispatch
+                                @Localizer["Login"]
                                 <input type="text" name="Login" value="@Model.Login">
                             </label>
                             <label for="">
-                                Password Dispatch
+                                @Localizer["Password"]
                                 <input type="text" name="Password" value="@Model.Password">
                             </label>
 
-                            <input type="submit" value="Save Info" class="btn1"/>
+                            <input type="submit" value="@Localizer["SaveInfo"]" class="btn1" />
                         </form>
                     </div>
                 </div>

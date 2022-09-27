@@ -230,4 +230,13 @@
 	<data name="No" xml:space="preserve">
 		<value>No</value>
 	</data>
+	<data name="ReminderSent" xml:space="preserve">
+		<value>Reminder sent</value>
+	</data>
+	<data name="AlreadyPassed" xml:space="preserve">
+		<value>Today's inspection was already passed</value>
+	</data>
+	<data name="ServerError" xml:space="preserve">
+		<value>Server error, try again later</value>
+	</data>
 </root>

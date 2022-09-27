@@ -91,7 +91,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="">
-                                    @Localizer["KnowledgeOfEnglish"] <span id="englishSpn">@Localizer["Poor"]</span>
+                                    @Localizer["KnowledgeOfEnglish"] <span id="englishSpn">Poor</span>
                                     <input id="englishInp" type="range" class="input-modal validation" value="1" min="1" max="3" step="1" list="range-list" required />
                                     <div class="value-modal">
                                         <p>@Localizer["Poor"]</p>
@@ -102,7 +102,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="">
-                                    @Localizer["ReturnedEquipment"] <span id="returnedEquipmenSpn">@Localizer["Poor"]</span>
+                                    @Localizer["ReturnedEquipment"] <span id="returnedEquipmenSpn">Poor</span>
                                     <input id="returnedEquipmenInp" type="range" class="input-modal" value="1" min="1" max="3" step="1" list="range-list" required />
                                     <div class="value-modal">
                                         <p>@Localizer["Poor"]</p>
@@ -113,7 +113,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="">
-                                    @Localizer["WorkingEfficiency"] <span id="workingEfficiencySpn">@Localizer["Poor"]</span>
+                                    @Localizer["WorkingEfficiency"] <span id="workingEfficiencySpn">Poor</span>
                                     <input id="workingEfficiencyInp" type="range" class="input-modal" value="1" min="1" max="3" step="1" list="range-list" required />
                                     <div class="value-modal">
                                         <p>@Localizer["Poor"]</p>
@@ -124,7 +124,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="">
-                                    @Localizer["Eld"] <span id="eldKnowledgeSpn">@Localizer["Poor"]</span>
+                                    @Localizer["Eld"] <span id="eldKnowledgeSpn">Poor</span>
                                     <input id="eldKnowledgeInp" type="range" class="input-modal" value="1" min="1" max="3" step="1" list="range-list" required />
                                     <div class="value-modal">
                                         <p>@Localizer["Poor"]</p>
@@ -135,7 +135,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="">
-                                    @Localizer["DrivingSkills"] <span id="drivingSkillsSpn">@Localizer["Poor"]</span>
+                                    @Localizer["DrivingSkills"] <span id="drivingSkillsSpn">Poor</span>
                                     <input id="drivingSkillsInp" type="range" class="input-modal" value="1" min="1" max="3" step="1" list="range-list" required />
                                     <div class="value-modal">
                                         <p>@Localizer["Poor"]</p>
@@ -146,7 +146,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="">
-                                    @Localizer["Payment"] <span id="paymentHandlingSpn">@Localizer["Poor"]</span>
+                                    @Localizer["Payment"] <span id="paymentHandlingSpn">Poor</span>
                                     <input id="paymentHandlingInp" type="range" class="input-modal" value="1" min="1" max="3" step="1" list="range-list" required />
                                     <div class="value-modal">
                                         <p>@Localizer["Poor"]</p>
@@ -157,7 +157,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="">
-                                    @Localizer["Alcohol"] <span id="alcoholTendencySpn">@Localizer["None"]</span>
+                                    @Localizer["Alcohol"] <span id="alcoholTendencySpn">None</span>
                                     <input id="alcoholTendencyInp" type="range" class="input-modal" value="0" min="0" max="3" step="1" list="range-list" required />
                                     <div class="value-modal">
                                         <p>@Localizer["Poor"]</p>
@@ -168,7 +168,7 @@
                             </div>
                             <div class="form-group" style="margin-bottom: 0px;">
                                 <label for="">
-                                    @Localizer["DrugTendency"] <span id="drugTendencySpn">@Localizer["None"]</span>
+                                    @Localizer["DrugTendency"] <span id="drugTendencySpn">None</span>
                                     <input id="drugTendencyInp" type="range" class="input-modal" value="0" min="0" max="3" step="1" list="range-list" required />
                                     <div class="value-modal">
                                         <p>@Localizer["None"]</p>
@@ -337,6 +337,39 @@
             });
         }
     }
+</script>
+
+<script>
+function SendRemindInspection(idDriver, url) {
+    let urlBase = url+"/Driver/Remind/Inspection";
+    let xmlHttp = new XMLHttpRequest();
+    var body = 'idDriver=' + encodeURIComponent(idDriver);
+    xmlHttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            if (this.responseText == "true") {
+                alert("@Localizer["ReminderSent"]");
+            }
+            else if (this.responseText == "false") {
+                alert("@Localizer["AlreadyPassed"]");
+            }
+            else if (this.responseText == "notlogin") {
+
+            }
+            else if (this.responseText == "error") {
+                alert("@Localizer["ServerError"]");
+            }
+            else {
+                alert("@Localizer["ServerError"]");
+            }
+        }
+        else if (this.readyState == 4 && this.status != 200) {
+            alert("@Localizer["ServerError"]");
+        }
+    };
+    xmlHttp.open("POST", urlBase, true);
+    xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xmlHttp.send(body);
+}
 </script>
 <style>
 

@@ -44,8 +44,6 @@ $(function() {
         }
     };
 
-    
-
     function hideTabsContent(a) {
         for (var i = a; i < tabContent.length; i++) {
             tabContent[i].classList.remove('show');

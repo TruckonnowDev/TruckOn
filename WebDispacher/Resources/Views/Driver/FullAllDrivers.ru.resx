@@ -230,4 +230,13 @@
 	<data name="No" xml:space="preserve">
 		<value>Нет</value>
 	</data>
+	<data name="ReminderSent" xml:space="preserve">
+		<value>Отправлено напоминание</value>
+	</data>
+	<data name="AlreadyPassed" xml:space="preserve">
+		<value>Сегодняшняя проверка уже была пройдена</value>
+	</data>
+	<data name="ServerError" xml:space="preserve">
+		<value>Ошибка сервера, повторите попытку позже</value>
+	</data>
 </root>

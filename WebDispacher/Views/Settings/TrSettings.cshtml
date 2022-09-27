@@ -110,7 +110,7 @@
         }
         xmlHttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status != 200) {
-                alert("Server error, try again later");
+                alert("@Localizer["ServerErrorMessage"]");
             }
         };
         xmlHttp.open("POST", url, true);
@@ -125,7 +125,7 @@
             '&idTransported=' + encodeURIComponent(idTransported);
         xmlHttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status != 200) {
-                alert("Server error, try again later");
+                alert("@Localizer["ServerErrorMessage"]");
             }
             else if (this.readyState == 4 && this.status == 200) {
                 let arrow = arrowElem.parentNode.parentNode.previousElementSibling;
@@ -145,7 +145,7 @@
             '&idTransported=' + encodeURIComponent(idTransported);
         xmlHttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status != 200) {
-                alert("Server error, try again later");
+                alert("@Localizer["ServerErrorMessage"]");
             }
             else if (this.readyState == 4 && this.status == 200) {
                 let arrow = arrowElem.parentNode.parentNode.nextElementSibling;
@@ -175,7 +175,7 @@
         + "&idTr=" + encodeURIComponent(idTr);
         xmlHttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status != 200) {
-                alert("Server error, try again later");
+                alert("@Localizer["ServerErrorMessage"]");
             }
             else if (this.readyState == 4 && this.status == 200) {
 

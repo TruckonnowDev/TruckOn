@@ -107,4 +107,7 @@
 	<data name="UseTheseSettings" xml:space="preserve">
 		<value>Use these Settings</value>
 	</data>
+	<data name="ServerErrorMessage" xml:space="preserve">
+		<value>Server error, try again later</value>
+	</data>
 </root>

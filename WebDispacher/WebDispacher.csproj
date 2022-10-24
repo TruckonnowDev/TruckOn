@@ -48,6 +48,33 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Views\Error\Error404.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Error404.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Error\Error404.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Error404.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Error\Error404.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Error404.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Error\Error500.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Error500.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Error\Error500.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Error500.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Error\Error500.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Error500.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
   <ProjectExtensions><VisualStudio><UserProperties properties_4launchsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

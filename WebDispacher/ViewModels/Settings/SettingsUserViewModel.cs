@@ -7,11 +7,15 @@ namespace WebDispacher.ViewModels.Settings
         public int Id { get; set; }
         public int CompanyId { get; set; }
         
-        [Required]
+        [Required(ErrorMessage = "LoginRequired")]
+        [Display(Name = "Login")]
         public string Login { get; set; }
         
-        [Required]
+        [Required(ErrorMessage = "PasswordRequired")]
+        [Display(Name = "Password")]
         public string Password { get; set; }
+        
+        [Display(Name = "Date")]
         public string Date { get; set; }
         public string KeyAuthorized { get; set; }
     }

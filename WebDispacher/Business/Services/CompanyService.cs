@@ -43,7 +43,7 @@ namespace WebDispacher.Business.Services
             this.db = db;
             stripeApi = new StripeApi();
         }
-        
+
         public List<UserDTO> GetUsers(int idCompanySelect)
         {
             var companies = GetCompanies();
@@ -538,7 +538,7 @@ namespace WebDispacher.Business.Services
         private void InitStripeForCompany(string nameCompany, string emailCompany, int idCompany)
         {
             var customer = stripeApi.CreateCustomer(nameCompany, idCompany, emailCompany);
-            
+
             var customerSt = new Customer_ST()
             {
                 DateCreated = customer.Created,

@@ -5,10 +5,10 @@ namespace WebDispacher.ViewModels.Company
 {
     public class CreateCompanyViewModel
         {
-            [Required]
+            [Required(ErrorMessage = "NameRequired")]
             public string Name { get; set; }
             
-            [Required]
+            [Required(ErrorMessage ="EmailRequired")]
             public string Email { get; set; }
         }
 }

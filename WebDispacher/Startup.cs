@@ -29,6 +29,7 @@ namespace WebDispacher
             services.AddLocalization(options => options.ResourcesPath = "Resources");
             services.AddDbContext<Context>();
                 services.AddMvc()
+                        .AddDataAnnotationsLocalization()
                         .AddViewLocalization();
 
            services.Configure<RequestLocalizationOptions>(options =>

@@ -1,38 +1,45 @@
-﻿<body>
-<div class="for-ty-for">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12 mt-5">
-                <div class="for">
-                    <img src="~/img/500.svg" alt="">
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+<body>
+    <div class="for-ty-for">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 mt-5">
+                    <div class="for">
+                        <img src="~/img/500.svg" alt="">
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-12">
-                <h2>Internal Server Error</h2>
-                <h3>The server has been deserted for a while. Please be patient or try again later.</h3>
-            </div>
-            <div class="col-md-12">
-                <div class="button">
-                    <button class="btn3 bolt-button" onclick="window.history.back()">Back to Previous Page</button>
-                    <button class="btn1 bolt-button" onclick="window.location.href = '@ViewBag.BaseUrl'">Home Page</button>
+                <div class="col-md-12">
+                    <h2>@Localizer["Header"]</h2>
+                    <h3>@Localizer["Body"]</h3>
+                </div>
+                <div class="col-md-12">
+                    <div class="button">
+                        <button class="btn3 bolt-button" onclick="window.history.back()">@Localizer["BackLastPage"]</button>
+                        <button class="btn1 bolt-button" onclick="window.location.href = '@ViewBag.BaseUrl'">@Localizer["BackHomePage"]</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </body>
 
 <style>
-    h2{
-    font-size: 68px!important;
+    h2 {
+        font-size: 68px !important;
     }
-    h3{
-    font-size: 36px!important;
+
+    h3 {
+        font-size: 36px !important;
     }
-    .btn3{
-    margin-right: 2%;
+
+    .btn3 {
+        margin-right: 2%;
     }
-    .bolt-button{
+
+    .bolt-button {
         font-size: 24px;
     }
 </style>

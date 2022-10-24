@@ -1,51 +1,55 @@
-﻿<body>
-<div class="admin">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="title">
-                    <a href="/Dashbord/Order/NewLoad">Back to Main Menu</a>
-                </div>
-                <div class="title">
-                    <h1 class="text-info-header-1">Extension Connection</h1>
-                    <button class="btn1" onclick="window.location.href='@Url.Action("Extension", "Settings")' + '/CreateDispatch';">Add Dispatcher</button>
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+<body>
+    <div class="admin">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="title">
+                        <a href="/Dashbord/Order/NewLoad">@Localizer["BackToMainMenu"]</a>
+                    </div>
+                    <div class="title">
+                        <h1 class="text-info-header-1">@Localizer["ExtensionConnection"]</h1>
+                        <button class="btn1" onclick="window.location.href='@Url.Action("Extension", "Settings")' + '/CreateDispatch';">@Localizer["AddDispatcher"]</button>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div id="tabs">
-                    <div class="tabContent">
-                        <table>
-                            <thead>
-                            <tr>
-                                <th>Login</th>
-                                <th>Password</th>
-                                <th>Type Dispatchers</th>
-                                <th>Key</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @for (int i = 0; i < ViewBag.Dispatchers.Count; i++)
-                            {
-                                <tr>
-                                    <td>@ViewBag.Dispatchers[i].Login</td>
-                                    <td>@ViewBag.Dispatchers[i].Password</td>
-                                    <td>@ViewBag.Dispatchers[i].Type</td>
-                                    <td ondblclick="RefreshToken(@ViewBag.Dispatchers[i].Id, this, '@ViewBag.BaseUrl')">@ViewBag.Dispatchers[i].key</td>
-                                    <td>
-                                        <img src="~/img/pen.svg" alt="" onclick="document.location.href='@ViewBag.BaseUrl/Settings/Extension/EditDispatch?idDispatch=@ViewBag.Dispatchers[i].Id'">
-                                        <img src="~/img/delet.svg" alt="" onclick="document.location.href='@ViewBag.BaseUrl/Settings/Extension/RemoveDispatch?idDispatch=@ViewBag.Dispatchers[i].Id'">
-                                    </td>
-                                </tr>
-                            }
-                            </tbody>
-                        </table>
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="tabs">
+                        <div class="tabContent">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>@Localizer["Login"]</th>
+                                        <th>@Localizer["Password"]</th>
+                                        <th>@Localizer["TypeDispatcher"]</th>
+                                        <th>@Localizer["Key"]</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (int i = 0; i < ViewBag.Dispatchers.Count; i++)
+                                    {
+                                        <tr>
+                                            <td>@ViewBag.Dispatchers[i].Login</td>
+                                            <td>@ViewBag.Dispatchers[i].Password</td>
+                                            <td>@ViewBag.Dispatchers[i].Type</td>
+                                            <td ondblclick="RefreshToken(@ViewBag.Dispatchers[i].Id, this, '@ViewBag.BaseUrl')">@ViewBag.Dispatchers[i].key</td>
+                                            <td>
+                                                <img src="~/img/pen.svg" alt="" onclick="document.location.href='@ViewBag.BaseUrl/Settings/Extension/EditDispatch?idDispatch=@ViewBag.Dispatchers[i].Id'">
+                                                <img src="~/img/delet.svg" alt="" onclick="document.location.href='@ViewBag.BaseUrl/Settings/Extension/RemoveDispatch?idDispatch=@ViewBag.Dispatchers[i].Id'">
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </body>

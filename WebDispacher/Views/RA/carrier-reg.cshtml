@@ -1,13 +1,16 @@
-﻿
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
 <body>
     <div class="register-page">
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
                     <div class="left-text">
-                        <h1>Get Started</h1>
-                        <p>To get started please enter your USDOT number first. Let's verify your company information and you'll be on your way.</p>
-                        <p>If you don't have USDOT or operate outside of US, please contact our Support team to proceed with sign up process.</p>
+                        <h1>@Localizer["BlockHeader"]</h1>
+                        <p>@Localizer["BodyFirstPart"]</p>
+                        <p>@Localizer["BodySecondPart"]</p>
                         <div class="info">
                             @* <a href=""><img src="img/message-circle.svg" alt=""> Support Chat</a> *@
                             <a href="tel:+1 (773) 420 4444"><img src="img/phone-call.svg" alt=""> +1 (773) 420-4444</a>
@@ -17,7 +20,7 @@
                 <div class="col-md-6">
                     <div class="right-form">
                         <form action="">
-                            <h3>Step 1 of 3: USDOT Verification</h3>
+                            <h3>@Localizer["Step1of3"]</h3>
                             <ul class="steps">
                                 <li class="active"></li>
                                 <li></li>
@@ -26,8 +29,8 @@
                             <div class="step">
                                 <h3>USDOT</h3>
                                 <label for=""><input type="text"></label>
-                                <p>Don't have USDOT? Call us: +1 (773) 420-4444</p>
-                                <input type="submit" value="Verify" class="btn1-big">
+                                <p>USDOT +1 (773) 420-4444</p>
+                                <input type="submit" value="@Localizer["Verify"]" class="btn1-big">
                             </div>
                         </form>
                     </div>

@@ -1,279 +1,285 @@
-﻿<body>
-<div class="admin truc">
-<div class="container">
-<div class="row">
-<div class="col-md-6">
-    <div class="tabContent">
-        <div class="title">
-            <a href="#" onclick="history.back();">Back to Equipment</a>
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+<body>
+    <div class="admin truc">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="tabContent">
+                        <div class="title">
+                            <a href="#" onclick="history.back();">@Localizer["BackToEquipment"]</a>
+                        </div>
+                        <div class="title">
+                            <h1 class="text-info-header-1">@Localizer["AddNewTruck"]</h1>
+                        </div>
+                        <form action="" method="post" enctype="multipart/form-data">
+                            <label class="big-label" for="">
+                                @Localizer["NameTruck"]
+                                <input class="height-input" type="text" name="NameTruck" required>
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["TypeTruck"] <br />
+                                <select class="height-input input-select" name="Type" onchange="SelectTruck(this.options[this.selectedIndex].value)" required>
+                                    <option value="">@Localizer["ChooseTruckType"]</option>
+                                    <option value="PickUpDually4TiresInTheBackMustHave4Door">Pick up Dually (4 tires in the bacK) must have 4 door</option>
+                                    @*<option value="PickupFourWheel">Four-wheel pickup dually</option>
+                                        <option value="FourDoorTruckChassisOpenFrame">Four-door truck with double chassis and open frame</option>
+                                        <option value="BoxTruckSingleWheel">Box Truck Single Wheel</option>
+                                        <option value="BoxTruckWheelDually">Box Truck Wheel Dually</option>
+                                        <option value="CargiVanChasissDuallyOrSingleWheel">Cargi Van Chasiss Dually Or Single Wheel</option>
+                                        <option value="CargoVanMustHaveWithDually">Cargo Van Must Have With Dually</option>
+                                        <option value="PickUpDuallyChassisOpenFrameInTheBackMustHave2">Pick Up Dually Chassis Open Frame In The Back Must Have 2</option>
+                                        <option value="PickUpDuallyChassisMustHave2Door">Pick Up Dually Chassis Must Have 2 Door</option>
+                                        <option value="PickUpDuallyChassisMustHave4Door">Pick Up Dually Chassis Must Have 4 Door</option>
+                                        <option value="PickUpDuallyFlatbed4Door">Pick Up Dually Flatbed 4 Door</option>
+                                        <option value="PickUpDuallyFlatbedMustHave2Door">Pick Up Dually Flatbed Must Have 2 Door</option>*@
+                                </select>
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["Year"]
+                                <input class="height-input" type="text" name="Year">
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["Make"]
+                                <input class="height-input" type="text" name="Make">
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["Model"]
+                                <input class="height-input" type="text" name="Model">
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["State"]
+                                <input class="height-input" type="text" name="State">
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["PlateExp"]
+                                <input class="height-input" type="text" name="Exp">
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["Vin"]#
+                                <input class="height-input" type="text" name="Vin">
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["Owner"]
+                                <input class="height-input" type="text" name="Owner">
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["PlateTruck"]
+                                <input class="height-input" type="text" name="PlateTruck" required>
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["Color"]
+                                <input class="height-input" type="text" name="ColorTruck">
+                            </label>
+                            <div class="big-label">
+                                <div class="full-label">
+                                    <p class="a-label">@Localizer["TruckRegistration"]</p>
+                                    <a class="pt-1 pb-1">@Localizer["InfoMessageUploadFiles"]</a>
+                                    <div>
+                                        <div class="file-group big-label">
+                                            <div class="row">
+                                                <div class="col-8 label-input d-flex align-items-center">
+                                                    <div onclick="ClearFile(`fi1`, 'fl1');" class="fi" id="fl1"></div>
+                                                </div>
+                                                <div class="col-4 select-doc">
+                                                    <div class="select-button-1 d-flex justify-content-end">
+                                                        <label>
+                                                            @Localizer["SelectDoc"]
+                                                            <input class="height-input" id="fi1" onchange="GetFileName(this.value, 'fl1');" type="file" name="truckRegistrationDoc" accept="application/pdf, image/jpeg, image/jpg" required>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="full-label">
+                                <p class="a-label">@Localizer["TruckLeaseAgreement"]</p>
+                                <a class="pt-1 pb-1">@Localizer["InfoMessageUploadFiles"]</a>
+                                <div>
+                                    <div class="file-group big-label">
+                                        <div class="row">
+                                            <div class="col-8 label-input d-flex align-items-center">
+                                                <div onclick="ClearFile(`fi2`, 'fl2');" class="fi" id="fl2"></div>
+                                            </div>
+                                            <div class="col-4 select-doc">
+                                                <div class="select-button-1 d-flex justify-content-end">
+                                                    <label>
+                                                        @Localizer["SelectDoc"]
+                                                        <input class="height-input" id="fi2" onchange="GetFileName(this.value, 'fl2');" type="file" name="truckLeaseAgreementDoc" accept="application/pdf, image/jpeg, image/jpg" required>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="full-label">
+                                <p class="a-label">@Localizer["TruckAnnualIns"]</p>
+                                <a class="pt-1 pb-1">@Localizer["InfoMessageUploadFiles"]</a>
+                                <div>
+                                    <div class="file-group big-label">
+                                        <div class="row">
+                                            <div class="col-8 label-input d-flex align-items-center">
+                                                <div onclick="ClearFile(`fi3`, 'fl3');" class="fi" id="fl3"></div>
+                                            </div>
+                                            <div class="col-4 select-doc">
+                                                <div class="select-button-1 d-flex justify-content-end">
+                                                    <label>
+                                                        @Localizer["SelectDoc"]
+                                                        <input class="height-input" id="fi3" onchange="GetFileName(this.value, 'fl3');" type="file" name="truckAnnualInspection" accept="application/pdf, image/jpeg, image/jpg" required>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="full-label">
+                                <p class="a-label">@Localizer["BobTailPhysicalDamage"] (@Localizer["Optional"])</p>
+                                <a class="pt-1 pb-1">@Localizer["InfoMessageUploadFiles"]</a>
+                                <div>
+                                    <div class="file-group big-label">
+                                        <div class="row">
+                                            <div class="col-8 label-input d-flex align-items-center">
+                                                <div onclick="ClearFile(`fi4`, 'fl4');" class="fi" id="fl4"></div>
+                                            </div>
+                                            <div class="col-4 select-doc">
+                                                <div class="select-button-1 d-flex justify-content-end">
+                                                    <label>
+                                                        @Localizer["SelectDoc"]
+                                                        <input class="height-input" id="fi4" onchange="GetFileName(this.value, 'fl4');" type="file" name="bobTailPhysicalDamage" accept="application/pdf, image/jpeg, image/jpg">
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="full-label">
+                                <p class="a-label">@Localizer["NyHut"] (@Localizer["OptionalForNyRolling"])</p>
+                                <a class="pt-1 pb-1">@Localizer["InfoMessageUploadFiles"]</a>
+                                <div>
+                                    <div class="file-group big-label">
+                                        <div class="row">
+                                            <div class="col-8 label-input d-flex align-items-center">
+                                                <div onclick="ClearFile(`fi5`, 'fl5');" class="fi" id="fl5"></div>
+                                            </div>
+                                            <div class="col-4 select-doc">
+                                                <div class="select-button-1 d-flex justify-content-end">
+                                                    <label>
+                                                        @Localizer["SelectDoc"]
+                                                        <input class="height-input" id="fi5" onchange="GetFileName(this.value, 'fl5');" type="file" accept="application/pdf, image/jpeg, image/jpg" name="nYHUTDoc">
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button id="button-save" class="btn1 big-label height-input big-font-size">@Localizer["SaveInfo"]</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-6 image-col-place">
+                    <div id="PickUpDually4TiresInTheBackMustHave4Door" class="row" style="display:none;">
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door1.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door2.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door3.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door4.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door5.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door6.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door7.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door8.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door9.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door10.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door11.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door12.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door13.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door14.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door15.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door16.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door17.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door18.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door19.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door20.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door21.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door22.png&type=png" alt="">
+                        </div>
+                        <div class="col-md-auto">
+                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door23.png&type=png" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="title">
-            <h1 class="text-info-header-1">Add New Truck</h1>
-        </div>
-        <form action="" method="post" enctype="multipart/form-data">
-            <label class="big-label" for="">
-                Name Truck
-                <input class="height-input" type="text" name="NameTruck" required>
-            </label>
-            <label class="big-label" for="">
-                Type Truck <br/>
-                <select class="height-input input-select" name="Type" onchange="SelectTruck(this.options[this.selectedIndex].value)" required>
-                    <option value="">Choose a truck type</option>
-                    <option value="PickUpDually4TiresInTheBackMustHave4Door">Pick up Dually (4 tires in the bacK) must have 4 door</option>
-                    @*<option value="PickupFourWheel">Four-wheel pickup dually</option>
-                                    <option value="FourDoorTruckChassisOpenFrame">Four-door truck with double chassis and open frame</option>
-                                    <option value="BoxTruckSingleWheel">Box Truck Single Wheel</option>
-                                    <option value="BoxTruckWheelDually">Box Truck Wheel Dually</option>
-                                    <option value="CargiVanChasissDuallyOrSingleWheel">Cargi Van Chasiss Dually Or Single Wheel</option>
-                                    <option value="CargoVanMustHaveWithDually">Cargo Van Must Have With Dually</option>
-                                    <option value="PickUpDuallyChassisOpenFrameInTheBackMustHave2">Pick Up Dually Chassis Open Frame In The Back Must Have 2</option>
-                                    <option value="PickUpDuallyChassisMustHave2Door">Pick Up Dually Chassis Must Have 2 Door</option>
-                                    <option value="PickUpDuallyChassisMustHave4Door">Pick Up Dually Chassis Must Have 4 Door</option>
-                                    <option value="PickUpDuallyFlatbed4Door">Pick Up Dually Flatbed 4 Door</option>
-                                    <option value="PickUpDuallyFlatbedMustHave2Door">Pick Up Dually Flatbed Must Have 2 Door</option>*@
-                </select>
-            </label>
-            <label class="big-label" for="">
-                Year
-                <input class="height-input" type="text" name="Year">
-            </label>
-            <label class="big-label" for="">
-                Make
-                <input class="height-input" type="text" name="Make">
-            </label>
-            <label class="big-label" for="">
-                Model
-                <input class="height-input" type="text" name="Model">
-            </label>
-            <label class="big-label" for="">
-                State
-                <input class="height-input" type="text" name="State">
-            </label>
-            <label class="big-label" for="">
-                Plate Exp
-                <input class="height-input" type="text" name="Exp">
-            </label>
-            <label class="big-label" for="">
-                Vin#
-                <input class="height-input" type="text" name="Vin">
-            </label>
-            <label class="big-label" for="">
-                Owner
-                <input class="height-input" type="text" name="Owner">
-            </label>
-            <label class="big-label" for="">
-                Plate Truck
-                <input class="height-input" type="text" name="PlateTruck" required>
-            </label>
-            <label class="big-label" for="">
-                Color
-                <input class="height-input" type="text" name="ColorTruck">
-            </label>
-            <div class="full-label">
-                <p class="a-label">Truck registration</p>
-                <a class="pt-1 pb-1">You can upload files only in pdf, jpg and jpeg</a>
-                <div>
-                    <div class="file-group big-label">
-                        <div class="row">
-                            <div class="col-8 label-input d-flex align-items-center">
-                                <div onclick="ClearFile(`fi1`, 'fl1');" class="fi" id="fl1"></div>
-                            </div>
-                            <div class="col-4">
-                                <div class="select-button-1 d-flex justify-content-end">
-                                    <label>
-                                        Select document
-                                        <input class="height-input" id="fi1" onchange="GetFileName(this.value, 'fl1');" type="file" name="truckRegistrationDoc" accept="application/pdf, image/jpeg, image/jpg" required>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="full-label">
-                <p class="a-label">Truck lease agreement</p>
-                <a class="pt-1 pb-1">You can upload files only in pdf, jpg and jpeg</a>
-                <div>
-                    <div class="file-group big-label">
-                        <div class="row">
-                            <div class="col-8 label-input d-flex align-items-center">
-                                <div onclick="ClearFile(`fi2`, 'fl2');" class="fi" id="fl2"></div>
-                            </div>
-                            <div class="col-4">
-                                <div class="select-button-1 d-flex justify-content-end">
-                                    <label>
-                                        Select document
-                                        <input class="height-input" id="fi2" onchange="GetFileName(this.value, 'fl2');" type="file" name="truckLeaseAgreementDoc" accept="application/pdf, image/jpeg, image/jpg" required>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="full-label">
-                <p class="a-label">Truck annual inspection</p>
-                <a class="pt-1 pb-1">You can upload files only in pdf, jpg and jpeg</a>
-                <div>
-                    <div class="file-group big-label">
-                        <div class="row">
-                            <div class="col-8 label-input d-flex align-items-center">
-                                <div onclick="ClearFile(`fi3`, 'fl3');" class="fi" id="fl3"></div>
-                            </div>
-                            <div class="col-4">
-                                <div class="select-button-1 d-flex justify-content-end">
-                                    <label>
-                                        Select document
-                                        <input class="height-input" id="fi3" onchange="GetFileName(this.value, 'fl3');" type="file" name="truckAnnualInspection" accept="application/pdf, image/jpeg, image/jpg" required>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="full-label">
-                <p class="a-label">Bob tail physical damage (optional)</p>
-                <a class="pt-1 pb-1">You can upload files only in pdf, jpg and jpeg</a>
-                <div>
-                    <div class="file-group big-label">
-                        <div class="row">
-                            <div class="col-8 label-input d-flex align-items-center">
-                                <div onclick="ClearFile(`fi4`, 'fl4');" class="fi" id="fl4"></div>
-                            </div>
-                            <div class="col-4">
-                                <div class="select-button-1 d-flex justify-content-end">
-                                    <label>
-                                        Select document
-                                        <input class="height-input" id="fi4" onchange="GetFileName(this.value, 'fl4');" type="file" name="bobTailPhysicalDamage" accept="application/pdf, image/jpeg, image/jpg">
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="full-label">
-                <p class="a-label">NY HUT (optional for NY rolling)</p>
-                <a class="pt-1 pb-1">You can upload files only in pdf, jpg and jpeg</a>
-                <div>
-                    <div class="file-group big-label">
-                        <div class="row">
-                            <div class="col-8 label-input d-flex align-items-center">
-                                <div onclick="ClearFile(`fi5`, 'fl5');" class="fi" id="fl5"></div>
-                            </div>
-                            <div class="col-4">
-                                <div class="select-button-1 d-flex justify-content-end">
-                                    <label>
-                                        Select document
-                                        <input class="height-input" id="fi5" onchange="GetFileName(this.value, 'fl5');" type="file" accept="application/pdf, image/jpeg, image/jpg" name="nYHUTDoc">
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <button id="button-save" class="btn1 big-label height-input big-font-size">Save Info</button>
-        </form>
     </div>
-</div>
-<div class="col-md-6 image-col-place">
-    <div id="PickUpDually4TiresInTheBackMustHave4Door" class="row" style="display:none;">
-        <div class="col-md-auto">
-            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door1.png&type=png" alt="">
-        </div>
-        <div class="col-md-auto">
-            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door2.png&type=png" alt="">
-        </div>
-        <div class="col-md-auto">
-            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door3.png&type=png" alt="">
-        </div>
-        <div class="col-md-auto">
-            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door4.png&type=png" alt="">
-        </div>
-        <div class="col-md-auto">
-            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door5.png&type=png" alt="">
-        </div>
-        <div class="col-md-auto">
-            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door6.png&type=png" alt="">
-        </div>
-        <div class="col-md-auto">
-            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door7.png&type=png" alt="">
-        </div>
-        <div class="col-md-auto">
-            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door8.png&type=png" alt="">
-        </div>
-        <div class="col-md-auto">
-            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door9.png&type=png" alt="">
-        </div>
-        <div class="col-md-auto">
-            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door10.png&type=png" alt="">
-        </div>
-        <div class="col-md-auto">
-            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door11.png&type=png" alt="">
-        </div>
-        <div class="col-md-auto">
-            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door12.png&type=png" alt="">
-        </div>
-        <div class="col-md-auto">
-            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door13.png&type=png" alt="">
-        </div>
-        <div class="col-md-auto">
-            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door14.png&type=png" alt="">
-        </div>
-        <div class="col-md-auto">
-            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door15.png&type=png" alt="">
-        </div>
-        <div class="col-md-auto">
-            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door16.png&type=png" alt="">
-        </div>
-        <div class="col-md-auto">
-            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door17.png&type=png" alt="">
-        </div>
-        <div class="col-md-auto">
-            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door18.png&type=png" alt="">
-        </div>
-        <div class="col-md-auto">
-            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door19.png&type=png" alt="">
-        </div>
-        <div class="col-md-auto">
-            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door20.png&type=png" alt="">
-        </div>
-        <div class="col-md-auto">
-            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door21.png&type=png" alt="">
-        </div>
-        <div class="col-md-auto">
-            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door22.png&type=png" alt="">
-        </div>
-        <div class="col-md-auto">
-            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door23.png&type=png" alt="">
-        </div>
-    </div>
-</div>
-</div>
-</div>
-</div>
 </body>
 
 <script>
-$("#fi3").change(function() {
-    CheckValid('fl3','fi3');
-});
+    $("#fi3").change(function () {
+        CheckValid('fl3', 'fi3');
+    });
 
-$("#fi2").change(function() {
-    CheckValid('fl2','fi2');
-});
+    $("#fi2").change(function () {
+        CheckValid('fl2', 'fi2');
+    });
 
-$("#fi1").change(function() {
-    CheckValid('fl1','fi1');
-});
+    $("#fi1").change(function () {
+        CheckValid('fl1', 'fi1');
+    });
 
- $("#button-save").on('click', function (){
-     CheckValid('fl1','fi1');
-     CheckValid('fl2','fi2');
-     CheckValid('fl3','fi3');
- })
+    $("#button-save").on('click', function () {
+        CheckValid('fl1', 'fi1');
+        CheckValid('fl2', 'fi2');
+        CheckValid('fl3', 'fi3');
+    })
     var curentSelectPattern;
 
     function SelectTruck(value) {

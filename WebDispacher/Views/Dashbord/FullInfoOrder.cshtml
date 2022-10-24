@@ -1,123 +1,133 @@
-﻿@model WebDispacher.ViewModels.ShippingViewModel
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@model WebDispacher.ViewModels.ShippingViewModel
+
+@inject IViewLocalizer Localizer
+
 <body xmlns="http://www.w3.org/1999/html">
-<div class="admin Billing">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8">
-                <div class="title text-info-padding-5">
-                    <a href="#" onclick="history.back();">Back to Orders</a>
+    <div class="admin Billing">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="title text-info-padding-5">
+                        <a href="#" onclick="history.back();">@Localizer["BackToOrders"]</a>
                     </div>
-                <div class="title text-info-padding-5">
+                    <div class="title text-info-padding-5">
 
-                    <h1 class="text-info-header-1">Information About the Order</h1>
-                </div>
-                <p class="text-info-p-1 text-info-padding-5"><b>Load id:</b> <span>@Model.IdOrder</span></p>
-                <p class="text-info-p-1 text-info-padding-5"><b>Price:</b> <span>@Model.PriceListed</span></p>
-                <p class="text-info-p-1 text-info-padding-5"><b>Status:</b> <span>@Model.CurrentStatus</span></p>
-                <div class="text-r">
-                    <p class="text-info-header-3 text-info-padding-5"><b>Vehicles</b></p>
-                </div>
-                <table>
-                    <tr class="blue">
-                        <td>№</td>
-                        <td>VIN</td>
-                        <td>Year</td>
-                        <td>Make</td>
-                        <td>Model</td>
-                        <td>Type</td>
-                        <td>Color</td>
-                        <td>Lot number</td>
-                    </tr>
-                    @if (Model.VehiclwInformations != null)
-                    {
-                        @for (int i = 0; i < Model.VehiclwInformations.Count; i++)
+                        <h1 class="text-info-header-1">@Localizer["InformationHeader"]</h1>
+                    </div>
+                    <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["LoadId"]:</b> <span>@Model.IdOrder</span></p>
+                    <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["Price"]:</b> <span>@Model.PriceListed</span></p>
+                    <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["Status"]:</b> <span>@Model.CurrentStatus</span></p>
+                    <div class="text-r">
+                        <p class="text-info-header-3 text-info-padding-5"><b>@Localizer["Veh"]</b></p>
+                    </div>
+                    <table>
+                        <tr class="blue">
+                            <td>№</td>
+                            <td>VIN</td>
+                            <td>@Localizer["Year"]</td>
+                            <td>@Localizer["Make"]</td>
+                            <td>@Localizer["Model"]</td>
+                            <td>@Localizer["Type"]</td>
+                            <td>@Localizer["Color"]</td>
+                            <td>@Localizer["LotNumber"]</td>
+                        </tr>
+                        @if (Model.VehiclwInformations != null)
                         {
-                            <tr>
-                                <td>@i</td>
-                                <td>@Model.VehiclwInformations[i].VIN</td>
-                                <td>@Model.VehiclwInformations[i].Year</td>
-                                <td>@Model.VehiclwInformations[i].Make</td>
-                                <td>@Model.VehiclwInformations[i].Model</td>
-                                <td>@Model.VehiclwInformations[i].Type</td>
-                                <td>@Model.VehiclwInformations[i].Color</td>
-                                <td>@Model.VehiclwInformations[i].Lot</td>
-                            </tr>
-                        }
-                    }
-                </table>
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="text-r">
-                            <h3 class="text-info-header-3 text-info-padding-5">Origin</h3>
-                            <p class="text-info-p"> @Model.AddresP, @Model.CityP, @Model.StateP, @Model.ZipP <br>
-                                <b>Contact: </b>@Model.ContactNameP <br><b>Phone:</b> @Model.PhoneP <br><b>Pickup date: </b>@Model.PickupExactly</p>
-                        </div>
-
-                    </div>
-                    <div class="col-md-3">
-                        <div class="text-r">
-                            <h3 class="text-info-header-3">Destination</h3>
-                            <p class="text-info-p">@Model.AddresD, @Model.CityD, @Model.StateD, @Model.ZipD <br>
-                                <b>Contact:</b> @Model.ContactNameD<br><b>Phone:</b> @Model.PhoneD<br><b>Delivery date:</b> @Model.DeliveryEstimated</p>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="text-r">
-                            <h3 class="text-info-header-3">Payment Information</h3>
-                            <p class="text-info-p">
-                                <b>Price:</b> @Model.PriceListed<br> <b>Payment Method:</b> @Model.TotalPaymentToCarrier<br> 
-                                <b>On Delivery to Carrier: </b> @Model.OnDeliveryToCarrier
-                            </p>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="text-r">
-                            <h3 class="text-info-header-3">Customer</h3>
-                            <p class="text-info-p">
-                                <b>Contact:</b> @Model.ContactC<br>
-                                <b>Phone:</b> @Model.PhoneC<br>
-                                <b>Fax:</b> @Model.FaxC<br>
-                                <b>Iccmc:</b> @Model.IccmcC
-                            </p>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="text-r">
-                            <h3 class="text-info-header-3">Instructions</h3>
-                            <p class="text-info-p">@Model.Titl1DI</p>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="text-r">
-                            <h3 class="text-info-header-3">BOL</h3>
-                            @if (Model.VehiclwInformations != null)
+                            @for (int i = 0; i < Model.VehiclwInformations.Count; i++)
                             {
-                                @foreach (var t in Model.VehiclwInformations)
-                                {
-                                    @:<a href="@ViewBag.BaseUrl/Photo/BOL/@t.Id">@t.Make @t.Model @t.Year</a><br>
-                                }
+                                <tr>
+                                    <td>@i</td>
+                                    <td>@Model.VehiclwInformations[i].VIN</td>
+                                    <td>@Model.VehiclwInformations[i].Year</td>
+                                    <td>@Model.VehiclwInformations[i].Make</td>
+                                    <td>@Model.VehiclwInformations[i].Model</td>
+                                    <td>@Model.VehiclwInformations[i].Type</td>
+                                    <td>@Model.VehiclwInformations[i].Color</td>
+                                    <td>@Model.VehiclwInformations[i].Lot</td>
+                                </tr>
                             }
+                        }
+                    </table>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="text-r">
+                                <h3 class="text-info-header-3 text-info-padding-5">@Localizer["Origin"]</h3>
+                                <p class="text-info-p">
+                                    @Model.AddresP, @Model.CityP, @Model.StateP, @Model.ZipP <br>
+                                    <b>@Localizer["Contact"]: </b>@Model.ContactNameP <br>
+                                    <b>@Localizer["Phone"]:</b> @Model.PhoneP <br>
+                                    <b>@Localizer["PickupDate"]: </b> @Model.PickupExactly
+                                </p>
+                            </div>
+
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-r">
+                                <h3 class="text-info-header-3">@Localizer["Destination"]</h3>
+                                <p class="text-info-p">
+                                    @Model.AddresD, @Model.CityD, @Model.StateD, @Model.ZipD <br>
+                                    <b>@Localizer["Contact"]:</b> @Model.ContactNameD<br>
+                                    <b>@Localizer["Phone"]:</b> @Model.PhoneD<br>
+                                    <b>@Localizer["DeliveryDate"]:</b> @Model.DeliveryEstimated
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="text-r">
+                                <h3 class="text-info-header-3">@Localizer["PaymentInfo"]</h3>
+                                <p class="text-info-p">
+                                    <b>@Localizer["Price"]:</b> @Model.PriceListed<br>
+                                    <b>@Localizer["PaymentMethod"]:</b> @Model.TotalPaymentToCarrier<br>
+                                    <b>@Localizer["OnDeliveryToCarrier"]: </b> @Model.OnDeliveryToCarrier
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="text-r">
+                                <h3 class="text-info-header-3">@Localizer["Customer"]</h3>
+                                <p class="text-info-p">
+                                    <b>@Localizer["Contact"]:</b> @Model.ContactC<br>
+                                    <b>@Localizer["Phone"]:</b> @Model.PhoneC<br>
+                                    <b>@Localizer["Fax"]:</b> @Model.FaxC<br>
+                                    <b>Iccmc:</b> @Model.IccmcC
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="text-r">
+                                <h3 class="text-info-header-3">@Localizer["Instructions"]</h3>
+                                <p class="text-info-p">@Model.Titl1DI</p>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="text-r">
+                                <h3 class="text-info-header-3">BOL</h3>
+                                @if (Model.VehiclwInformations != null)
+                                {
+                                    @foreach (var t in Model.VehiclwInformations)
+                                    {
+                                        @:<a href="@ViewBag.BaseUrl/Photo/BOL/@t.Id">@t.Make @t.Model @t.Year</a><br>
+                                    }
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="right-bar-about">
-                    <h3 class="text-info-header-3">Action history</h3>
-                    @for (var i = 0; i < ViewBag.Historys.Count; i++)
-                    {
-                        <div class="one text-info-p">
-                            <p>@ViewBag.Historys[i].Action</p>
-                            <p>Date Action: @ViewBag.Historys[i].DateAction</p>
-                        </div>  
-                    }
+                <div class="col-md-4">
+                    <div class="right-bar-about">
+                        <h3 class="text-info-header-3">@Localizer["ActionHistory"]</h3>
+                        @for (var i = 0; i < ViewBag.Historys.Count; i++)
+                        {
+                            <div class="one text-info-p">
+                                <p>@ViewBag.Historys[i].Action</p>
+                                <p>@Localizer["DateAction"]: @ViewBag.Historys[i].DateAction</p>
+                            </div>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </body>
-
-<style>
-
-</style>

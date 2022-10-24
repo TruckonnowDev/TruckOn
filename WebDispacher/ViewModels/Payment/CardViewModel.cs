@@ -4,21 +4,24 @@ namespace WebDispacher.ViewModels.Payment
 {
     public class CardViewModel
     {
-        [Required]
-        [MaxLength(19)]
-        [MinLength(13)]
+        [Required(ErrorMessage = "NumberRequired")]
+        [MaxLength(19, ErrorMessage = "MaxLengthNumber")]
+        [MinLength(13, ErrorMessage = "MinLengthNumber")]
+        [Display(Name = "Number")]
         public string Number { get; set; }
         
-        [Required]
-        [MaxLength(25)]
+        [Required(ErrorMessage = "NameRequired")]
+        [MaxLength(25, ErrorMessage = "MaxLengthName")]
+        [Display(Name = "Name")]
         public string Name { get; set; }
         
-        [Required]
+        [Required(ErrorMessage = "ExpiryRequired")]
+        [Display(Name = "Expiry")]
         public string Expiry { get; set; }
         
-        [Required]
-        [MaxLength(4)]
-        [MinLength(3)]
+        [Required(ErrorMessage = "CVVRequired")]
+        [MaxLength(4, ErrorMessage = "MaxLengthCVV")]
+        [MinLength(3, ErrorMessage = "MinLengthCVV")]
         public string Cvc { get; set; }
     }
 }

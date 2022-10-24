@@ -1,45 +1,49 @@
-﻿<body>
-<div class="try_for_free">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12 mob">
-                <div class="tab">
-                    <a href="#" class="active" data-rel=".carrier">Carrier TMS</a>
-                    <a href="#" data-rel=".shipper">Shipper TMS</a>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="try_block carrier active">
-                    <div class="white_block">
-                        <h1>Carrier TMS</h1>
-                        <p>Carrier TMS helps you manage loads, drivers and billing. All in one place.</p>
-                        <a href="/carrier-reg">
-                            <div class="btn1-big">Sign Up</div>
-                        </a>
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+<body>
+    <div class="try_for_free">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 mob">
+                    <div class="tab">
+                        <a href="#" class="active" data-rel=".carrier">@Localizer["CarrierTMS"]</a>
+                        <a href="#" data-rel=".shipper">@Localizer["ShipperTMS"]</a>
                     </div>
-                    <ul class="plus">
-                        <li>7 day free trial</li>
-                        <li>No credit card required</li>
-                        <li>Cancel anytime</li>
-                    </ul>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <div class="try_block shipper">
-                    <div class="white_block">
-                        <h1>Shipper TMS</h1>
-                        <p>All in one platform to help Brokers, Dealers, Auctions, and OEMs to move cars faster.</p>
-                        <a href="/shipper-reg">
-                            <div class="btn1-big">Request Access</div>
-                        </a>
+                <div class="col-md-6">
+                    <div class="try_block carrier active">
+                        <div class="white_block">
+                            <h1>@Localizer["CarrierTMS"]</h1>
+                            <p>@Localizer["CarrierTMSDescription"]</p>
+                            <a href="/carrier-reg">
+                                <div class="btn1-big">@Localizer["SignUp"]</div>
+                            </a>
+                        </div>
+                        <ul class="plus">
+                            <li>@Localizer["CarrierFirstItem"]</li>
+                            <li>@Localizer["CarrierSecondItem"]</li>
+                            <li>@Localizer["CarrierThirdItem"]</li>
+                        </ul>
                     </div>
-                    <ul class="plus">
-                        <li>30-day money back guarantee</li>
-                        <li>Cancel anytime</li>
-                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <div class="try_block shipper">
+                        <div class="white_block">
+                            <h1>@Localizer["ShipperTMS"]</h1>
+                            <p>@Localizer["ShipperTMSDescription"]</p>
+                            <a href="/shipper-reg">
+                                <div class="btn1-big">@Localizer["RequestAccess"]</div>
+                            </a>
+                        </div>
+                        <ul class="plus">
+                            <li>@Localizer["ShipperFirstItem"]</li>
+                            <li>@Localizer["ShipperSecondItem"]</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </body>

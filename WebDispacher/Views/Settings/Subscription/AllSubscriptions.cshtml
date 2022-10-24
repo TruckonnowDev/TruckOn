@@ -1,13 +1,17 @@
-﻿<div class="admin Billing">
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+<div class="admin Billing">
     <div class="container">
-        <h1>Choose subscription</h1>
+        <h1>@Localizer["ChooseSubscription"]</h1>
         @foreach (var subscription in ViewBag.Subscriptions)
         {
             <div class="content" style="margin-bottom: 60px;">
-                <p><strong>Name: </strong>@subscription.Name</p>
-                <p><strong>Total days subscriptions: </strong>@subscription.PeriodDays days</p>
-                <p><strong>Price: </strong>@subscription.Price</p>
-                <a href="~/Settings/Subscription/Select?idPrice=@subscription.IdSubscriptionST&priodDays=@subscription.PeriodDays" style="color:#69eb2c;text-align: center;width: 150px;" class="btn2">Select</a>
+                <p><strong>@Localizer["Name"]: </strong>@subscription.Name</p>
+                <p><strong>@Localizer["TotalDaysSubscriptions"]: </strong>@subscription.PeriodDays @Localizer["Days"]</p>
+                <p><strong>@Localizer["Price"]: </strong>@subscription.Price</p>
+                <a href="~/Settings/Subscription/Select?idPrice=@subscription.IdSubscriptionST&priodDays=@subscription.PeriodDays" style="color:#69eb2c;text-align: center;width: 150px;" class="btn2">@Localizer["Select"]</a>
             </div>
         }
     </div>

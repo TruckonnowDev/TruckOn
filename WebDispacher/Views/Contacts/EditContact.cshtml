@@ -1,27 +1,34 @@
-﻿@model WebDispacher.ViewModels.Contact.ContactViewModel
+﻿@using Microsoft.AspNetCore.Mvc.Localization
 
+@model WebDispacher.ViewModels.Contact.ContactViewModel
+
+@inject IViewLocalizer Localizer
 <body>
     <div class="admin">
         <div class="container">
             <div class="row">
                 <div class="col-md-5">
                     <div class="tabContent">
-                        <h2>Info About the Contact</h2>
+                        <h2>@Localizer["InfoAboutContact"]</h2>
                         <form action="" method="post">
+                            <div class="validation" asp-validation-summary="ModelOnly"></div>
                             <label for="">
-                                Contact Name
+                                <label class="mb-0" asp-for="Name"></label>
                                 <input type="text" name="Name" value="@Model.Name" required>
+                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
                             </label>
                             <label for="">
-                                Email address
+                                <label class="mb-0" asp-for="Email"></label>
                                 <input type="email" name="Email" value="@Model.Email" required>
+                                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
                             </label>
                             <label for="">
-                                Phone number
+                                <label class="mb-0" asp-for="Phone"></label>
                                 <input type="text" name="Phone" placeholder="XXXXXXXXXX" pattern="[0-9]{4,12}" value="@Model.Phone" required>
+                                @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
                             </label>
                             <input name="Id" value="@Model.Id" style="display:none" />
-                            <input class="btn1" type="submit" value="Save Info" />
+                            <input class="btn1" type="submit" value="@Localizer["Save"]" />
                         </form>
                     </div>
                 </div>

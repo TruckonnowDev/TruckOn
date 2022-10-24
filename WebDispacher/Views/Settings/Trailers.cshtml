@@ -1,33 +1,37 @@
-﻿<body>
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+<body>
     <div class="admin">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
                     <div class="title">
-                        <h1>Trailers</h1>
+                        <h1>@Localizer["Trailers"]</h1>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
                     <div id="tabs">
-                        <div class="tab" onclick="window.location.href='@Url.Action("Trucks", "Settings")';">Trucks</div>
-                        <div class="tab whiteborder" onclick="window.location.href='@Url.Action("CreateTrailer", "Settings")';">Trailers</div>
+                        <div class="tab" onclick="window.location.href='@Url.Action("Trucks", "Settings")';">@Localizer["Trucks"]</div>
+                        <div class="tab whiteborder" onclick="window.location.href='@Url.Action("CreateTrailer", "Settings")';">@Localizer["Trailers"]</div>
                         <div class="tabContent">
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>Name</th>
-                                        <th>Type</th>
-                                        <th>Year</th>
-                                        <th>Make</th>
-                                        <th>How Long</th>
-                                        <th>Color</th>
-                                        <th>Plate#</th>
-                                        <th>Plate Exp</th>
+                                        <th>@Localizer["Name"]</th>
+                                        <th>@Localizer["Type"]</th>
+                                        <th>@Localizer["Year"]</th>
+                                        <th>@Localizer["Make"]</th>
+                                        <th>@Localizer["HowLong"]</th>
+                                        <th>@Localizer["Color"]</th>
+                                        <th>@Localizer["Plate"]#</th>
+                                        <th>@Localizer["PlateExp"]</th>
                                         <th>Vin #</th>
-                                        <th>Owner</th>
-                                        <th>Annual INS</th>
+                                        <th>@Localizer["Owner"]</th>
+                                        <th>@Localizer["AnnualIns"]</th>
                                         <th></th>
                                     </tr>
                                 </thead>

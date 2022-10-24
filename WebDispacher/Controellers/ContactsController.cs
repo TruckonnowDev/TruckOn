@@ -135,7 +135,7 @@ namespace WebDispacher.Controellers
             }
             else
             {
-                return Redirect($"{Config.BaseReqvesteUrl}/Contact/Contacts");
+                return View("CreateContact", model);
             }
 
             return Redirect(Config.BaseReqvesteUrl);

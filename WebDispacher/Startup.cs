@@ -14,6 +14,11 @@ using WebDispacher.Business.Interfaces;
 using WebDispacher.Business.Services;
 using WebDispacher.ViewModels.Mappings;
 
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.Extensions.Options;
+
 namespace WebDispacher
 {
     public class Startup
@@ -21,8 +26,28 @@ namespace WebDispacher
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
             services.AddDbContext<Context>();
+                services.AddMvc()
+                        .AddDataAnnotationsLocalization()
+                        .AddViewLocalization();
+
+           services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var supportedCultures = new[]
+                {
+                    new CultureInfo("en"),
+                    new CultureInfo("es"),
+                    new CultureInfo("ru")
+                };
+
+                options.DefaultRequestCulture = new RequestCulture("en");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+            });
+
             services.AddAutoMapper(typeof(MappingProfile));
+
             services.AddScoped<ITruckAndTrailerService, TruckAndTrailerService>();
             services.AddScoped<IDriverService, DriverService>();
             services.AddScoped<ICompanyService, CompanyService>();
@@ -82,6 +107,7 @@ namespace WebDispacher
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseRequestLocalization();
             app.UseStatusCodePagesWithReExecute("/error", "?code={0}");
             // app.UseResponseCompression();
             app.UseMvc(routes =>

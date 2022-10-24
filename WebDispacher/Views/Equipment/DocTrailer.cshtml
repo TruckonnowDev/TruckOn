@@ -1,244 +1,250 @@
-﻿<body>
-<div class="admin doc">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="title">
-                    <a href="/Equipment/Trailers">Back to Equipment</a>
-                </div>
-                <div class="title">
-                    <h1 class="text-info-header-1">Documents</h1>
-                    <button class="btn1" data-toggle="modal" data-target="#addNewDocFormModal">Add Document</button>
-                </div>
-            </div>
-            @for (int i = 0; i < ViewBag.TrailerDoc.Count; i++)
-            {
-                string pref = ViewBag.TrailerDoc[i].DocPath.Remove(0, @ViewBag.TrailerDoc[i].DocPath.LastIndexOf('.') + 1);
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+<body>
+    <div class="admin doc">
+        <div class="container">
+            <div class="row">
                 <div class="col-md-12">
-                    <p>@ViewBag.TrailerDoc[i].NameDoc <a href="#" onclick="RemoveDoc(@ViewBag.TrailerDoc[i].Id, @ViewBag.TrailerId)">Delete</a></p>
+                    <div class="title">
+                        <a href="/Equipment/Trailers">@Localizer["BackToEquipment"]</a>
+                    </div>
+                    <div class="title">
+                        <h1 class="text-info-header-1">@Localizer["Documents"]</h1>
+                        <button class="btn1" data-toggle="modal" data-target="#addNewDocFormModal">@Localizer["AddDocument"]</button>
+                    </div>
                 </div>
-                if (pref == "pdf")
+                @for (int i = 0; i < ViewBag.TrailerDoc.Count; i++)
                 {
-                    <div class="col-md-12" >
-                        <embed src="@ViewBag.BaseUrl/Equipment/GetDockPDF?docPath=@ViewBag.TrailerDoc[i].DocPath" width="900" height="1200" />
+                    string pref = ViewBag.TrailerDoc[i].DocPath.Remove(0, @ViewBag.TrailerDoc[i].DocPath.LastIndexOf('.') + 1);
+                    <div class="col-md-12">
+                        <p>@ViewBag.TrailerDoc[i].NameDoc <a href="#" onclick="RemoveDoc(@ViewBag.TrailerDoc[i].Id, @ViewBag.TrailerId)">@Localizer["DeleteDoc"]</a></p>
                     </div>
+                    if (pref == "pdf")
+                    {
+                        <div class="col-md-12">
+                            <embed src="@ViewBag.BaseUrl/Equipment/GetDockPDF?docPath=@ViewBag.TrailerDoc[i].DocPath" width="900" height="1200" />
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-12" style="width: 900px">
+                            <img src="@ViewBag.BaseUrl/Equipment/GetDock?docPath=@ViewBag.TrailerDoc[i].DocPath&type=image/@pref" width="900" alt="">
+                        </div>
+                    }
+                    <hr />
                 }
-                else
-                {
-                    <div class="col-md-12" style="width: 900px">
-                        <img src="@ViewBag.BaseUrl/Equipment/GetDock?docPath=@ViewBag.TrailerDoc[i].DocPath&type=image/@pref" width="900" alt="">
-                    </div>
-                }
-                <hr />
-            }
+            </div>
         </div>
     </div>
-</div>
-<div class="modal fade" id="addNewDocFormModal" tabindex="-1" role="dialog" aria-labelledby="addNewDocFormModalLabel" aria-hidden="true">
-    <content class="ng-modal-wrapper">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header modal-title">
-                    <h1 class="text-center" style="padding-left:20%" id="DeleteDriverLabel">Add New Document</h1>
-                    <button type="button" style="margin-left:82px;font-size:22px;" class="close text-right" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&#9587;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form method="post" action="/Equipment/Trailer/DocSaveById" enctype="multipart/form-data">
-                        <div class="form-group">
-                            <input type="hidden" name="id" id="trailerId" value="@ViewBag.TrailerId">
-                            <label for>
-                                Name document
-                                <input id="nameDoc" name="nameDoc" type="text" class="modal-inp-text validation" required/>
-                            </label>
-                        </div>
-                        <div class="full-label">
-                            <a class="a-label">Select document<a class="pl-2">(You can upload files only in pdf, jpg and jpeg)</a></a>
-                            <div class="file-group">
-                                <div class="row">
-                                    <div class="col-8 label-input d-flex align-items-center">
-                                        <div onclick="ClearFile(`fi1`, 'fl1');" class="fi" id="fl1"></div>
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="select-button-1 d-flex justify-content-end">
-                                            <label>
-                                                Select document
-                                                <input class="height-input" id="fi1" type="file" onchange="GetFileName(this.value, 'fl1');" name="uploadedFile" accept="application/pdf, image/jpeg, image/jpg" required>
-                                            </label>
+    <div class="modal fade" id="addNewDocFormModal" tabindex="-1" role="dialog" aria-labelledby="addNewDocFormModalLabel" aria-hidden="true">
+        <content class="ng-modal-wrapper">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header modal-title">
+                        <h1 class="text-center" style="padding-left:20%" id="DeleteDriverLabel">@Localizer["AddNewDocHeader"]</h1>
+                        <button type="button" style="margin-left:82px;font-size:22px;" class="close text-right" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&#9587;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" action="/Equipment/Trailer/DocSaveById" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <input type="hidden" name="id" id="trailerId" value="@ViewBag.TrailerId">
+                                <label for>
+                                    @Localizer["NameDoc"]
+                                    <input id="nameDoc" name="nameDoc" type="text" class="modal-inp-text validation" required />
+                                </label>
+                            </div>
+                            <div class="full-label">
+                                <a class="a-label">@Localizer["SelectDoc"]<a class="pl-2">(@Localizer["InfoMessageUploadFiles"])</a></a>
+                                <div class="file-group">
+                                    <div class="row">
+                                        <div class="col-8 label-input d-flex align-items-center">
+                                            <div onclick="ClearFile(`fi1`, 'fl1');" class="fi" id="fl1"></div>
+                                        </div>
+                                        <div class="col-4 select-doc">
+                                            <div class="select-button-1 d-flex justify-content-end">
+                                                <label>
+                                                    @Localizer["SelectDoc"]
+                                                    <input class="height-input" id="fi1" type="file" onchange="GetFileName(this.value, 'fl1');" name="uploadedFile" accept="application/pdf, image/jpeg, image/jpg" required>
+                                                </label>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <button class="button-custom submit-add">Add</button>
-                        </div>
-                        <div class="form-group">
-                            <button data-dismiss="modal" class="button-custom-2">Close</button>
-                        </div>
-                    </form>
+                            <div class="form-group full-label">
+                                <button class="button-custom submit-add">@Localizer["ButtonAddDoc"]</button>
+                            </div>
+                            <div class="form-group full-label">
+                                <button data-dismiss="modal" class="button-custom-2">@Localizer["ButtonCloseModal"]</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
-    </content>
-</div>
+        </content>
+    </div>
 </body>
 <script>
-$("#fi1").change(function() {
-    CheckValid('fl1','fi1');
-});
+    $("#fi1").change(function () {
+        CheckValid('fl1', 'fi1');
+    });
 
- $(".submit-add").on('click', function (){
-     CheckValid('fl1','fi1');
- })
- 
- function RemoveDoc(idDock, id){
-     $.ajax({
-         type: "get",
-         url: `/Equipment/RemoveDoc/?idDock=${idDock}&id=${id}&type=Trailer`,
-         success: function () {
-             window.location.reload();
-         },
-         error: function (response) {
-         }
-     });
- }
+    $(".submit-add").on('click', function () {
+        CheckValid('fl1', 'fi1');
+    })
+
+    function RemoveDoc(idDock, id) {
+        $.ajax({
+            type: "get",
+            url: `/Equipment/RemoveDoc/?idDock=${idDock}&id=${id}&type=Trailer`,
+            success: function () {
+                window.location.reload();
+            },
+            error: function (response) {
+            }
+        });
+    }
 </script>
 
 <style>
     .full-label {
         padding: 3px 10px 4px;
     }
-    
+
     .modal-body {
         padding: 1.5rem;
     }
+
     .modal-header {
         padding: 1.25rem;
     }
-    
+
     .button-custom {
-        background:#2c5deb;
-        color:#f9f9f9;
+        background: #2c5deb;
+        color: #f9f9f9;
         width: 100%;
-        font-style:normal;
-        font-weight:700;
-        font-size:24px;
-        line-height:1.75;
-        border-radius:10px;
-        padding:16px 29px;
-        display:inline-block;
-        border:1px solid #2c5deb
+        font-style: normal;
+        font-weight: 700;
+        font-size: 24px;
+        line-height: 1.75;
+        border-radius: 10px;
+        padding: 16px 29px;
+        display: inline-block;
+        border: 1px solid #2c5deb
     }
-    
+
     .button-custom-2 {
         background: #ffffff;
-        color:#686F7C;
+        color: #686F7C;
         width: 100%;
-        font-style:normal;
-        font-weight:700;
-        font-size:24px;
-        line-height:1.75;
-        border-radius:10px;
-        padding:16px 29px;
-        display:inline-block;
-        border:1px solid #686F7C
+        font-style: normal;
+        font-weight: 700;
+        font-size: 24px;
+        line-height: 1.75;
+        border-radius: 10px;
+        padding: 16px 29px;
+        display: inline-block;
+        border: 1px solid #686F7C
     }
-    
-        .form-group label{
-            width: 100%;
-            font-family:Montserrat;
-            font-style:normal;
-            font-weight:700;
-            font-size:16px;
-            line-height:1.7;
-            color:#08112b;
-            text-align:left;
-            margin-top:0;
-            display:block;
-            margin-bottom:15px;
-        }
-        .modal-dialog {
-            position: absolute;
-            left: 30%;
-            top: 200px;
-            width: 700px!important;
-            text-align: left;
-            background-color: #fff;
-            -moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
-            -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
-            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
-            transition: height 0.25s linear;
-            -moz-border-radius: 10px;
-            -webkit-border-radius: 10px;
-            border-radius: 30px;
-            }
-            
-        .modal-content{
-            border: 0px;
-            border-radius: 30px;
-            }
-            
-        .ng-modal-wrapper {
-            display: inline-block;
-            vertical-align: middle;
-            padding: 50px 0;
-            width: 100%;
-            position: relative;
-            }
-            
-            .modal-dialog label {
-                position: relative;
-                display: inline-block;
-                vertical-align: middle;
-                cursor: pointer;
-                padding: 3px 10px 4px;
-                -moz-border-radius: 3px;
-                -webkit-border-radius: 3px;
-                margin-top: 2px;
-                background: none;
-                font-size: 16px;
-                line-height: 19px;
-                letter-spacing: -.016em;
-                -moz-transition-property: all;
-                -o-transition-property: all;
-                -webkit-transition-property: all;
-                transition-property: all;
-                -moz-transition-duration: 300ms;
-                -o-transition-duration: 300ms;
-                -webkit-transition-duration: 300ms;
-                transition-duration: 300ms;
-                border-radius: 30px;
-                }
-                
-                .modal-buttons .right-buttons {
-                    float: right;
-                }
-                
-                .modal-inp-text {
-                    width:100%;
-                    height:77px;
-                    background:#fff;
-                    border:1px solid #c4c9d5;
-                    border-radius:10px;
-                    padding:25px 15px;
-                    font-family:Montserrat;
-                    font-style:normal;
-                    font-weight:400;
-                    font-size:16px;
-                    line-height:1.2;
-                    color:#686f7c;
-                    margin-top:6px
-                    }
-                    
-                .modal-title h1 {
-                font-size: 36px;
-                }
-                            
-                .modal-header{
-                      justify-content: center;
-                      padding: 2rem;
-                      border-bottom: 0;
-                }
+
+    .form-group label {
+        width: 100%;
+        font-family: Montserrat;
+        font-style: normal;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 1.7;
+        color: #08112b;
+        text-align: left;
+        margin-top: 0;
+        display: block;
+        margin-bottom: 15px;
+    }
+
+    .modal-dialog {
+        position: absolute;
+        left: 30%;
+        top: 200px;
+        width: 700px !important;
+        text-align: left;
+        background-color: #fff;
+        -moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
+        -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
+        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
+        transition: height 0.25s linear;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        border-radius: 30px;
+    }
+
+    .modal-content {
+        border: 0px;
+        border-radius: 30px;
+    }
+
+    .ng-modal-wrapper {
+        display: inline-block;
+        vertical-align: middle;
+        padding: 50px 0;
+        width: 100%;
+        position: relative;
+    }
+
+    .modal-dialog label {
+        position: relative;
+        display: inline-block;
+        vertical-align: middle;
+        cursor: pointer;
+        padding: 3px 10px 4px;
+        -moz-border-radius: 3px;
+        -webkit-border-radius: 3px;
+        margin-top: 2px;
+        background: none;
+        font-size: 16px;
+        line-height: 19px;
+        letter-spacing: -.016em;
+        -moz-transition-property: all;
+        -o-transition-property: all;
+        -webkit-transition-property: all;
+        transition-property: all;
+        -moz-transition-duration: 300ms;
+        -o-transition-duration: 300ms;
+        -webkit-transition-duration: 300ms;
+        transition-duration: 300ms;
+        border-radius: 30px;
+    }
+
+    .modal-buttons .right-buttons {
+        float: right;
+    }
+
+    .modal-inp-text {
+        width: 100%;
+        height: 77px;
+        background: #fff;
+        border: 1px solid #c4c9d5;
+        border-radius: 10px;
+        padding: 25px 15px;
+        font-family: Montserrat;
+        font-style: normal;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 1.2;
+        color: #686f7c;
+        margin-top: 6px
+    }
+
+    .modal-title h1 {
+        font-size: 36px;
+    }
+
+    .modal-header {
+        justify-content: center;
+        padding: 2rem;
+        border-bottom: 0;
+    }
 </style>

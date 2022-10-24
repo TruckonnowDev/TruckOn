@@ -1,23 +1,29 @@
-﻿<div class="admin">
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+<div class="admin">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
                 <div class="title">
-                    <h1>Orders</h1>
-                    <button class="btn1 mr-3" onClick='location.href="/Dashbord/Order/Creat"'>Create Order</button>
-                    <a style="background-color: white;color:#686F7C;" data-toggle="collapse" href="#search-form" role="button" aria-expanded="false" aria-controls="search-form">Search Orders
-                        <span>&#709;</span></a>
+                    <h1>@Localizer["Orders"]</h1>
+                    <button class="btn1 mr-3" onClick='location.href="/Dashbord/Order/Creat"'>@Localizer["CreateOrder"]</button>
+                    <a style="background-color: white;color:#686F7C;" data-toggle="collapse" href="#search-form" role="button" aria-expanded="false" aria-controls="search-form">
+                        @Localizer["SearchOrders"]
+                        <span>&#709;</span>
+                    </a>
                 </div>
                 <div class="collapse multi-collapse" id="search-form">
                     <div style="margin-top: 15px;" class="card border card-body">
                         <form method="get" action="/Dashbord/Order/NewLoad">
-                            <input class="type-button" type="text" value="@ViewBag.LoadId" id="loadId-input" name="loadId" placeholder="Load id">
-                            <input class="type-button" type="text" value="@ViewBag.Name" id="name-input" name="name" placeholder="Name">
-                            <input class="type-button" type="text" value="@ViewBag.Address" id="address-input" name="address" placeholder="Address">
-                            <input class="type-button" type="text" value="@ViewBag.Phone" id="phone-input" name="phone" placeholder="Phone number">
-                            <input class="type-button" type="text" value="@ViewBag.Email" id="email-input" name="email" placeholder="Email">
-                            <input class="type-button" type="text" value="@ViewBag.price" id="price-input" name="price" placeholder="Price">
-                            <button type="submit" class="btn1 btn-modal mt-2">Search</button>
+                            <input class="type-button" type="text" value="@ViewBag.LoadId" id="loadId-input" name="loadId" placeholder="@Localizer["LoadId"]">
+                            <input class="type-button" type="text" value="@ViewBag.Name" id="name-input" name="name" placeholder="@Localizer["Name"]">
+                            <input class="type-button" type="text" value="@ViewBag.Address" id="address-input" name="address" placeholder="@Localizer["Address"]">
+                            <input class="type-button" type="text" value="@ViewBag.Phone" id="phone-input" name="phone" placeholder="@Localizer["PhoneNumber"]">
+                            <input class="type-button" type="text" value="@ViewBag.Email" id="email-input" name="email" placeholder="@Localizer["Email"]">
+                            <input class="type-button" type="text" value="@ViewBag.price" id="price-input" name="price" placeholder="@Localizer["Price"]">
+                            <button type="submit" class="btn1 btn-modal mt-2">@Localizer["Search"]</button>
                         </form>
                     </div>
                 </div>
@@ -26,50 +32,50 @@
         <div class="row">
             <div class="col-md-12">
                 <div id="tabs">
-                    <div class="tab whiteborder" onclick="window.location.href='@Url.Action("NewLoad", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">New load</div>
-                    <div class="tab" onclick="window.location.href='@Url.Action("Assigned", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">Assigned</div>
-                    <div class="tab" onclick="window.location.href = '@Url.Action("Pickedup", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">Picked up</div>
-                    <div class="tab" onclick="window.location.href='@Url.Action("Delivered", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">Delivered</div>
-                    <div class="tab" onclick="window.location.href='@Url.Action("Billed", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">Billed</div>
-                    <div class="tab" onclick="window.location.href='@Url.Action("Paid", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">Paid</div>
-                    <div class="tab" onclick="window.location.href='@Url.Action("Archived", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">Archived</div>
-                    <div class="tab" onclick="window.location.href='@Url.Action("Deleted", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">Deleted</div>
+                    <div class="tab whiteborder" onclick="window.location.href='@Url.Action("NewLoad", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">@Localizer["NewLoad"]</div>
+                    <div class="tab" onclick="window.location.href='@Url.Action("Assigned", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">@Localizer["Assigned"]</div>
+                    <div class="tab" onclick="window.location.href = '@Url.Action("Pickedup", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">@Localizer["PickedUp"]</div>
+                    <div class="tab" onclick="window.location.href='@Url.Action("Delivered", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">@Localizer["Delivered"]</div>
+                    <div class="tab" onclick="window.location.href='@Url.Action("Billed", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">@Localizer["Billed"]</div>
+                    <div class="tab" onclick="window.location.href='@Url.Action("Paid", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">@Localizer["Paid"]</div>
+                    <div class="tab" onclick="window.location.href='@Url.Action("Archived", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">@Localizer["Archived"]</div>
+                    <div class="tab" onclick="window.location.href='@Url.Action("Deleted", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">@Localizer["Deleted"]</div>
                     <div class="tabContent">
                         @for (int i = 0; i < ViewBag.Orders.Count; i++)
                         {
                             <div class="one-line">
                                 <div class="top-line">
                                     <div class="left">
-                                        <button class="btn3" onClick='location.href="@Url.Action( "FullInfoOrder", new { id = ViewBag.Orders[i].Id, status = "NewLoad" } )"'>Load ID: @ViewBag.Orders[i].idOrder</button>
+                                        <button class="btn3" onClick='location.href="@Url.Action( "FullInfoOrder", new { id = ViewBag.Orders[i].Id, status = "NewLoad" } )"'>@Localizer["LoadId"]: @ViewBag.Orders[i].idOrder</button>
                                         <div class="text"><img src="~/img/dolar.svg" alt=""> @ViewBag.Orders[i].PriceListed</div>
                                         <div class="text"><img src="~/img/clock.svg" alt=""> @ViewBag.Orders[i].TotalPaymentToCarrier</div>
                                     </div>
                                     <div class="right">
-                                        <a class="btn3" href=@Url.Action("EditOrder", new { id = ViewBag.Orders[i].Id, status = "NewLoad" } )>Edit</a>
+                                        <a class="btn3" href=@Url.Action("EditOrder", new { id = ViewBag.Orders[i].Id, status = "NewLoad" } )>@Localizer["Edit"]</a>
                                         <select onchange="SelectAssining(this.options[this.selectedIndex].value, '@ViewBag.BaseUrl')" class="btn3">
-                                            <option value="">Assign</option>
+                                            <option value="">@Localizer["Assign"]</option>
                                             @for (int j = 0; j < ViewBag.Drivers.Count; j++)
                                             {
                                                 <option class="btn3" value="@ViewBag.Orders[i].Id,@ViewBag.Drivers[j].Id">@ViewBag.Drivers[j].FullName</option>
                                             }
                                         </select>
-                                        <a class="btn3" href="@Url.Action("ArchivedOrder", new { id = ViewBag.Orders[i].Id, 
-                                                                  status ="NewLoad", 
-                                                                  filters = $"loadId={ViewBag.LoadId}&name={ViewBag.Name}&address={ViewBag.Address}&phone={ViewBag.Phone}&email={@ViewBag.Email}&price={@ViewBag.price}"})">Delete</a>
+                                        <a class="btn3" href="@Url.Action("ArchivedOrder", new { id = ViewBag.Orders[i].Id,
+                                                                  status ="NewLoad",
+                                                                  filters = $"loadId={ViewBag.LoadId}&name={ViewBag.Name}&address={ViewBag.Address}&phone={ViewBag.Phone}&email={@ViewBag.Email}&price={@ViewBag.price}"})">@Localizer["Delete"]</a>
                                     </div>
                                 </div>
                                 <div class="info-line">
                                     <div class="info-block">
-                                        <h3>ORIGIN</h3>
+                                        <h3>@Localizer["Origin"]</h3>
                                         <p> @ViewBag.Orders[i].AddresP, @ViewBag.Orders[i].CityP,  @ViewBag.Orders[i].StateP, @ViewBag.Orders[i].ZipP</p>
-                                        <p>Phone: @ViewBag.Orders[i].PhoneP</p>
+                                        <p>@Localizer["Phone"]: @ViewBag.Orders[i].PhoneP</p>
                                     </div>
                                     <div class="info-block">
-                                        <h3>DESTINATION</h3>
+                                        <h3>@Localizer["Destination"]</h3>
                                         <p> @ViewBag.Orders[i].AddresD, @ViewBag.Orders[i].CityD,  @ViewBag.Orders[i].StateD, @ViewBag.Orders[i].ZipD</p>
-                                        <p>Phone: @ViewBag.Orders[i].PhoneD</p>
-                                        <p>Delivery Estimated: @ViewBag.Orders[i].DeliveryEstimated</p>
-                                        <p>Phone: @ViewBag.Orders[i].PhoneD</p>
+                                        <p>@Localizer["Phone"]: @ViewBag.Orders[i].PhoneD</p>
+                                        <p>@Localizer["DeliveryEstimated"]: @ViewBag.Orders[i].DeliveryEstimated</p>
+                                        <p>@Localizer["Phone"]: @ViewBag.Orders[i].PhoneD</p>
                                     </div>
                                     <div class="info-block">
                                     </div>
@@ -92,25 +98,23 @@
             </div>
         </div>
     </div>
-
 </div>
 
 <script>
- $(document).ready(function() {
-     const loadId= $('#loadId-input').val();
-     const name= $('#name-input').val();
-     const address= $('#address-input').val();
-     const phone= $('#phone-input').val();
-     const email= $('#email-input').val();
-     const price= $('#price-input').val();
-     
-     if (loadId !== "" || name !== "" || address !== ""
-        || phone !== "" || email !== "" 
-        || price !== "")
-     {
-        $("#search-form").addClass('show')
-     }
- });
+    $(document).ready(function () {
+        const loadId = $('#loadId-input').val();
+        const name = $('#name-input').val();
+        const address = $('#address-input').val();
+        const phone = $('#phone-input').val();
+        const email = $('#email-input').val();
+        const price = $('#price-input').val();
+
+        if (loadId !== "" || name !== "" || address !== ""
+            || phone !== "" || email !== ""
+            || price !== "") {
+            $("#search-form").addClass('show')
+        }
+    });
 </script>
 
 <style>

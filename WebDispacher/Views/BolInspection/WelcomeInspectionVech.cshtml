@@ -1,16 +1,20 @@
-﻿<body>
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+<body>
     <div class="admin Pickup">
         <div class="container">
             <div class="col-md-8">
                 <div class="title">
                     <h1 class="nameVehStlP"> @ViewBag.Vehiclw.Make @ViewBag.Vehiclw.Model @ViewBag.Vehiclw.Year</h1>
                 </div>
-                <p><b>Load id:</b> <span> @ViewBag.Shipp.Id</span></p>
-                <p><b>Origin:</b> <span>@ViewBag.Shipp.AddresP, @ViewBag.Shipp.CityP, @ViewBag.Shipp.StateP, @ViewBag.Shipp.ZipP</span></p>
-                <p><b>Destionation:</b> <span>@ViewBag.Shipp.AddresD, @ViewBag.Shipp.CityD, @ViewBag.Shipp.StateD, @ViewBag.Shipp.ZipD</span></p>
+                <p><b>@Localizer["LoadId"]:</b> <span> @ViewBag.Shipp.Id</span></p>
+                <p><b>@Localizer["Origin"]:</b> <span>@ViewBag.Shipp.AddresP, @ViewBag.Shipp.CityP, @ViewBag.Shipp.StateP, @ViewBag.Shipp.ZipP</span></p>
+                <p><b>@Localizer["Destionation"]:</b> <span>@ViewBag.Shipp.AddresD, @ViewBag.Shipp.CityD, @ViewBag.Shipp.StateD, @ViewBag.Shipp.ZipD</span></p>
                 @if (ViewBag.Vehiclw.Ask != null)
                 {
-                    <p><b>Type:</b> <span>@ViewBag.Vehiclw.Ask.TypeVehicle</span></p>
+                    <p><b>@Localizer["Type"]:</b> <span>@ViewBag.Vehiclw.Ask.TypeVehicle</span></p>
                 }
             </div>
             <div class="col-md-4 pic">
@@ -21,10 +25,10 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <h2>Pickup Inspection</h2>
+                    <h2>@Localizer["PickupIns"]</h2>
                 </div>
                 <div class="col-md-12">
-                    <h3>Photo inspection</h3>
+                    <h3>@Localizer["PhotoInspection"]</h3>
                 </div>
                 @if (ViewBag.Vehiclw.PhotoInspections != null)
                 {
@@ -44,12 +48,12 @@
                 }
                 else
                 {
-                    <p>No Photo</p>
+            <p>@Localizer["NoPhoto"]</p>
                 }
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <h3>Photo after loading in the truck</h3>
+                    <h3>@Localizer["PhotoAfterLoadingInTruck"]</h3>
                 </div>
                 @if (ViewBag.Vehiclw.Ask1 != null)
                 {
@@ -64,17 +68,17 @@
                     }
                     else
                     {
-                        <p>No Photo</p>
+            <p>@Localizer["NoPhoto"]</p>
                     }
                 }
                 else
                 {
-                    <p>No Photo</p>
+            <p>@Localizer["NoPhoto"]</p>
                 }
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <h3>Customer painting Pickup</h3>
+                    <h3>@Localizer["CustomerPaintingPickup"]</h3>
                 </div>
                 @if (ViewBag.Shipp.AskFromUser != null)
                 {
@@ -87,20 +91,20 @@
                     }
                     else
                     {
-                        <p>No Photo</p>
+            <p>@Localizer["NoPhoto"]</p>
                     }
                 }
                 else
                 {
-                    <p>No Photo</p>
+            <p>@Localizer["NoPhoto"]</p>
                 }
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <h2>Delivery Inspection</h2>
+                    <h2>@Localizer["DeliveryInspection"]</h2>
                 </div>
                 <div class="col-md-12">
-                    <h3>Photo inspection</h3>
+                    <h3>@Localizer["PhotoInspection"]</h3>
                 </div>
                 @if (ViewBag.Vehiclw.PhotoInspections != null)
                 {
@@ -120,12 +124,12 @@
                 }
                 else
                 {
-                    <p>No Photo</p>
+            <p>@Localizer["NoPhoto"]</p>
                 }
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <h3>Customer Vehicle Inspection</h3>
+                    <h3>@Localizer["CustomerVehicleIns"]</h3>
                 </div>
                 @if (ViewBag.Shipp.askForUserDelyveryM != null)
                 {
@@ -140,17 +144,17 @@
                     }
                     else
                     {
-                        <p>No Photo</p>
+            <p>@Localizer["NoPhoto"]</p>
                     }
                 }
                 else
                 {
-                    <p>No Photo</p>
+            <p>@Localizer["NoPhoto"]</p>
                 }
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <h3>Customer painting Delivery</h3>
+                    <h3>@Localizer["CustomerPaintingDelivery"]</h3>
                 </div>
                 @if (ViewBag.Shipp.askForUserDelyveryM != null)
                 {
@@ -163,16 +167,16 @@
                     }
                     else
                     {
-                        <p>No Photo</p>
+            <p>@Localizer["NoPhoto"]</p>
                     }
                 }
                 else
                 {
-                    <p>No Photo</p>
+            <p>@Localizer["NoPhoto"]</p>
                 }
             </div>
             <div class="col-md-12">
-                <button onclick="history.back();" class="btn1">Back to Order</button>
+                <button onclick="history.back();" class="btn1">@Localizer["BackToOrder"]</button>
             </div>
         </div>
     </div>

@@ -1,0 +1,242 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<!-- 
+		Microsoft ResX Schema
+
+		Version 1.3
+
+		The primary goals of this format is to allow a simple XML format 
+		that is mostly human readable. The generation and parsing of the 
+		various data types are done through the TypeConverter classes 
+		associated with the data types.
+
+		Example:
+
+		... ado.net/XML headers & schema ...
+		<resheader name="resmimetype">text/microsoft-resx</resheader>
+		<resheader name="version">1.3</resheader>
+		<resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+		<resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+		<data name="Name1">this is my long string</data>
+		<data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+		<data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+			[base64 mime encoded serialized .NET Framework object]
+		</data>
+		<data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+			[base64 mime encoded string representing a byte array form of the .NET Framework object]
+		</data>
+
+		There are any number of "resheader" rows that contain simple 
+		name/value pairs.
+
+		Each data row contains a name, and value. The row also contains a 
+		type or mimetype. Type corresponds to a .NET class that support 
+		text/value conversion through the TypeConverter architecture. 
+		Classes that don't support this are serialized and stored with the 
+		mimetype set.
+
+		The mimetype is used for serialized objects, and tells the 
+		ResXResourceReader how to depersist the object. This is currently not 
+		extensible. For a given mimetype the value must be set accordingly:
+
+		Note - application/x-microsoft.net.object.binary.base64 is the format 
+		that the ResXResourceWriter will generate, however the reader can 
+		read any of the formats listed below.
+
+		mimetype: application/x-microsoft.net.object.binary.base64
+		value   : The object must be serialized with 
+			: System.Serialization.Formatters.Binary.BinaryFormatter
+			: and then encoded with base64 encoding.
+
+		mimetype: application/x-microsoft.net.object.soap.base64
+		value   : The object must be serialized with 
+			: System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+			: and then encoded with base64 encoding.
+
+		mimetype: application/x-microsoft.net.object.bytearray.base64
+		value   : The object must be serialized into a byte array 
+			: using a System.ComponentModel.TypeConverter
+			: and then encoded with base64 encoding.
+	-->
+	
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>1.3</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="DriverCheck" xml:space="preserve">
+		<value>Verificación del conductor</value>
+	</data>
+	<data name="Drivers" xml:space="preserve">
+		<value>Controlador</value>
+	</data>
+	<data name="AddDriver" xml:space="preserve">
+		<value>Añadir Controlador</value>
+	</data>
+	<data name="AddReportDriver" xml:space="preserve">
+		<value>Añadir Informe</value>
+	</data>
+	<data name="Alcohol" xml:space="preserve">
+		<value>Tendencia al alcohol</value>
+	</data>
+	<data name="Boxes" xml:space="preserve">
+		<value>Cuadro</value>
+	</data>
+	<data name="Close" xml:space="preserve">
+		<value>Cerca</value>
+	</data>
+	<data name="Delete" xml:space="preserve">
+		<value>Eliminar</value>
+	</data>
+	<data name="Description" xml:space="preserve">
+		<value>Descripción</value>
+	</data>
+	<data name="Documents" xml:space="preserve">
+		<value>Documento</value>
+	</data>
+	<data name="DotViolations" xml:space="preserve">
+		<value>Infracciones del Dot</value>
+	</data>
+	<data name="DriverReport" xml:space="preserve">
+		<value>Informe del Conductor</value>
+	</data>
+	<data name="DrugTendency" xml:space="preserve">
+		<value>Tendencia a las drogas</value>
+	</data>
+	<data name="Edit" xml:space="preserve">
+		<value>Editar</value>
+	</data>
+	<data name="Eld" xml:space="preserve">
+		<value>Conocimiento de Eld</value>
+	</data>
+	<data name="Email" xml:space="preserve">
+		<value>Correo</value>
+	</data>
+	<data name="EnclosedCarHauling" xml:space="preserve">
+		<value>Transporte de vehículos cerrados</value>
+	</data>
+	<data name="Experience" xml:space="preserve">
+		<value>Experiencia con</value>
+	</data>
+	<data name="Flatbed" xml:space="preserve">
+		<value>Cama Plana</value>
+	</data>
+	<data name="Good" xml:space="preserve">
+		<value>Bien</value>
+	</data>
+	<data name="KnowledgeOfEnglish" xml:space="preserve">
+		<value>Conocimiento de Inglés</value>
+	</data>
+	<data name="LastIns" xml:space="preserve">
+		<value>Última inspección</value>
+	</data>
+	<data name="Middle" xml:space="preserve">
+		<value>Medio</value>
+	</data>
+	<data name="None" xml:space="preserve">
+		<value>Ninguno</value>
+	</data>
+	<data name="NumberOfAccidents" xml:space="preserve">
+		<value>Número De Accidentes</value>
+	</data>
+	<data name="OpenCarHauling" xml:space="preserve">
+		<value>Transporte de vehículos abiertos</value>
+	</data>
+	<data name="Payment" xml:space="preserve">
+		<value>Gestión de pagos</value>
+	</data>
+	<data name="Phone" xml:space="preserve">
+		<value>Teléfono</value>
+	</data>
+	<data name="Poor" xml:space="preserve">
+		<value>Pobre</value>
+	</data>
+	<data name="Reefer" xml:space="preserve">
+		<value>Refrigerado</value>
+	</data>
+	<data name="Registration" xml:space="preserve">
+		<value>Registro</value>
+	</data>
+	<data name="RemindIns" xml:space="preserve">
+		<value>Recuerde la Inspección</value>
+	</data>
+	<data name="ReportDriver" xml:space="preserve">
+		<value>Informar al conductor</value>
+	</data>
+	<data name="ReturnedEquipment" xml:space="preserve">
+		<value>Equipo devuelto</value>
+	</data>
+	<data name="Terminated" xml:space="preserve">
+		<value>Terminado</value>
+	</data>
+	<data name="TerminatedInfo" xml:space="preserve">
+		<value>cajas DESPEDIDAS, vencimiento del contrato, camión abandonado sin previo aviso, desaparecido</value>
+	</data>
+	<data name="Towing" xml:space="preserve">
+		<value>Remolcar</value>
+	</data>
+	<data name="TrailerCapacity" xml:space="preserve">
+		<value>Capacidad del remolque</value>
+	</data>
+	<data name="Van" xml:space="preserve">
+		<value>Furgoneta</value>
+	</data>
+	<data name="WorkingEfficiency" xml:space="preserve">
+		<value>Eficiencia de trabajo</value>
+	</data>
+	<data name="Yes" xml:space="preserve">
+		<value>Sí</value>
+	</data>
+	<data name="Inspection" xml:space="preserve">
+		<value>Inspección</value>
+	</data>
+	<data name="DrivingSkills" xml:space="preserve">
+		<value>Habilidades de conducción</value>
+	</data>
+	<data name="No" xml:space="preserve">
+		<value>No</value>
+	</data>
+	<data name="ReminderSent" xml:space="preserve">
+		<value>Recordatorio enviado</value>
+	</data>
+	<data name="AlreadyPassed" xml:space="preserve">
+		<value>La inspección de hoy ya fue aprobada</value>
+	</data>
+	<data name="ServerError" xml:space="preserve">
+		<value>Error de servidor, inténtelo de nuevo más tarde</value>
+	</data>
+</root>

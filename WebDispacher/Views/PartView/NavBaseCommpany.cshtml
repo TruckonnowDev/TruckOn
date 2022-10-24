@@ -1,21 +1,25 @@
-﻿<header class="line">
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+<header class="line">
     <div class="container">
         <div class="row align-items-center justify-content-between">
             <div class="col-md-auto">
                 <div class="logo">
-                    <img src="~/img/logo.svg" alt=""  onclick="document.location.href='http://truckonnow.com/'" >
+                    <img src="~/img/logo.svg" alt="" onclick="document.location.href='http://truckonnow.com/'">
                 </div>
             </div>
             <div class="col-md-auto">
                 <ul class="menu top-nav_menu">
-                    <li><a href="/Dashbord/Order/NewLoad" id="Dashbord">Orders</a></li>
-                    <li><a href="/Geolcation/Map" id="Geolcation">GPS Tracking</a></li>
-                    <li><a href="/Contact/Contacts" id="Contact">Contacts</a></li>
-                    <li><a href="/Driver/Drivers" id="Driver">Drivers</a></li>
-                    <li><a href="/Equipment/Trucks" id="Equipment">Equipment</a></li>
-                    <li><a href="/Company/Companies" id="Company">Organization</a></li>
-                    <li><a href="/Settings/User/Users" id="Settings">Settings</a></li>
-                    <li><a href="/Exsit">Exit</a></li>
+                    <li><a href="/Dashbord/Order/NewLoad" id="Dashbord">@Localizer["Orders"]</a></li>
+                    <li><a href="/Geolcation/Map" id="Geolcation">@Localizer["GPSTracking"]</a></li>
+                    <li><a href="/Contact/Contacts" id="Contact">@Localizer["Contacts"]</a></li>
+                    <li><a href="/Driver/Drivers" id="Driver">@Localizer["Drivers"]</a></li>
+                    <li><a href="/Equipment/Trucks" id="Equipment">@Localizer["Equipment"]</a></li>
+                    <li><a href="/Company/Companies" id="Company">@Localizer["Organization"]</a></li>
+                    <li><a href="/Settings/User/Users" id="Settings">@Localizer["Settings"]</a></li>
+                    <li><a href="/Exsit">@Localizer["Exit"]</a></li>
                 </ul>
                 <div class="burger">
                     <button class="top-nav_btn hamburger hamburger--3dy">
@@ -30,16 +34,15 @@
 </header>
 
 <script>
-    const NavItems = ['Dashbord','Geolcation','Contact','Driver','Equipment','Company','Settings']
-        $(document).ready(function () {
-            var str = location.pathname
-            for (let i = 0; i < NavItems.length; i++)
-            {
-                 if (str.indexOf(NavItems[i]) >=0){
-                    $('#' + NavItems[i]).addClass('active');
-                    break;
-                }
+    const NavItems = ['Dashbord', 'Geolcation', 'Contact', 'Driver', 'Equipment', 'Company', 'Settings']
+    $(document).ready(function () {
+        var str = location.pathname
+        for (let i = 0; i < NavItems.length; i++) {
+            if (str.indexOf(NavItems[i]) >= 0) {
+                $('#' + NavItems[i]).addClass('active');
+                break;
             }
-          
-        });
+        }
+
+    });
 </script>

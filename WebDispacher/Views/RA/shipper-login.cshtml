@@ -1,4 +1,7 @@
-﻿<body>
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+<body>
     <div class="login-page">
         <div class="container">
             <div class="row justify-content-center">
@@ -8,23 +11,23 @@
                     </p>
                     <form action="" class="form-login">
                         <div class="white">
-                            <h1>Shipper TMS</h1>
+                            <h1>@Localizer["ShipperTMS"]</h1>
                             <label for="">
-                                Email
+                                @Localizer["Email"]
                                 <input type="email" placeholder="abc@gmail.com">
                             </label>
                             <label for="" class="password">
-                                Password
-                                <input type="password" id="password-input" name="password" placeholder="password">
+                                @Localizer["Password"]
+                                <input type="password" id="password-input" name="password" placeholder="@Localizer["Password"]">
                                 <a href="#" class="password-control" onclick="return show_hide_password(this, 'password-input');"></a>
                             </label>
-                            <input type="submit" value="Sign Up" class="btn1-big">
-                            <a href="/recovery-password-send-mail">Forgot password?</a>
+                            <input type="submit" value="@Localizer["SignIn"]" class="btn1-big">
+                            <a href="/recovery-password-send-mail">@Localizer["ForgotPassword"]?</a>
                         </div>
                         <label class="accept">
-                            <input type="checkbox" name="accept" onchange="document.getElementById('mc-embedded-subscribe').disabled = !this.checked" checked /><p>
-                                I accept
-                                By signing in, you agree to Truckonnow's <a href="">Terms & Conditions</a> and <a href="">Privacy Policy</a>
+                            <input type="checkbox" name="accept" onchange="document.getElementById('mc-embedded-subscribe').disabled = !this.checked" checked />
+                            <p>
+                                @Localizer["FirstPartAgreements"] <a href="">@Localizer["SecondPartAgreements"]s</a> @Localizer["And"] <a href="">@Localizer["ThirdPartAgreements"]</a>
                             </p>
                         </label>
                     </form>

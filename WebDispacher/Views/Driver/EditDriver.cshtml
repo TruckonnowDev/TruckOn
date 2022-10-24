@@ -1,4 +1,7 @@
 ﻿@model WebDispacher.ViewModels.Driver.DriverViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
 
 <body>
     <div class="admin">
@@ -6,40 +9,39 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="tabContent">
-                        
                         <div class="title">
-                            <a href="#" onclick="history.back();">Back to Drivers</a>
+                            <a href="#" onclick="history.back();">@Localizer["BackToDrivers"]</a>
                         </div>
                         <div class="title">
-                            <h1 class="text-info-header-1">Info About the Driver</h1>
+                            <h1 class="text-info-header-1">@Localizer["InfoAboutDriver"]</h1>
                         </div>
                         <form action="" method="post">
                             <label class="big-label" for="">
-                                Full name
+                                @Localizer["Name"]
                                 <input class="height-input" type="text" name="FullName" value="@Model.FullName" required>
                             </label>
                             <label class="big-label" for="">
-                                Email address
+                                @Localizer["Email"]
                                 <input class="height-input" type="email" name="EmailAddress" value="@Model.EmailAddress" required>
                             </label>
                             <label class="big-label" for="">
-                                Password
+                                @Localizer["Password"]
                                 <input class="height-input" type="text" name="Password" value="@Model.Password" required>
                             </label>
                             <label class="big-label" for="">
-                                Phone number
+                                @Localizer["PhoneNumber"]
                                 <input class="height-input" type="text" name="PhoneNumber" placeholder="XXXXXXXXXX" pattern="[0-9]{4,12}" value="@Model.PhoneNumber" required>
                             </label>
                             <label class="big-label" for="">
-                                Trailer capacity
+                                @Localizer["TrailerCapacity"]
                                 <input class="height-input" type="text" name="TrailerCapacity" value="@Model.TrailerCapacity" required>
                             </label>
                             <label class="big-label pb-3" for="">
-                                Driver's license number
+                                @Localizer["DriverLicenseNumber"]
                                 <input class="height-input" type="text" name="DriversLicenseNumber" value="@Model.DriversLicenseNumber" required>
                             </label>
-                            <input name="id" value="@Model.Id" style="display:none"/>
-                            <input class="btn1 height-input big-font-size big-label" type="submit" value="Save Info"/>
+                            <input name="id" value="@Model.Id" style="display:none" />
+                            <input class="btn1 height-input big-font-size big-label" type="submit" value="@Localizer["SaveInfo"]" />
                         </form>
                     </div>
                 </div>

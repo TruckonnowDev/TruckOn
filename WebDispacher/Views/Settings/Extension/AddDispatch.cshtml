@@ -1,33 +1,37 @@
-﻿<body>
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+<body>
     <div class="admin">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
                     <div class="tabContent">
                         <div class="title">
-                            <a href="#" onclick="history.back();">Back to Dispatcher</a>
+                            <a href="#" onclick="history.back();">@Localizer["BackToDispatcher"]</a>
                         </div>
                         <div class="title">
-                            <h1 class="text-info-header-1">Add New Dispatcher</h1>
+                            <h1 class="text-info-header-1">@Localizer["AddNewDispatcher"]</h1>
                         </div>
                         <form action="" method="post" enctype="multipart/form-data">
                             <label for="">
-                                Type Dispatcher
+                                @Localizer["TypeDispatcher"]
                                 <select name="Type" class="height-input input-select" required>
-                                    <option value="">Choose a dispatcher type</option>
-                                    <option value="Central Dispatch">Central Dispatch</option>
+                                    <option value="">@Localizer["ChooseDispatcherType"]</option>
+                                    <option value="Central Dispatch">@Localizer["CentralDispatch"]</option>
                                 </select>
                             </label>
                             <label for="">
-                                Login Dispatch
+                                @Localizer["LoginDispatch"]
                                 <input type="text" name="Login">
                             </label>
                             <label for="">
-                                Password Dispatch
+                                @Localizer["PasswordDispatch"]
                                 <input type="text" name="Password">
                             </label>
 
-                            <input type="submit" value="Save Info" class="btn1"/>
+                            <input type="submit" value="@Localizer["SaveInfo"]" class="btn1" />
                         </form>
                     </div>
                 </div>

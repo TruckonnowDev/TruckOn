@@ -1,25 +1,29 @@
-﻿<div class="admin Billing">
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+<div class="admin Billing">
     <div class="container">
         <p style="color: red; text-align: center; font-size: 15px">
             @ViewData["TextErrorSub"]
         </p>
-        <h1>Current Subscription</h1>
+        <h1>@Localizer["CurrentSubscription"]</h1>
         <h2>@ViewBag.Subscription.Name</h2>
         <div class="content">
-            <p><strong>Price: </strong>@ViewBag.Subscription.Price$</p>
-            <p><strong>Period: </strong>@ViewBag.Subscription.StartPeriod - @ViewBag.Subscription.EndPeriod</p>
-            <p><strong>Total days subscriptions: </strong>@ViewBag.Subscription.PeriodCount days</p>
-            <p><strong>Next Invoce: </strong>@ViewBag.Subscription.NextInvoce </p>
-            <p><strong>Status: </strong>@ViewBag.Subscription.Status </p>
+            <p><strong>@Localizer["Price"]: </strong>@ViewBag.Subscription.Price$</p>
+            <p><strong>@Localizer["Period"]: </strong>@ViewBag.Subscription.StartPeriod - @ViewBag.Subscription.EndPeriod</p>
+            <p><strong>@Localizer["TotalDaysSubscriptions"]: </strong>@ViewBag.Subscription.PeriodCount @Localizer["Days"]</p>
+            <p><strong>@Localizer["NextInvoice"]: </strong>@ViewBag.Subscription.NextInvoce </p>
+            <p><strong>@Localizer["Status"]: </strong>@ViewBag.Subscription.Status </p>
         </div>
     </div>
 </div>
 
 <style>
-   .content {
-       display: flex;
-       justify-content: space-between;
-       flex-wrap: wrap;
-       flex-flow: column;
-   }
+    .content {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        flex-flow: column;
+    }
 </style>

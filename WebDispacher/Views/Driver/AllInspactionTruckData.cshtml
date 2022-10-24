@@ -1,104 +1,108 @@
-﻿<body>
-<div class="admin">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="tabContent">
-                    <div class="title">
-                        <a href="#" onclick="history.back();">Back to Equipment</a>
-                    </div>
-                    <div class="title">
-                        <h1 class="text-info-header-1">Truck and Trailer Inspection</h1>
-                    </div>
-                </div>
-                <select onchange="window.location.href = 'InspactionTrucks?IdDriver=@ViewBag.IdDriver&idTruck=@ViewBag.IdTruck&idTrailer=@ViewBag.IdTrailer&date=' + this.options[this.selectedIndex].value;">
-                    <option selected value="0">All time</option>
-                    @for (DateTime i = DateTime.Now; i >= new DateTime(2019, 8, 1); i = i.AddMonths(-1))
-                    {
-                        @if (i.ToShortDateString() != @ViewBag.SelectData)
-                        {
-                            <option>@i.ToShortDateString()</option>
-                        }
-                        else
-                        {
-                            <option selected>@ViewBag.SelectData</option>
-                        }
-                    }
-                </select>
-                <select class="inpContentInspection" onchange="window.location.href = 'InspactionTrucks?IdDriver=' + this.options[this.selectedIndex].value  + '&idTruck=@ViewBag.IdTruck&idTrailer=@ViewBag.IdTrailer&date=@ViewBag.SelectData'">
-                    <option selected value="0">All Drivers</option>
-                    @for (int i = 0; i < ViewBag.Drivers.Count; i++)
-                    {
-                        @if (ViewBag.IdDriver.ToString() == ViewBag.Drivers[i].Id.ToString())
-                        {
-                            <option selected value="@ViewBag.Drivers[i].Id">@ViewBag.Drivers[i].FullName</option>
-                        }
-                        else
-                        {
-                            <option value="@ViewBag.Drivers[i].Id">@ViewBag.Drivers[i].FullName</option>
-                        }
-                    }
-                </select>
-                <select class="inpContentInspection" onchange="window.location.href = 'InspactionTrucks?IdDriver=@ViewBag.IdDriver&idTruck=' + this.options[this.selectedIndex].value + '&idTrailer=@ViewBag.IdTrailer&date=@ViewBag.SelectData'">
-                    <option selected value="0">All Truck</option>
-                    @for (int i = 0; i < ViewBag.Trucks.Count; i++)
-                    {
-                        @if (ViewBag.IdTruck.ToString() == ViewBag.Trucks[i].Id.ToString())
-                        {
-                            <option selected value="@ViewBag.Trucks[i].Id">@ViewBag.Trucks[i].Make @ViewBag.Trucks[i].Model</option>
-                        }
-                        else
-                        {
-                            <option value="@ViewBag.Trucks[i].Id">@ViewBag.Trucks[i].Make @ViewBag.Trucks[i].Model</option>
-                        }
-                    }
-                </select>
-                <select class="inpContentInspection" onchange="window.location.href = 'InspactionTrucks?IdDriver=@ViewBag.IdDriver&idTruck=@ViewBag.IdTruck&idTrailer='+ this.options[this.selectedIndex].value +'&date=@ViewBag.SelectData'">
-                    <option selected value="0">All Trailer</option>
-                    @for (int i = 0; i < ViewBag.Trailers.Count; i++)
-                    {
-                        @if (ViewBag.IdTrailer.ToString() == ViewBag.Trailers[i].Id.ToString())
-                        {
-                            <option selected value="@ViewBag.Trailers[i].Id">@ViewBag.Trailers[i].Make</option>
-                        }
-                        else
-                        {
-                            <option value="@ViewBag.Trailers[i].Id">@ViewBag.Trailers[i].Make</option>
-                        }
-                    }
-                </select>
-            </div>
-        </div>
-        <div class="row pt-4">
-            <div class="col-md-12">
-                @for (int i = 0; i < ViewBag.InspectionTruck.Count; i++)
-                {
-                    <div class="one-line">
-                        <div class="top-line">
-                            <div class="left">
-                                <div class="contact">
-                                    <p>
-                                        <strong>@ViewBag.InspectionTruck[i].NameDriver</strong>
-                                    </p>
-                                    <p>
-                                        <a>Truck: </a>@ViewBag.InspectionTruck[i].Truck
-                                    </p>
-                                    <p>
-                                        <a>Trailer: </a>@ViewBag.InspectionTruck[i].Trailer
-                                    </p>
-                                    <p>
-                                        <a>Inspection: </a>@ViewBag.InspectionTruck[i].Date
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="right">
-                                <button class="btn3" onclick="window.location.href='InspactionTruck?idInspection=@ViewBag.InspectionTruck[i].Id&idDriver=@ViewBag.IdDriver&date=@ViewBag.SelectData'">Open BOL</button>
-                            </div>
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+<body>
+    <div class="admin">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="tabContent">
+                        <div class="title">
+                            <a href="#" onclick="history.back();">@Localizer["BackToDrivers"]</a>
+                        </div>
+                        <div class="title">
+                            <h1 class="text-info-header-1">@Localizer["TruckAndTrailerInspection"]</h1>
                         </div>
                     </div>
-                }
+                    <select class="width-auto" onchange="window.location.href = 'InspactionTrucks?IdDriver=@ViewBag.IdDriver&idTruck=@ViewBag.IdTruck&idTrailer=@ViewBag.IdTrailer&date=' + this.options[this.selectedIndex].value;">
+                        <option selected value="0">@Localizer["AllTime"]</option>
+                        @for (DateTime i = DateTime.Now; i >= new DateTime(2019, 8, 1); i = i.AddMonths(-1))
+                        {
+                            @if (i.ToShortDateString() != @ViewBag.SelectData)
+                            {
+                                <option>@i.ToShortDateString()</option>
+                            }
+                            else
+                            {
+                                <option selected>@ViewBag.SelectData</option>
+                            }
+                        }
+                    </select>
+                    <select class="inpContentInspection width-auto" onchange="window.location.href = 'InspactionTrucks?IdDriver=' + this.options[this.selectedIndex].value  + '&idTruck=@ViewBag.IdTruck&idTrailer=@ViewBag.IdTrailer&date=@ViewBag.SelectData'">
+                        <option selected value="0">@Localizer["AllDrivers"]</option>
+                        @for (int i = 0; i < ViewBag.Drivers.Count; i++)
+                        {
+                            @if (ViewBag.IdDriver.ToString() == ViewBag.Drivers[i].Id.ToString())
+                            {
+                                <option selected value="@ViewBag.Drivers[i].Id">@ViewBag.Drivers[i].FullName</option>
+                            }
+                            else
+                            {
+                                <option value="@ViewBag.Drivers[i].Id">@ViewBag.Drivers[i].FullName</option>
+                            }
+                        }
+                    </select>
+                    <select class="inpContentInspection width-auto" onchange="window.location.href = 'InspactionTrucks?IdDriver=@ViewBag.IdDriver&idTruck=' + this.options[this.selectedIndex].value + '&idTrailer=@ViewBag.IdTrailer&date=@ViewBag.SelectData'">
+                        <option selected value="0">@Localizer["AllTruck"]</option>
+                        @for (int i = 0; i < ViewBag.Trucks.Count; i++)
+                        {
+                            @if (ViewBag.IdTruck.ToString() == ViewBag.Trucks[i].Id.ToString())
+                            {
+                                <option selected value="@ViewBag.Trucks[i].Id">@ViewBag.Trucks[i].Make @ViewBag.Trucks[i].Model</option>
+                            }
+                            else
+                            {
+                                <option value="@ViewBag.Trucks[i].Id">@ViewBag.Trucks[i].Make @ViewBag.Trucks[i].Model</option>
+                            }
+                        }
+                    </select>
+                    <select class="inpContentInspection width-auto" onchange="window.location.href = 'InspactionTrucks?IdDriver=@ViewBag.IdDriver&idTruck=@ViewBag.IdTruck&idTrailer='+ this.options[this.selectedIndex].value +'&date=@ViewBag.SelectData'">
+                        <option selected value="0">@Localizer["AllTrailer"]</option>
+                        @for (int i = 0; i < ViewBag.Trailers.Count; i++)
+                        {
+                            @if (ViewBag.IdTrailer.ToString() == ViewBag.Trailers[i].Id.ToString())
+                            {
+                                <option selected value="@ViewBag.Trailers[i].Id">@ViewBag.Trailers[i].Make</option>
+                            }
+                            else
+                            {
+                                <option value="@ViewBag.Trailers[i].Id">@ViewBag.Trailers[i].Make</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="row pt-4">
+                <div class="col-md-12">
+                    @for (int i = 0; i < ViewBag.InspectionTruck.Count; i++)
+                    {
+                        <div class="one-line">
+                            <div class="top-line">
+                                <div class="left">
+                                    <div class="contact">
+                                        <p>
+                                            <strong>@ViewBag.InspectionTruck[i].NameDriver</strong>
+                                        </p>
+                                        <p>
+                                            <a>@Localizer["Truck"]: </a>@ViewBag.InspectionTruck[i].Truck
+                                        </p>
+                                        <p>
+                                            <a>@Localizer["Trailer"]: </a>@ViewBag.InspectionTruck[i].Trailer
+                                        </p>
+                                        <p>
+                                            <a>@Localizer["Inspection"]: </a>@ViewBag.InspectionTruck[i].Date
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="right">
+                                    <button class="btn3" onclick="window.location.href='InspactionTruck?idInspection=@ViewBag.InspectionTruck[i].Id&idDriver=@ViewBag.IdDriver&date=@ViewBag.SelectData'">@Localizer["OpenBOL"]</button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
     </div>
-</div>
 </body>

@@ -1,501 +1,551 @@
-﻿<body>
-<div class="admin">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="title">
-                    <h1>Drivers</h1>
-                    <button class="btn1" onclick="window.location.href='@Url.Action("CreateDriver", "Driver")';">Add Driver</button>
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+<body>
+    <div class="admin">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="title">
+                        <h1>@Localizer["Drivers"]</h1>
+                        <button class="btn1" onclick="window.location.href='@Url.Action("CreateDriver", "Driver")';">@Localizer["AddDriver"]</button>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div id="tabs">
-                    <div class="tab whiteborder" onclick="window.location.href='@Url.Action("Drivers", "Driver")';">Drivers</div>
-                    <div class="tab" onclick="window.location.href='@Url.Action("Check", "Driver")';">Driver check</div>
-                    <div class="tab" onclick="window.location.href='@Url.Action("AddReport", "Driver")';">Report driver</div>
-                    <div class="tabContent">
-                        @for (int i = 0; i < ViewBag.Drivers.Count; i++)
-                        {
-                            <div class="one-line">
-                                <div class="top-line">
-                                    <div class="left">
-                                        <div class="contact">
-                                            <p>
-                                                <strong>@ViewBag.Drivers[i].FullName</strong>
-                                            </p>
-                                            <p class="text-p">Trailer capacity: @ViewBag.Drivers[i].TrailerCapacity</p>
-                                            <p class="text-p">Last inspection: @ViewBag.Drivers[i].LastDateInspaction</p>
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="tabs">
+                        <div class="tab whiteborder" onclick="window.location.href='@Url.Action("Drivers", "Driver")';">@Localizer["Drivers"]</div>
+                        <div class="tab" onclick="window.location.href='@Url.Action("Check", "Driver")';">@Localizer["DriverCheck"]</div>
+                        <div class="tab" onclick="window.location.href='@Url.Action("AddReport", "Driver")';">@Localizer["ReportDriver"]</div>
+                        <div class="tabContent">
+                            @for (int i = 0; i < ViewBag.Drivers.Count; i++)
+                            {
+                                <div class="one-line">
+                                    <div class="top-line">
+                                        <div class="left">
+                                            <div class="contact">
+                                                <p>
+                                                    <strong>@ViewBag.Drivers[i].FullName</strong>
+                                                </p>
+                                                <p class="text-p">@Localizer["TrailerCapacity"]: @ViewBag.Drivers[i].TrailerCapacity</p>
+                                                <p class="text-p">@Localizer["LastIns"]: @ViewBag.Drivers[i].LastDateInspaction</p>
+                                            </div>
+                                        </div>
+                                        <div class="right">
+                                            <a href="@ViewBag.BaseUrl/Driver/Drivers/Edit?id=@ViewBag.Drivers[i].Id" class="btn3">@Localizer["Edit"]</a>
+                                            <input class="btn3" type="button" value="@Localizer["Delete"]" onclick="ShowAlert(@ViewBag.Drivers[i].Id)" data-toggle="modal" data-target="#dismissFormModal" />
                                         </div>
                                     </div>
-                                    <div class="right">
-                                        <a href="@ViewBag.BaseUrl/Driver/Drivers/Edit?id=@ViewBag.Drivers[i].Id" class="btn3">Edit</a>
-                                        <input class="btn3" type="button" value="Delete" onclick="ShowAlert(@ViewBag.Drivers[i].Id)" data-toggle="modal" data-target="#dismissFormModal"/>
+                                    <div class="top-line">
+                                        <div class="left">
+                                            <div class="contact">
+                                                <p class="text-p">@Localizer["Email"]: <a href="@ViewBag.Drivers[i].EmailAddress">@ViewBag.Drivers[i].EmailAddress</a></p>
+                                                <p class="text-p">@Localizer["Phone"]: <a href="tel:@ViewBag.Drivers[i].PhoneNumber">@ViewBag.Drivers[i].PhoneNumber</a></p>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="top-line">
-                                    <div class="left">
-                                        <div class="contact">
-                                            <p class="text-p">Email: <a href="@ViewBag.Drivers[i].EmailAddress">@ViewBag.Drivers[i].EmailAddress</a></p>
-                                            <p class="text-p">Phone: <a href="tel:@ViewBag.Drivers[i].PhoneNumber">@ViewBag.Drivers[i].PhoneNumber</a></p>
+                                    <div class="top-line">
+                                        <div class="left">
+                                            <div class="contact">
+                                                <p class="text-p">@Localizer["Registration"]: @ViewBag.Drivers[i].DateRegistration</p>
+                                            </div>
+                                        </div>
+                                        <div class="right">
+                                            <a class="btn3" href="~/Driver/InspactionTrucks?idDriver=@ViewBag.Drivers[i].Id&idTruck=0&idTrailer=0&date=0">@Localizer["Inspection"]</a>
+                                            <input class="btn3" value="@Localizer["RemindIns"]" type="button" onclick="SendRemindInspection(@ViewBag.Drivers[i].Id, '@ViewBag.BaseUrl')" />
+                                            <input class="btn3" value="@Localizer["Documents"]" type="button" onclick="window.location.href='Doc?id=@ViewBag.Drivers[i].Id'" />
                                         </div>
                                     </div>
                                 </div>
-                                <div class="top-line">
-                                    <div class="left">
-                                        <div class="contact">
-                                            <p class="text-p">Registration: @ViewBag.Drivers[i].DateRegistration</p>
-                                        </div>
-                                    </div>
-                                    <div class="right">
-                                        <a class="btn3" href="~/Driver/InspactionTrucks?idDriver=@ViewBag.Drivers[i].Id&idTruck=0&idTrailer=0&date=0">Inspection</a>
-                                        <input class="btn3" value="Remind Inspection" type="button" onclick="SendRemindInspection(@ViewBag.Drivers[i].Id, '@ViewBag.BaseUrl')"/>
-                                        <input class="btn3" value="Documents" type="button" onclick="window.location.href='Doc?id=@ViewBag.Drivers[i].Id'"/>
-                                    </div>
-                                </div>
-                            </div>
-                        }
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="modal fade" id="dismissFormModal" tabindex="-1" role="dialog" aria-labelledby="dismissFormModalLabel" aria-hidden="true">
-        <content class="ng-modal-wrapper">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header modal-title">
-                         <h1 class="text-center" style="padding-left:30%" id="DeleteDriverLabel">Driver Report</h1>
-                        <button type="button" style="margin-left:135px;font-size:22px;" class="close text-right" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&#9587;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <input style="display:none;" name="experience" id="experienceInp" /><br />
+        <div class="modal fade" id="dismissFormModal" tabindex="-1" role="dialog" aria-labelledby="dismissFormModalLabel" aria-hidden="true">
+            <content class="ng-modal-wrapper">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header modal-title">
+                            <h1 class="text-center" style="padding-left:30%" id="DeleteDriverLabel">@Localizer["DriverReport"]</h1>
+                            <button type="button" style="margin-left:135px;font-size:22px;" class="close text-right" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&#9587;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <input style="display:none;" name="experience" id="experienceInp" /><br />
                             <div class="form-group">
                                 <label for>
-                                    Number Of Accidents
-                                    <input id="numberOfAccidentsInp" type="number" class="modal-inp-text validation" required/>
+                                    @Localizer["NumberOfAccidents"]
+                                    <input id="numberOfAccidentsInp" type="number" class="modal-inp-text validation" required />
                                 </label>
                             </div>
                             <div class="form-group">
                                 <label for>
-                                    Dot Violations
-                                    <input id="dotViolationsInp" type="text" class="modal-inp-text validation" required/>
+                                    @Localizer["DotViolations"]
+                                    <input id="dotViolationsInp" type="text" class="modal-inp-text validation" required />
                                 </label>
                             </div>
                             <div class="form-group">
                                 <label for="">
-                                    Knowledge of English <span id="englishSpn">Poor</span>
-                                    <input id="englishInp" type="range" class="input-modal validation" value="1" min="1" max="3" step="1" list="range-list" required/>
+                                    @Localizer["KnowledgeOfEnglish"] <span id="englishSpn">Poor</span>
+                                    <input id="englishInp" type="range" class="input-modal validation" value="1" min="1" max="3" step="1" list="range-list" required />
                                     <div class="value-modal">
-                                        <p>Poor</p>
-                                        <p>Middle</p>
-                                        <p>Good</p></div>
+                                        <p>@Localizer["Poor"]</p>
+                                        <p>@Localizer["Middle"]</p>
+                                        <p>@Localizer["Good"]</p>
+                                    </div>
                                 </label>
                             </div>
                             <div class="form-group">
                                 <label for="">
-                                    Returned equipment <span id="returnedEquipmenSpn">Poor</span>
-                                    <input id="returnedEquipmenInp" type="range" class="input-modal" value="1" min="1" max="3" step="1" list="range-list" required/>
+                                    @Localizer["ReturnedEquipment"] <span id="returnedEquipmenSpn">Poor</span>
+                                    <input id="returnedEquipmenInp" type="range" class="input-modal" value="1" min="1" max="3" step="1" list="range-list" required />
                                     <div class="value-modal">
-                                        <p>Poor</p>
-                                        <p>Middle</p>
-                                        <p>Good</p></div>
+                                        <p>@Localizer["Poor"]</p>
+                                        <p>@Localizer["Middle"]</p>
+                                        <p>@Localizer["Good"]</p>
+                                    </div>
                                 </label>
                             </div>
                             <div class="form-group">
                                 <label for="">
-                                    Working efficiency <span id="workingEfficiencySpn">Poor</span>
-                                    <input id="workingEfficiencyInp" type="range" class="input-modal" value="1" min="1" max="3" step="1" list="range-list" required/>
+                                    @Localizer["WorkingEfficiency"] <span id="workingEfficiencySpn">Poor</span>
+                                    <input id="workingEfficiencyInp" type="range" class="input-modal" value="1" min="1" max="3" step="1" list="range-list" required />
                                     <div class="value-modal">
-                                        <p>Poor</p>
-                                        <p>Middle</p>
-                                        <p>Good</p></div>
+                                        <p>@Localizer["Poor"]</p>
+                                        <p>@Localizer["Middle"]</p>
+                                        <p>@Localizer["Good"]</p>
+                                    </div>
                                 </label>
                             </div>
                             <div class="form-group">
                                 <label for="">
-                                    Eld knowledge <span id="eldKnowledgeSpn">Poor</span>
-                                    <input id="eldKnowledgeInp" type="range" class="input-modal" value="1" min="1" max="3" step="1" list="range-list" required/>
+                                    @Localizer["Eld"] <span id="eldKnowledgeSpn">Poor</span>
+                                    <input id="eldKnowledgeInp" type="range" class="input-modal" value="1" min="1" max="3" step="1" list="range-list" required />
                                     <div class="value-modal">
-                                        <p>Poor</p>
-                                        <p>Middle</p>
-                                        <p>Good</p></div>
+                                        <p>@Localizer["Poor"]</p>
+                                        <p>@Localizer["Middle"]</p>
+                                        <p>@Localizer["Good"]</p>
+                                    </div>
                                 </label>
                             </div>
                             <div class="form-group">
                                 <label for="">
-                                    Driving skills <span id="drivingSkillsSpn">Poor</span>
-                                    <input id="drivingSkillsInp" type="range" class="input-modal" value="1" min="1" max="3" step="1" list="range-list" required/>
+                                    @Localizer["DrivingSkills"] <span id="drivingSkillsSpn">Poor</span>
+                                    <input id="drivingSkillsInp" type="range" class="input-modal" value="1" min="1" max="3" step="1" list="range-list" required />
                                     <div class="value-modal">
-                                        <p>Poor</p>
-                                        <p>Middle</p>
-                                        <p>Good</p></div>
+                                        <p>@Localizer["Poor"]</p>
+                                        <p>@Localizer["Middle"]</p>
+                                        <p>@Localizer["Good"]</p>
+                                    </div>
                                 </label>
                             </div>
                             <div class="form-group">
                                 <label for="">
-                                    Payment handling <span id="paymentHandlingSpn">Poor</span>
-                                    <input id="paymentHandlingInp" type="range" class="input-modal" value="1" min="1" max="3" step="1" list="range-list" required/>
+                                    @Localizer["Payment"] <span id="paymentHandlingSpn">Poor</span>
+                                    <input id="paymentHandlingInp" type="range" class="input-modal" value="1" min="1" max="3" step="1" list="range-list" required />
                                     <div class="value-modal">
-                                        <p>Poor</p>
-                                        <p>Middle</p>
-                                        <p>Good</p></div>
+                                        <p>@Localizer["Poor"]</p>
+                                        <p>@Localizer["Middle"]</p>
+                                        <p>@Localizer["Good"]</p>
+                                    </div>
                                 </label>
                             </div>
                             <div class="form-group">
                                 <label for="">
-                                    Alcohol tendency <span id="alcoholTendencySpn">None</span>
-                                    <input id="alcoholTendencyInp" type="range" class="input-modal" value="0" min="0" max="3" step="1" list="range-list" required/>
+                                    @Localizer["Alcohol"] <span id="alcoholTendencySpn">None</span>
+                                    <input id="alcoholTendencyInp" type="range" class="input-modal" value="0" min="0" max="3" step="1" list="range-list" required />
                                     <div class="value-modal">
-                                        <p>None</p>
-                                        <p>Poor</p>
-                                        <p>Middle</p>
-                                        <p>Good</p></div>
+                                        <p>@Localizer["Poor"]</p>
+                                        <p>@Localizer["Middle"]</p>
+                                        <p>@Localizer["Good"]</p>
+                                    </div>
                                 </label>
                             </div>
                             <div class="form-group" style="margin-bottom: 0px;">
                                 <label for="">
-                                    Drug tendency <span id="drugTendencySpn">None</span>
-                                    <input id="drugTendencyInp" type="range" class="input-modal" value="0" min="0" max="3" step="1" list="range-list" required/>
+                                    @Localizer["DrugTendency"] <span id="drugTendencySpn">None</span>
+                                    <input id="drugTendencyInp" type="range" class="input-modal" value="0" min="0" max="3" step="1" list="range-list" required />
                                     <div class="value-modal">
-                                        <p>None</p>
-                                        <p>Poor</p>
-                                        <p>Middle</p>
-                                        <p>Good</p></div>
-                                </label>
-                            </div>
-                            <div class="form-group mb-0">
-                                <label class="mb-0" for="">
-                                    Terminated <span>(boxes FIRED, Contract expiration, left truck without notice, disappeared)</span>
-                                    <label style="display:none;" value="Yes" id="terminatedInp">Yes</label><br />
-                                    <div class="value-elem">
-                                        <input class="validation" checked required type="radio" name="terminated" onclick="terminatedInp.value='Yes'"/>
-                                        <span style="text-align:center;">Yes</span>
-                                    </div>
-                                    <div class="value-elem">
-                                        <input class="validation" checked required type="radio" name="terminated" onclick="terminatedInp.value='No'"/>
-                                        <span style="text-align:center;">No</span>
+                                        <p>@Localizer["None"]</p>
+                                        <p>@Localizer["Poor"]</p>
+                                        <p>@Localizer["Middle"]</p>
+                                        <p>@Localizer["Good"]</p>
                                     </div>
                                 </label>
                             </div>
                             <div class="form-group mb-0">
                                 <label class="mb-0" for="">
-                                    Experience with
+                                    @Localizer["Terminated"] <span>(@Localizer["TerminatedInfo"])</span>
+                                    <label style="display:none;" value="Yes" id="terminatedInp">@Localizer["Yes"]</label><br />
                                     <div class="value-elem">
-                                        <input class="validation" type="checkbox" value="Boxes" onclick="SelectExperience(this.value, this.checked)"/>
-                                        <span style="text-align:center;">Boxes</span>
+                                        <input class="validation" checked required type="radio" name="terminated" onclick="terminatedInp.value='Yes'" />
+                                        <span style="text-align:center;">@Localizer["Yes"]</span>
                                     </div>
                                     <div class="value-elem">
-                                        <input class="validation" type="checkbox" value="Enclosed car hauling" onclick="SelectExperience(this.value, this.checked)"/>
-                                        <span style="text-align:center;">Enclosed car hauling</span>
+                                        <input class="validation" checked required type="radio" name="terminated" onclick="terminatedInp.value='No'" />
+                                        <span style="text-align:center;">@Localizer["No"]</span>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="form-group mb-0">
+                                <label class="mb-0" for="">
+                                    @Localizer["Experience"]
+                                    <div class="value-elem">
+                                        <input class="validation" type="checkbox" value="Boxes" onclick="SelectExperience(this.value, this.checked)" />
+                                        <span style="text-align:center;">@Localizer["Boxes"]</span>
                                     </div>
                                     <div class="value-elem">
-                                        <input class="validation" type="checkbox" value="Open car hauling" onclick="SelectExperience(this.value, this.checked)"/>
-                                        <span style="text-align:center;">Open car hauling</span>
+                                        <input class="validation" type="checkbox" value="Enclosed car hauling" onclick="SelectExperience(this.value, this.checked)" />
+                                        <span style="text-align:center;">@Localizer["EnclosedCarHauling"]</span>
                                     </div>
                                     <div class="value-elem">
-                                        <input class="validation" type="checkbox" value="Flatbed" onclick="SelectExperience(this.value, this.checked)"/>
-                                        <span style="text-align:center;">Flatbed</span>
+                                        <input class="validation" type="checkbox" value="Open car hauling" onclick="SelectExperience(this.value, this.checked)" />
+                                        <span style="text-align:center;">@Localizer["OpenCarHauling"]</span>
                                     </div>
                                     <div class="value-elem">
-                                        <input class="validation" type="checkbox" value="Towing" onclick="SelectExperience(this.value, this.checked)"/>
-                                        <span style="text-align:center;">Towing</span>
+                                        <input class="validation" type="checkbox" value="Flatbed" onclick="SelectExperience(this.value, this.checked)" />
+                                        <span style="text-align:center;">@Localizer["Flatbed"]</span>
                                     </div>
                                     <div class="value-elem">
-                                        <input class="validation" type="checkbox" value="Van" onclick="SelectExperience(this.value, this.checked)"/>
-                                        <span style="text-align:center;">Van</span>
+                                        <input class="validation" type="checkbox" value="Towing" onclick="SelectExperience(this.value, this.checked)" />
+                                        <span style="text-align:center;">@Localizer["Towing"]</span>
                                     </div>
                                     <div class="value-elem">
-                                        <input class="validation" type="checkbox" value="Reefer" onclick="SelectExperience(this.value, this.checked)"/>
-                                        <span style="text-align:center;">Reefer</span>
+                                        <input class="validation" type="checkbox" value="Van" onclick="SelectExperience(this.value, this.checked)" />
+                                        <span style="text-align:center;">@Localizer["Van"]</span>
+                                    </div>
+                                    <div class="value-elem">
+                                        <input class="validation" type="checkbox" value="Reefer" onclick="SelectExperience(this.value, this.checked)" />
+                                        <span style="text-align:center;">@Localizer["Reefer"]</span>
                                     </div>
                                 </label>
                             </div>
                             <div class="form-group mb-0">
                                 <label for>
-                                    Description
+                                    @Localizer["Description"]
                                     <div class="value-elem">
                                         <textarea id="descriptionTA" type="text" class="modal-texAr-text validation" name="nameDoc" required></textarea>
                                     </div>
                                 </label>
                             </div>
-                            <button onclick="Remove()" class="btn1-spec btn-blue big-label">Add Report Driver</button>
-                            <button class="btn3 btn3-spec" type="button" data-dismiss="modal">Close</button>
+                            <button onclick="Remove()" class="btn1-spec btn-blue big-label">@Localizer["AddReportDriver"]</button>
+                            <button class="btn3 btn3-spec" type="button" data-dismiss="modal">@Localizer["Close"]</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </content>
+            </content>
+        </div>
     </div>
-</div>
 </body>
 <script>
     var IdDriver;
     englishInp.oninput = function () {
         englishSpn.innerHTML = GetLevel(this.value);
     }
-    
+
     returnedEquipmenInp.oninput = function () {
-            returnedEquipmenSpn.innerHTML = GetLevel(this.value);
+        returnedEquipmenSpn.innerHTML = GetLevel(this.value);
     }
-    
+
     workingEfficiencyInp.oninput = function () {
-            workingEfficiencySpn.innerHTML = GetLevel(this.value);
+        workingEfficiencySpn.innerHTML = GetLevel(this.value);
     }
-        
+
     eldKnowledgeInp.oninput = function () {
         eldKnowledgeSpn.innerHTML = GetLevel(this.value);
     }
-    
+
     drivingSkillsInp.oninput = function () {
         drivingSkillsSpn.innerHTML = GetLevel(this.value);
     }
-    
+
     paymentHandlingInp.oninput = function () {
         paymentHandlingSpn.innerHTML = GetLevel(this.value);
     }
-    
+
     alcoholTendencyInp.oninput = function () {
         alcoholTendencySpn.innerHTML = GetLevel(this.value);
     }
-    
+
     drugTendencyInp.oninput = function () {
         drugTendencySpn.innerHTML = GetLevel(this.value);
     }
-    
+
     function ShowAlert(idDriver) {
-            IdDriver = idDriver;
-        }
-        
+        IdDriver = idDriver;
+    }
+
     function GetLevel(value) {
-            if (value === "0") {
-                return "None";
+        if (value === "0") {
+            return "None";
+        }
+        else if (value === "1") {
+            return "Poor";
+        }
+        else if (value === "2") {
+            return "Middle";
+        }
+        else if (value === "3") {
+            return "Good";
+        }
+    }
+
+    function SelectExperience(value, Checked) {
+        if (Checked) {
+            if (experienceInp.value == undefined) {
+                experienceInp.value = "";
             }
-            else if (value === "1") {
-                return "Poor";
+            experienceInp.value += value + ", ";
+        }
+        else {
+            experienceInp.value = experienceInp.value.replace(value + ", ", "");
+        }
+    }
+
+    function Remove() {
+        let descriptionTA = document.getElementById("descriptionTA");
+        descriptionTA.validity.valid
+        if (descriptionTA.validity.valid) {
+            let body = "id=" + encodeURIComponent(IdDriver)
+                + "&numberOfAccidents=" + encodeURIComponent(numberOfAccidentsInp.value)
+                + "&english=" + encodeURIComponent(englishSpn.innerHTML)
+                + "&returnedEquipmen=" + encodeURIComponent(returnedEquipmenSpn.innerHTML)
+                + "&workingEfficiency=" + encodeURIComponent(workingEfficiencySpn.innerHTML)
+                + "&eldKnowledge=" + encodeURIComponent(eldKnowledgeSpn.innerHTML)
+                + "&drivingSkills=" + encodeURIComponent(drivingSkillsSpn.innerHTML)
+                + "&paymentHandling=" + encodeURIComponent(paymentHandlingSpn.innerHTML)
+                + "&alcoholTendency=" + encodeURIComponent(alcoholTendencySpn.innerHTML)
+                + "&drugTendency=" + encodeURIComponent(drugTendencySpn.innerHTML)
+                + "&terminated=" + encodeURIComponent(terminatedInp.value)
+                + "&experience=" + encodeURIComponent(experienceInp.value)
+                + "&dotViolations=" + encodeURIComponent(dotViolationsInp.value)
+                + "&description=" + encodeURIComponent(descriptionTA.value);
+
+            $.ajax({
+                type: "get",
+                url: `/Driver/Drivers/Remove?${body}`,
+                success: function () {
+                    window.location.reload();
+                },
+                error: function (response) {
+                }
+            });
+        }
+    }
+</script>
+
+<script>
+function SendRemindInspection(idDriver, url) {
+    let urlBase = url+"/Driver/Remind/Inspection";
+    let xmlHttp = new XMLHttpRequest();
+    var body = 'idDriver=' + encodeURIComponent(idDriver);
+    xmlHttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            if (this.responseText == "true") {
+                alert("@Localizer["ReminderSent"]");
             }
-            else if (value === "2") {
-                return "Middle";
+            else if (this.responseText == "false") {
+                alert("@Localizer["AlreadyPassed"]");
             }
-            else if (value === "3") {
-                return "Good";
+            else if (this.responseText == "notlogin") {
+
+            }
+            else if (this.responseText == "error") {
+                alert("@Localizer["ServerError"]");
+            }
+            else {
+                alert("@Localizer["ServerError"]");
             }
         }
-        
-        function SelectExperience(value, Checked) {
-                if (Checked) {
-                    if (experienceInp.value == undefined) {
-                        experienceInp.value = "";
-                    }
-                    experienceInp.value +=  value + ", ";
-                }
-                else
-                {
-                    experienceInp.value = experienceInp.value.replace(value + ", ", "");
-                }
-            }
-            
-        function Remove() {
-                let descriptionTA = document.getElementById("descriptionTA");
-                descriptionTA.validity.valid
-                if (descriptionTA.validity.valid) {
-                    let body = "id=" + encodeURIComponent(IdDriver)
-                        + "&numberOfAccidents=" + encodeURIComponent(numberOfAccidentsInp.value)
-                        + "&english=" + encodeURIComponent(englishSpn.innerHTML)
-                        + "&returnedEquipmen=" + encodeURIComponent(returnedEquipmenSpn.innerHTML)
-                        + "&workingEfficiency=" + encodeURIComponent(workingEfficiencySpn.innerHTML)
-                        + "&eldKnowledge=" + encodeURIComponent(eldKnowledgeSpn.innerHTML)
-                        + "&drivingSkills=" + encodeURIComponent(drivingSkillsSpn.innerHTML)
-                        + "&paymentHandling=" + encodeURIComponent(paymentHandlingSpn.innerHTML)
-                        + "&alcoholTendency=" + encodeURIComponent(alcoholTendencySpn.innerHTML)
-                        + "&drugTendency=" + encodeURIComponent(drugTendencySpn.innerHTML)
-                        + "&terminated=" + encodeURIComponent(terminatedInp.value)
-                        + "&experience=" + encodeURIComponent(experienceInp.value)
-                        + "&dotViolations=" + encodeURIComponent(dotViolationsInp.value)
-                        + "&description=" + encodeURIComponent(descriptionTA.value);
-                    
-                    $.ajax({
-                          type: "get",
-                          url: `/Driver/Drivers/Remove?${body}`,
-                          success: function () {
-                              window.location.reload();
-                          },
-                          error: function (response) {
-                          }
-                      });
-                }
-            }
+        else if (this.readyState == 4 && this.status != 200) {
+            alert("@Localizer["ServerError"]");
+        }
+    };
+    xmlHttp.open("POST", urlBase, true);
+    xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xmlHttp.send(body);
+}
 </script>
 <style>
 
     label {
-        padding-left: 0px!important;
-        padding-right: 0px!important;
+        padding-left: 0px !important;
+        padding-right: 0px !important;
     }
+
     span {
-     font-weight: 400;
-     color: #686F7C;
+        font-weight: 400;
+        color: #686F7C;
     }
-    .btn-blue{
-    background:#2C5DEB;
-    color:#f9f9f9;
-    border:1px solid #2C5DEB;
-    font-style:normal;
-    font-weight:700;
-    font-size:16px;
-    line-height:1.25;
-    border-radius:10px;
-    padding:16px 29px;
-    display:inline-block;
-    -webkit-transition:.3s all;
-    -o-transition:.3s all;
-    transition:.3s all
+
+    .btn-blue {
+        background: #2C5DEB;
+        color: #f9f9f9;
+        border: 1px solid #2C5DEB;
+        font-style: normal;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 1.25;
+        border-radius: 10px;
+        padding: 16px 29px;
+        display: inline-block;
+        -webkit-transition: .3s all;
+        -o-transition: .3s all;
+        transition: .3s all
     }
-    
-    .btn-blue:hover{
-    background:0 0;
-    border:1px solid #2C5DEB;
-    color:#2C5DEB;
-    -webkit-transition:.3s all;
-    -o-transition:.3s all;
-    transition:.3s all
-    }
-    
-    .btn-red{
-        background:0 0;
-        color:#b42b2b;
-        border:1px solid #b42b2b;
-        font-style:normal;
-        font-weight:700;
-        font-size:16px;
-        line-height:1.25;
-        border-radius:10px;
-        padding:16px 29px;
-        display:inline-block;
-        -webkit-transition:.3s all;
-        -o-transition:.3s all;
-        transition:.3s all
+
+        .btn-blue:hover {
+            background: 0 0;
+            border: 1px solid #2C5DEB;
+            color: #2C5DEB;
+            -webkit-transition: .3s all;
+            -o-transition: .3s all;
+            transition: .3s all
         }
-        
-        .btn-red:hover{
-        background:#b42b2b;
-        border:1px solid #b42b2b;
-        color:#f9f9f9;
-        -webkit-transition:.3s all;
-        -o-transition:.3s all;
-        transition:.3s all
+
+    .btn-red {
+        background: 0 0;
+        color: #b42b2b;
+        border: 1px solid #b42b2b;
+        font-style: normal;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 1.25;
+        border-radius: 10px;
+        padding: 16px 29px;
+        display: inline-block;
+        -webkit-transition: .3s all;
+        -o-transition: .3s all;
+        transition: .3s all
+    }
+
+        .btn-red:hover {
+            background: #b42b2b;
+            border: 1px solid #b42b2b;
+            color: #f9f9f9;
+            -webkit-transition: .3s all;
+            -o-transition: .3s all;
+            transition: .3s all
         }
-    
-    .form-group label{
-                width: 100%;
-                font-family:Montserrat;
-                font-style:normal;
-                font-weight:700;
-                font-size:16px;
-                line-height:1.7;
-                color:#08112b;
-                text-align:left;
-                margin-top:0;
-                display:block;
-                margin-bottom:15px;
-            }
-            .modal-dialog {
-                position: absolute;
-                left: 30%;
-                top: 200px;
-                width: 700px!important;
-                text-align: left;
-                background-color: #fff;
-                -moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
-                -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
-                box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
-                transition: height 0.25s linear;
-                -moz-border-radius: 10px;
-                -webkit-border-radius: 10px;
-                border-radius: 30px;
-                }
-                
-            .modal-content{
-                border: 0px;
-                border-radius: 30px;
-                }
-                
-            .ng-modal-wrapper {
-                display: inline-block;
-                vertical-align: middle;
-                padding: 50px 0;
-                width: 100%;
-                position: relative;
-                }
-                
-                .modal-dialog label {
-                    position: relative;
-                    display: inline-block;
-                    vertical-align: middle;
-                    cursor: pointer;
-                    padding: 3px 10px 4px;
-                    -moz-border-radius: 3px;
-                    -webkit-border-radius: 3px;
-                    margin-top: 2px;
-                    background: none;
-                    font-size: 16px;
-                    line-height: 19px;
-                    letter-spacing: -.016em;
-                    -moz-transition-property: all;
-                    -o-transition-property: all;
-                    -webkit-transition-property: all;
-                    transition-property: all;
-                    -moz-transition-duration: 300ms;
-                    -o-transition-duration: 300ms;
-                    -webkit-transition-duration: 300ms;
-                    transition-duration: 300ms;
-                    border-radius: 30px;
-                    }
-                    
-                    .modal-buttons .right-buttons {
-                        float: right;
-                    }
-                    
-                    .modal-inp-text {
-                        width:100%;
-                        height:77px;
-                        background:#fff;
-                        border:1px solid #c4c9d5;
-                        border-radius:10px;
-                        padding:25px 15px;
-                        font-family:Montserrat;
-                        font-style:normal;
-                        font-weight:400;
-                        font-size:16px;
-                        line-height:1.2;
-                        color:#686f7c;
-                        margin-top:6px
-                        }
-                        
-                    .modal-title h1 {
-                    font-size: 36px;
-                    }
-                                
-                    .modal-header{
-                          justify-content: center;
-                          padding: 2rem;
-                          border-bottom: 0;
-                    }
-                    .big-label {
-                        width: 100%!important;
-                    } 
-                    .btn1-spec {
-                        font-size: 24px!important;
-                    }
-                    .btn3-spec {
-                        font-size: 24px!important;
-                        width: 100%!important;
-                        margin-top: 15px!important;
-                        padding: 16px 29px!important;
-                    }
-.modal-texAr-text {
+
+    .form-group label {
+        width: 100%;
+        font-family: Montserrat;
+        font-style: normal;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 1.7;
+        color: #08112b;
+        text-align: left;
+        margin-top: 0;
+        display: block;
+        margin-bottom: 15px;
+    }
+
+    .modal-dialog {
+        position: absolute;
+        left: 30%;
+        top: 200px;
+        width: 700px !important;
+        text-align: left;
+        background-color: #fff;
+        -moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
+        -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
+        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
+        transition: height 0.25s linear;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        border-radius: 30px;
+    }
+
+    .modal-content {
+        border: 0px;
+        border-radius: 30px;
+    }
+
+    .ng-modal-wrapper {
+        display: inline-block;
+        vertical-align: middle;
+        padding: 50px 0;
+        width: 100%;
+        position: relative;
+    }
+
+    .modal-dialog label {
+        position: relative;
+        display: inline-block;
+        vertical-align: middle;
+        cursor: pointer;
+        padding: 3px 10px 4px;
+        -moz-border-radius: 3px;
+        -webkit-border-radius: 3px;
+        margin-top: 2px;
+        background: none;
+        font-size: 16px;
+        line-height: 19px;
+        letter-spacing: -.016em;
+        -moz-transition-property: all;
+        -o-transition-property: all;
+        -webkit-transition-property: all;
+        transition-property: all;
+        -moz-transition-duration: 300ms;
+        -o-transition-duration: 300ms;
+        -webkit-transition-duration: 300ms;
+        transition-duration: 300ms;
+        border-radius: 30px;
+    }
+
+    .modal-buttons .right-buttons {
+        float: right;
+    }
+
+    .modal-inp-text {
+        width: 100%;
+        height: 77px;
+        background: #fff;
+        border: 1px solid #c4c9d5;
+        border-radius: 10px;
+        padding: 25px 15px;
+        font-family: Montserrat;
+        font-style: normal;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 1.2;
+        color: #686f7c;
+        margin-top: 6px
+    }
+
+    .modal-title h1 {
+        font-size: 36px;
+    }
+
+    .modal-header {
+        justify-content: center;
+        padding: 2rem;
+        border-bottom: 0;
+    }
+
+    .big-label {
+        width: 100% !important;
+    }
+
+    .btn1-spec {
+        font-size: 24px !important;
+    }
+
+    .btn3-spec {
+        font-size: 24px !important;
+        width: 100% !important;
+        margin-top: 15px !important;
+        padding: 16px 29px !important;
+    }
+
+    .modal-texAr-text {
         -moz-border-radius: 3px;
         -webkit-border-radius: 3px;
         border-radius: 10px;
@@ -505,41 +555,42 @@
         height: 200px;
         line-height: 22px;
     }
-.modal-buttons button, input {
-    margin-top: 0;
+
+    .modal-buttons button, input {
+        margin-top: 0;
     }
-    
-.validation:invalid {
+
+    .validation:invalid {
         border-color: red;
     }
-    
-.validation:valid {
+
+    .validation:valid {
         border-color: #4ad73b;
     }
-   
-.font-weight-normal{
-    font-weight: 500;
+
+    .font-weight-normal {
+        font-weight: 500;
     }
-    
-    .text-p{
+
+    .text-p {
         font-size: 20px;
     }
-    
+
     p {
-    font-size: 16px;
+        font-size: 16px;
     }
-    
+
     .modal-body {
         padding: 0px 30px 30px 30px;
     }
-    
+
     .strong-a {
-        color: #000000!important;
+        color: #000000 !important;
         font-weight: 600;
     }
-    
+
     .value-elem {
-     margin-bottom: 10px;
-     margin-top: 10px;
+        margin-bottom: 10px;
+        margin-top: 10px;
     }
 </style>

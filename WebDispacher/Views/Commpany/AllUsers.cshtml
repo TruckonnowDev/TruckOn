@@ -1,12 +1,16 @@
-﻿<body>
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+<body>
     <div class="admin">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
                     <div class="title">
-                        <h1>Users</h1>
-                        <select class="btn1" onchange="window.location.href ='Users?idCompanySelect=' + this.options[this.selectedIndex].value">
-                            <option selected value="0">All users</option>
+                        <h1>@Localizer["Users"]</h1>
+                        <select class="btn1 btn1-big-auto" onchange="window.location.href ='Users?idCompanySelect=' + this.options[this.selectedIndex].value">
+                            <option selected value="0">@Localizer["AllUsers"]</option>
                             @for (int i = 0; i < ViewBag.Companies.Count; i++)
                             {
                                 @if (ViewBag.IdCompanySelect != 0 && ViewBag.Companies[i].Id == ViewBag.IdCompanySelect)
@@ -25,27 +29,27 @@
             <div class="row">
                 <div class="col-md-12">
                     <div id="tabs">
-                        <div class="tab" onclick="window.location.href='@Url.Action("Companies", "Company")';">Companies</div>
-                        <div class="tab whiteborder" onclick="window.location.href='@Url.Action("Users", "Company")';">All Users</div>
+                        <div class="tab" onclick="window.location.href='@Url.Action("Companies", "Company")';">@Localizer["Companies"]</div>
+                        <div class="tab whiteborder" onclick="window.location.href='@Url.Action("Users", "Company")';">@Localizer["AllUsers"]</div>
                         <div class="tabContent">
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>Login</th>
-                                        <th>Password</th>
-                                        <th>CompanyName</th>
-                                        <td>Registration</td>
+                                        <th>@Localizer["Login"]</th>
+                                        <th>@Localizer["Password"]</th>
+                                        <th>@Localizer["CompanyName"]</th>
+                                        <th>@Localizer["Registration"]</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @for (int i = 0; i < ViewBag.Users.Count; i++)
                                     {
-                                    <tr>
-                                        <td>@ViewBag.Users[i].Login</td>
-                                        <td>@ViewBag.Users[i].Password</td>
-                                        <td>@ViewBag.Users[i].CompanyName</td>
-                                        <td>@ViewBag.Users[i].Date</td>
-                                    </tr>
+                                        <tr>
+                                            <td>@ViewBag.Users[i].Login</td>
+                                            <td>@ViewBag.Users[i].Password</td>
+                                            <td>@ViewBag.Users[i].CompanyName</td>
+                                            <td>@ViewBag.Users[i].Date</td>
+                                        </tr>
                                     }
                                 </tbody>
                             </table>

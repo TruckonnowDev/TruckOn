@@ -7,15 +7,18 @@ namespace WebDispacher.ViewModels.Contact
         public int Id { get; set; }
         public int CompanyId { get; set; }
         
-        [Required]
+        [Required(ErrorMessage = "EmailRequired")]
+        [Display(Name = "Email")]
         public string Email { get; set; }
-        
-        [Required]
-        [MinLength(4)]
-        [MaxLength(12)]
+
+        [Required(ErrorMessage = "PhoneRequired")]
+        [MinLength(4, ErrorMessage = "MinLengthPhone")]
+        [MaxLength(12, ErrorMessage = "MaxLengthPhone")]
+        [Display(Name = "Phone")]
         public string Phone { get; set; }
-        
-        [Required]
+
+        [Required(ErrorMessage = "NameRequired")]
+        [Display(Name = "Name")]
         public string Name { get; set; }
     }
 }

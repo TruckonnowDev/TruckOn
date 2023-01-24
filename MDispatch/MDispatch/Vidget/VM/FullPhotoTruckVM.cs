@@ -59,7 +59,24 @@ namespace MDispatch.Vidget.VM
             {
                 CheckPlate();
             }
-            DependencyService.Get<IOrientationHandler>().ForceLandscape();
+            var orientationHandler = DependencyService.Get<IOrientationHandler>();
+            orientationHandler.ForceLandscape();
+            await Task.Run(async () =>
+            {
+                while (true)
+                {
+                    var isLandscape = orientationHandler.IsForceLandscape();
+                    if (!isLandscape)
+                    {
+                        orientationHandler.ForcePortrait();
+                        await Task.Delay(200);
+                        orientationHandler.ForceLandscape();
+                    }
+                    else
+                        return;
+                }
+            });
+
             if (truckCar != null)
             {
                 if (IndexCurent <= truckCar.CountPhoto)

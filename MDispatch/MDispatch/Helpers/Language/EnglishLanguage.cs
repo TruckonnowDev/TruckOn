@@ -39,7 +39,7 @@
         public string PaymmantMethodSaved => "Paymmant method saved";
 
         public string ScanPlateNumber => "Scan Plate number";
-        public string TitleSetPlateTruckAlert => "Please write the number plate of the truck";
+        public string TitleSetPlateTruckAlert => "Please input or take a picture of Truck plate number";
         public string TitleSetPlateTrailerAlert => "Please write the number plate of the trailer";
         public string PlaceholderSetPlateTruckAlert => "Enter № plate truck";
         public string PlaceholderSetPlateTrailerkAlert => "Enter № plate trailer";

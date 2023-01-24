@@ -15,6 +15,11 @@ namespace MDispatch.iOS.NewRender.Orientation
             UIDevice.CurrentDevice.SetValueForKey(NSNumber.FromNInt((int)(UIInterfaceOrientation.LandscapeRight)), new NSString("orientation"));
         }
 
+        public bool IsForceLandscape()
+        {
+            return ((AppDelegate)UIApplication.SharedApplication.Delegate).CurrentOrientation == UIInterfaceOrientationMask.LandscapeRight;
+        }
+
         public void ForcePortrait()
         {
             ((AppDelegate)UIApplication.SharedApplication.Delegate).CurrentOrientation = UIInterfaceOrientationMask.Portrait;

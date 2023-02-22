@@ -4,6 +4,10 @@
 
 @inject IViewLocalizer Localizer
 
+@{
+    ViewData["Title"] = "Dashboard | Edit Order";
+}
+
 <body>
     <div class="admin Billing">
         <div class="container">
@@ -60,7 +64,59 @@
                                 </label>
                                 <label for="">
                                     @Localizer["State"]
-                                    <input type="text" id="stateP" name="StateP" value="@Model.StateP" pattern="[A-Z]{2}" placeholder="XX - @Localizer["State"]" required>
+                                    <select id="stateP" name="StateP" value="@Model.StateP">
+                                        <option value="AL">Alabama</option>
+                                        <option value="AK">Alaska</option>
+                                        <option value="AZ">Arizona</option>
+                                        <option value="AR">Arkansas</option>
+                                        <option value="CA">California</option>
+                                        <option value="CO">Colorado</option>
+                                        <option value="CT">Connecticut</option>
+                                        <option value="DE">Delaware</option>
+                                        <option value="DC">District Of Columbia</option>
+                                        <option value="FL">Florida</option>
+                                        <option value="GA">Georgia</option>
+                                        <option value="HI">Hawaii</option>
+                                        <option value="ID">Idaho</option>
+                                        <option value="IL">Illinois</option>
+                                        <option value="IN">Indiana</option>
+                                        <option value="IA">Iowa</option>
+                                        <option value="KS">Kansas</option>
+                                        <option value="KY">Kentucky</option>
+                                        <option value="LA">Louisiana</option>
+                                        <option value="ME">Maine</option>
+                                        <option value="MD">Maryland</option>
+                                        <option value="MA">Massachusetts</option>
+                                        <option value="MI">Michigan</option>
+                                        <option value="MN">Minnesota</option>
+                                        <option value="MS">Mississippi</option>
+                                        <option value="MO">Missouri</option>
+                                        <option value="MT">Montana</option>
+                                        <option value="NE">Nebraska</option>
+                                        <option value="NV">Nevada</option>
+                                        <option value="NH">New Hampshire</option>
+                                        <option value="NJ">New Jersey</option>
+                                        <option value="NM">New Mexico</option>
+                                        <option value="NY">New York</option>
+                                        <option value="NC">North Carolina</option>
+                                        <option value="ND">North Dakota</option>
+                                        <option value="OH">Ohio</option>
+                                        <option value="OK">Oklahoma</option>
+                                        <option value="OR">Oregon</option>
+                                        <option value="PA">Pennsylvania</option>
+                                        <option value="RI">Rhode Island</option>
+                                        <option value="SC">South Carolina</option>
+                                        <option value="SD">South Dakota</option>
+                                        <option value="TN">Tennessee</option>
+                                        <option value="TX">Texas</option>
+                                        <option value="UT">Utah</option>
+                                        <option value="VT">Vermont</option>
+                                        <option value="VA">Virginia</option>
+                                        <option value="WA">Washington</option>
+                                        <option value="WV">West Virginia</option>
+                                        <option value="WI">Wisconsin</option>
+                                        <option value="WY">Wyoming</option>
+                                    </select>
                                 </label>
                                 <label for="">
                                     @Localizer["Zip"]
@@ -76,7 +132,7 @@
                                 </label>
                                 <label for="">
                                     @Localizer["ScheduledPickupDate"]
-                                    <input type="text" id="scheduledPickupDateP" name="PickupExactly" value="@Model.PickupExactly">
+                                    <input type="date" id="scheduledPickupDateP" name="PickupExactly" value="@Model.PickupExactly">
                                 </label>
                             </div>
                             <div class="w1">
@@ -111,7 +167,59 @@
                                 </label>
                                 <label for="">
                                     @Localizer["State"]
-                                    <input type="text" id="stateD" name="StateD" pattern="[A-Z]{2}" value="@Model.StateD" placeholder="XX - @Localizer["State"]" required>
+                                    <select id="stateD" name="StateD" value="@Model.StateD">
+                                        <option value="AL">Alabama</option>
+                                        <option value="AK">Alaska</option>
+                                        <option value="AZ">Arizona</option>
+                                        <option value="AR">Arkansas</option>
+                                        <option value="CA">California</option>
+                                        <option value="CO">Colorado</option>
+                                        <option value="CT">Connecticut</option>
+                                        <option value="DE">Delaware</option>
+                                        <option value="DC">District Of Columbia</option>
+                                        <option value="FL">Florida</option>
+                                        <option value="GA">Georgia</option>
+                                        <option value="HI">Hawaii</option>
+                                        <option value="ID">Idaho</option>
+                                        <option value="IL">Illinois</option>
+                                        <option value="IN">Indiana</option>
+                                        <option value="IA">Iowa</option>
+                                        <option value="KS">Kansas</option>
+                                        <option value="KY">Kentucky</option>
+                                        <option value="LA">Louisiana</option>
+                                        <option value="ME">Maine</option>
+                                        <option value="MD">Maryland</option>
+                                        <option value="MA">Massachusetts</option>
+                                        <option value="MI">Michigan</option>
+                                        <option value="MN">Minnesota</option>
+                                        <option value="MS">Mississippi</option>
+                                        <option value="MO">Missouri</option>
+                                        <option value="MT">Montana</option>
+                                        <option value="NE">Nebraska</option>
+                                        <option value="NV">Nevada</option>
+                                        <option value="NH">New Hampshire</option>
+                                        <option value="NJ">New Jersey</option>
+                                        <option value="NM">New Mexico</option>
+                                        <option value="NY">New York</option>
+                                        <option value="NC">North Carolina</option>
+                                        <option value="ND">North Dakota</option>
+                                        <option value="OH">Ohio</option>
+                                        <option value="OK">Oklahoma</option>
+                                        <option value="OR">Oregon</option>
+                                        <option value="PA">Pennsylvania</option>
+                                        <option value="RI">Rhode Island</option>
+                                        <option value="SC">South Carolina</option>
+                                        <option value="SD">South Dakota</option>
+                                        <option value="TN">Tennessee</option>
+                                        <option value="TX">Texas</option>
+                                        <option value="UT">Utah</option>
+                                        <option value="VT">Vermont</option>
+                                        <option value="VA">Virginia</option>
+                                        <option value="WA">Washington</option>
+                                        <option value="WV">West Virginia</option>
+                                        <option value="WI">Wisconsin</option>
+                                        <option value="WY">Wyoming</option>
+                                    </select>
                                 </label>
                                 <label for="">
                                     @Localizer["Zip"]
@@ -126,7 +234,7 @@
                                     <input name="EmailD" id="emailD" type="email" value="@Model.EmailD" placeholder="@Localizer["Email"]" required>
                                 </label>
                             </div>
-                            <div class="w1">
+                            <div class="w3">
                                 <h3>@Localizer["PaymentInfoHeader"]</h3>
                                 <label for="">
                                     @Localizer["PaymentMethod"]
@@ -160,54 +268,60 @@
                         <h1>@Localizer["VehsHeader"]</h1>
                         <button class="btn1" onclick="AddVech(this)">@Localizer["AddVeh"]</button>
                     </div>
-                    <div class="table">
-                        <div class="tr blue">
-                            <div class="td">№</div>
-                            <div class="td">VIN</div>
-                            <div class="td">@Localizer["Year"]</div>
-                            <div class="td">@Localizer["Make"]</div>
-                            <div class="td">@Localizer["Model"]</div>
-                            <div class="td">@Localizer["Type"]</div>
-                            <div class="td">@Localizer["Color"]</div>
-                            <div class="td">@Localizer["LotNumber"]</div>
-                            <div class="td">&nbsp;</div>
-                            <div class="td">&nbsp;</div>
-                            <div class="td">&nbsp;</div>
-                            <div class="td">&nbsp;</div>
-                        </div>
-                        @if (Model.VehiclwInformations != null)
-                        {
-                            @for (int i = 0; i < Model.VehiclwInformations.Count; i++)
-                            {
-                                <form action="SavaVech" method="POST" class="tr" id="@Model.VehiclwInformations[i].Id">
-                                    <div class="td">@i</div>
-                                    <div class="td"><input type='text' name="VIN" value="@Model.VehiclwInformations[i].VIN" /></div>
-                                    <div class="td"><input type='text' name="Year" value="@Model.VehiclwInformations[i].Year" /></div>
-                                    <div class="td"><input type='text' name="Make" value="@Model.VehiclwInformations[i].Make" /></div>
-                                    <div class="td"><input type='text' name="Model" value="@Model.VehiclwInformations[i].Model" /></div>
-                                    <div class="td">
-                                        <select name="Type">
-                                            <option>@Model.VehiclwInformations[i].Type</option>
-                                            <option>Sedan</option>
-                                            <option>Suv</option>
-                                            <option>Coupe</option>
-                                            <option>PickUp</option>
-                                            <option>Tricycle</option>
-                                            <option>Sport bike</option>
-                                            <option>Touring motorcycle</option>
-                                            <option>Cruise motorcycle</option>
-                                        </select>
-                                    </div>
-                                    <div class="td"><input type='text' name="Color" value="@Model.VehiclwInformations[i].Color" /></div>
-                                    <div class="td"><input type='text' name="LotNumber" value="@Model.VehiclwInformations[i].Lot" /></div>
-                                    <div class="td"><input type='text' class="delete delete-border-cursor" onclick="DeleteVech(@Model.VehiclwInformations[i].Id)" /></div>
-                                    <div class="td"><input type='submit' class="delete-border-cursor" value="@Localizer["Save"]" /></div>
-                                    <input type="text" name="idVech" style="display:none;" value="@Model.VehiclwInformations[i].Id" />
-                                    <input type="text" name="idOrder" style="display:none;" value="@Model.Id" />
-                                </form>
-                            }
-                        }
-                    </div>
+                    <table class="tab12">
+                        <thead>
+                            <tr>
+                                <th>№</th>
+                                <th>VIN</th>
+                                <th>@Localizer["Year"]</th>
+                                <th>@Localizer["Make"]</th>
+                                <th>@Localizer["Model"]</th>
+                                <th>@Localizer["Type"]</th>
+                                <th>@Localizer["Color"]</th>
+                                <th>@Localizer["LotNumber"]</th>
+                                <th>&nbsp;</th>
+                                <th>&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                @if (Model.VehiclwInformations != null)
+                                {
+                                    @for (int i = 0; i < Model.VehiclwInformations.Count; i++)
+                                {
+                                    
+                                        <form action="SavaVech" method="POST" class="tr" id="@Model.VehiclwInformations[i].Id">
+                                           <tr>
+                                        <td aria-label="№" class="header-id-control">@i</td>
+                                        <td aria-label="VIN"><input type='text' name="VIN" value="@Model.VehiclwInformations[i].VIN" /></td>
+                                        <td aria-label="@Localizer["Year"]"><input type='text' name="Year" value="@Model.VehiclwInformations[i].Year" /></td>
+                                        <td aria-label="@Localizer["Make"]"><input type='text' name="Make" value="@Model.VehiclwInformations[i].Make" /></td>
+                                        <td aria-label="@Localizer["Model"]"><input type='text' name="Model" value="@Model.VehiclwInformations[i].Model" /></td>
+                                        <td aria-label="@Localizer["Type"]">
+                                            <select name="Type">
+                                                <option>@Model.VehiclwInformations[i].Type</option>
+                                                <option>Sedan</option>
+                                                <option>Suv</option>
+                                                <option>Coupe</option>
+                                                <option>PickUp</option>
+                                                <option>Tricycle</option>
+                                                <option>Sport bike</option>
+                                                <option>Touring motorcycle</option>
+                                                <option>Cruise motorcycle</option>
+                                            </select>
+                                        </td>
+                                        <td aria-label="@Localizer["Color"]"><input type='text' name="Color" value="@Model.VehiclwInformations[i].Color" /></td>
+                                        <td aria-label="@Localizer["LotNumber"]"><input type='text' name="LotNumber" value="@Model.VehiclwInformations[i].Lot" /></td>
+                                        <td class="button-control"><input type='submit' class="delete-border-cursor" value="@Localizer["Save"]" /></td>
+                                        <td class="button-control"><img src="/img/delete.svg" onclick="DeleteVech(@Model.VehiclwInformations[i].Id)" /></td>
+                                        <td style="display: none"><input type="text" name="idVech" style="display:none;" value="@Model.VehiclwInformations[i].Id" /></td>
+                                        <input type="text" name="idOrder" style="display:none;" value="@Model.Id" />
+                                        </tr>
+                                        </form>
+                                    }
+                                }
+                            
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -215,16 +329,17 @@
 </body>
 
 <script>
-$(document).ready(function() {
-    if ("@Model.CurrentStatus" != null)
-    {
-        $('#statusId option[value="@Model.CurrentStatus"]').prop('selected', true);
-    }
-    if ("@Model.TotalPaymentToCarrier" != null)
-    {
-        $('#paymentMethod option[value="@Model.TotalPaymentToCarrier"]').prop('selected', true);
-    }
-});
+    $(document).ready(function () {
+        if ("@Model.CurrentStatus" != null) {
+            $('#statusId option[value="@Model.CurrentStatus"]').prop('selected', true);
+        }
+        if ("@Model.TotalPaymentToCarrier" != null) {
+            $('#paymentMethod option[value="@Model.TotalPaymentToCarrier"]').prop('selected', true);
+        }
+
+        $('#stateD').val('@Model.StateD').change();
+        $('#stateP').val('@Model.StateP').change();
+    });
 
     function AddVech(btnE) {
         const loadId = document.getElementById('idLoad').value;
@@ -256,80 +371,80 @@ $(document).ready(function() {
         const phoneC = document.getElementById('phoneC').value;
 
         let idOrder = document.getElementById('idOrder').value;
-             var xhttp = new XMLHttpRequest();
-             let Req = "idOrder=" + idOrder;
-             xhttp.onreadystatechange = function (e) {
-                 console.log(this.readyState);
-                 if (this.readyState === 4 && this.status === 200) {
-                     alert(this.responseText);
-                     var url = `@ViewBag.BaseUrl/Dashbord/Order/EditReload?Id=${idOrder}&status=${status}&idOrder=${loadId}&NameP=${nameP}`+
-                                                 `&ContactNameP=${contactNameP}&Address=${addressP}&CityP=${cityP}&StateP=${stateP}&CurrentStatus=${status}` +
-                                                 `&ZipP=${zipP}&PhoneP=${phoneP}&EmailP=${emailP}&PickupExactly=${scheduledPickupDateP}&Titl1DI=${instructions}` +
-                                                 `&NameD=${nameD}&ContactNameD=${contactD}&AddressD=${addressD}&CityD=${cityD}&StateD=${stateD}&ZipD=${zipD}&PhoneD=${phoneD}` +
-                                                 `&EmailD=${emailD}&TotalPaymentToCarrier=${paymentMethod}&PriceListed=${price}&BrokerFee=${brokerFee}&FaxC=${faxC}` +
-                                                 `&IccmcC=${iccmcC}&ContactC=${contactC}&PhoneC=${phoneC}`;
-                    window.location.href = url;
-                 }
-             };
-             xhttp.open("POST", "@ViewBag.BaseUrl/Dashbord/Order/AddVech", true);
-             xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-             xhttp.setRequestHeader('Accept-Encoding', 'br');
-             xhttp.send(Req);
+        var xhttp = new XMLHttpRequest();
+        let Req = "idOrder=" + idOrder;
+        xhttp.onreadystatechange = function (e) {
+            console.log(this.readyState);
+            if (this.readyState === 4 && this.status === 200) {
+                alert(this.responseText);
+                var url = `@ViewBag.BaseUrl/Dashbord/Order/EditReload?Id=${idOrder}&status=${status}&idOrder=${loadId}&NameP=${nameP}` +
+                    `&ContactNameP=${contactNameP}&Address=${addressP}&CityP=${cityP}&StateP=${stateP}&CurrentStatus=${status}` +
+                    `&ZipP=${zipP}&PhoneP=${phoneP}&EmailP=${emailP}&PickupExactly=${scheduledPickupDateP}&Titl1DI=${instructions}` +
+                    `&NameD=${nameD}&ContactNameD=${contactD}&AddressD=${addressD}&CityD=${cityD}&StateD=${stateD}&ZipD=${zipD}&PhoneD=${phoneD}` +
+                    `&EmailD=${emailD}&TotalPaymentToCarrier=${paymentMethod}&PriceListed=${price}&BrokerFee=${brokerFee}&FaxC=${faxC}` +
+                    `&IccmcC=${iccmcC}&ContactC=${contactC}&PhoneC=${phoneC}`;
+                window.location.href = url;
+            }
+        };
+        xhttp.open("POST", "@ViewBag.BaseUrl/Dashbord/Order/AddVech", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.setRequestHeader('Accept-Encoding', 'br');
+        xhttp.send(Req);
     }
 
     function DeleteVech(btnE) {
         const loadId = document.getElementById('idLoad').value;
-                const status = document.getElementById('statusId').value;
-                const nameP = document.getElementById('nameP').value;
-                const contactNameP = document.getElementById('contactNameP').value;
-                const addressP = document.getElementById('addressP').value;
-                const cityP = document.getElementById('cityP').value;
-                const stateP = document.getElementById('stateP').value;
-                const zipP = document.getElementById('zipP').value;
-                const phoneP = document.getElementById('phoneP').value;
-                const emailP = document.getElementById('emailP').value;
-                const scheduledPickupDateP = document.getElementById('scheduledPickupDateP').value;
-                const instructions = document.getElementById('instructions').value;
-                const nameD = document.getElementById('nameD').value;
-                const contactD = document.getElementById('contactD').value;
-                const addressD = document.getElementById('addressD').value;
-                const cityD = document.getElementById('cityD').value;
-                const stateD = document.getElementById('stateD').value;
-                const zipD = document.getElementById('zipD').value;
-                const phoneD = document.getElementById('phoneD').value;
-                const emailD = document.getElementById('emailD').value;
-                const paymentMethod = document.getElementById('paymentMethod').value;
-                const price = document.getElementById('price').value;
-                const brokerFee = document.getElementById('brokerFee').value;
-                const faxC = document.getElementById('faxC').value;
-                const iccmcC = document.getElementById('iccmcC').value;
-                const contactC = document.getElementById('contactId').value;
-                const phoneC = document.getElementById('phoneC').value;
+        const status = document.getElementById('statusId').value;
+        const nameP = document.getElementById('nameP').value;
+        const contactNameP = document.getElementById('contactNameP').value;
+        const addressP = document.getElementById('addressP').value;
+        const cityP = document.getElementById('cityP').value;
+        const stateP = document.getElementById('stateP').value;
+        const zipP = document.getElementById('zipP').value;
+        const phoneP = document.getElementById('phoneP').value;
+        const emailP = document.getElementById('emailP').value;
+        const scheduledPickupDateP = document.getElementById('scheduledPickupDateP').value;
+        const instructions = document.getElementById('instructions').value;
+        const nameD = document.getElementById('nameD').value;
+        const contactD = document.getElementById('contactD').value;
+        const addressD = document.getElementById('addressD').value;
+        const cityD = document.getElementById('cityD').value;
+        const stateD = document.getElementById('stateD').value;
+        const zipD = document.getElementById('zipD').value;
+        const phoneD = document.getElementById('phoneD').value;
+        const emailD = document.getElementById('emailD').value;
+        const paymentMethod = document.getElementById('paymentMethod').value;
+        const price = document.getElementById('price').value;
+        const brokerFee = document.getElementById('brokerFee').value;
+        const faxC = document.getElementById('faxC').value;
+        const iccmcC = document.getElementById('iccmcC').value;
+        const contactC = document.getElementById('contactId').value;
+        const phoneC = document.getElementById('phoneC').value;
 
 
-                let idOrder = document.getElementById('idOrder').value;
+        let idOrder = document.getElementById('idOrder').value;
 
-            let Req = "idVech=" + btnE;
-            var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function (e) {
-                if (this.readyState == 4 && this.status == 200) {
-                    alert(this.responseText);
-                     var url = `@ViewBag.BaseUrl/Dashbord/Order/EditReload?Id=${idOrder}&stasus=${status}&idOrder=${loadId}&NameP=${nameP}`+
-                                                 `&ContactNameP=${contactNameP}&Address=${addressP}&CityP=${cityP}&StateP=${stateP}&CurrentStatus=${status}` +
-                                                 `&ZipP=${zipP}&PhoneP=${phoneP}&EmailP=${emailP}&PickupExactly=${scheduledPickupDateP}&Titl1DI=${instructions}` +
-                                                 `&NameD=${nameD}&ContactNameD=${contactD}&AddressD=${addressD}&CityD=${cityD}&StateD=${stateD}&ZipD=${zipD}&PhoneD=${phoneD}` +
-                                                 `&EmailD=${emailD}&TotalPaymentToCarrier=${paymentMethod}&PriceListed=${price}&BrokerFee=${brokerFee}&FaxC=${faxC}` +
-                                                 `&IccmcC=${iccmcC}&ContactC=${contactC}&PhoneC=${phoneC}`;
-                    window.location.href = url;
+        let Req = "idVech=" + btnE;
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function (e) {
+            if (this.readyState == 4 && this.status == 200) {
+                alert(this.responseText);
+                var url = `@ViewBag.BaseUrl/Dashbord/Order/EditReload?Id=${idOrder}&stasus=${status}&idOrder=${loadId}&NameP=${nameP}` +
+                    `&ContactNameP=${contactNameP}&Address=${addressP}&CityP=${cityP}&StateP=${stateP}&CurrentStatus=${status}` +
+                    `&ZipP=${zipP}&PhoneP=${phoneP}&EmailP=${emailP}&PickupExactly=${scheduledPickupDateP}&Titl1DI=${instructions}` +
+                    `&NameD=${nameD}&ContactNameD=${contactD}&AddressD=${addressD}&CityD=${cityD}&StateD=${stateD}&ZipD=${zipD}&PhoneD=${phoneD}` +
+                    `&EmailD=${emailD}&TotalPaymentToCarrier=${paymentMethod}&PriceListed=${price}&BrokerFee=${brokerFee}&FaxC=${faxC}` +
+                    `&IccmcC=${iccmcC}&ContactC=${contactC}&PhoneC=${phoneC}`;
+                window.location.href = url;
 
-                }
-            };
-            xhttp.open("POST", "@ViewBag.BaseUrl/Dashbord/Order/RemoveVech", true);
-            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            xhttp.setRequestHeader('Accept-Encoding', 'br');
-            xhttp.send(Req);
-            tdElms.removeChild(FindId(tdElms.children, idVech));
-        }
+            }
+        };
+        xhttp.open("POST", "@ViewBag.BaseUrl/Dashbord/Order/RemoveVech", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.setRequestHeader('Accept-Encoding', 'br');
+        xhttp.send(Req);
+        tdElms.removeChild(FindId(tdElms.children, idVech));
+    }
 </script>
 
 <style>
@@ -345,4 +460,42 @@ $(document).ready(function() {
         color: #007bff;
         font-size: 20px;
     }
+
+    table thead tr {
+        background-color: #F0F4FA;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 20px;
+        color: #08112B;
+    }
+
+    table th, table td {
+        text-align: center;
+        padding: 7px 0 7px 0;
+    }
+
+    table.tab12 td input.delete {
+        background-image:url(/img/delete.svg);
+        background-size:25%;
+        background-position:center;
+        background-repeat:no-repeat
+    }
+
+</style>
+
+<style>
+    /*    table.tab12 {
+            width: 100%;
+            border: 0px;
+            border-collapse: collapse;
+        }
+
+            table.tab12 thead {
+                font-weight: bold;
+            }
+
+            table.tab12 td {
+                padding: 0.6rem 1rem;
+                border-bottom: 1px solid #e8e9eb;
+            }*/
 </style>

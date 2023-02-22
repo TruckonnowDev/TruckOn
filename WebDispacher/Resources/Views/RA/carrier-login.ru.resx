@@ -127,8 +127,7 @@
     <value>Электронная почта</value>
   </data>
   <data name="FirstPartAgreements" xml:space="preserve">
-    <value>Я принимаю
-Войдя в систему, вы соглашаетесь с условиями Truckonnow</value>
+    <value>Нажимая войти, вы соглашаетесь с условиями Truckonnow</value>
   </data>
   <data name="ForgotPassword" xml:space="preserve">
     <value>Забыли пароль</value>

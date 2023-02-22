@@ -2,6 +2,10 @@
 
 @inject IViewLocalizer Localizer
 
+@{
+    ViewData["Title"] = "All Trailers";
+}
+
 <body>
     <div class="admin">
         <div class="container">
@@ -19,13 +23,13 @@
                         <div class="tab" onclick="window.location.href='@Url.Action("Trucks", "Equipment")';">@Localizer["Trucks"]</div>
                         <div class="tab whiteborder" onclick="window.location.href='@Url.Action("CreateTrailer", "Equipment")';">@Localizer["Trailers"]</div>
                         <div class="tabContent">
-                            <table>
+                            <table class="truck-trailer-tab" style="width: 100%;">
                                 <thead>
                                     <tr>
                                         <th>@Localizer["Name"]</th>
                                         <th>@Localizer["Type"]</th>
                                         <th>@Localizer["Year"]</th>
-                                        <th>@Localizer["Make"]</th>
+                                        <th style="word-break: break-word">@Localizer["Make"]</th>
                                         <th>@Localizer["HowLong"]</th>
                                         <th>@Localizer["Color"]</th>
                                         <th>@Localizer["Plate"]#</th>
@@ -33,30 +37,32 @@
                                         <th>@Localizer["Vin"] #</th>
                                         <th style="padding: 10px 0;">@Localizer["Owner"]</th>
                                         <th>@Localizer["AnnualIns"]</th>
-                                        <th></th>
+                                        <th style="width: 38px"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @for (int i = 0; i < ViewBag.Trailers.Count; i++)
                                     {
                                         <tr>
-                                            <td>@ViewBag.Trailers[i].Name</td>
-                                            <td style="word-break: break-all">@ViewBag.Trailers[i].Type</td>
-                                            <td>@ViewBag.Trailers[i].Year</td>
-                                            <td>@ViewBag.Trailers[i].Make</td>
-                                            <td>@ViewBag.Trailers[i].HowLong</td>
-                                            <td>@ViewBag.Trailers[i].Color</td>
-                                            <td>@ViewBag.Trailers[i].Plate</td>
-                                            <td>@ViewBag.Trailers[i].Exp</td>
-                                            <td style="word-break: break-all">@ViewBag.Trailers[i].Vin</td>
-                                            <td>@ViewBag.Trailers[i].Owner</td>
-                                            <td>@ViewBag.Trailers[i].AnnualIns</td>
-                                            <td style="padding: 10px 0;width: 10%">
-                                                <img src="~/img/arrow.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Driver/InspactionTrucks?idDriver=0&idTruck=0&idTrailer=@ViewBag.Trailers[i].Id&date=0';" />
-                                                <img src="~/img/pen.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/EditTrailer?idTrailer='+@ViewBag.Trailers[i].Id;">
-                                                <img src="~/img/setting.svg" alt="" onclick="window.location.href='@ViewBag.BaseUrl/Settings?idTr=@ViewBag.Trailers[i].Id&page=s&idProfile=0&typeTransport=Trailer'">
-                                                <img src="~/img/doc.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/Trailer/Doc?id='+@ViewBag.Trailers[i].Id;">
-                                                <img src="~/img/delet.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/Trailer/Remove?id='+@ViewBag.Trailers[i].Id;">
+                                            <td aria-label="@Localizer["Name"]">@ViewBag.Trailers[i].Name</td>
+                                            <td aria-label="@Localizer["Type"]" style="word-break: break-all">@ViewBag.Trailers[i].Type</td>
+                                            <td aria-label="@Localizer["Year"]">@ViewBag.Trailers[i].Year</td>
+                                            <td aria-label="@Localizer["Make"]">@ViewBag.Trailers[i].Make</td>
+                                            <td aria-label="@Localizer["HowLong"]">@ViewBag.Trailers[i].HowLong</td>
+                                            <td aria-label="@Localizer["Color"]">@ViewBag.Trailers[i].Color</td>
+                                            <td aria-label="@Localizer["Plate"]#">@ViewBag.Trailers[i].Plate</td>
+                                            <td aria-label="@Localizer["PlateExp"]">@ViewBag.Trailers[i].Exp</td>
+                                            <td aria-label="@Localizer["Vin"] #" style="word-break: break-all">@ViewBag.Trailers[i].Vin</td>
+                                            <td aria-label="@Localizer["Owner"]">@ViewBag.Trailers[i].Owner</td>
+                                            <td aria-label="@Localizer["AnnualIns"]">@ViewBag.Trailers[i].AnnualIns</td>
+                                            <td class="input-img mt-3 mb-3">
+                                                <div class="td-click-img-margin">
+                                                    <img src="~/img/arrow.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Driver/InspactionTrucks?idDriver=0&idTruck=0&idTrailer=@ViewBag.Trailers[i].Id&date=0';"/>
+                                                    <img src="~/img/pen.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/EditTrailer?idTrailer='+@ViewBag.Trailers[i].Id;">
+                                                    <img src="~/img/setting.svg" alt="" onclick="window.location.href='@ViewBag.BaseUrl/Settings?idTr=@ViewBag.Trailers[i].Id&page=s&idProfile=0&typeTransport=Trailer'">
+                                                    <img src="~/img/doc.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/Trailer/Doc?id='+@ViewBag.Trailers[i].Id;">
+                                                    <img src="~/img/delet.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/Trailer/Remove?id='+@ViewBag.Trailers[i].Id;">
+                                                </div>
                                             </td>
                                         </tr>
                                     }

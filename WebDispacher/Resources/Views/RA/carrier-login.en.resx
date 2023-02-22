@@ -127,8 +127,7 @@
     <value>Email</value>
   </data>
   <data name="FirstPartAgreements" xml:space="preserve">
-    <value>I accept
-                                By signing in, you agree to Truckonnow's</value>
+    <value>By clicking log in, you agree to the Truckonnow</value>
   </data>
   <data name="ForgotPassword" xml:space="preserve">
     <value>Forgot password</value>

@@ -118,13 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BodyFifthBlock" xml:space="preserve">
-    <value>Any person using this App will have full access anywhere in the world with a simple Login and Password</value>
+    <value>Any person with a personalized Login information for the App gains a full access to a whole platform that can be accessed anywhere in the world</value>
   </data>
   <data name="BodySecondBlock" xml:space="preserve">
-    <value>Our App will totally take full Car Transportation Control from A-Z. Our highly advanced App will make sure your driver will not skip any steps assigned by your Company Admin.</value>
+    <value>Take a full control of your Car Transportation needs with our App today. Our highly advanced App will help your business and make sure your driver will not skip any steps assigned by your Company Admin.</value>
   </data>
   <data name="BodySixthBlock" xml:space="preserve">
-    <value>Super Dispatch is the easiest to use, most compatible, and reliable driver app in Auto Transport</value>
+    <value>Truckonnow is easy to use, most compatible, and reliable driver's App in Auto Transportation Industry</value>
   </data>
   <data name="BodyTenthBlock" xml:space="preserve">
     <value>To contact us, you can call the number</value>
@@ -144,14 +144,11 @@
   <data name="DriverFirstBlock" xml:space="preserve">
     <value>Driver</value>
   </data>
-  <data name="FirstBodyColSeventhBlock" xml:space="preserve">
-    <value>Sell and Buy equipment from reputable companies using this App</value>
-  </data>
   <data name="FirstBodyThirdBlock" xml:space="preserve">
-    <value>Admin will choose what inspection level the driver needs to perform at the pick-up or delivery. Admin could choose from 1 to 40 fully detailed pictures upon inspection. All pictures will have outlined body parts of the vehicle and interior to help the driver take better pictures. App will automatically adjust picture quality to highly visible imperfections to make the driver easier to select imperfections and post them to the app</value>
+    <value>You can choose what inspection level the driver needs to perform at the pick-up &amp; delivery. Ability to set the amount of detailed pictures that need to be taken upon inspection.  All pictures have an outlined body parts of the vehicle and interior to assist the driver with taking a better pictures. App automatically adjusts picture's quality to "highly visible" in order to help a driver to select imperfections and post them to the app in a timely manner.</value>
   </data>
-  <data name="FirstHeaderColSeventhBlock" xml:space="preserve">
-    <value>Market</value>
+  <data name="Marketplace" xml:space="preserve">
+    <value>Marketplace</value>
   </data>
   <data name="FirstHeaderThirdBlock" xml:space="preserve">
     <value>Transported Vehicle Inspection</value>
@@ -163,7 +160,7 @@
     <value>Send electronic invoices within seconds</value>
   </data>
   <data name="FooterFirstPartEighthBlock" xml:space="preserve">
-    <value>To pay, please register by filling out the</value>
+    <value>To start, please register by filling out the</value>
   </data>
   <data name="FooterSecondBlock" xml:space="preserve">
     <value>App available on Market and IOS</value>
@@ -174,9 +171,11 @@
   <data name="FourthPlusSixthBlock" xml:space="preserve">
     <value>Digitized vehicle inspections and unlimited photos</value>
   </data>
+  <data name="GetStarted" xml:space="preserve">
+    <value>Get Started</value>
+  </data>
   <data name="GreatWorkExperienceBody" xml:space="preserve">
-    <value>More than 10 Years of car hauling experience
-                        is invested in this Simple to use App and Portal. You will have full control of your business with simple to use tools , centers, and partners to help you run your business smoothly and in a highly efficient way.</value>
+    <value>More than 10 years of car hauling experience is invested in this easy to use App and Portal. You will have a full control of your business with simple to use tools &amp; great features. Our amazing product will help you to run your business smoothly and in a highly efficient way.</value>
   </data>
   <data name="GreatWorkExperienceHeader" xml:space="preserve">
     <value>Great Work Experience</value>
@@ -197,10 +196,13 @@
     <value>Take Full Control</value>
   </data>
   <data name="HeaderSeventhBlock" xml:space="preserve">
-    <value>Some Other Features</value>
+    <value>Included Features</value>
   </data>
   <data name="HeaderSixthBlock" xml:space="preserve">
     <value>Drivers Love Truckonnow</value>
+  </data>
+  <data name="InMonth" xml:space="preserve">
+    <value>month</value>
   </data>
   <data name="LargeFleetFirstBlock" xml:space="preserve">
     <value>Large Fleet</value>
@@ -253,13 +255,10 @@
   <data name="PointОneNinthBlock" xml:space="preserve">
     <value>No credit card required</value>
   </data>
-  <data name="SecondBodyColSeventhBlock" xml:space="preserve">
-    <value>When you hire a driver you can run hies truck on now credit. Perform a work history background check, any related claims and also you could leave an endorsement on any driver that worked for your company</value>
-  </data>
   <data name="SecondBodyThirdBlock" xml:space="preserve">
-    <value>Company Owners will be daily updated on what’s happening with their equipment, App will give 6 HR window for a driver to inspect company vehicle daily. If the driver fails to do so it will not him use the App till inspection is complete. No damages will be left behind after the driver. Company Admin will have a full control of what detailed pictures they want to send to a driver to perform the inspection, for example : interior, miles, dash light, truck body, all fluids, under hood, tires, bed storage, electrical connection, truck, and trailer connection, trailer body, trailer, tires, spare parts, and much more</value>
+    <value>Company Owners &amp; Assigned Admins have a full control of adjusting features &amp; options for a particular pickup/delivery “on the go”. Company owners get a daily update on what’s happening with their equipment.  App gives 6 hours window for a driver to perform inspection of company vehicle every day. If a driver fails to perform PTI it will not let him use the App until inspection is completed &amp; submitted. Its an easy way to stay in control and be aware of all the damages that could be left after the driver. Company's Admin has a full control in gathering information and detailed pictures they need to send by a driver in order to to perform the inspection; as an example - interior, milage, dash lights, truck body, fluids levels, under hood, tires, bed storage, electrical connection, truck and trailer connection, trailer body, trailer tires, spare parts, and etc. PTI or vehicle inspection can be set from 1 up to 150 pictures.</value>
   </data>
-  <data name="SecondHeaderColSeventhBlock" xml:space="preserve">
+  <data name="DriverCheck" xml:space="preserve">
     <value>Driver Check</value>
   </data>
   <data name="SecondHeaderThirdBlock" xml:space="preserve">
@@ -271,16 +270,37 @@
   <data name="SecondPlusSixthBlock" xml:space="preserve">
     <value>The free app was designed for owner-operators</value>
   </data>
-  <data name="ThirdBodyColSeventhBlock" xml:space="preserve">
-    <value>Find on the Map the most reputable Shop around you! This Portal allows you to review and share your experience in order to avoid any bad shops in the future</value>
+  <data name="StartPackage" xml:space="preserve">
+    <value>Start Today</value>
   </data>
-  <data name="ThirdHeaderColSeventhBlock" xml:space="preserve">
-    <value>Repair Support</value>
+  <data name="StartPackageBody" xml:space="preserve">
+    <value>Start Today for flat Monthly price of</value>
+  </data>
+  <data name="RepairLocator" xml:space="preserve">
+    <value>Repair locator</value>
   </data>
   <data name="ThirdPlusSixthBlock" xml:space="preserve">
     <value>Import orders directly from load boards and brokers</value>
   </data>
   <data name="TryForFree" xml:space="preserve">
     <value>Try for Free</value>
+  </data>
+  <data name="CompanyRating" xml:space="preserve">
+    <value>Company Rating</value>
+  </data>
+  <data name="Tracking" xml:space="preserve">
+    <value>Tracking</value>
+  </data>
+  <data name="TicketContest" xml:space="preserve">
+    <value>Ticket Contest</value>
+  </data>
+  <data name="LegalSupport" xml:space="preserve">
+    <value>Legal Support</value>
+  </data>
+  <data name="FleetManagement" xml:space="preserve">
+    <value>Fleet Management</value>
+  </data>
+  <data name="DispatchManagement" xml:space="preserve">
+    <value>Dispatch Management</value>
   </data>
 </root>

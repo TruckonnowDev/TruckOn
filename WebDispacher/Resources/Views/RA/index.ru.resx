@@ -118,13 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BodyFifthBlock" xml:space="preserve">
-    <value>Любой человек, использующий это приложение, будет иметь полный доступ в любую точку мира с помощью простого логина и пароля</value>
+    <value>Любой человек, имеющий персонализированную регистрационную информацию для приложения, получает полный доступ ко всей платформе, доступ к которой возможен из любой точки мира</value>
   </data>
   <data name="BodySecondBlock" xml:space="preserve">
-    <value>Наше приложение возьмет на себя полный контроль над автомобильным транспортом от А до Я. Наше высокотехнологичное приложение гарантирует, что ваш водитель не пропустит ни одного шага, назначенного администратором вашей компании.</value>
+    <value>Возьмите под полный контроль свои потребности в перевозке на автомобиле с помощью нашего приложения уже сегодня. Наше высокоразвитое приложение поможет вашему бизнесу и гарантирует, что ваш водитель не пропустит ни одного шага, назначенного администратором вашей компании.</value>
   </data>
   <data name="BodySixthBlock" xml:space="preserve">
-    <value>Super Dispatch - это самое простое в использовании, наиболее совместимое и надежное приложение для водителей на автомобильном транспорте</value>
+    <value>Truckonnow - это простое в использовании, наиболее совместимое и надежное приложение для водителя в сфере автомобильных перевозок</value>
   </data>
   <data name="BodyTenthBlock" xml:space="preserve">
     <value>Чтобы связаться с нами, вы можете позвонить по указанному номеру</value>
@@ -144,13 +144,10 @@
   <data name="DriverFirstBlock" xml:space="preserve">
     <value>Водитель</value>
   </data>
-  <data name="FirstBodyColSeventhBlock" xml:space="preserve">
-    <value>Продавайте и покупайте оборудование у авторитетных компаний, используя это приложение</value>
-  </data>
   <data name="FirstBodyThirdBlock" xml:space="preserve">
-    <value>Администратор выберет, какой уровень проверки водитель должен выполнить при получении или доставке. Администратор может выбрать от 1 до 40 полностью детализированных изображений после проверки. На всех снимках будут обозначены части кузова автомобиля и интерьер, чтобы помочь водителю сделать более качественные снимки. Приложение автоматически настроит качество изображения на хорошо заметные дефекты, чтобы водителю было легче выбирать дефекты и размещать их в приложении.</value>
+    <value>Вы можете выбрать, какой уровень проверки водитель должен выполнить при получении и доставке. Возможность установить количество детализированных снимков, которые необходимо сделать при осмотре.  На всех снимках обозначены части кузова автомобиля и интерьер, чтобы помочь водителю сделать более качественные снимки. Приложение автоматически настраивает качество изображения на "хорошо видимое", чтобы помочь водителю выявить недостатки и своевременно опубликовать их в приложении.</value>
   </data>
-  <data name="FirstHeaderColSeventhBlock" xml:space="preserve">
+  <data name="Marketplace" xml:space="preserve">
     <value>Рынок</value>
   </data>
   <data name="FirstHeaderThirdBlock" xml:space="preserve">
@@ -163,7 +160,7 @@
     <value>Отправка электронных счетов-фактур в течение нескольких секунд</value>
   </data>
   <data name="FooterFirstPartEighthBlock" xml:space="preserve">
-    <value>Для оплаты, пожалуйста, зарегистрируйтесь, заполнив</value>
+    <value>Чтобы начать, пожалуйста, зарегистрируйтесь, заполнив</value>
   </data>
   <data name="FooterSecondBlock" xml:space="preserve">
     <value>Приложение доступно в Market и IOS</value>
@@ -173,6 +170,9 @@
   </data>
   <data name="FourthPlusSixthBlock" xml:space="preserve">
     <value>Оцифрованные проверки транспортных средств и неограниченное количество фотографий</value>
+  </data>
+  <data name="GetStarted" xml:space="preserve">
+    <value>Начать</value>
   </data>
   <data name="GreatWorkExperienceBody" xml:space="preserve">
     <value>Более 10 лет опыта перевозки автомобилей
@@ -197,10 +197,13 @@
     <value>Возьмем под свой полный контроль</value>
   </data>
   <data name="HeaderSeventhBlock" xml:space="preserve">
-    <value>Некоторые другие особенности</value>
+    <value>Включенные функции</value>
   </data>
   <data name="HeaderSixthBlock" xml:space="preserve">
     <value>Водители Любят Truckonnow</value>
+  </data>
+  <data name="InMonth" xml:space="preserve">
+    <value>месяц</value>
   </data>
   <data name="LargeFleetFirstBlock" xml:space="preserve">
     <value>Большой автопарк</value>
@@ -253,13 +256,10 @@
   <data name="PointОneNinthBlock" xml:space="preserve">
     <value>Кредитная карта не требуется</value>
   </data>
-  <data name="SecondBodyColSeventhBlock" xml:space="preserve">
-    <value>Когда вы нанимаете водителя, вы можете управлять его грузовиком в кредит. Выполните проверку истории работы, любых связанных с этим претензий, а также вы можете оставить отзыв о любом водителе, который работал в вашей компании</value>
-  </data>
   <data name="SecondBodyThirdBlock" xml:space="preserve">
-    <value>Владельцы компаний будут ежедневно получать информацию о том, что происходит с их оборудованием, приложение предоставит водителю 6-часовое окно для ежедневного осмотра автомобиля компании. Если водитель этого не сделает, он не будет использовать приложение до завершения проверки. После водителя не останется никаких повреждений. Администратор компании будет иметь полный контроль над тем, какие подробные фотографии они хотят отправить водителю для проведения осмотра, например: интерьер, мили, подсветка приборной панели, кузов грузовика, все жидкости, под капотом, шины, хранение в кровати, электрическое подключение, подключение грузовика и прицепа, кузов прицепа, прицеп, шины, запасные части и многое другое</value>
+    <value>Владельцы компаний и назначенные администраторы имеют полный контроль над настройкой функций и опций для конкретного самовывоза / доставки “на ходу”. Владельцы компаний ежедневно получают обновленную информацию о том, что происходит с их оборудованием.  Приложение предоставляет водителю 6-часовое окно для ежедневного осмотра служебного автомобиля. Если водитель не выполнит PTI, это не позволит ему использовать приложение до тех пор, пока проверка не будет завершена и отправлена. Это простой способ сохранять контроль и быть в курсе всех повреждений, которые могут остаться после водителя. Администратор компании имеет полный контроль над сбором информации и подробных фотографий, которые им необходимо отправить водителю для проведения осмотра; в качестве примера - интерьер, пробег, подсветка приборной панели, кузов грузовика, уровень жидкостей, под капотом, шины, место для хранения, электрическое подключение, подключение грузовика и прицепа, кузов прицепа, шины прицепа, запасные части и т.д. PTI или осмотр транспортного средства можно настроить от 1 до 150 снимков.</value>
   </data>
-  <data name="SecondHeaderColSeventhBlock" xml:space="preserve">
+  <data name="DriverCheck" xml:space="preserve">
     <value>Проверка водителя</value>
   </data>
   <data name="SecondHeaderThirdBlock" xml:space="preserve">
@@ -271,10 +271,14 @@
   <data name="SecondPlusSixthBlock" xml:space="preserve">
     <value>Бесплатное приложение было разработано для владельцев-операторов</value>
   </data>
-  <data name="ThirdBodyColSeventhBlock" xml:space="preserve">
-    <value>Найдите на карте самый авторитетный магазин вокруг вас! Этот портал позволяет вам просматривать и делиться своим опытом, чтобы избежать каких-либо плохих магазинов в будущем</value>
+  <data name="StartPackage" xml:space="preserve">
+    <value>Начните сегодня</value>
   </data>
-  <data name="ThirdHeaderColSeventhBlock" xml:space="preserve">
+  <data name="StartPackageBody" xml:space="preserve">
+    <value>Начните сегодня по фиксированной месячной 
+цене</value>
+  </data>
+  <data name="RepairLocator" xml:space="preserve">
     <value>Ремонтная поддержка</value>
   </data>
   <data name="ThirdPlusSixthBlock" xml:space="preserve">
@@ -282,5 +286,23 @@
   </data>
   <data name="TryForFree" xml:space="preserve">
     <value>Попробовать бесплатно</value>
+  </data>
+  <data name="CompanyRating" xml:space="preserve">
+    <value>Рейтинг компании</value>
+  </data>
+  <data name="Tracking" xml:space="preserve">
+    <value>Отслеживание</value>
+  </data>
+  <data name="TicketContest" xml:space="preserve">
+    <value>Оспаривание штрафов</value>
+  </data>
+  <data name="LegalSupport" xml:space="preserve">
+    <value>Юридическая Поддержка</value>
+  </data>
+  <data name="FleetManagement" xml:space="preserve">
+    <value>Управление автопарком</value>
+  </data>
+  <data name="DispatchManagement" xml:space="preserve">
+    <value>Диспетчерское управление</value>
   </data>
 </root>

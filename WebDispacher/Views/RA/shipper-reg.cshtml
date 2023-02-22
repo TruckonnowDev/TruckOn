@@ -1,6 +1,12 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 
+@model WebDispacher.ViewModels.Shipping.ShippingRegViewModel
+
 @inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Shipper Registration";
+}
 
 <div class="register-page">
     <div class="container">
@@ -14,37 +20,54 @@
             </div>
             <div class="col-md-6">
                 <div class="right-form">
-                    <form action="">
+                    <form action="" method="post">
+                        <div class="validation" asp-validation-summary="ModelOnly"></div>
                         <label for="" class="w50">
-                            @Localizer["FormFirstName"]
-                            <input type="text">
+                            @Localizer["FormFirstName"]*
+                            <input type="text" name="FirstName" required>
+                            @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
                         </label>
                         <label for="" class="w50">
-                            @Localizer["FormLastName"]
-                            <input type="text">
+                            @Localizer["FormLastName"]*
+                            <input type="text" name="LastName" required>
+                            @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
                         </label>
                         <label for="">
-                            @Localizer["FormCompanyName"]
-                            <input type="text">
+                            @Localizer["FormCompanyName"]*
+                            <input type="text" name="CompanyName" required>
+                            @Html.ValidationMessageFor(model => model.CompanyName, "", new { @class = "text-danger" })
                         </label>
                         <label for="">
-                            @Localizer["Email"]
-                            <input type="email">
+                            @Localizer["Email"]*
+                            <input type="email" name="Email" required>
+                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
                         </label>
                         <label for="">
-                            @Localizer["PhoneNumber"]
-                            <input type="tel" id="phone" />
+                            @Localizer["PhoneNumber"]*
+                            <input type="tel" id="phone" name="PhoneNumber" required />
+                            @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
                         </label>
-                        <label for="">@Localizer["HowManyCars"]?</label>
+                        <label for="">@Localizer["HowManyCars"]?*
+                            <p>@Html.ValidationMessageFor(model => model.CarsPerMonth, "", new { @class = "text-danger" })</p>
+                        </label>
+                        
                         <div class="cheked">
-                            <label for=""><input type="radio" name="" id="">1 - 100</label>
-                            <label for=""><input type="radio" name="" id="">101 - 500</label>
-                            <label for=""><input type="radio" name="" id="">501 - 1 000</label>
-                            <label for=""><input type="radio" name="" id="">1 000+</label>
+                            <label for="">
+                                <input asp-for="CarsPerMonth" type="radio" value="1 - 100" name="CarsPerMonth" id="1">1 - 100
+                                </label>
+                            <label for="">
+                                <input asp-for="CarsPerMonth" type="radio" value="101 - 500" name="CarsPerMonth" id="2">101 - 500
+                                </label>
+                            <label for="">
+                                <input asp-for="CarsPerMonth" type="radio" value="501 - 1 000" name="CarsPerMonth" id="3">501 - 1 000
+                                </label>
+                            <label for="">
+                                <input asp-for="CarsPerMonth" type="radio" value="1 000+" name="CarsPerMonth" id="4">1 000+
+                                </label>
                         </div>
                         <label for="">
                             @Localizer["HowAboutUs"]? <span>(@Localizer["Optional"])</span>
-                            <input type="text">
+                            <input type="text" name="HowFoundAboutUs">
                         </label>
                         <input type="submit" value="@Localizer["RequestAccess"]" class="btn1-big">
                         <p>@Localizer["Agreements"] <a href="">@Localizer["TermsConditions"]</a> @Localizer["And"] <a href="">@Localizer["PrivacyPolicy"]</a></p>

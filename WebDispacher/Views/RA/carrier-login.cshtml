@@ -1,54 +1,80 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
-
 @inject IViewLocalizer Localizer
 
-<body>
-    <div class="login-page-carrier">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-5">
-                    <p style="color: red; text-align: center; font-size: 15px">
-                        @ViewData["TextError"]
-                    </p>
-                    <form action="~/RA/Avthorization" method="post" class="form-login">
-                        <div class="white">
-                            <div class="form-login-custom">
+@{
+    ViewData["Title"] = "Carrier Login";
+}
+<link href="~/css/Auth/login.css" rel="stylesheet" type="text/css" />
+<div id="carrier-login">
+    <div class="page-login">
+        <div class="login-wrap">
+            <div class="login-img">
+                <picture>
+                    <img src="/img/loginCarrier.svg" alt="login carrier">
+                </picture>
+            </div>
+            <div class="login-body">
+                <div class="login-form">
+                    <div class="form-property">
+                        <div class="content">
+                            <div class="title">
                                 <h1>@Localizer["CarrierTMSHeader"]</h1>
+                            </div>
+                            <div class="body-form-login">
+                            <p style="color: red; text-align: center; font-size: 15px">
+                                @ViewData["TextError"]
+                            </p>
+                            <form action="~/RA/Avthorization" method="post" class="form-login">
+                            <div class="input-login-item">
                                 <label for="">
                                     @Localizer["Email"]
-                                    <div>
-                                        <input name="Email" placeholder="abc@gmail.com">
+                                    <input name="Email" placeholder="company@gmail.com">
+                                    </label>
+                                </div>
+                                <div class="input-login-item">
+                                    <label for="" class="password">
+                                        @Localizer["Password"]
+                                            <div class="d-flex align-items-center">
+                                                <input type="password" id="password-input" name="Password" placeholder="@Localizer["Password"]">
+                                                <a href="#" class="password-control" onclick="return show_hide_password(this, 'password-input');"></a>
+                                        </div>
+                                    </label>
+                                </div>
+                                <div class="input-login-item">
+                                    <input type="submit" value="@Localizer["SignIn"]" class="btn-big">
+                                </div>
+                                </form>
+                                <div class="input-login-item">
+                                    <div class="small-text">
+                                        <a href="/recovery-password-send-mail">@Localizer["ForgotPassword"]?</a>
                                     </div>
-
-                                </label>
-                                <label for="" class="password">
-                                    @Localizer["Password"]
-                                    <div class="d-flex align-items-center">
-                                        <input type="password" id="password-input" name="Password" placeholder="@Localizer["Password"]">
-                                        <a href="#" class="password-control" onclick="return show_hide_password(this, 'password-input');"></a>
-                                    </div>
-
-                                </label> 
-                                <input type="submit" value="@Localizer["SignIn"]" class="btn1-big">
-                                <a href="/recovery-password-send-mail">@Localizer["ForgotPassword"]?</a>
+                                </div>
                             </div>
-
-
                         </div>
-                        <label class="accept">
-                            <input type="checkbox" name="accept" onchange="document.getElementById('mc-embedded-subscribe').disabled = !this.checked" checked />
+                    </div>
+                    <div class="login-message">
+                        <div class="terms">
                             <p>
                                 @Localizer["FirstPartAgreements"] <a href="">@Localizer["SecondPartAgreements"]</a> @Localizer["And"] <a href="">@Localizer["ThirdPartAgreements"]</a>
                             </p>
-                        </label>
-                    </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</body>
+</div>
+
 <style>
+    body {
+        background-color: #f0f4fa;
+    }
+
     input {
         border: 1px solid #C4C9D4;
+    }
+
+    header {
+        position: unset;
     }
 </style>

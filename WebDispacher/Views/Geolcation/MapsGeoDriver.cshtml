@@ -1,19 +1,23 @@
-﻿<body>
-            <span class="metadata-marker" style="display: none;" data-region_tag="html-body"></span>
-            <div id="map" style="overflow: visible; height: 92Vh; width: 100%;"></div>
-            <div id="dataDriverGPS" style="display:none">
-                @foreach (var driver in ViewBag.Drivers)
-                {
-                    @if (driver.geolocations != null)
-                    {
-                        <div>
-                            <input type="text" value=@driver.geolocations.Longitude />
-                            <input type="text" value=@driver.geolocations.Latitude />
-                            <input type="text" value=@driver.FullName />
-                        </div>
-                    }
-                }
-            </div>
+﻿@{
+    ViewData["Title"] = "Drivers Map";
+}
+
+<body>
+    <span class="metadata-marker" style="display: none;" data-region_tag="html-body"></span>
+    <div id="map" style="overflow: visible; height: 92Vh; width: 100%;"></div>
+    <div id="dataDriverGPS" style="display:none">
+        @foreach (var driver in ViewBag.Drivers)
+        {
+            @if (driver.geolocations != null)
+            {
+                <div>
+                    <input type="text" value=@driver.geolocations.Longitude />
+                    <input type="text" value=@driver.geolocations.Latitude />
+                    <input type="text" value=@driver.FullName />
+                </div>
+            }
+        }
+    </div>
 </body>
 <script>
     var map;
@@ -49,7 +53,7 @@
     }
 </script>
 <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDJDeP70BIMKVXHta-n8J1kWtJ1q9jQWKU&callback=initMap">
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDJDeP70BIMKVXHta-n8J1kWtJ1q9jQWKU&region=US&language=en&callback=initMap">
 </script>
 <style>
     #map {

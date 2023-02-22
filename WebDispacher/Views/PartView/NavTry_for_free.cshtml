@@ -14,16 +14,22 @@
                 <div class="info">
                     @if (ViewData["reg"] != null)
                     {
-                        <div class="col-md-auto">
+                        <div class="m-2">
                             <a href="@ViewData["reg"]"><div class="btn3">@Localizer["RequestAccess"]</div></a>
                         </div>
                     }
+                    <div class="m-2">
                     <div class="login">
                         <a href="#" id="login">@Localizer["Login"]</a>
                         <ul class="sub-login">
-                            <li><a href="/carrier-login">@Localizer["CarrierTMS"]</a></li>
-                            <li><a href="/shipper-login">@Localizer["ShipperTMS"]</a></li>
+                            <li>
+                                <a href="/carrier-login">@Localizer["CarrierTMS"]</a>
+                                </li>
+                            <li>
+                                <a href="/shipper-login">@Localizer["ShipperTMS"]</a>
+                                </li>
                         </ul>
+                    </div>
                     </div>
                 </div>
             </div>

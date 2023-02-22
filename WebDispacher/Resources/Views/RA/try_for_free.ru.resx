@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CarrierFirstItem" xml:space="preserve">
-    <value>7-дневная бесплатная пробная версия</value>
+    <value>24 часовая бесплатная пробная версия</value>
   </data>
   <data name="CarrierSecondItem" xml:space="preserve">
     <value>Кредитная карта не требуется</value>

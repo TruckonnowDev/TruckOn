@@ -127,8 +127,7 @@
     <value>Correo</value>
   </data>
   <data name="FirstPartAgreements" xml:space="preserve">
-    <value>Acepto
-Al iniciar sesión, acepta las condiciones de uso de Truckonnow</value>
+    <value>Al hacer clic en iniciar sesión, usted acepta los términos de Truckonnow</value>
   </data>
   <data name="ForgotPassword" xml:space="preserve">
     <value>Olvidé mi contraseña</value>

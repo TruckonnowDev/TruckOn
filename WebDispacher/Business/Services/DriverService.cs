@@ -551,7 +551,9 @@ namespace WebDispacher.Business.Services
                     drivers = drivers.GetRange(0, drivers.Count % 20);
                 }
             }
-
+            
+            drivers.Reverse();
+            
             return drivers;
         }
 
@@ -568,12 +570,12 @@ namespace WebDispacher.Business.Services
             {
                 Directory.CreateDirectory($"../Document/Driver/{id}");
             }
-
+            
             using (var fileStream = new FileStream(path, FileMode.Create))
             {
                 uploadedFile.CopyTo(fileStream);
             }
-
+            
             SaveDocDriverDb(path, id, nameDoc);
         }
 

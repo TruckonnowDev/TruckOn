@@ -504,6 +504,7 @@ namespace WebDispacher.Controellers
                     var drivers = await driverService.GetDrivers(idCompany);
                     
                     ViewBag.Orders = GetShippingDTOs(shippings, drivers);
+
                     ViewBag.Drivers = drivers;
 
                     var countPage = await orderService.GetCountPage(OrderConstants.OrderStatusDeliveredBilled, loadId, name, address, phone, email, price);

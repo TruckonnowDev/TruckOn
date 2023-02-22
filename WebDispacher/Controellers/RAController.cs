@@ -7,8 +7,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using WebDispacher.Business.Interfaces;
+using WebDispacher.Business.Services;
 using WebDispacher.Constants;
 using WebDispacher.Service;
+using WebDispacher.ViewModels.Contact;
+using WebDispacher.ViewModels.Shipping;
 
 namespace WebDispacher.Controellers
 {
@@ -140,6 +143,41 @@ namespace WebDispacher.Controellers
             ViewData[NavConstants.TextError] = error;
             
             return View("shipper-reg");
+        }
+
+        [HttpPost]
+        [Route("shipper-reg")]
+        public IActionResult ShipperReg(ShippingRegViewModel model)
+        {
+            ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+                    if (!ModelState.IsValid) return View("shipper-reg");
+
+                    // etc //
+
+                    return Redirect($"{Config.BaseReqvesteUrl}");
+
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+            else
+            {
+                var errors = ModelState.Select(x => x.Value.Errors)
+                           .Where(y => y.Count > 0)
+                           .ToList();
+
+                return View("shipper-reg", model);
+            }
+
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [HttpGet]

@@ -2,6 +2,10 @@
 
 @inject IViewLocalizer Localizer
 
+@{
+    ViewData["Title"] = "All Drivers";
+}
+
 <body>
     <div class="admin">
         <div class="container">
@@ -69,11 +73,11 @@
             <content class="ng-modal-wrapper">
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
+                    <button type="button" style="font-size:22px;" class="close text-right button-close-modal" data-dismiss="modal" aria-label="Close">
+                           <span aria-hidden="true">&#9587;</span>
+                       </button>
                         <div class="modal-header modal-title">
-                            <h1 class="text-center" style="padding-left:30%" id="DeleteDriverLabel">@Localizer["DriverReport"]</h1>
-                            <button type="button" style="margin-left:135px;font-size:22px;" class="close text-right" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&#9587;</span>
-                            </button>
+                            <h1 class="text-center" id="DeleteDriverLabel">@Localizer["DriverReport"]</h1>
                         </div>
                         <div class="modal-body">
                             <input style="display:none;" name="experience" id="experienceInp" /><br />
@@ -448,11 +452,10 @@ function SendRemindInspection(idDriver, url) {
     }
 
     .modal-dialog {
-        position: absolute;
-        left: 30%;
-        top: 200px;
-        width: 700px !important;
-        text-align: left;
+        top: 10%;
+        left: 0;
+        right: 0;
+        text-align: center;
         background-color: #fff;
         -moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
         -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
@@ -526,7 +529,7 @@ function SendRemindInspection(idDriver, url) {
 
     .modal-header {
         justify-content: center;
-        padding: 2rem;
+        padding: 0 2rem 1rem 2rem;
         border-bottom: 0;
     }
 

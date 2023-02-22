@@ -1,6 +1,11 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using WebDispacher.Constants;
 
 @inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Dashboard | Delivered";
+}
 
 <div class="admin">
     <div class="container">
@@ -87,7 +92,8 @@
                                         {
                                             <p>@Localizer["AssignedTo"] @ViewBag.Orders[i].NameDriver</p>
                                             <p>@Localizer["Phone"]: @ViewBag.Orders[i].PhoneDriver</p>
-                                            @if (ViewBag.Orders[i].DataPaid != null && DateTime.Parse(ViewBag.Orders[i].DataPaid) >= DateTime.Now)
+
+                                            @if (ViewBag.Orders[i].DataPaid != null && DateTime.ParseExact(ViewBag.Orders[i].DataPaid, DateTimeFormats.FullDateTimeInfo, null) >= DateTime.Now)
                                             {
                                                 <p>@Localizer["CustomerMustPayShippingTo"] @ViewBag.Orders[i].DataPaid</p>
                                             }
@@ -95,7 +101,8 @@
                                             {
                                                 <p style="color:red;" class="stPData">@Localizer["CustomerMustPayShippingTo"] @ViewBag.Orders[i].DataPaid</p>
                                             }
-                                        }
+
+                                    }
                                     </div>
                                 </div>
                             </div>

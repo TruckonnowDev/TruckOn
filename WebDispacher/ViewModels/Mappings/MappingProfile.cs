@@ -102,7 +102,7 @@ namespace WebDispacher.ViewModels.Mappings
                 .ForMember(x => x.key, opt => opt.MapFrom(d => d.Key))
                 .ForMember(x => x.IdCompany, opt => opt.MapFrom(d => d.IdCompany))
                 .ReverseMap();
-            CreateMap<ShippingViewModel, Shipping>()
+            CreateMap<ShippingViewModel, DaoModels.DAO.Models.Shipping>()
                 .ForMember(x => x.Id, opt => opt.MapFrom(s => s.Id))
                 .ForMember(x => x.idOrder, opt => opt.MapFrom(s => s.IdOrder))
                 .ReverseMap();

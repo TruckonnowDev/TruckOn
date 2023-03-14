@@ -59,23 +59,12 @@ namespace MDispatch.Vidget.VM
             {
                 CheckPlate();
             }
+            if (Device.RuntimePlatform == Device.iOS)
+            {
+                await Task.Delay(150);
+            }
             var orientationHandler = DependencyService.Get<IOrientationHandler>();
             orientationHandler.ForceLandscape();
-            await Task.Run(async () =>
-            {
-                while (true)
-                {
-                    var isLandscape = orientationHandler.IsForceLandscape();
-                    if (!isLandscape)
-                    {
-                        orientationHandler.ForcePortrait();
-                        await Task.Delay(200);
-                        orientationHandler.ForceLandscape();
-                    }
-                    else
-                        return;
-                }
-            });
 
             if (truckCar != null)
             {

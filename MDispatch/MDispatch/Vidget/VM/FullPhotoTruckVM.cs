@@ -61,7 +61,7 @@ namespace MDispatch.Vidget.VM
             }
             if (Device.RuntimePlatform == Device.iOS)
             {
-                await Task.Delay(150);
+                await Task.Delay(300);
             }
             var orientationHandler = DependencyService.Get<IOrientationHandler>();
             orientationHandler.ForceLandscape();
@@ -397,7 +397,8 @@ namespace MDispatch.Vidget.VM
             {
                 await Task.Run(() =>
                 {
-                    state = managerDispatchMob.DetectPlate(token, Convert.ToBase64String(result), IdDriver, type, ref plate);
+                    var resultInString = Convert.ToBase64String(result);
+                    state = managerDispatchMob.DetectPlate(token, resultInString, IdDriver, type, ref plate);
                 });
                 if (state == 1)
                 {

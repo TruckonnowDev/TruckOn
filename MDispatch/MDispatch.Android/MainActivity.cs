@@ -48,8 +48,8 @@ namespace MDispatch.Droid
             FormsControls.Droid.Main.Init(this);
             LoadApplication(new App());
             //Firebase
-            FirebaseApp.InitializeApp(this);
-            CreateNotificationChannel();
+            //FirebaseApp.InitializeApp(this);
+            //CreateNotificationChannel();
             mainActivity = this;
             ResizeForKeyBord();
         }

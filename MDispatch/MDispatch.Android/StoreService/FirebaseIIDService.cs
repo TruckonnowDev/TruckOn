@@ -8,7 +8,7 @@ using MDispatch.StoreNotify;
 namespace MDispatch.Droid.StoreService
 {
     [Service]
-    [IntentFilter(new[] { "com.google.firebase.INSTANCE_ID_EVENT" })]
+    //[IntentFilter(new[] { "com.google.firebase.INSTANCE_ID_EVENT" })]
     public class FirebaseIIDService : FirebaseInstanceIdService, IStore
     {
         public override void OnTokenRefresh()

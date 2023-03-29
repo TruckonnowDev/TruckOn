@@ -8,7 +8,7 @@ using Firebase.Messaging;
 namespace MDispatch.Droid.StoreService
 {
     [Service]
-    [IntentFilter(new[] { "com.google.firebase.MESSAGING_EVENT" })]
+    //[IntentFilter(new[] { "com.google.firebase.MESSAGING_EVENT" })]
     public class MyFirebaseMessagingService : FirebaseMessagingService
     {
         const string TAG = "FirebaseMsgService";

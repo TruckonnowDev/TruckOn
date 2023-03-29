@@ -2,11 +2,13 @@ using System;
 using System.Threading.Tasks;
 using FormsControls.Base;
 using MDispatch.Helpers;
+using MDispatch.Service.Cache;
 using MDispatch.Service.GeloctionGPS;
 using MDispatch.Service.Tasks;
 using MDispatch.StoreNotify;
 using MDispatch.View.A_R;
 using MDispatch.View.TabPage;
+using MonkeyCache.SQLite;
 using Plugin.Settings;
 using Xamarin.Forms;
 
@@ -30,6 +32,7 @@ namespace MDispatch
             SetCurrentCultureThread();
             LanguageHelper.InitLanguage();
             InitializeComponent();
+            Barrel.ApplicationId = "TruckOnNow";
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
             if (token == "")
             {
@@ -43,6 +46,9 @@ namespace MDispatch
                 MainPage = new AnimationNavigationPage(new TabPage(new Service.ManagerDispatchMob()));
             }
 
+
+            //Services
+            DependencyService.Register<ICacheService, CacheService>();
         }
 
         [Obsolete]

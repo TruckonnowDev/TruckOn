@@ -16,6 +16,12 @@ namespace MDispatch.Droid.NewrRender.Orientation
         }
 
         [System.Obsolete]
+        public bool IsForceLandscape()
+        {
+            return ((Activity)Forms.Context).RequestedOrientation == ScreenOrientation.Landscape;
+        }
+
+        [System.Obsolete]
         public void ForceSensor()
         {
             ((Activity)Forms.Context).RequestedOrientation = ScreenOrientation.FullSensor;

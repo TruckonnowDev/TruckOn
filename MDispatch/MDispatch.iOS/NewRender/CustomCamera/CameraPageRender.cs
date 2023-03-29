@@ -46,6 +46,7 @@ namespace MDispatch.iOS.NewRender.CustomCamera
             await AuthorizeCameraUse();
             SetupLiveCameraStream();
             timer = new Timer(new TimerCallback(WaiteBtn), null, 1500, Timeout.Infinite);
+            ReSetOrientation(UIInterfaceOrientation.LandscapeRight);
         }
 
         private void WaiteBtn(object state)

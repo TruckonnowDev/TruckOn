@@ -1,4 +1,5 @@
 ﻿using MDispatch.Service;
+using MDispatch.Service.Cache;
 using MDispatch.Service.Helpers;
 using MDispatch.View.PageApp;
 using MDispatch.View.PageApp.Settings;
@@ -43,7 +44,8 @@ namespace MDispatch.View.TabPage.Tab
         [Obsolete]
         private async void TapGestureRecognizer_Tapped_1(object sender, EventArgs e)
         {
-            if (activeMV.UnTimeOfInspection.IsInspection)
+            var cacheService = DependencyService.Get<ICacheService>();
+            if (activeMV.UnTimeOfInspection.IsInspection && cacheService.IsExpired(Constants.CacheInspection))
             {
                 await PopupNavigation.PushAsync(new AskHint(activeMV));
             }

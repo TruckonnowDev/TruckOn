@@ -1,6 +1,7 @@
 ﻿using MDispatch.Helpers;
 using MDispatch.Models;
 using MDispatch.Service;
+using MDispatch.Service.Cache;
 using MDispatch.Service.Helpers;
 using MDispatch.Service.Net;
 using MDispatch.Vidget.VM;
@@ -104,7 +105,7 @@ namespace MDispatch.ViewModels.TAbbMV
                     await Task.Run(() =>
                     {
                         UnTimeOfInspection = new UnTimeOfInspection(description);
-                        if (UnTimeOfInspection.IsInspection)
+                        if (UnTimeOfInspection.IsInspection && DependencyService.Get<ICacheService>().IsExpired(Constants.CacheInspection))
                         {
                             Device.BeginInvokeOnMainThread(async () => await PopupNavigation.PushAsync(new AskHint(this)));
                         }

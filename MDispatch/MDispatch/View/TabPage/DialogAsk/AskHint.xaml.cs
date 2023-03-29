@@ -1,4 +1,6 @@
-﻿using Rg.Plugins.Popup.Pages;
+﻿using MDispatch.Service.Cache;
+using Plugin.Settings;
+using Rg.Plugins.Popup.Pages;
 using Rg.Plugins.Popup.Services;
 using System;
 using System.Collections.Generic;
@@ -25,6 +27,12 @@ namespace MDispatch.ViewModels.TAbbMV.DialogAsk
         [Obsolete]
         private async void Button_Clicked(object sender, EventArgs e)
         {
+            var cacheService = DependencyService.Get<ICacheService>();
+
+            string token = CrossSettings.Current.GetValueOrDefault("Token", "");
+
+            cacheService.Add(Constants.CacheInspection, token, TimeSpan.FromHours(1));
+
             await PopupNavigation.PopAsync();
         }
 

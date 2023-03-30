@@ -6,8 +6,8 @@ using Android.Support.V7.App;
 
 namespace MDispatch.Droid
 {
-    [Activity(Label = "Truconnow",
-              Icon = "@mipmap/icon",
+    [Activity(Label = "Truckonnow",
+              Icon = "@mipmap/icon_truck",
               Theme = "@style/SplashTheme",
               ScreenOrientation = ScreenOrientation.SensorPortrait,
               MainLauncher = true)]

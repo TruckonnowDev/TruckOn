@@ -21,8 +21,8 @@ using Android.Gms.Extensions;
 
 namespace MDispatch.Droid
 {
-    [Activity(Label = "Truconnow",
-        Icon = "@mipmap/icon",
+    [Activity(Label = "Truckonnow",
+        Icon = "@mipmap/icon_truck",
         Theme = "@style/MainTheme",
         ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity

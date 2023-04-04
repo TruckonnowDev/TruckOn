@@ -16,6 +16,7 @@ namespace MDispatch.Service
             string content = null;
             try
             {
+                var res1 = Compress(image);
                 RestClient client = new RestClient(Config.BaseReqvesteUrl);
                 RestRequest request = new RestRequest("api.Vision/plate", Method.POST);
                 client.Timeout = 60000;

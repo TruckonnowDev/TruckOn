@@ -10,6 +10,7 @@ using MDispatch.View.A_R;
 using MDispatch.View.TabPage;
 using MonkeyCache.SQLite;
 using Plugin.Settings;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace MDispatch
@@ -32,6 +33,7 @@ namespace MDispatch
             SetCurrentCultureThread();
             LanguageHelper.InitLanguage();
             InitializeComponent();
+            GetPermissions();
             Barrel.ApplicationId = "TruckOnNow";
             string token = CrossSettings.Current.GetValueOrDefault("Token", "");
             if (token == "")
@@ -49,6 +51,14 @@ namespace MDispatch
 
             //Services
             DependencyService.Register<ICacheService, CacheService>();
+        }
+
+        private async void GetPermissions()
+        {
+            if (Device.RuntimePlatform == Device.iOS)
+            {
+                await Xamarin.Essentials.Permissions.RequestAsync<Permissions.Camera>();
+            }
         }
 
         [Obsolete]

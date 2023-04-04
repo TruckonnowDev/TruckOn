@@ -26,7 +26,7 @@
     <MtouchArch>x86_64</MtouchArch>
     <ConsolePause>false</ConsolePause>
     <CodesignProvision>Distribution</CodesignProvision>
-    <CodesignKey>Apple Distribution: Artsiom Karabeinikau (6UD2U7V27V)</CodesignKey>
+    <CodesignKey>iPhone Developer</CodesignKey>
     <LangVersion>8.0</LangVersion>
     <DeviceSpecificBuild>true</DeviceSpecificBuild>
     <MtouchDebug>true</MtouchDebug>

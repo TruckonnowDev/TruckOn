@@ -36,8 +36,8 @@ namespace ApiMobaileServise.Servise.GoogleApi
                 var response = client.DetectText(image);
                 var response3 = client.DetectLocalizedObjects(image);
 
-                foreach (var localizedObject in response3)
-                {
+                //foreach (var localizedObject in response3)
+                //{
                     string numPlateTmp = "";
                     Truck truck = null;
                     foreach (EntityAnnotation text in response)
@@ -86,10 +86,11 @@ namespace ApiMobaileServise.Servise.GoogleApi
                     {
                         plate = numPlateTmp;
                     }
-                }
+                //}
             }
             catch (Exception e)
             {
+                throw e;
             }
 
             return plate;

@@ -12,6 +12,7 @@ namespace MDispatch.Helpers.Language
         public string ForGotPasswordText => "Забыл пароль?";
 
         public string PasswordChangeRequestTitel => "Запрос на изменение пароля";
+        public string WrongScanPicture => "Пожалуйста сканируйте машину которая зарегестрирована в нашей системе.";
         public string PlaceholderEmailChangeRequest => "Введите сюда вашу почту";
         public string NotCorectEmail => "Введенный формат электронной почты неверен";
         public string PlaceholderNameChangeRequest => "Введите здесь свое полное имя";

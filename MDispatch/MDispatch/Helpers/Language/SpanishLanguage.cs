@@ -11,6 +11,7 @@ namespace MDispatch.Helpers.Language
         public string ForGotPasswordText => "Забыл пароль?";
 
         public string PasswordChangeRequestTitel => "Solicitud de cambio de contraseña";
+        public string WrongScanPicture => "Solicitud de cambio de contraseña";
         public string PlaceholderEmailChangeRequest => "Introduzca su correo electrónico aquí";
         public string NotCorectEmail => "El formato de correo electrónico ingresado es incorrecto";
         public string PlaceholderNameChangeRequest => "Ingrese su nombre completo aquí";

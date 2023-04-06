@@ -9,10 +9,12 @@ namespace MDispatch.View.GlobalDialogView
     public partial class Alert : PopupPage
     {
         private INavigation navigation = null;
+        private bool goBackAfterAnswer;
 
-        public Alert(string info, INavigation navigation)
+        public Alert(string info, INavigation navigation, bool goBackAfterAnswer = true)
         {
             this.navigation = navigation;
+            this.goBackAfterAnswer = goBackAfterAnswer;
             InitializeComponent();
             infoL.Text = info;
         }
@@ -21,7 +23,7 @@ namespace MDispatch.View.GlobalDialogView
         private async void Button_Clicked(object sender, System.EventArgs e)
         {
             await PopupNavigation.PopAsync(true);
-            if(navigation != null)
+            if(navigation != null && goBackAfterAnswer)
             {
                 await navigation.PopAsync();
             }

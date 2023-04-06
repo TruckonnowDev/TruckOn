@@ -28,6 +28,7 @@ namespace MDispatch.Helpers
         public static string AskErrorAlert => Language.AskErrorAlert;
         public static string PassTheDeviceAlert => WithoutTranslationLanguage.PassTheDeviceAlert;
         public static string TechnicalWorkServiceAlert => Language.TechnicalWorkServiceAlert;
+        public static string WrongScanPicture => Language.WrongScanPicture;
         public static string GiveMoneyAlert => Language.GiveMoneyAlert;
         public static string PaymentForDeliveryAlert => Language.PaymentForDeliveryAlert;
         public static string NotNetworkAlert => Language.NotNetworkAlert;

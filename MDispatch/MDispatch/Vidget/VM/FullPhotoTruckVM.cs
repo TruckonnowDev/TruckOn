@@ -10,6 +10,7 @@ using MDispatch.Service.Tasks;
 using MDispatch.Vidget.View;
 using MDispatch.View;
 using MDispatch.View.GlobalDialogView;
+using MDispatch.ViewModels.TAbbMV.DialogAsk;
 using Plugin.Settings;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -417,6 +418,10 @@ namespace MDispatch.Vidget.VM
                     {
                         await PopupNavigation.PushAsync(new PlateTrailerWrite(this));
                         PlateTrailer = plate;
+                    }
+                    if (string.IsNullOrWhiteSpace(plate))
+                    {
+                        await PopupNavigation.PushAsync(new Alert(LanguageHelper.WrongScanPicture, Navigation, false));
                     }
                 }
                 else if (state == 4)

@@ -10,6 +10,7 @@ namespace MDispatch.Helpers.Language
         string PlaceholderPassword { get; }
         string BtnLogInText { get; }
         string ForGotPasswordText { get; }
+        string WrongScanPicture { get; }
 
         string PasswordChangeRequestTitel { get; }
         string PlaceholderEmailChangeRequest { get; }

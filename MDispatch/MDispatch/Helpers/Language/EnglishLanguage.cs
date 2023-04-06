@@ -8,7 +8,7 @@
         public string PlaceholderPassword => "Password";
         public string BtnLogInText => "Log in";
         public string ForGotPasswordText => "Forgot password?";
-
+        public string WrongScanPicture => "Please scan car plate that is registered.";
         public string PasswordChangeRequestTitel => "Password Change Request";
         public string PlaceholderEmailChangeRequest => "Enter your mail here";
         public string NotCorectEmail => "The entered mail format is not correct";

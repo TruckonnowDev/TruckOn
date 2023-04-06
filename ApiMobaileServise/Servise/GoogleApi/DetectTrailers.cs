@@ -1,7 +1,12 @@
 ﻿using DaoModels.DAO.Models;
+using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Vision.V1;
+using Grpc.Auth;
+using Grpc.Core;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ApiMobaileServise.Servise.GoogleApi
 {
@@ -12,7 +17,7 @@ namespace ApiMobaileServise.Servise.GoogleApi
         public void AuchGoole(SqlCommandApiMobile sqlCommandApiMobil)
         {
             this.sqlCommandApiMobil = sqlCommandApiMobil;
-            System.Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", Config.AuchGoogleCloud);
+            //System.Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", Config.AuchGoogleCloud);
         }
 
         public string DetectText(params object[] parames)
@@ -23,7 +28,16 @@ namespace ApiMobaileServise.Servise.GoogleApi
                 List<Trailer> trailers = sqlCommandApiMobil.GetTrailers();
                 byte[] imager = (byte[])parames[1];
                 string idDriver = (string)parames[0];
-                var client = ImageAnnotatorClient.Create();
+                var token = GetAccessTokenFromJSONKeyAsync(
+     Config.AuchGoogleCloud,
+     "https://www.googleapis.com/auth/cloud-platform").Result;
+                var callCredentials = GoogleGrpcCredentials.FromAccessToken(token);
+                var channelCredentials = ChannelCredentials.Create(new SslCredentials(), callCredentials);
+
+                var client = new ImageAnnotatorClientBuilder()
+                {
+                    ChannelCredentials = channelCredentials,
+                }.Build();
                 var image = Google.Cloud.Vision.V1.Image.FromBytes(imager);
                 var response = client.DetectText(image);
                 var response3 = client.DetectLocalizedObjects(image);
@@ -89,6 +103,18 @@ namespace ApiMobaileServise.Servise.GoogleApi
                 throw e;
             }
             return plate;
+        }
+
+        public static async Task<string> GetAccessTokenFromJSONKeyAsync(string jsonKeyFilePath, params string[] scopes)
+        {
+            using (var stream = new FileStream(jsonKeyFilePath, FileMode.Open, FileAccess.Read))
+            {
+                return await GoogleCredential
+                    .FromStream(stream) // Loads key file
+                    .CreateScoped(scopes) // Gathers scopes requested
+                    .UnderlyingCredential // Gets the credentials
+                    .GetAccessTokenForRequestAsync(); // Gets the Access Token
+            }
         }
     }
 }

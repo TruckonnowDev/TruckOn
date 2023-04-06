@@ -10,6 +10,20 @@ using System.Threading.Tasks;
 using System;
 using System.IO;
 using Google.Api.Gax.Grpc;
+using Google.Api.Gax;
+using Google.Cloud.Vision.V1;
+using Grpc.Core;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Util.Store;
+using Google.Apis.Auth.OAuth2.Flows;
+using Google.Apis.Auth.OAuth2.Responses;
+using Microsoft.AspNetCore.Authentication.Twitter;
+using Grpc.Core;
+using Google.Apis.Auth.OAuth2.Requests;
+using System.Threading;
+using Google.Rpc;
+using System.Net;
+using System.Text;
 
 namespace ApiMobaileServise.Servise.GoogleApi
 {
@@ -20,18 +34,30 @@ namespace ApiMobaileServise.Servise.GoogleApi
         public void AuchGoole(SqlCommandApiMobile sqlCommandApiMobil)
         {  
             this.sqlCommandApiMobil = sqlCommandApiMobil;
-            System.Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", Config.AuchGoogleCloud);
+            //System.Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", Config.AuchGoogleCloud);
         }
 
         public string DetectText(params object[] parames)
         {
             string plate = "";
+            
             try
             {
                 byte[] photo = (byte[])parames[1];
                 string idDriver = (string)parames[0];
                 List<Truck> trucks = sqlCommandApiMobil.GetTrucks();
-                var client = ImageAnnotatorClient.Create();
+
+                var token = GetAccessTokenFromJSONKeyAsync(
+     Config.AuchGoogleCloud,
+     "https://www.googleapis.com/auth/cloud-platform").Result;
+                var callCredentials = GoogleGrpcCredentials.FromAccessToken(token);
+                var channelCredentials = ChannelCredentials.Create(new SslCredentials(), callCredentials);
+
+                var client = new ImageAnnotatorClientBuilder()
+                {
+                    ChannelCredentials = channelCredentials, 
+                }.Build();
+                //var client = ImageAnnotatorClient.Create();
                 var image = Google.Cloud.Vision.V1.Image.FromBytes(photo);
                 var response = client.DetectText(image);
                 var response3 = client.DetectLocalizedObjects(image);
@@ -94,6 +120,18 @@ namespace ApiMobaileServise.Servise.GoogleApi
             }
 
             return plate;
+        }
+
+        public static async Task<string> GetAccessTokenFromJSONKeyAsync(string jsonKeyFilePath, params string[] scopes)
+        {
+            using (var stream = new FileStream(jsonKeyFilePath, FileMode.Open, FileAccess.Read))
+            {
+                return await GoogleCredential
+                    .FromStream(stream) // Loads key file
+                    .CreateScoped(scopes) // Gathers scopes requested
+                    .UnderlyingCredential // Gets the credentials
+                    .GetAccessTokenForRequestAsync(); // Gets the Access Token
+            }
         }
     }
 }

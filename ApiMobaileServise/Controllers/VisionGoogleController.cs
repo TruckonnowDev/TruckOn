@@ -34,9 +34,9 @@ namespace ApiMobaileServise.Controllers
                     respons = JsonConvert.SerializeObject(new ResponseAppS("NotAuthorized", "Not Authorized", null));
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                respons = JsonConvert.SerializeObject(new ResponseAppS("failed", "Technical work on the service", null));
+                respons = JsonConvert.SerializeObject(new ResponseAppS("failed", "Technical work on the service, " + e.Message, null));
             }
             return respons;
         }

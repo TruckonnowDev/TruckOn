@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Google.Apis.Auth.OAuth2;
+using System;
 using System.IO;
 
 namespace ApiMobaileServise.Servise
@@ -10,12 +11,12 @@ namespace ApiMobaileServise.Servise
 
 
         public static string UrlAdmin { get; set; } = "http://truckonnow.com";
-       // public static string UrlAdmin { get; set; } = "http://dev.truckonnow.com";
-        public static string AuchGoogleCloud 
+        // public static string UrlAdmin { get; set; } = "http://dev.truckonnow.com";
+        public static string AuchGoogleCloud
         {
             get
             {
-                string path = Path.GetFullPath("credentials.json");
+                string path = Path.GetFullPath("../ApiMobile/AuthConfig/credentials.json");
                 //string path = Path.GetFullPath("../ApiMobaileServise/AuthConfig/credentials.json");
                 return path;
             }

@@ -7,7 +7,7 @@
       "sslPort": 0
     },
     "iisExpress": {
-      "applicationUrl": "http://localhost:8888/",
+      "applicationUrl": "http://localhost:8898/",
       "sslPort": 0
     }
   },
@@ -17,14 +17,21 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
-    "ApiMobaileServise": {
-      "commandName": "Project",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://192.168.31.15:8099"
+      "DemoService": {
+        "commandName": "Project",
+        "launchBrowser": false,
+        "applicationUrl": "http://localhost:5001",
+        "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development"
+        }
+      },
+      "ApiMobaileServise": {
+        "commandName": "Project",
+        "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development"
+        },
+        "applicationUrl": "http://192.168.31.15:8099"
+      }
     }
-  }
 }

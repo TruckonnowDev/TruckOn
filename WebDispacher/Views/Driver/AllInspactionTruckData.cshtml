@@ -1,9 +1,12 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using System.Globalization;
+@using WebDispacher.Constants;
 
 @inject IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = "All Inspection Truck";
+    DateTime dateTimeInspectionFormat = DateTime.MinValue;
 }
 
 <body>
@@ -13,7 +16,7 @@
                 <div class="col-md-12">
                     <div class="tabContent">
                         <div class="title">
-                            <a href="#" onclick="history.back();">@Localizer["BackToDrivers"]</a>
+                            <a href="/Driver/Drivers">@Localizer["BackToDrivers"]</a>
                         </div>
                         <div class="title">
                             <h1 class="text-info-header-1">@Localizer["TruckAndTrailerInspection"]</h1>
@@ -23,7 +26,7 @@
                         <option selected value="0">@Localizer["AllTime"]</option>
                         @for (DateTime i = DateTime.Now; i >= new DateTime(2019, 8, 1); i = i.AddMonths(-1))
                         {
-                            @if (i.ToShortDateString() != @ViewBag.SelectData)
+                            if (i.ToShortDateString() != ViewBag.SelectData)
                             {
                                 <option>@i.ToShortDateString()</option>
                             }
@@ -81,6 +84,16 @@
                 <div class="col-md-12">
                     @for (int i = 0; i < ViewBag.InspectionTruck.Count; i++)
                     {
+                        var dateTimeString = ViewBag.InspectionTruck[i].Date;
+
+                        try
+                        {
+                            dateTimeInspectionFormat = DateTime.ParseExact(dateTimeString, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
+                        }
+                        catch
+                        {
+
+                        }
                         <div class="one-line">
                             <div class="top-line">
                                 <div class="left">
@@ -94,9 +107,19 @@
                                         <p>
                                             <a>@Localizer["Trailer"]: </a>@ViewBag.InspectionTruck[i].Trailer
                                         </p>
-                                        <p>
-                                            <a>@Localizer["Inspection"]: </a>@ViewBag.InspectionTruck[i].Date
-                                        </p>
+                                        @if (dateTimeInspectionFormat.Year == 1)
+                                        {
+                                            <p>
+                                                <a>@Localizer["Inspection"]: </a>@ViewBag.InspectionTruck[i].Date
+                                            </p>
+                                        }
+                                        else
+                                        {
+                                            <p>
+                                                <a>@Localizer["Inspection"]: </a>@dateTimeInspectionFormat.ToString(DateTimeFormats.FullDateTimeInfoUS)
+                                            </p>
+                                        }
+                                        
                                     </div>
                                 </div>
                                 <div class="right">
@@ -104,6 +127,9 @@
                                 </div>
                             </div>
                         </div>
+                        {
+                            dateTimeInspectionFormat = DateTime.MinValue;
+                        }
                     }
                 </div>
             </div>

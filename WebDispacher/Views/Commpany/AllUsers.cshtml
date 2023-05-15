@@ -1,9 +1,12 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using System.Globalization;
+@using WebDispacher.Constants;
 
 @inject IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = "Company All Users";
+    DateTime dateTimeRegistrationFormat = DateTime.MinValue;
 }
 
 <body>
@@ -13,7 +16,7 @@
                 <div class="col-md-12">
                     <div class="title">
                         <h1>@Localizer["Users"]</h1>
-                        <select class="btn1 btn1-big-auto" onchange="window.location.href ='Users?idCompanySelect=' + this.options[this.selectedIndex].value">
+                        <select class="btn1 btn1-big-auto company-users" onchange="window.location.href ='Users?idCompanySelect=' + this.options[this.selectedIndex].value">
                             <option selected value="0">@Localizer["AllUsers"]</option>
                             @for (int i = 0; i < ViewBag.Companies.Count; i++)
                             {
@@ -48,12 +51,35 @@
                                 <tbody>
                                     @for (int i = 0; i < ViewBag.Users.Count; i++)
                                     {
+                                        {
+                                            var dateTimeString = @ViewBag.Users[i].Date;
+
+                                            try
+                                            {
+                                                dateTimeRegistrationFormat = DateTime.ParseExact(dateTimeString, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
+                                            }
+                                            catch
+                                            {
+
+                                            }
+                                        }
                                         <tr>
                                             <td>@ViewBag.Users[i].Login</td>
-                                            <td>@ViewBag.Users[i].Password</td>
+                                            <td style="word-break: break-all;">@ViewBag.Users[i].Password</td>
                                             <td>@ViewBag.Users[i].CompanyName</td>
-                                            <td>@ViewBag.Users[i].Date</td>
+                                            @if (dateTimeRegistrationFormat.Year == 1)
+                                            {
+                                                <td style="white-space: nowrap">@ViewBag.Users[i].Date</td>
+                                            }
+                                            else
+                                            {
+                                                <td style="white-space: nowrap">@dateTimeRegistrationFormat.ToString(DateTimeFormats.FullDateTimeInfoUS)</td>
+                                            }
+                                            
                                         </tr>
+                                        {
+                                            dateTimeRegistrationFormat = DateTime.MinValue;
+                                        }
                                     }
                                 </tbody>
                             </table>

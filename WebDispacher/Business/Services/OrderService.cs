@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -101,10 +103,10 @@ namespace WebDispacher.Business.Services
             await SavevechInDb(idVech, vehiclwInformation);
         }
         
-        public void AddHistory(string key, string idCompany, string idOrder, string idVech, string idDriver, string action)
+        public async Task AddHistory(string key, string idCompany, string idOrder, string idVech, string idDriver, string action, string localDate)
         {
             var historyOrder = new HistoryOrder();
-            var idUser = GetUserIdByKey(key);
+            var idUser = await GetUserIdByKey(key);
             
             switch (action)
             {
@@ -148,94 +150,98 @@ namespace WebDispacher.Business.Services
             historyOrder.IdOreder = idOrder;
             historyOrder.IdVech = Convert.ToInt32(idVech);
             historyOrder.IdUser = idUser;
-            historyOrder.DateAction = DateTime.Now.ToString();
+            historyOrder.DateAction = string.IsNullOrEmpty(localDate) ? DateTime.UtcNow.ToString(DateTimeFormats.FullDateTimeInfo) : localDate;
             
-            AddHistoryInDb(historyOrder);
+            await AddHistoryInDb(historyOrder);
         }
         
         public string GetStrAction(string key, string idCompany, string idOrder, string idVech, string idDriver, string action)
         {
             var strAction = string.Empty;
-            switch (action)
+            try
             {
-                //int idUser = _sqlEntityFramworke.GetUserIdByKey(key);
-                case OrderConstants.ActionAssign:
+                switch (action)
                 {
-                    var fullNameUser = GetFullNameUserByKey(key);
-                    var fullNameDriver = GetFullNameDriverById(idDriver);
-                    strAction = $"{fullNameUser} assign the driver ordered {fullNameDriver}";
-                    break;
-                }
-                case OrderConstants.ActionUnAssign:
-                {
-                    var fullNameUser = GetFullNameUserByKey(key);
-                    var fullNameDriver = GetFullNameDriverById(idDriver);
-                    strAction = $"{fullNameUser} withdrew an order from {fullNameDriver} driver";
-                    break;
-                }
-                case OrderConstants.ActionSolved:
-                {
-                    var fullNameUser = GetFullNameUserByKey(key);
-                    strAction = $"{fullNameUser} clicked on the \"Solved\" button";
-                    break;
-                }
-                case OrderConstants.ActionArchivedOrder:
-                {
-                    var fullNameUser = GetFullNameUserByKey(key);
-                    strAction = $"{fullNameUser} transferred the order to the archive";
-                    break;
-                }
-                case OrderConstants.ActionDeletedOrder:
-                {
-                    var fullNameUser = GetFullNameUserByKey(key);
-                    strAction = $"{fullNameUser} transferred the order to deleted orders";
-                    break;
-                }
-                case OrderConstants.ActionCreate:
-                {
-                    var fullNameUser = GetFullNameUserByKey(key);
-                    strAction = $"{fullNameUser} created an order";
-                    break;
-                }
-                case OrderConstants.ActionSaveOrder:
-                {
-                    var fullNameUser = GetFullNameUserByKey(key);
-                    strAction = $"{fullNameUser} edited the order";
-                    break;
-                }
-                case OrderConstants.ActionSaveVech:
-                {
-                    var fullNameUser = GetFullNameUserByKey(key);
-                    var vehiclwInformation = GetVechById(idVech);
-                    strAction = $"{fullNameUser} edited the vehicle {vehiclwInformation.Year} y. {vehiclwInformation.Make} {vehiclwInformation.Model}";
-                    break;
-                }
-                case OrderConstants.ActionRemoveVech:
-                {
-                    var fullNameUser = GetFullNameUserByKey(key);
-                    var vehiclwInformation = GetVechById(idVech);
-                    strAction = $"{fullNameUser} removed the vehicle {vehiclwInformation.Year} y. {vehiclwInformation.Make} {vehiclwInformation.Make}";
-                    break;
-                }
-                case OrderConstants.ActionAddVech:
-                {
-                    var fullNameUser = GetFullNameUserByKey(key);
-                    strAction = $"{fullNameUser} created a vehicle";
-                    break;
+                    //int idUser = _sqlEntityFramworke.GetUserIdByKey(key);
+                    case OrderConstants.ActionAssign:
+                        {
+                            var fullNameDriver = GetFullNameDriverById(idDriver);
+                            strAction = $"Assign the driver ordered {fullNameDriver}";
+                            break;
+                        }
+                    case OrderConstants.ActionUnAssign:
+                        {
+                            var fullNameDriver = GetFullNameDriverById(idDriver);
+                            strAction = $"Withdrew an order from {fullNameDriver} driver";
+                            break;
+                        }
+                    case OrderConstants.ActionSolved:
+                        {
+                            var fullNameUser = GetFullNameUserByKey(key);
+                            strAction = $"{fullNameUser} clicked on the \"Solved\" button";
+                            break;
+                        }
+                    case OrderConstants.ActionArchivedOrder:
+                        {
+                            strAction = $"Transferred the order to the archive";
+                            break;
+                        }
+                    case OrderConstants.ActionDeletedOrder:
+                        {
+                            strAction = $"Transferred the order to deleted orders";
+                            break;
+                        }
+                    case OrderConstants.ActionCreate:
+                        {
+                            strAction = $"Created an order";
+                            break;
+                        }
+                    case OrderConstants.ActionSaveOrder:
+                        {
+                            strAction = $"Edited the order";
+                            break;
+                        }
+                    case OrderConstants.ActionSaveVech:
+                        {
+                            //var vehiclwInformation = GetVechById(idVech);
+                            var vehiclwInformation = GetVehicleHistoryById(idVech);
+                            strAction = $"Edited the vehicle {vehiclwInformation.Year} y. {vehiclwInformation.Make} {vehiclwInformation.Model}";
+                            break;
+                        }
+                    case OrderConstants.ActionRemoveVech:
+                        {
+                            //var vehiclwInformation = GetVechById(idVech);
+                            var vehiclwInformation = GetVehicleHistoryById(idVech);
+                            strAction = $"Removed the vehicle {vehiclwInformation.Year} y. {vehiclwInformation.Make} {vehiclwInformation.Model}";
+                            break;
+                        }
+                    case OrderConstants.ActionAddVech:
+                        {
+                            strAction = $"Created a vehicle";
+                            break;
+                        }
                 }
             }
-            
+            catch (Exception ex)
+            {
+
+            }
+                  
             return strAction;
         }
         
-        public void RemoveVechi(string idVech)
+        public async Task RemoveVechi(string idVech)
         {
-            var vehicle = db.VehiclwInformation.FirstOrDefault(v => v.Id.ToString() == idVech);
+            var vehicle = await db.VehiclwInformation.FirstOrDefaultAsync(v => v.Id.ToString() == idVech);
             if (vehicle == null) return;
-            
+
+            var carForHistory = mapper.Map<VehicleHistory>(vehicle);
+
+            await db.VehicleHistories.AddAsync(carForHistory);
+
             db.VehiclwInformation.Remove(vehicle);
             
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
         
         public async Task<VehiclwInformation> AddVechi(string idOrder)
@@ -286,32 +292,30 @@ namespace WebDispacher.Business.Services
             
             if (isDriverAssign)
             {
-                tokenShope = GerShopTokenForShipping(idOrder);
+                tokenShope = await GerShopTokenForShipping(idOrder);
             }
             
             var vehiclwInformations = await AddDriversInOrder(idOrder, idDriver);
             
-            await Task.Run(() =>
-            {
-                var managerNotify = new ManagerNotifyWeb();
-                var tokenShope1 = GerShopTokenForShipping(idOrder);
+            
+            var managerNotify = new ManagerNotifyWeb();
+            var tokenShope1 = await GerShopTokenForShipping(idOrder);
                 
-                if (!isDriverAssign)
-                {
-                    managerNotify.SendNotyfyAssign(idOrder, tokenShope1, vehiclwInformations);
-                }
-                else
-                {
-                    managerNotify.SendNotyfyAssign(idOrder, tokenShope1, vehiclwInformations);
-                    managerNotify.SendNotyfyUnassign(idOrder, tokenShope, vehiclwInformations);
-                }
-            });
+            if (!isDriverAssign)
+            {
+                managerNotify.SendNotyfyAssign(idOrder, tokenShope1, vehiclwInformations);
+            }
+            else
+            {
+                managerNotify.SendNotyfyAssign(idOrder, tokenShope1, vehiclwInformations);
+                managerNotify.SendNotyfyUnassign(idOrder, tokenShope, vehiclwInformations);
+            }
         }
         
         public async Task Unassign(string idOrder)
         {
             var managerNotify = new ManagerNotifyWeb();
-            var tokenShope = GerShopTokenForShipping(idOrder);
+            var tokenShope = await GerShopTokenForShipping(idOrder);
             var vehiclwInformations = await RemoveDriversInOrder(idOrder);
             
             await Task.Run(() =>
@@ -435,7 +439,7 @@ namespace WebDispacher.Business.Services
         
         private List<HistoryOrder> GetHistoryOrderByIdOrder(string idOrder)
         {
-            return db.HistoryOrders.Where(ho => ho.IdOreder.ToString() == idOrder).ToList();
+            return db.HistoryOrders.Where(ho => ho.IdOreder == idOrder).ToList();
         }
         
         private bool CheckInspactionDriverToDay(int idDriver)
@@ -443,14 +447,20 @@ namespace WebDispacher.Business.Services
             var driver = db.Drivers.Include(d => d.InspectionDrivers).FirstOrDefault(d => d.Id == idDriver);
             var inspectionDriver = driver.InspectionDrivers != null && driver.InspectionDrivers.Count != 0 
                 ? driver.InspectionDrivers.Last() : null;
-            
+
             if (inspectionDriver == null)
             {
                 driver.IsInspectionDriver = false;
                 driver.IsInspectionToDayDriver = false;
                 db.SaveChanges();
+
+                return driver.IsInspectionToDayDriver;
             }
-            else if (Convert.ToDateTime(inspectionDriver.Date).Date != DateTime.Now.Date)
+
+            var inspectionDate = DateTime.ParseExact(inspectionDriver.Date,DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
+
+            
+            if (inspectionDate != DateTime.Now.Date)
             {
                 if (DateTime.Now.Hour >= 12)
                 {
@@ -521,7 +531,7 @@ namespace WebDispacher.Business.Services
             if (loadId != null)
             {
                 qShippings = qShippings.Where(x =>
-                    x.idOrder.Contains(loadId));
+                    x.idOrder == loadId);
             }
             
             if (name != null)
@@ -553,29 +563,18 @@ namespace WebDispacher.Business.Services
             {
                 qShippings = qShippings.Where(x => x.PriceListed.Contains(price));
             }
-            
-            if (page != 0)
+
+            if (page == UserConstants.AllPagesNumber) return await qShippings.ToListAsync();
+
+            try
             {
-                try
-                {
-                    qShippings = qShippings.Skip(20 * page - 20);
+                qShippings = qShippings.Skip(UserConstants.NormalPageCount * page - UserConstants.NormalPageCount);
         
-                    qShippings = qShippings.Take(20);
-                }
-                catch(Exception)
-                {
-                    qShippings = qShippings.Skip((20 * page) - 20);
-                }
+                qShippings = qShippings.Take(UserConstants.NormalPageCount);
             }
-            else
+            catch(Exception)
             {
-                try
-                {
-                    qShippings = qShippings.Take(20);
-                }
-                catch (Exception)
-                {
-                }
+                qShippings = qShippings.Skip((UserConstants.NormalPageCount * page) - UserConstants.NormalPageCount);
             }
         
             var listShippings = await qShippings.ToListAsync();
@@ -624,10 +623,17 @@ namespace WebDispacher.Business.Services
             }
         
             var countShippings = qShippings.Count();
+
+            var countPages = GetCountPage(countShippings, UserConstants.NormalPageCount);
             
-            var countPage = countShippings / 20;
-            
-            return countPage;
+            return countPages;
+        }
+
+        private int GetCountPage(int countElements, int countElementsInOnePage)
+        {
+            var countPages = (countElements / countElementsInOnePage) % countElementsInOnePage;
+
+            return countPages > 0 ? countPages + 1 : countPages;
         }
 
         private async Task<List<VehiclwInformation>> RemoveDriversInOrder(string idOrder)
@@ -644,11 +650,11 @@ namespace WebDispacher.Business.Services
             return shipping.VehiclwInformations;
         }
         
-        private string GerShopTokenForShipping(string idOrder)
+        private async Task<string> GerShopTokenForShipping(string idOrder)
         {
-            var shipping = db.Shipping
-                .FirstOrDefault(d => d.Id == idOrder);
-            var driver = db.Drivers.First(d => d.Id == shipping.IdDriver);
+            var shipping = await db.Shipping
+                .FirstOrDefaultAsync(d => d.Id == idOrder);
+            var driver = await db.Drivers.FirstAsync(d => d.Id == shipping.IdDriver);
             
             return driver.TokenShope;
         }
@@ -731,6 +737,11 @@ namespace WebDispacher.Business.Services
             return db.VehiclwInformation.FirstOrDefault(v => v.Id.ToString() == idVech);
         }
         
+        private VehicleHistory GetVehicleHistoryById(string idVech)
+        {
+            return db.VehicleHistories.FirstOrDefault(v => v.VehicleId.ToString() == idVech);
+        }
+        
         private string GetFullNameDriverById(string idDriver)
         {
             return db.Drivers.First(d => d.Id.ToString() == idDriver).FullName;
@@ -745,15 +756,17 @@ namespace WebDispacher.Business.Services
             return shipping.Id;
         }
         
-        private void AddHistoryInDb(HistoryOrder historyOrder)
+        private async Task AddHistoryInDb(HistoryOrder historyOrder)
         {
-            db.HistoryOrders.Add(historyOrder);
-            db.SaveChanges();
+                await db.HistoryOrders.AddAsync(historyOrder);
+                await db.SaveChangesAsync();
         }
         
-        private int GetUserIdByKey(string key)
+        private async Task<int> GetUserIdByKey(string key)
         {
-            return db.User.First(u => u.KeyAuthorized == key).Id;
+            var user = await db.User.FirstAsync(u => u.KeyAuthorized == key);
+
+            return user.Id;
         }
         
         private string GetDriverIdByIdOrder(string idOrder)
@@ -831,7 +844,7 @@ namespace WebDispacher.Business.Services
                 shippingEdit.idOrder = shipping.IdOrder ?? shippingEdit.Id;
 
                 shippingEdit.InternalLoadID = shipping.InternalLoadID ?? shippingEdit.InternalLoadID;
-                switch (shipping.CurrentStatus)
+                /*switch (shipping.CurrentStatus)
                 {
                     case OrderConstants.OrderStatusDelivered:
                         shippingEdit.CurrentStatus = shippingEdit.CurrentStatus
@@ -844,35 +857,76 @@ namespace WebDispacher.Business.Services
                     default:
                         shippingEdit.CurrentStatus = shipping.CurrentStatus ?? shippingEdit.CurrentStatus;
                         break;
+                }*/
+                switch (shipping.CurrentStatus)
+                {
+                    case OrderConstants.OrderStatusNewLoad:
+                        shippingEdit.CurrentStatus = shipping.CurrentStatus;
+                        break; 
+                    case OrderConstants.OrderStatusAssigned:
+                        shippingEdit.CurrentStatus = shipping.CurrentStatus;
+                        break;
+                    case OrderConstants.OrderStatusPickedUp:
+                        shippingEdit.CurrentStatus = shipping.CurrentStatus;
+                        break;
+                    case OrderConstants.OrderStatusDelivered:
+                        shippingEdit.CurrentStatus = shipping.CurrentStatus;
+                        break;
+                    case OrderConstants.OrderStatusDeliveredBilled:
+                        shippingEdit.CurrentStatus = shipping.CurrentStatus;
+                        break;
+                    case OrderConstants.OrderStatusDeliveredPaid:
+                        shippingEdit.CurrentStatus = shipping.CurrentStatus;
+                        break; 
+                    case OrderConstants.OrderStatusDeleted:
+                        shippingEdit.CurrentStatus = shipping.CurrentStatus;
+                        break; 
+                    case OrderConstants.OrderStatusDeletedBilled:
+                        shippingEdit.CurrentStatus = shipping.CurrentStatus;
+                        break; 
+                    case OrderConstants.OrderStatusDeletedPaid:
+                        shippingEdit.CurrentStatus = shipping.CurrentStatus;
+                        break;
+                    case OrderConstants.OrderStatusArchived:
+                        shippingEdit.CurrentStatus = shipping.CurrentStatus;
+                        break;
+                    case OrderConstants.OrderStatusArchivedBilled:
+                        shippingEdit.CurrentStatus = shipping.CurrentStatus;
+                        break;
+                    case OrderConstants.OrderStatusArchivedPaid:
+                        shippingEdit.CurrentStatus = shipping.CurrentStatus;
+                        break;
+                    default:
+                        break;
                 }
 
-                shippingEdit.Titl1DI = shipping.Titl1DI ?? shippingEdit.Titl1DI;
-                shippingEdit.NameP = shipping.NameP ?? shippingEdit.NameD;
-                shippingEdit.ContactNameP = shipping.ContactNameP ?? shippingEdit.ContactNameP;
-                shippingEdit.AddresP = shipping.AddresP ?? shippingEdit.AddresP;
-                shippingEdit.CityP = shipping.CityP ?? shippingEdit.CityP;
-                shippingEdit.StateP = shipping.StateP ?? shippingEdit.StateP;
-                shippingEdit.ZipP = shipping.ZipP ?? shippingEdit.ZipP;
-                shippingEdit.PhoneP = shipping.PhoneP ?? shippingEdit.PhoneP;
-                shippingEdit.EmailP = shipping.EmailP ?? shippingEdit.EmailP;
-                shippingEdit.PickupExactly = shipping.PickupExactly ?? shippingEdit.PickupExactly;
-                shippingEdit.NameD = shipping.NameD ?? shippingEdit.NameD;
-                shippingEdit.ContactNameD = shipping.ContactNameD ?? shippingEdit.ContactNameD;
-                shippingEdit.AddresD = shipping.AddresD ?? shippingEdit.AddresD;
-                shippingEdit.CityD = shipping.CityD ?? shippingEdit.CityD;
+                shippingEdit.Titl1DI = shipping.Titl1DI ?? string.Empty;
+                shippingEdit.NameP = shipping.NameP ?? string.Empty;
+                shippingEdit.ContactNameP = shipping.ContactNameP ?? string.Empty;
+                shippingEdit.AddresP = shipping.AddresP ?? string.Empty;
+                shippingEdit.CityP = shipping.CityP ?? string.Empty;
+                shippingEdit.StateP = shipping.StateP ?? string.Empty;
+                shippingEdit.ZipP = shipping.ZipP ?? string.Empty;
+                shippingEdit.PhoneP = shipping.PhoneP ?? string.Empty;
+                shippingEdit.EmailP = string.IsNullOrEmpty(shipping.EmailP) ? string.Empty : shipping.EmailP.ToLower();
+                shippingEdit.PickupExactly = string.IsNullOrEmpty(shipping.PickupExactly) ? string.Empty : DateTime.ParseExact(shipping.PickupExactly, DateTimeFormats.BaseCalendarDate, CultureInfo.InvariantCulture).ToString(DateTimeFormats.DateTimeInfoUS);
+                shippingEdit.DeliveryEstimated = string.IsNullOrEmpty(shipping.DeliveryEstimated) ? string.Empty : DateTime.ParseExact(shipping.DeliveryEstimated, DateTimeFormats.BaseCalendarDate, CultureInfo.InvariantCulture).ToString(DateTimeFormats.DateTimeInfoUS);
+                shippingEdit.NameD = shipping.NameD ?? string.Empty;
+                shippingEdit.ContactNameD = shipping.ContactNameD ?? string.Empty;
+                shippingEdit.AddresD = shipping.AddresD ?? string.Empty;
+                shippingEdit.CityD = shipping.CityD ?? string.Empty;
                 shippingEdit.StateD = shipping.StateD ?? shippingEdit.StateD;
-                shippingEdit.ZipD = shipping.ZipD ?? shippingEdit.ZipD;
-                shippingEdit.PhoneD = shipping.PhoneD ?? shippingEdit.PhoneD;
-                shippingEdit.EmailD = shipping.EmailD ?? shippingEdit.EmailD;
-                shippingEdit.DeliveryEstimated = shipping.DeliveryEstimated ?? shippingEdit.DeliveryEstimated;
+                shippingEdit.ZipD = shipping.ZipD ?? string.Empty;
+                shippingEdit.PhoneD = shipping.PhoneD ?? string.Empty;
+                shippingEdit.EmailD = string.IsNullOrEmpty(shipping.EmailD) ? string.Empty : shipping.EmailD.ToLower();
                 shippingEdit.TotalPaymentToCarrier =
-                    shipping.TotalPaymentToCarrier ?? shippingEdit.TotalPaymentToCarrier;
-                shippingEdit.PriceListed = shipping.PriceListed ?? shippingEdit.PriceListed;
-                shippingEdit.BrokerFee = shipping.BrokerFee ?? shippingEdit.BrokerFee;
-                shippingEdit.ContactC = shipping.ContactC ?? shippingEdit.ContactC;
-                shippingEdit.PhoneC = shipping.PhoneC ?? shippingEdit.PhoneC;
-                shippingEdit.FaxC = shipping.FaxC ?? shippingEdit.FaxC;
-                shippingEdit.IccmcC = shipping.IccmcC ?? shippingEdit.IccmcC;
+                    shipping.TotalPaymentToCarrier ?? string.Empty;
+                shippingEdit.PriceListed = shipping.PriceListed ?? string.Empty;
+                shippingEdit.BrokerFee = shipping.BrokerFee ?? string.Empty;
+                shippingEdit.ContactC = shipping.ContactC ?? string.Empty;
+                shippingEdit.PhoneC = shipping.PhoneC ?? string.Empty;
+                shippingEdit.FaxC = shipping.FaxC ?? string.Empty;
+                shippingEdit.IccmcC = shipping.IccmcC ?? string.Empty;
                 
                 await db.SaveChangesAsync();
             

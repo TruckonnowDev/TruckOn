@@ -14,7 +14,7 @@ namespace WebDispacher.Business.Interfaces
         Task SaveVechi(string idVech, string vin, string year, string make, string model, string type, string color,
             string lotNumber);
 
-        void AddHistory(string key, string idCompany, string idOrder, string idVech, string idDriver, string action);
+        Task AddHistory(string key, string idCompany, string idOrder, string idVech, string idDriver, string action, string localDate);
 
         string GetStrAction(string key, string idCompany, string idOrder, string idVech, string idDriver,
             string action);
@@ -22,7 +22,7 @@ namespace WebDispacher.Business.Interfaces
         string CreateFiltersString(string loadId, string name, string address, string phone, string email,
             string price);
         
-        void RemoveVechi(string idVech);
+        Task RemoveVechi(string idVech);
         Task<VehiclwInformation> AddVechi(string idOrder);
         Task<Shipping> CreateShipping();
         Shipping GetShippingCurrentVehiclwIn(string id);

@@ -19,7 +19,7 @@
           asp-route-returnUrl="@Context.Request.Path"
           method="post" class="form-horizontal" name="setLanguage">
         <input id="culture" type="hidden" name="culture">
-        <a href="#" id="login"><img style="margin-bottom: 4px" src='Icon/flags/@(requestCulture.RequestCulture.UICulture.Name).svg'/> @requestCulture.RequestCulture.UICulture.Name.ToUpper()</a>
+        <a href="#" id="login"><img style="margin-bottom: 4px" src='/Icon/flags/@(requestCulture.RequestCulture.UICulture.Name).svg'/> @requestCulture.RequestCulture.UICulture.Name.ToUpper()</a>
         <ul class="sub-login sub-lang invert-menu">
             @foreach (var item in cultureItems)
             {

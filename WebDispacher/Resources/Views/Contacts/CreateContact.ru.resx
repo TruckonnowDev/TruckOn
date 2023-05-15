@@ -104,4 +104,10 @@
 	<data name="Save" xml:space="preserve">
 		<value>Сохранить</value>
 	</data>
+	<data name="PhoneValidMessage" xml:space="preserve">
+		<value>Пожалуйста, используйте только цифры</value>
+	</data>
+	<data name="EmailValidMessage" xml:space="preserve">
+		<value>Пожалуйста, введите почту в правильном формате</value>
+	</data>
 </root>

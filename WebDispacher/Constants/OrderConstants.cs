@@ -3,12 +3,12 @@
     public static class OrderConstants
     {
         public const string CentralDispatch = "Central Dispatch";
-        public const string OrderStatusNewLoad = "NewLoad";
+        public const string OrderStatusNewLoad = "New Load";
         public const string OrderStatusArchived = "Archived";
         public const string OrderStatusAssigned = "Assigned";
         public const string OrderStatusDeleted = "Deleted";
         public const string OrderStatusDelivered = "Delivered";
-        public const string OrderStatusPickedUp = "Picked up";
+        public const string OrderStatusPickedUp = "Picked Up";
         public const string OrderStatusArchivedBilled = "Archived,Billed";
         public const string OrderStatusArchivedPaid = "Archived,Paid";
         public const string OrderStatusDeletedBilled = "Deleted,Billed";

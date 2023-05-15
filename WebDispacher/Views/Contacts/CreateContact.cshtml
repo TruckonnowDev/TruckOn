@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using WebDispacher.Constants;
 
 @model WebDispacher.ViewModels.Contact.ContactViewModel
 
@@ -24,12 +25,12 @@
                             </label>
                             <label for="">
                                 <label class="mb-0" asp-for="Email"></label>
-                                <input type="email" name="Email" required>
+                                <input type="email" id="email" name="Email" pattern="@PatternConstants.Email" required>
                                 @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
                             </label>
                             <label for="">
                                 <label class="mb-0" asp-for="Phone"></label>
-                                <input type="text" name="Phone" placeholder="XXXXXXXXXX" pattern="[0-9]{4,12}" required>
+                                <input type="text" id="phone" name="Phone" placeholder="XXXXXXXXXX" pattern="[0-9]{4,12}" required>
                                 @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
                             </label>
                             <input class="btn1" type="submit" value="@Localizer["Save"]" />
@@ -40,3 +41,37 @@
         </div>
     </div>
 </body>
+
+<style>
+    .intl-tel-input {
+        width: 100%;
+    }
+</style>
+
+<script>
+    $('#phone').on('input invalid', function () {
+        this.setCustomValidity('')
+        if (this.validity.valueMissing) {
+            this.setCustomValidity("@Localizer["PhoneValidMessage"]")
+        }
+        if (this.validity.typeMismatch) {
+            this.setCustomValidity("@Localizer["PhoneValidMessage"]")
+        }
+        if (this.validity.patternMismatch) {
+            this.setCustomValidity("@Localizer["PhoneValidMessage"]")
+        }
+    })
+
+    $('#email').on('input invalid', function () {
+        this.setCustomValidity('')
+        if (this.validity.valueMissing) {
+            this.setCustomValidity("@Localizer["EmailValidMessage"]")
+        }
+        if (this.validity.typeMismatch) {
+            this.setCustomValidity("@Localizer["EmailValidMessage"]")
+        }
+        if (this.validity.patternMismatch) {
+            this.setCustomValidity("@Localizer["EmailValidMessage"]")
+        }
+    })
+</script>

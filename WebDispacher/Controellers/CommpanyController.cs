@@ -10,6 +10,7 @@ using WebDispacher.Business.Interfaces;
 using WebDispacher.Constants;
 using WebDispacher.Service;
 using WebDispacher.ViewModels.Company;
+using WebDispacher.ViewModels.Contact;
 
 namespace WebDispacher.Controellers
 {
@@ -32,7 +33,7 @@ namespace WebDispacher.Controellers
 
         [HttpGet]
         [Route("Companies")]
-        public IActionResult GetCompanies()
+        public async Task<IActionResult> GetCompanies(int page = 1)
         {
             try
             {
@@ -52,8 +53,15 @@ namespace WebDispacher.Controellers
                     
                     ViewBag.NameCompany = companyName;
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    ViewBag.Companies = companyService.GetCompaniesDTO();
-                    
+
+                    ViewBag.Companies = await companyService.GetCompaniesDTO(page);
+
+                    var countPages = await companyService.GetCountCompaniesPages();
+
+                    ViewBag.CountPages = countPages;
+
+                    ViewBag.SelectedPage = page;
+
                     return View("Companies");
                 }
 
@@ -113,12 +121,12 @@ namespace WebDispacher.Controellers
 
         [HttpPost]
         [Route("CreateCompany")]
-        public IActionResult CreateCompany(CreateCompanyViewModel company, List<IFormFile> MCNumberConfirmation, IFormFile IFTA, IFormFile KYU,
-            IFormFile logbookPapers, IFormFile COI, IFormFile permits)
+        public async Task<IActionResult> CreateCompany(CreateCompanyViewModel company, List<IFormFile> MCNumberConfirmation, IFormFile IFTA, IFormFile KYU,
+            IFormFile logbookPapers, IFormFile COI, IFormFile permits, string dateTimeLocal)
         {
             ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
             
-            if (ModelState.IsValid && IFTA != null && KYU != null && logbookPapers != null && COI != null && permits != null && MCNumberConfirmation.Count != 0)
+            if (ModelState.IsValid)
             {
                 try
                 {
@@ -128,8 +136,8 @@ namespace WebDispacher.Controellers
 
                     if (userService.CheckPermissions(key, idCompany, RouteConstants.Company))
                     {
-                        companyService.AddCompany(company, MCNumberConfirmation[0], IFTA, KYU, logbookPapers, COI,
-                            permits);
+                        await companyService.AddCompany(company, MCNumberConfirmation.Count != 0 ? MCNumberConfirmation[0] : null, IFTA, KYU, logbookPapers, COI,
+                            permits, dateTimeLocal);
 
                         return Redirect($"{Config.BaseReqvesteUrl}/Company/Companies");
                     }
@@ -180,6 +188,37 @@ namespace WebDispacher.Controellers
             }
             
             return Redirect(Config.BaseReqvesteUrl);
+        }
+
+        [HttpPost]
+        [Route("Remove")]
+        public async Task<bool> DeleteCompany(string id)
+        {
+            ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Company))
+                {
+                    await driverService.RemoveCompany(id);
+
+                    return true;
+                }
+
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                {
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+
+            return false;
         }
 
         [Route("Doc")]
@@ -301,7 +340,7 @@ namespace WebDispacher.Controellers
         [HttpGet]
         [Route("Users")]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
-        public IActionResult GetUsers(int idCompanySelect)
+        public async Task<IActionResult> GetUsers(int idCompanySelect)
         {
             try
             {
@@ -321,7 +360,7 @@ namespace WebDispacher.Controellers
                     
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     ViewBag.Users = companyService.GetUsers(idCompanySelect);
-                    ViewBag.Companies = companyService.GetCompaniesDTO();
+                    ViewBag.Companies = await companyService.GetCompaniesDTO(0);
                     ViewBag.IdCompanySelect = idCompanySelect;
                     
                     return View("AllUsers");
@@ -338,6 +377,75 @@ namespace WebDispacher.Controellers
             }
             
             return Redirect(Config.BaseReqvesteUrl);
+        }
+        
+        [HttpGet]
+        [Route("Questions")]
+        public async Task<IActionResult> GetQuestions()
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out  var companyName);
+                
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Company))
+                {
+                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                    ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
+                    if (isCancelSubscribe)
+                    {
+                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
+                    }
+                    
+                    return View("UserQuestions");
+                }
+
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                {
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+            
+            return Redirect(Config.BaseReqvesteUrl);
+        }
+
+        [HttpGet]
+        [Route("Company")]
+        public async Task<IActionResult> CompanyInfo(int id)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
+
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Contact))
+                {
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
+
+                    var companyInfo = await companyService.GetCompanyById(id);
+
+                    return View(companyInfo);
+                }
+
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                {
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+
+           return Redirect(Config.BaseReqvesteUrl);
         }
 
         [Route("GetDockPDF")]

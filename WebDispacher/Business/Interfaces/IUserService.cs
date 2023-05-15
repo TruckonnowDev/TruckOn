@@ -17,8 +17,9 @@ namespace WebDispacher.Business.Interfaces
         Users GetUserByKey(string key);
         List<Layouts> GetLayoutsByTransportVehicle(ITransportVehicle transportVehicle);
         bool CheckEmail(string email);
+        bool CheckEmailDb(string email);
         Task<int> ResetPasswordFoUser(string newPassword, string idUser, string token);
-        void CreateUserForCompanyId(int id, string nameCompany, string password);
+        void CreateUserForCompanyId(int id, string emailCompany, string password);
         void EditUser(SettingsUserViewModel user);
         SettingsUserViewModel GetUserById(int id);
         void AddUser(string idCompany, SettingsUserViewModel user);

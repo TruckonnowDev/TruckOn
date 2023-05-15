@@ -82,11 +82,35 @@
                                     <div class="value"><p>@Localizer["None"]</p> <p>@Localizer["Poor"]</p> <p>@Localizer["Middle"]</p> <p>@Localizer["Good"]</p></div>
                                 </label>
                                 <label class="big-label" for="">
-                                    @Localizer["Terminated"] <span class="text-gray">(@Localizer["TerminatedInfo"])</span>
+                                    @Localizer["Terminated"]
                                 </label>
                                 <div class="cheked">
-                                    <label for=""><input type="radio" name="Terminated" required id="">@Localizer["Yes"]</label>
-                                    <label for=""><input type="radio" name="Terminated" required id="">@Localizer["No"]</label>
+                                    <label for="">
+                                        <input type="radio" name="Terminated" required id="terminatedYes" onclick="changeTerminated('Yes');">@Localizer["Yes"]
+                                        </label>
+                                    <label for="">
+                                        <input type="radio" name="Terminated" checked required id="terminatedNo" onclick="changeTerminated('No')">@Localizer["No"]
+                                        </label>
+                                    <label class="if-true-terminated" style="display: none">
+                                        <input class="validation" type="checkbox" value="Fired" onclick="SelectExperience(this.value, this.checked)" />
+                                        <span style="text-align:center;">Fired</span>
+                                    </label>
+                                    <label class="if-true-terminated" style="display: none">
+                                        <input class="validation" type="checkbox" value="Quit" onclick="SelectExperience(this.value, this.checked)" />
+                                        <span style="text-align:center;">Quit</span>
+                                    </label>
+                                    <label class="if-true-terminated" style="display: none">
+                                        <input class="validation" type="checkbox" value="Contract expiration" onclick="SelectExperience(this.value, this.checked)" />
+                                        <span style="text-align:center;">Contract expiration</span>
+                                    </label>
+                                    <label class="if-true-terminated" style="display: none">
+                                        <input class="validation" type="checkbox" value="Left truck without a notice" onclick="SelectExperience(this.value, this.checked)" />
+                                        <span style="text-align:center;">Left truck without a notice</span>
+                                    </label>
+                                    <label class="if-true-terminated" style="display: none">
+                                        <input class="validation" type="checkbox" value="Disappeared" onclick="SelectExperience(this.value, this.checked)" />
+                                        <span style="text-align:center;">Disappeared</span>
+                                    </label>
                                 </div>
                                 <label for="">@Localizer["Experience"]</label>
                                 <div class="cheked">
@@ -112,6 +136,23 @@
     </div>
 </body>
 <script>
+    const optionalCheckBoxes = document.querySelectorAll(".if-true-terminated");
+    const checkedYes = document.getElementById("terminatedYes");
+    const checkedNo = document.getElementById("terminatedNo");
+
+    function changeTerminated(changedValue) {
+        if ('Yes' === changedValue){
+            checkedYes.checked = true;
+            checkedNo.checked = false;
+            optionalCheckBoxes.forEach(x => x.style.display = '');
+        }
+        else{
+            checkedYes.checked = false;
+            checkedNo.checked = true;
+            optionalCheckBoxes.forEach(x => x.style.display = 'none');
+        }
+    }
+
     function SelectExperience(value, Checked) {
         if (Checked) {
             if (experienceInp.value === undefined) {

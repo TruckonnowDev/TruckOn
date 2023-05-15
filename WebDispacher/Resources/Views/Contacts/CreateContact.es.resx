@@ -104,4 +104,10 @@
 	<data name="Save" xml:space="preserve">
 		<value>Guardar</value>
 	</data>
+	<data name="PhoneValidMessage" xml:space="preserve">
+		<value>Utilice solo números</value>
+	</data>
+	<data name="EmailValidMessage" xml:space="preserve">
+		<value>Por favor, ponga el correo electrónico en el formato correcto</value>
+	</data>
 </root>

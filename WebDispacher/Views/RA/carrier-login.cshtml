@@ -1,8 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using WebDispacher.Constants;
 @inject IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = "Carrier Login";
+    var gg = ViewData["UserEmail"];
 }
 <link href="~/css/Auth/login.css" rel="stylesheet" type="text/css" />
 <div id="carrier-login">
@@ -28,14 +30,14 @@
                             <div class="input-login-item">
                                 <label for="">
                                     @Localizer["Email"]
-                                    <input name="Email" placeholder="company@gmail.com">
-                                    </label>
-                                </div>
+                                        <input type="email" id="email" pattern="@PatternConstants.Email" value="@ViewData["UserEmail"]" name="Email" placeholder="company@gmail.com" required />
+                                        </label>
+                                    </div>
                                 <div class="input-login-item">
                                     <label for="" class="password">
                                         @Localizer["Password"]
                                             <div class="d-flex align-items-center">
-                                                <input type="password" id="password-input" name="Password" placeholder="@Localizer["Password"]">
+                                                <input type="password" id="password-input" name="Password" placeholder="@Localizer["Password"]" required>
                                                 <a href="#" class="password-control" onclick="return show_hide_password(this, 'password-input');"></a>
                                         </div>
                                     </label>
@@ -64,6 +66,34 @@
         </div>
     </div>
 </div>
+
+<script>
+    $('#email').on('input invalid', function () {
+        this.setCustomValidity('')
+            if (this.validity.valueMissing) {
+            this.setCustomValidity("@Localizer["EmailValidMessage"]")
+            }
+            if (this.validity.typeMismatch) {
+                this.setCustomValidity("@Localizer["EmailValidMessage"]")
+            }
+            if (this.validity.patternMismatch) {
+                this.setCustomValidity("@Localizer["EmailValidMessage"]")
+            }
+    })
+
+    $('#password-input').on('input invalid', function () {
+        this.setCustomValidity('')
+        if (this.validity.valueMissing) {
+            this.setCustomValidity("@Localizer["PasswordValidMessage"]")
+        }
+        if (this.validity.typeMismatch) {
+            this.setCustomValidity("@Localizer["PasswordValidMessage"]")
+        }
+        if (this.validity.patternMismatch) {
+            this.setCustomValidity("@Localizer["PasswordValidMessage"]")
+        }
+    })
+</script>
 
 <style>
     body {

@@ -231,7 +231,7 @@
 		<value>Нет</value>
 	</data>
 	<data name="ReminderSent" xml:space="preserve">
-		<value>Отправлено напоминание</value>
+		<value>Напоминание о проверке было отправлено</value>
 	</data>
 	<data name="AlreadyPassed" xml:space="preserve">
 		<value>Сегодняшняя проверка уже была пройдена</value>

@@ -13,7 +13,7 @@ namespace WebDispacher.Business.Interfaces
     public interface IDriverService
     {
         List<Driver> GetDriversByIdCompany(string idCompany);
-        void RemoveDrive(string idCompany, DriverReportModel model);
+        void RemoveDrive(string idCompany, DriverReportModel model, string localDate);
         int CheckTokenFoDriver(string idDriver, string token);
         InspectionDriver GetInspectionTruck(string idInspection);
 
@@ -21,13 +21,14 @@ namespace WebDispacher.Business.Interfaces
 
         Task CreateDriver(DriverViewModel driver,
             IFormFile dLDoc, IFormFile medicalCardDoc, IFormFile sSNDoc, IFormFile proofOfWorkAuthorizationOrGCDoc,
-            IFormFile dQLDoc, IFormFile contractDoc, IFormFile drugTestResultsDo);
+            IFormFile dQLDoc, IFormFile contractDoc, IFormFile drugTestResultsDo, string dateTimeLocal);
 
         Driver GetDriver(string idInspection);
         Driver GetDriverById(int id);
         DriverViewModel GetDriverByIdViewModel(int id);
         void RemoveDocDriver(string idDock);
-        List<Driver> GetDrivers(int pag, string idCompany);
+        Task<List<Driver>> GetDrivers(int page, string idCompany);
+        Task<int> GetCountDriversPages(string idCompany);
         Task<List<Driver>> GetDrivers(string idCompany);
 
         void AddNewReportDriver(DriverReportViewModel driverReport);

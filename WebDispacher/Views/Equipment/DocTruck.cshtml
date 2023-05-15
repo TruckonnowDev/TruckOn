@@ -24,23 +24,31 @@
                 @for (int i = 0; i < ViewBag.TruckDoc.Count; i++)
                 {
                     string pref = ViewBag.TruckDoc[i].DocPath.Remove(0, @ViewBag.TruckDoc[i].DocPath.LastIndexOf('.') + 1);
-                    <div class="col-md-12 pb-3">
-                        <p>
-                            @ViewBag.TruckDoc[i].NameDoc <a href="#" onclick="RemoveDoc(@ViewBag.TruckDoc[i].Id, @ViewBag.TruckId)">@Localizer["DeleteDoc"]</a>
-                        </p>
+                    <div class="row col-md-12">
+                        <div class="col-md-auto pb-3">
+                            <div style="display: flex;justify-content: space-between;">
+                                <p class="mr-2">
+                                    @ViewBag.TruckDoc[i].NameDoc
+                                </p>
+                                <p>
+                                        <a href="#" onclick="RemoveDoc(@ViewBag.TruckDoc[i].Id, @ViewBag.TruckId)">@Localizer["DeleteDoc"]</a>
+                                </p>
+                            
+                            </div>
+                            @if (pref == "pdf")
+                            {
+                        
+                                    <embed src="@ViewBag.BaseUrl/Equipment/GetDockPDF?docPath=@ViewBag.TruckDoc[i].DocPath" width="900" height="1200" />
+      
+                            }
+                            else
+                            {
+                        
+                                    <img src="@ViewBag.BaseUrl/Equipment/GetDock?docPath=@ViewBag.TruckDoc[i].DocPath&type=image/@pref" alt="" width="900">
+                       
+                            }
+                        </div>
                     </div>
-                    if (pref == "pdf")
-                    {
-                        <div class="col-md-12">
-                            <embed src="@ViewBag.BaseUrl/Equipment/GetDockPDF?docPath=@ViewBag.TruckDoc[i].DocPath" width="900" height="1200" />
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="col-md-12" style="width: 900px">
-                            <img src="@ViewBag.BaseUrl/Equipment/GetDock?docPath=@ViewBag.TruckDoc[i].DocPath&type=image/@pref" alt="" width="900">
-                        </div>
-                    }
                     <hr />
                 }
             </div>
@@ -66,7 +74,9 @@
                                 </label>
                             </div>
                             <div class="full-label">
-                                <a class="a-label">@Localizer["SelectDoc"]<a class="pl-2">(@Localizer["InfoMessageUploadFiles"])</a></a>
+                                <a class="a-label">@Localizer["UploadDocument"]</a>
+                                <br/>
+                                <a>@Localizer["InfoMessageUploadFiles"]</a>
                                 <div class="file-group">
                                     <div class="row">
                                         <div class="col-8 label-input d-flex align-items-center">
@@ -82,6 +92,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                <p class="file-limit-exceeded text-danger"></p>
                             </div>
                             <div class="form-group full-label">
                                 <button class="button-custom submit-add">@Localizer["ButtonAddDoc"]</button>

@@ -104,4 +104,10 @@
 	<data name="NameRequired" xml:space="preserve">
 		<value>Имя должно быть заполнено</value>
 	</data>
+	<data name="PasswordRequired" xml:space="preserve">
+		<value>Пароль должен быть заполнен</value>
+	</data>
+	<data name="PhoneRequired" xml:space="preserve">
+		<value>Телефон должен быть указан</value>
+	</data>
 </root>

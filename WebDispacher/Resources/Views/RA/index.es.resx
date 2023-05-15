@@ -202,9 +202,6 @@ se invierte en esta aplicación y portal fácil de usar. Tendrá un control tota
   <data name="HeaderSixthBlock" xml:space="preserve">
     <value>A Los Conductores Les Encanta Truckonnow</value>
   </data>
-  <data name="InMonth" xml:space="preserve">
-    <value>mes</value>
-  </data>
   <data name="LargeFleetFirstBlock" xml:space="preserve">
     <value>Gran flota</value>
   </data>
@@ -217,8 +214,7 @@ estará en contacto con la velocidad del rayo.
 O puede llamar al número</value>
   </data>
   <data name="ModalFooterDescription" xml:space="preserve">
-    <value>El Transporte De Automóviles Es Sencillo.
-Pruébalo gratis.</value>
+    <value>Complete este formulario y nos pondremos en contacto con usted lo antes posible o llámenos con cualquier pregunta al</value>
   </data>
   <data name="ModalFooterFirstItem" xml:space="preserve">
     <value>No se requiere tarjeta de crédito</value>
@@ -233,7 +229,7 @@ Pruébalo gratis.</value>
     <value>Su Mensaje</value>
   </data>
   <data name="ModalFormName" xml:space="preserve">
-    <value>Su nombre</value>
+    <value>Su Nombre</value>
   </data>
   <data name="ModalFormSubmit" xml:space="preserve">
     <value>Presentar</value>
@@ -275,8 +271,7 @@ Pruébalo gratis.</value>
     <value>Comience Hoy</value>
   </data>
   <data name="StartPackageBody" xml:space="preserve">
-    <value>Comience hoy por una tarifa plana Mensual 
-precio de</value>
+    <value>Tarifa Plana de Acceso Mensual por Unidad</value>
   </data>
   <data name="RepairLocator" xml:space="preserve">
     <value>Soporte de Reparación</value>
@@ -304,5 +299,23 @@ precio de</value>
   </data>
   <data name="DispatchManagement" xml:space="preserve">
     <value>Gestión de Despacho</value>
+  </data>
+  <data name="SuccessSendEmail" xml:space="preserve">
+    <value>El enlace de restablecimiento de contraseña fue enviado a su correo electrónico</value>
+  </data>
+  <data name="ContactFormHaveError" xml:space="preserve">
+    <value>Su información no puede ser enviada en este momento!</value>
+  </data>
+  <data name="ContactFormSuccessSend" xml:space="preserve">
+    <value>Su información fue enviada con éxito!</value>
+  </data>
+  <data name="ContactFormNotSend" xml:space="preserve">
+    <value>Hay un problema al enviar su información, por favor inténtelo de nuevo!</value>
+  </data>
+  <data name="ModalFormPhone" xml:space="preserve">
+    <value>Tu Teléfono</value>
+  </data>
+  <data name="ValidOnlyNumbersMessage" xml:space="preserve">
+    <value>Utilice solo números</value>
   </data>
 </root>

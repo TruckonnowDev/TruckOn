@@ -1,6 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DaoModels.DAO.Models;
+using iTextSharp.text;
+using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using WebDispacher.Business.Interfaces;
+using WebDispacher.Business.Services;
 using WebDispacher.Constants;
 using WebDispacher.Service;
 using WebDispacher.ViewModels.Contact;
@@ -21,7 +26,7 @@ namespace WebDispacher.Controellers
         }
 
         [Route("Contact/Contacts")]
-        public IActionResult Contacts(int page)
+        public async Task<IActionResult> Contacts(int page = 1)
         {
             try
             {
@@ -41,8 +46,15 @@ namespace WebDispacher.Controellers
                     
                     ViewBag.NameCompany = companyName;
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    ViewBag.Contacts = companyService.GetContacts(idCompany);
-                    
+
+                    ViewBag.Contacts = await companyService.GetContacts(page, idCompany);
+
+                    var countPages = await companyService.GetCountContactsPages(idCompany);
+
+                    ViewBag.CountPages = countPages;
+
+                    ViewBag.SelectedPage = page;
+
                     return View("FullContacts");
                 }
 
@@ -252,6 +264,40 @@ namespace WebDispacher.Controellers
             }
             
             return Redirect(Config.BaseReqvesteUrl);
+        }
+        
+        [HttpPost]
+        [Route("Contact/Delete")]
+        public async Task<bool> RemoveContact(int id)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
+                
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Contact))
+                {
+                    ViewBag.NameCompany = companyName;
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
+
+                    await companyService.DeleteContactById(id);
+
+                    return true;
+                }
+
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                {
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+
+            return false;
         }
     }
 }

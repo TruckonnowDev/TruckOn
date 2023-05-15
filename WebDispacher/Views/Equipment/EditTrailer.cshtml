@@ -19,7 +19,19 @@
                             <input type="text" name="Id" required value="@Model.Id" style="display:none;" />
                             <label class="big-label" for="">
                                 @Localizer["NameTrailer"]
-                                <input type="text" class="height-input" name="Name" required value="@Model.Name" />
+                                <input type="text" class="height-input" name="Name" required value="@Model.Name" maxlength="25" />
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["Year"]
+                                <input class="height-input" type="text" name="Year" value="@Model.Year" maxlength="4" />
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["Make"]
+                                <input class="height-input" type="text" name="Make" value="@Model.Make" maxlength="15" />
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["Model"]
+                                <input class="height-input" type="text" name="model" maxlength="20">
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["TypeTrailer"] <br />
@@ -44,45 +56,33 @@
                                 </select>
                             </label>
                             <label class="big-label" for="">
-                                @Localizer["Year"]
-                                <input class="height-input" type="text" name="Year" value="@Model.Year" />
-                            </label>
-                            <label class="big-label" for="">
-                                @Localizer["Make"]
-                                <input class="height-input" type="text" name="Make" value="@Model.Make" />
-                            </label>
-                            <label class="big-label" for="">
-                                @Localizer["Model"]
-                                <input class="height-input" type="text" name="model">
-                            </label>
-                            <label class="big-label" for="">
                                 @Localizer["HowLong"]
-                                <input class="height-input" type="text" name="HowLong" value="@Model.HowLong" />
+                                <input class="height-input" type="text" name="HowLong" value="@Model.HowLong" maxlength="5" />
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["Vin"]#
-                                <input class="height-input" type="text" name="Vin" value="@Model.Vin" />
+                                <input class="height-input" type="text" name="Vin" value="@Model.Vin" maxlength="17"/>
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["PlateTrailer"]
+                                <input class="height-input" type="text" name="Plate" required value="@Model.Plate" maxlength="10"/>
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["PlateTrailerExp"]
+                                <input class="height-input" type="text" name="Exp" id="plateExp" value="@Model.Exp" />
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["Color"]
+                                <input class="height-input" type="text" name="Color" value="@Model.Color" maxlength="15" />
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["AnnualIns"]
+                                <input class="height-input" type="text" name="AnnualIns" value="@Model.AnnualIns" maxlength="12" />
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["Owner"]
                                 @* @Html.TextBoxFor(x => x.Owner, new { value="@Model.Owner"}) *@
-                                <input class="height-input" type="text" name="Owner" value="@Model.Owner" />
-                            </label>
-                            <label class="big-label" for="">
-                                @Localizer["Color"]
-                                <input class="height-input" type="text" name="Color" value="@Model.Color" />
-                            </label>
-                            <label class="big-label" for="">
-                                @Localizer["PlateTrailer"]
-                                <input class="height-input" type="text" name="Plate" required value="@Model.Plate" />
-                            </label>
-                            <label class="big-label" for="">
-                                @Localizer["PlateTrailerExp"]
-                                <input class="height-input" type="text" name="Exp" value="@Model.Exp" />
-                            </label>
-                            <label class="big-label" for="">
-                                @Localizer["AnnualIns"]
-                                <input class="height-input" type="text" name="AnnualIns" value="@Model.AnnualIns" />
+                                <input class="height-input" type="text" name="Owner" value="@Model.Owner" maxlength="25" />
                             </label>
                             <button class="height-input btn1 big-label big-font-size">@Localizer["SaveInfo"]</button>
                         </form>
@@ -149,6 +149,9 @@
 </body>
 
 <script>
+    $(function () {
+        $("#plateExp").mask("99/99", { placeholder: "MM/YY" });
+    });
     var curentSelectPattern;
 
     function SelectTrailer(value) {

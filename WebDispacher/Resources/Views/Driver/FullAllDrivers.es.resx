@@ -231,7 +231,7 @@
 		<value>No</value>
 	</data>
 	<data name="ReminderSent" xml:space="preserve">
-		<value>Recordatorio enviado</value>
+		<value>Se envió un recordatorio de inspección a una unidad</value>
 	</data>
 	<data name="AlreadyPassed" xml:space="preserve">
 		<value>La inspección de hoy ya fue aprobada</value>

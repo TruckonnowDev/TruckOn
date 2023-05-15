@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using AutoMapper;
 using DaoModels.DAO.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NodaTime;
 using WebDispacher.Business.Interfaces;
 using WebDispacher.Constants;
 using WebDispacher.Models;
@@ -38,8 +40,7 @@ namespace WebDispacher.Controellers
         }
 
         [Route("Driver/Drivers")]
-        [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
-        public IActionResult Drivers(int page)
+        public async Task<IActionResult> Drivers(int page = 1)
         {
             try
             {
@@ -59,8 +60,14 @@ namespace WebDispacher.Controellers
                     
                     ViewBag.NameCompany = companyName;
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    ViewBag.Drivers = driverService.GetDrivers(page, idCompany);
-                    
+                    ViewBag.Drivers = await driverService.GetDrivers(page, idCompany);
+
+                    var countPages = await driverService.GetCountDriversPages(idCompany);
+
+                    ViewBag.CountPages = countPages;
+
+                    ViewBag.SelectedPage = page;
+
                     return View("FullAllDrivers");
                 }
 
@@ -364,7 +371,7 @@ namespace WebDispacher.Controellers
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public IActionResult CreateDriver(DriverViewModel driver,
             IFormFile dLDoc, IFormFile medicalCardDoc, IFormFile sSNDoc, IFormFile proofOfWorkAuthorizationOrGCDoc,
-            IFormFile dQLDoc, IFormFile contractDoc, IFormFile drugTestResultsDoc)
+            IFormFile dQLDoc, IFormFile contractDoc, IFormFile drugTestResultsDoc, string dateTimeLocal)
         {
             try
             {
@@ -380,7 +387,7 @@ namespace WebDispacher.Controellers
                     driver.CompanyId = Convert.ToInt32(idCompany);
                         
                     driverService.CreateDriver(driver,
-                        dLDoc, medicalCardDoc, sSNDoc, proofOfWorkAuthorizationOrGCDoc, dQLDoc, contractDoc, drugTestResultsDoc);
+                        dLDoc, medicalCardDoc, sSNDoc, proofOfWorkAuthorizationOrGCDoc, dQLDoc, contractDoc, drugTestResultsDoc, dateTimeLocal);
                         
                     return Redirect($"{Config.BaseReqvesteUrl}/Driver/Drivers");
                 }
@@ -401,7 +408,7 @@ namespace WebDispacher.Controellers
         [HttpGet]
         [Route("Driver/Drivers/Remove")]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
-        public IActionResult RemoveDriver(DriverReportModel model)
+        public IActionResult RemoveDriver(DriverReportModel model, string localDate)
         {
             if (ModelState.IsValid)
             {
@@ -430,7 +437,7 @@ namespace WebDispacher.Controellers
                             model.Experience = model.Experience.Remove(model.Experience.Length - 2);
                         }
 
-                        driverService.RemoveDrive(idCompany, model);
+                        driverService.RemoveDrive(idCompany, model, localDate);
 
                         return Redirect($"{Config.BaseReqvesteUrl}/Driver/Drivers");
                     }
@@ -562,8 +569,8 @@ namespace WebDispacher.Controellers
                     ViewBag.NameCompany = companyName;
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     var drivers = await driverService.GetDrivers(idCompany);
-                    var trucks = truckAndTrailerService.GetTrucks(idCompany);
-                    var trailers = truckAndTrailerService.GetTrailers(idCompany);
+                    var trucks = await truckAndTrailerService.GetTrucks(0, idCompany);
+                    var trailers = await truckAndTrailerService.GetTrailers(0, idCompany);
                     
                     var inspectionTruck = truckAndTrailerService.GetInspectionTrucks(idDriver, idTruck, idTrailer, date)
                         .Select(x => new InspectinView()
@@ -583,6 +590,7 @@ namespace WebDispacher.Controellers
                     {
                         ViewBag.InspectionTruck = inspectionTruck;
                     }
+
                     ViewBag.Drivers = drivers;
                     ViewBag.Trucks = trucks;
                     ViewBag.Trailers = trailers;
@@ -610,7 +618,7 @@ namespace WebDispacher.Controellers
         [HttpGet]
         [Route("Driver/InspactionTruck")]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
-        public IActionResult ViewInspaction(string idInspection, string idDriver, string date)
+        public async Task<IActionResult> ViewInspaction(string idInspection, string idDriver, string date)
         {
             try
             {
@@ -631,8 +639,8 @@ namespace WebDispacher.Controellers
                     ViewBag.NameCompany = companyName;
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     
-                    var trucks = truckAndTrailerService.GetTrucks(idCompany);
-                    var trailers = truckAndTrailerService.GetTrailers(idCompany);
+                    var trucks = await truckAndTrailerService.GetTrucks(0, idCompany);
+                    var trailers = await truckAndTrailerService.GetTrailers(0, idCompany);
                     var inspectionDriver = driverService.GetInspectionTruck(idInspection);
                     var drivers = driverService.GetDriver(inspectionDriver.Id.ToString());
                     
@@ -806,11 +814,22 @@ namespace WebDispacher.Controellers
         [HttpGet]
         [Route("Driver/Image")]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
-        public IActionResult GetShipping(string name, string type)
+        public async Task<IActionResult> GetShipping(string name, string type)
         {
-            var imageFileStream = System.IO.File.OpenRead(name);
-            
-            return File(imageFileStream, $"image/{type}");
+            try
+            {
+                var imageFileStream = System.IO.File.OpenRead(name);
+                var file = File(imageFileStream, $"image/{type}");
+                file.FileDownloadName = "file1";
+                return file;
+            }
+            catch(Exception e)
+            {
+                var response = new HttpResponseMessage(System.Net.HttpStatusCode.NotFound);
+                response.Content = new StringContent(e.Message);
+
+                return NotFound(await Task.FromResult(response));
+            }
         }
 
         [Route("Driver/GetDockPDF")]

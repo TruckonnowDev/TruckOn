@@ -3,14 +3,14 @@
     public static class DocAndFileConstants
     {
         public const string ContentTypePdf = "application/pdf";
-        public const string TruckRegistration = "Truck registration";
+        public const string TruckRegistration = "Truck Registration";
         public const string TrailerRegistration = "Trailer registration";
-        public const string TruckAgreement = "Truck lease agreement";
-        public const string TruckInspection = "Truck annual inspection";
+        public const string TruckAgreement = "Truck Lease Agreement";
+        public const string TruckInspection = "Annual inspection";
         public const string TrailerInspection = "Trailer annual inspection";
         public const string LeaseAgreement = "Lease agreement";
-        public const string BobTailPhysicalDamage = "Bob tail physical damage";
-        public const string NyHit = "NY HUT";
+        public const string BobTailPhysicalDamage = "Truck Bobtail Physical Damage";
+        public const string NyHit = "NY HUT (NY Rolling) Documents";
         public const string Kyu = "KYU";
         public const string Dl = "DL";
         public const string MedicalCard = "Medical card";

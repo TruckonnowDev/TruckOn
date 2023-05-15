@@ -17,11 +17,13 @@ namespace WebDispacher.Service.EmailSmtp
                 {
                     From = new MailAddress("truckonnow.info@gmail.com")
                 };
+                
                 mail.To.Add(new MailAddress(email));
                 mail.Subject = subject;
                 mail.Body = body;
                 mail.IsBodyHtml = true;
                 mail.Priority = MailPriority.High;
+
                 using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
                 {
                     smtp.Credentials = new NetworkCredential("truckonnow.info@gmail.com", "flcasipusazpzfdo");

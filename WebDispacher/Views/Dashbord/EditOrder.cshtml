@@ -1,4 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using System.Globalization;
+@using WebDispacher.Constants;
 
 @model WebDispacher.ViewModels.ShippingViewModel
 
@@ -6,6 +8,33 @@
 
 @{
     ViewData["Title"] = "Dashboard | Edit Order";
+
+    var baseStatuses = new Dictionary<string, string>
+            {
+                [OrderConstants.OrderStatusNewLoad] = Localizer["NewLoad"].Value,
+                [OrderConstants.OrderStatusPickedUp] = Localizer["PickedUp"].Value,
+                [OrderConstants.OrderStatusDelivered] = Localizer["Delivered"].Value
+            };
+
+
+    string pickupExactlyValue = string.Empty;
+
+    if (!string.IsNullOrEmpty(Model.PickupExactly))
+    {
+        pickupExactlyValue = DateTime.ParseExact(Model.PickupExactly, DateTimeFormats.DateTimeInfoUS, CultureInfo.InvariantCulture).ToString(DateTimeFormats.BaseCalendarDate);
+    }
+
+    string deliveryEstimatedValue = string.Empty;
+
+    if (!string.IsNullOrEmpty(Model.DeliveryEstimated))
+    {
+        deliveryEstimatedValue = DateTime.ParseExact(Model.DeliveryEstimated, DateTimeFormats.DateTimeInfoUS, CultureInfo.InvariantCulture).ToString(DateTimeFormats.BaseCalendarDate);
+    }
+
+    if (Model.CurrentStatus != null)
+    { 
+        var isState = baseStatuses.TryAdd(Model.CurrentStatus, Model.CurrentStatus);
+    }
 }
 
 <body>
@@ -15,7 +44,7 @@
                 <div class="col-md-12">
                     <div class="tabContente">
                         <div class="title text-info-padding-5">
-                            <a href="#" onclick="history.back();">@Localizer["BackToOrders"]</a>
+                            <a href='/Dashbord/Order/@ViewData["Status"].ToString()'>@Localizer["BackToOrders"]</a>
                         </div>
                         <h2 style="margin-block: 15px;">@Localizer["CreateOrderHeader"]</h2>
                     </div>
@@ -31,10 +60,11 @@
                                 </label>
                                 <label for="">
                                     @Localizer["Status"]
-                                    <select name="status" id="statusId">
-                                        <option value="NewLoad">@Localizer["NewLoad"]</option>
-                                        <option value="Picked up">@Localizer["PickedUp"]</option>
-                                        <option value="Delivered">@Localizer["Delivered"]</option>
+                                    <select name="CurrentStatus" id="statusId">
+                                        @foreach(var item in baseStatuses)
+                                        {
+                                            <option value=@item.Key>@item.Value</option>
+                                        }
                                     </select>
                                 </label>
                                 <label for="">
@@ -43,7 +73,7 @@
                                 </label>
                                 <label for="">
                                     @Localizer["Phone"]
-                                    <input type="tel" id="phoneC" name="PhoneC" value="@Model.PhoneC">
+                                    <input type="text" id="phoneC" name="PhoneC" value="@Model.PhoneC" placeholder="(XXX)-XXX-XXXX - @Localizer["PhoneNumber"]">
                                 </label>
                                 <h3>@Localizer["PichupHeader"]</h3>
                                 <label for="">
@@ -56,11 +86,11 @@
                                 </label>
                                 <label for="">
                                     @Localizer["Address"]
-                                    <input type="text" id="addressP" name="AddresP" value="@Model.AddresP" placeholder="@Localizer["Address"]" required>
+                                    <input type="text" id="addressP" name="AddresP" value="@Model.AddresP" placeholder="@Localizer["Address"]">
                                 </label>
                                 <label for="">
                                     @Localizer["City"]
-                                    <input type="text" id="cityP" name="CityP" value="@Model.CityP" placeholder="@Localizer["City"]" required>
+                                    <input type="text" pattern="@PatternConstants.OnlyLetters" id="cityP" name="CityP" value="@Model.CityP" placeholder="@Localizer["City"]">
                                 </label>
                                 <label for="">
                                     @Localizer["State"]
@@ -120,32 +150,32 @@
                                 </label>
                                 <label for="">
                                     @Localizer["Zip"]
-                                    <input type="text" id="zipP" name="ZipP" value="@Model.ZipP" pattern="[0-9]{5}" placeholder="XXXXX - @Localizer["ZipCode"]" required>
+                                    <input type="text" id="zipP" name="ZipP" value="@Model.ZipP" maxlength="5" max="99999" pattern="@PatternConstants.ZipOnlyFiveDigits" placeholder="XXXXX - @Localizer["ZipCode"]">
                                 </label>
                                 <label for="">
                                     @Localizer["Phone"]
-                                    <input type="tel" id="phoneP" name="PhoneP" placeholder="XXXXXXXXXX - @Localizer["PhoneNumber"]" pattern="[0-9]{4,12}" value="@Model.PhoneP" required>
+                                    <input type="text" id="phoneP" name="PhoneP" placeholder="(XXX)-XXX-XXXX - @Localizer["PhoneNumber"]" value="@Model.PhoneP">
                                 </label>
                                 <label for="">
                                     @Localizer["Email"]
-                                    <input id="emailP" name="EmailP" type="email" value="@Model.EmailP" placeholder="@Localizer["Email"]" required>
+                                    <input id="emailP" pattern="@PatternConstants.Email" asp-for=EmailP name="EmailP" type="email" value="@Model.EmailP" placeholder="@Localizer["Email"]">
                                 </label>
                                 <label for="">
                                     @Localizer["ScheduledPickupDate"]
-                                    <input type="date" id="scheduledPickupDateP" name="PickupExactly" value="@Model.PickupExactly">
+                                    <input type="date" id="scheduledPickupDateP" name="PickupExactly" value="@pickupExactlyValue">
                                 </label>
                             </div>
                             <div class="w1">
                                 <label style="margin-bottom: 7px;" for="">
                                     @Localizer["InstructionsHeader"]
-                                    <textarea type="text" id="instructions" class="textarea-resize-none" name="Titl1DI" style="height:192px;">@Model.Titl1DI</textarea>
+                                    <textarea type="text" id="instructions" class="textarea-resize-none" name="Titl1DI" style="height:166px;">@Model.Titl1DI</textarea>
                                 </label>
                                 <label for="">
                                     @Localizer["Fax"]
                                     <input type="text" id="faxC" name="FaxC" value="@Model.FaxC">
                                 </label>
                                 <label for="">
-                                    Iccmc
+                                    @Localizer["McNumber"]
                                     <input type="text" id="iccmcC" name="IccmcC" value="@Model.IccmcC">
                                 </label>
                                 <h3>@Localizer["DeliveryInfoHeader"]</h3>
@@ -159,11 +189,11 @@
                                 </label>
                                 <label for="">
                                     @Localizer["Address"]
-                                    <input type="text" id="addressD" name="AddresD" value="@Model.AddresD" placeholder="@Localizer["Address"]" required>
+                                    <input type="text" id="addressD" name="AddresD" value="@Model.AddresD" placeholder="@Localizer["Address"]">
                                 </label>
                                 <label for="">
                                     @Localizer["City"]
-                                    <input type="text" id="cityD" name="CityD" value="@Model.CityD" placeholder="@Localizer["City"]" required>
+                                    <input type="text" pattern="@PatternConstants.OnlyLetters" id="cityD" name="CityD" value="@Model.CityD" placeholder="@Localizer["City"]">
                                 </label>
                                 <label for="">
                                     @Localizer["State"]
@@ -223,22 +253,26 @@
                                 </label>
                                 <label for="">
                                     @Localizer["Zip"]
-                                    <input type="text" id="zipD" name="ZipD" value="@Model.ZipD" pattern="[0-9]{5}" placeholder="XXXXX - @Localizer["ZipCode"]" required>
+                                    <input type="text" id="zipD" name="ZipD" value="@Model.ZipD" max="99999" maxlength="5" pattern="@PatternConstants.ZipOnlyFiveDigits" placeholder="XXXXX - @Localizer["ZipCode"]">
                                 </label>
                                 <label for="">
                                     @Localizer["Phone"]
-                                    <input name="PhoneD" id="phoneD" placeholder="XXXXXXXXXX - @Localizer["PhoneNumber"]" type="tel" pattern="[0-9]{4,12}" value="@Model.PhoneD" required>
+                                    <input type="text" id="phoneD" name="PhoneD" value="@Model.PhoneD" placeholder="(XXX)-XXX-XXXX - @Localizer["PhoneNumber"]">
                                 </label>
                                 <label for="">
                                     @Localizer["Email"]
-                                    <input name="EmailD" id="emailD" type="email" value="@Model.EmailD" placeholder="@Localizer["Email"]" required>
+                                    <input name="EmailD" pattern="@PatternConstants.Email" id="emailD" type="email" value="@Model.EmailD" placeholder="@Localizer["Email"]">
+                                </label>
+                                <label for="">
+                                    @Localizer["ScheduledDeliveryDate"]
+                                    <input type="date" id="scheduledDeliveryEstimated" name="DeliveryEstimated" value="@deliveryEstimatedValue">
                                 </label>
                             </div>
                             <div class="w3">
                                 <h3>@Localizer["PaymentInfoHeader"]</h3>
                                 <label for="">
                                     @Localizer["PaymentMethod"]
-                                    <select id="paymentMethod" name="TotalPaymentToCarrier" required>
+                                    <select id="paymentMethod" name="TotalPaymentToCarrier">
                                         <option value="COP">COP</option>
                                         <option value="COD">COD</option>
                                         <option value="1 days">1 days</option>
@@ -250,15 +284,16 @@
                                 </label>
                                 <label for="">
                                     @Localizer["Price"]
-                                    <input type="text" id="price" name="PriceListed" value="@Model.PriceListed" required>
+                                    <input type="number" onchange="(function(el){el.value=parseFloat(el.value).toFixed(2);})(this)" id="price" name="PriceListed" value="@Model.PriceListed" step="0.01" />
                                 </label>
                                 <label for="">
                                     @Localizer["BrokenFee"]
-                                    <input type="text" id="brokerFee" name="BrokerFee" value="@Model.BrokerFee">
+                                    <input type="number" onchange="(function(el){el.value=parseFloat(el.value).toFixed(2);})(this)" id="brokerFee" name="BrokerFee" value="@Model.BrokerFee" step="0.01">
                                 </label>
+                                <input type="hidden" id="localDateInput" name="localDate" />
                                 <input class="btn1" type="submit" value="@Localizer["Save"]" />
-                                <button class="btn2">@Localizer["ArchiveOrder"]</button>
-                                <button class="btn3">@Localizer["DeleteOrder"]</button>
+                                <button class="btn3 open-ConfirmDelete">@Localizer["ArchiveOrder"]</button>
+                                <button type="button" class="btn2 open-ConfirmDelete mt-0" data-toggle="modal" data-id="@Model.Id" href="#confirmDeleteEntryModal">@Localizer["DeleteOrder"]</button>
                             </div>
                         </form>
                     </div>
@@ -268,10 +303,15 @@
                         <h1>@Localizer["VehsHeader"]</h1>
                         <button class="btn1" onclick="AddVech(this)">@Localizer["AddVeh"]</button>
                     </div>
-                    <table class="tab12">
+                </div>
+                
+            </div>
+        </div>
+
+        <table class="tab12">
                         <thead>
                             <tr>
-                                <th>№</th>
+                    <th style="min-width: 35px;">№</th>
                                 <th>VIN</th>
                                 <th>@Localizer["Year"]</th>
                                 <th>@Localizer["Make"]</th>
@@ -279,8 +319,8 @@
                                 <th>@Localizer["Type"]</th>
                                 <th>@Localizer["Color"]</th>
                                 <th>@Localizer["LotNumber"]</th>
-                                <th>&nbsp;</th>
-                                <th>&nbsp;</th>
+                                <th style="min-width: 120px;">&nbsp;</th>
+                                <th style="min-width: 35px;">&nbsp;</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -289,46 +329,130 @@
                                     @for (int i = 0; i < Model.VehiclwInformations.Count; i++)
                                 {
                                     
-                                        <form action="SavaVech" method="POST" class="tr" id="@Model.VehiclwInformations[i].Id">
+                                        <form action="SavaVech" method="POST" class="tr car-form" id="@Model.VehiclwInformations[i].Id">
                                            <tr>
-                                        <td aria-label="№" class="header-id-control">@i</td>
-                                        <td aria-label="VIN"><input type='text' name="VIN" value="@Model.VehiclwInformations[i].VIN" /></td>
-                                        <td aria-label="@Localizer["Year"]"><input type='text' name="Year" value="@Model.VehiclwInformations[i].Year" /></td>
-                                        <td aria-label="@Localizer["Make"]"><input type='text' name="Make" value="@Model.VehiclwInformations[i].Make" /></td>
-                                        <td aria-label="@Localizer["Model"]"><input type='text' name="Model" value="@Model.VehiclwInformations[i].Model" /></td>
-                                        <td aria-label="@Localizer["Type"]">
-                                            <select name="Type">
-                                                <option>@Model.VehiclwInformations[i].Type</option>
-                                                <option>Sedan</option>
-                                                <option>Suv</option>
-                                                <option>Coupe</option>
-                                                <option>PickUp</option>
-                                                <option>Tricycle</option>
-                                                <option>Sport bike</option>
-                                                <option>Touring motorcycle</option>
-                                                <option>Cruise motorcycle</option>
-                                            </select>
-                                        </td>
-                                        <td aria-label="@Localizer["Color"]"><input type='text' name="Color" value="@Model.VehiclwInformations[i].Color" /></td>
-                                        <td aria-label="@Localizer["LotNumber"]"><input type='text' name="LotNumber" value="@Model.VehiclwInformations[i].Lot" /></td>
-                                        <td class="button-control"><input type='submit' class="delete-border-cursor" value="@Localizer["Save"]" /></td>
-                                        <td class="button-control"><img src="/img/delete.svg" onclick="DeleteVech(@Model.VehiclwInformations[i].Id)" /></td>
-                                        <td style="display: none"><input type="text" name="idVech" style="display:none;" value="@Model.VehiclwInformations[i].Id" /></td>
-                                        <input type="text" name="idOrder" style="display:none;" value="@Model.Id" />
-                                        </tr>
+                                                <td aria-label="№" class="header-id-control">@i
+                                                    <input type='hidden' name="id" value="@Model.VehiclwInformations[i].Id" id="car-id" />
+                                                    </td>
+
+                                                <td aria-label="VIN">
+                                                    <input type='text' name="VIN" value="@Model.VehiclwInformations[i].VIN" id="car-vin" /></td>
+                                                <td aria-label="@Localizer["Year"]">
+                                                    <input type='text' name="Year" value="@Model.VehiclwInformations[i].Year" id="car-year"/></td>
+                                                <td aria-label="@Localizer["Make"]">
+                                                    <input type='text' name="Make" value="@Model.VehiclwInformations[i].Make" id="car-make" /></td>
+                                                <td aria-label="@Localizer["Model"]">
+                                                    <input type='text' name="Model" value="@Model.VehiclwInformations[i].Model" id="car-model"/></td>
+                                                <td aria-label="@Localizer["Type"]">
+                                                    <select name="Type" id="car-type">
+                                                        <option>@Model.VehiclwInformations[i].Type</option>
+                                                        <option>Sedan</option>
+                                                        <option>Suv</option>
+                                                        <option>Coupe</option>
+                                                        <option>PickUp</option>
+                                                        <option>Tricycle</option>
+                                                        <option>Sport bike</option>
+                                                        <option>Touring motorcycle</option>
+                                                        <option>Cruise motorcycle</option>
+                                                    </select>
+                                                </td>
+                                                <td aria-label="@Localizer["Color"]">
+                                                    <input type='text' name="Color" value="@Model.VehiclwInformations[i].Color" id="car-color" /></td>
+                                                <td aria-label="@Localizer["LotNumber"]">
+                                                    <input type='text' name="LotNumber" value="@Model.VehiclwInformations[i].Lot" id="car-lot"/></td>
+                                                <td class="button-control">
+                                                    <input type="hidden" id="localDateInputVeh" name="localDate" formnovalidate="car-localDate"/>
+                                                    <button type='submit' class="btn1">@Localizer["Save"]</button></td>
+                                                <td class="button-control">
+                                                    <a class="open-ConfirmDeleteVeh" data-toggle="modal" data-id="@Model.VehiclwInformations[i].Id" href="#confirmDeleteEntryModal">
+                                                        <img src="/img/delete.svg" />
+                                                    </a>
+                                                </td>
+                                                <td style="display: none">
+                                                    <input type="text" name="idVech" style="display:none;" value="@Model.VehiclwInformations[i].Id" /></td>
+                                                <input type="text" name="idOrder" style="display:none;" value="@Model.Id" id="car-idOrder" />
+                                            </tr>
                                         </form>
                                     }
                                 }
                             
                         </tbody>
                     </table>
-                </div>
-            </div>
-        </div>
+        @await Html.PartialAsync("~/Views/PartView/Modals/ConfirmDelete.cshtml");
     </div>
+
 </body>
 
 <script>
+    ConfirmRemoveEntry(GetDateTimeInFormat(new Date()), `/Dashbord/Order/ArchivedOrder`, `/Dashbord/Order/NewLoad`, '#confirmDeleteEntryModal');
+
+    $(document).on("click", ".open-ConfirmDeleteVeh", function () {
+        var vehId = $(this).data('id');
+        $(".submit-add").on("click", function(){
+
+            DeleteVech(vehId);
+
+            $('#confirmDeleteEntryModal').modal('hide');
+        });
+    });
+
+    $(".car-form").submit(function (el) {
+        el.preventDefault();
+
+        $("#localDateInput").val(GetDateTimeInFormat(new Date()));
+        $("#localDateInputVeh").val(GetDateTimeInFormat(new Date()));
+
+        let formElems = this.elements;
+
+        let body = {
+            idOrder: formElems['car-idOrder'].value,
+            idVech: formElems['idVech'].value,
+            vin: formElems['VIN'].value,
+            year: formElems['Year'].value,
+            make: formElems['Make'].value,
+            model: formElems['Model'].value,
+            type: formElems['Type'].value,
+            color: formElems['Color'].value,
+            lotNumber: formElems['LotNumber'].value,
+            localDate: formElems['localDate'].value,
+        }
+
+        $.ajax({
+            type: "post",
+            data: body,
+            async: true,
+            url: `/Dashbord/Order/SavaVech`,
+            success: function (response) {
+               SuccessAlert("@Localizer["VehFormSuccessSend"]")
+            },
+            error: function (response) {
+                ErrorAlert("@Localizer["VehFormHaveError"]");
+            }
+        });
+        
+    })
+
+    $.fn.setCursorPosition = function (pos) {
+        if ($(this).get(0).setSelectionRange) {
+            $(this).get(0).setSelectionRange(pos, pos);
+        }
+        else if ($(this).get(0).createTextRange) {
+            var range = $(this).get(0).createTextRange();
+            range.collapse(true);
+            range.moveEnd('character', pos);
+            range.moveStart('character', pos);
+            range.select();
+        }
+    };
+
+    $('input[name="PhoneP"], input[name="PhoneD"], input[name="PhoneC"]').on('click', function () {
+        $(this).setCursorPosition(1);
+    });
+    
+    $('input[name="ZipP"], input[name="ZipD"]').on('click', function () {
+        $(this).setCursorPosition(0);
+    });
+
     $(document).ready(function () {
         if ("@Model.CurrentStatus" != null) {
             $('#statusId option[value="@Model.CurrentStatus"]').prop('selected', true);
@@ -337,9 +461,43 @@
             $('#paymentMethod option[value="@Model.TotalPaymentToCarrier"]').prop('selected', true);
         }
 
+        $("#phoneD").mask("(999)-999-9999", { placeholder: "(XXX)-XXX-XXXX" });
+        $("#phoneP").mask("(999)-999-9999", { placeholder: "(XXX)-XXX-XXXX" });
+        $("#phoneC").mask("(999)-999-9999", { placeholder: "(XXX)-XXX-XXXX" });
+
         $('#stateD').val('@Model.StateD').change();
         $('#stateP').val('@Model.StateP').change();
+
+         $("#zipP").mask("99999", { placeholder: "XXXXX" });
+         $("#zipD").mask("99999", { placeholder: "XXXXX" });
     });
+
+
+    $('#zipD, #zipP, #price, #phoneD, #phoneP, #brokerFee').on('input invalid', function () {
+        this.setCustomValidity('')
+        if (this.validity.valueMissing) {
+            this.setCustomValidity("@Localizer["ZipValidMessage"]")
+        }
+        if (this.validity.typeMismatch) {
+            this.setCustomValidity("@Localizer["ZipValidMessage"]")
+        }
+        if (this.validity.patternMismatch) {
+            this.setCustomValidity("@Localizer["ZipValidMessage"]")
+        }
+    })
+    
+    $('#emailD, #emailP').on('input invalid', function () {
+        this.setCustomValidity('')
+        if (this.validity.valueMissing) {
+            this.setCustomValidity("@Localizer["EmailValidMessage"]")
+        }
+        if (this.validity.typeMismatch) {
+            this.setCustomValidity("@Localizer["EmailValidMessage"]")
+        }
+        if (this.validity.patternMismatch) {
+            this.setCustomValidity("@Localizer["EmailValidMessage"]")
+        }
+    })
 
     function AddVech(btnE) {
         const loadId = document.getElementById('idLoad').value;
@@ -353,6 +511,7 @@
         const phoneP = document.getElementById('phoneP').value;
         const emailP = document.getElementById('emailP').value;
         const scheduledPickupDateP = document.getElementById('scheduledPickupDateP').value;
+        const scheduledDeliveryEstimated = document.getElementById('scheduledDeliveryEstimated').value;
         const instructions = document.getElementById('instructions').value;
         const nameD = document.getElementById('nameD').value;
         const contactD = document.getElementById('contactD').value;
@@ -372,14 +531,14 @@
 
         let idOrder = document.getElementById('idOrder').value;
         var xhttp = new XMLHttpRequest();
-        let Req = "idOrder=" + idOrder;
+        let Req = "idOrder=" + idOrder + "&localDate=" + GetDateTimeInFormat(new Date());
         xhttp.onreadystatechange = function (e) {
             console.log(this.readyState);
             if (this.readyState === 4 && this.status === 200) {
                 alert(this.responseText);
                 var url = `@ViewBag.BaseUrl/Dashbord/Order/EditReload?Id=${idOrder}&status=${status}&idOrder=${loadId}&NameP=${nameP}` +
                     `&ContactNameP=${contactNameP}&Address=${addressP}&CityP=${cityP}&StateP=${stateP}&CurrentStatus=${status}` +
-                    `&ZipP=${zipP}&PhoneP=${phoneP}&EmailP=${emailP}&PickupExactly=${scheduledPickupDateP}&Titl1DI=${instructions}` +
+                    `&ZipP=${zipP}&PhoneP=${phoneP}&EmailP=${emailP}&PickupExactly=${scheduledPickupDateP}&DeliveryEstimated=${scheduledDeliveryEstimated}&Titl1DI=${instructions}` +
                     `&NameD=${nameD}&ContactNameD=${contactD}&AddressD=${addressD}&CityD=${cityD}&StateD=${stateD}&ZipD=${zipD}&PhoneD=${phoneD}` +
                     `&EmailD=${emailD}&TotalPaymentToCarrier=${paymentMethod}&PriceListed=${price}&BrokerFee=${brokerFee}&FaxC=${faxC}` +
                     `&IccmcC=${iccmcC}&ContactC=${contactC}&PhoneC=${phoneC}`;
@@ -404,6 +563,7 @@
         const phoneP = document.getElementById('phoneP').value;
         const emailP = document.getElementById('emailP').value;
         const scheduledPickupDateP = document.getElementById('scheduledPickupDateP').value;
+        const scheduledDeliveryEstimated = document.getElementById('scheduledDeliveryEstimated').value;
         const instructions = document.getElementById('instructions').value;
         const nameD = document.getElementById('nameD').value;
         const contactD = document.getElementById('contactD').value;
@@ -424,14 +584,14 @@
 
         let idOrder = document.getElementById('idOrder').value;
 
-        let Req = "idVech=" + btnE;
+        let Req = "idVech=" + btnE + "&localDate=" + GetDateTimeInFormat(new Date());
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function (e) {
             if (this.readyState == 4 && this.status == 200) {
                 alert(this.responseText);
-                var url = `@ViewBag.BaseUrl/Dashbord/Order/EditReload?Id=${idOrder}&stasus=${status}&idOrder=${loadId}&NameP=${nameP}` +
+                var url = `@ViewBag.BaseUrl/Dashbord/Order/EditReload?Id=${idOrder}&status=${status}&idOrder=${loadId}&NameP=${nameP}` +
                     `&ContactNameP=${contactNameP}&Address=${addressP}&CityP=${cityP}&StateP=${stateP}&CurrentStatus=${status}` +
-                    `&ZipP=${zipP}&PhoneP=${phoneP}&EmailP=${emailP}&PickupExactly=${scheduledPickupDateP}&Titl1DI=${instructions}` +
+                    `&ZipP=${zipP}&PhoneP=${phoneP}&EmailP=${emailP}&PickupExactly=${scheduledPickupDateP}&DeliveryEstimated=${scheduledDeliveryEstimated}&Titl1DI=${instructions}` +
                     `&NameD=${nameD}&ContactNameD=${contactD}&AddressD=${addressD}&CityD=${cityD}&StateD=${stateD}&ZipD=${zipD}&PhoneD=${phoneD}` +
                     `&EmailD=${emailD}&TotalPaymentToCarrier=${paymentMethod}&PriceListed=${price}&BrokerFee=${brokerFee}&FaxC=${faxC}` +
                     `&IccmcC=${iccmcC}&ContactC=${contactC}&PhoneC=${phoneC}`;
@@ -441,9 +601,7 @@
         };
         xhttp.open("POST", "@ViewBag.BaseUrl/Dashbord/Order/RemoveVech", true);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhttp.setRequestHeader('Accept-Encoding', 'br');
         xhttp.send(Req);
-        tdElms.removeChild(FindId(tdElms.children, idVech));
     }
 </script>
 
@@ -484,6 +642,27 @@
 </style>
 
 <style>
+    .btn3:hover {
+        background: #686f7c;
+        border: 1px solid #686f7c;
+        color: #f9f9f9;
+        -webkit-transition: .3s all;
+        -o-transition: .3s all;
+        transition: .3s all
+    }
+
+    .btn1 {
+        cursor: pointer;
+    }
+
+    .btn1:hover {
+        background: #f9f9f9;
+        border: 1px solid #2c5deb;
+        color: #2c5deb;
+        -webkit-transition: .3s all;
+        -o-transition: .3s all;
+        transition: .3s all
+    }
     /*    table.tab12 {
             width: 100%;
             border: 0px;
@@ -499,3 +678,4 @@
                 border-bottom: 1px solid #e8e9eb;
             }*/
 </style>
+

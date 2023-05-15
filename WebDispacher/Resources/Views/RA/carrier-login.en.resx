@@ -144,4 +144,10 @@
   <data name="ThirdPartAgreements" xml:space="preserve">
     <value>Privacy Policy</value>
   </data>
+  <data name="EmailValidMessage" xml:space="preserve">
+    <value>Please put email in correct format</value>
+  </data>
+  <data name="PasswordValidMessage" xml:space="preserve">
+    <value>Please put in password</value>
+  </data>
 </root>

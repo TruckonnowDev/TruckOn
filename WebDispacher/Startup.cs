@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Builder;         
+﻿using Microsoft.AspNetCore.Builder;         
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +17,8 @@ using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.FileProviders;
 
 namespace WebDispacher
 {
@@ -53,6 +54,8 @@ namespace WebDispacher
             services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IOrderService, Business.Services.OrderService>();
+
+            services.AddSingleton<Functions.Functions>();
 
             StripeConfiguration.ApiKey = "sk_test_51GuYHUKfezfzRoxlAPF3ieVKcPe9Ost93jouMwF6nT0mFCh59qDBdUEN3E23nYx3gBUGmDpTo8NfJnw6unSie3NV00UcJWHAXu";
 
@@ -109,6 +112,7 @@ namespace WebDispacher
         {
             app.UseRequestLocalization();
             app.UseStatusCodePagesWithReExecute("/error", "?code={0}");
+
             // app.UseResponseCompression();
             app.UseMvc(routes =>
             {

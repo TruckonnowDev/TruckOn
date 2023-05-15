@@ -135,14 +135,15 @@
                 <input name="brokerFee" class="inpText" type="text" value="@ViewBag.Order.BrokerFee" />
                 <div style="display:flex;">
                     <input class="btnSave" value="Save" type="submit" />
-                    <a class="btnArchived" href="@ViewBag.BaseUrl/Dashbord/Order/ArchivedOrder?id=@ViewBag.Order.Id">Archive</a>
-                    <a class="btnDeleted" href="@ViewBag.BaseUrl/Dashbord/Order/DeletedOrder?id=@ViewBag.Order.Id&status=NewLoad">Deleted</a>
+                    <a class="btnArchived">Archive</a>
+                    <a class="btnDeleted" href="@ViewBag.BaseUrl/Dashbord/Order/DeletedOrder?id=@ViewBag.Order.Id&status=NewLoad&localDate=javascript:GetDateTimeInFormat(new Date())">Deleted</a>
                 </div>
             </div>
         </div>
     </form>
 </div>
 <script>
+
     function SaveVech(btnE) {
         let idVech = btnE.parentElement.parentElement.id;
         let VIN = btnE.parentElement.parentElement.children[1].children[0].value;

@@ -11,6 +11,7 @@ using WebDispacher.Business.Services;
 using WebDispacher.Constants;
 using WebDispacher.Service;
 using WebDispacher.ViewModels.Contact;
+using WebDispacher.ViewModels.RA.Carrier.Registration;
 using WebDispacher.ViewModels.Shipping;
 
 namespace WebDispacher.Controellers
@@ -18,19 +19,24 @@ namespace WebDispacher.Controellers
     public class RAController : Controller
     {
         private readonly IUserService userService;
+        private readonly ICompanyService companyService;
         private readonly IDriverService driverService;
 
         public RAController(
-            IUserService userService, 
+            IUserService userService,
+            ICompanyService companyService, 
             IDriverService driverService)
         {
             this.driverService = driverService;
             this.userService = userService;
+            this.companyService = companyService;
         }
-        public IActionResult Index()
+
+        public IActionResult Index(string alert)
         {
             ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+            TempData["Alert"] = alert;
             
             if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
             {
@@ -40,6 +46,14 @@ namespace WebDispacher.Controellers
             ViewData[NavConstants.TypeNavBar] = NavConstants.AllUsers;
             
             return View("Index");
+        }
+
+        [HttpPost]
+        public bool ActivePromo(string code)
+        {
+            // etc..
+
+            return false;
         }
 
         [HttpPost]
@@ -73,7 +87,7 @@ namespace WebDispacher.Controellers
 
         [HttpGet]
         [Route("carrier-login")]
-        public IActionResult CarrierLogin(string error)
+        public IActionResult CarrierLogin(string error, string email)
         {
             ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
@@ -86,8 +100,16 @@ namespace WebDispacher.Controellers
             ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
             ViewData[NavConstants.TextError] = error;
             ViewData[NavConstants.Reg] = NavConstants.CarrierReg;
-            
+            ViewData["UserEmail"] = email;
             return View("carrier-login");
+        }
+
+        [HttpPost]
+        public bool ContactForm(string username, string email, string phone, string message)
+        {
+            // etc
+
+            return true;
         }
 
         [HttpGet]
@@ -110,6 +132,24 @@ namespace WebDispacher.Controellers
         }
 
         [HttpGet]
+        [Route("carrier-reg-congratulation")]
+        public IActionResult CarrierRegCongratulation(string error)
+        {
+            ViewData[NavConstants.TextError] = string.Empty;
+            ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+            if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+            {
+                return Redirect("/Dashbord/Order/NewLoad");
+            }
+
+            ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
+            ViewData[NavConstants.TextError] = error;
+
+            return View("carrier-reg-congratulation");
+        }
+
+        [HttpGet]
         [Route("carrier-reg")]
         public IActionResult CarrierReg(string error)
         {
@@ -124,7 +164,114 @@ namespace WebDispacher.Controellers
             ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
             ViewData[NavConstants.TextError] = error;
             
-            return View("carrier-reg");
+            return View("carrier-reg", new PersonalDataViewModel());
+        }
+
+        [HttpPost]
+        [Route("carrier-reg")]
+        public IActionResult CarrierReg(PersonalDataViewModel model)
+        {
+            ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
+            ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+            if (!string.IsNullOrEmpty(model.Email))
+            {
+                var email = userService.CheckEmailDb(model.Email);
+
+                if(email)
+                {
+                    ModelState.AddModelError(nameof(model.Email).ToString(), "Email already exists");
+                }
+            }
+            
+            if (!string.IsNullOrEmpty(model.CompanyName))
+            {
+                var comanyName = companyService.CheckCompanyName(model.CompanyName);
+
+                if(comanyName)
+                {
+                    ModelState.AddModelError(nameof(model.CompanyName).ToString(), "Name of the Company already exists");
+                }
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    return RedirectToAction("CarrierRegSecondStep", "RA", model);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            else
+            {
+                return View("carrier-reg", model);
+            }
+
+            return Redirect(Config.BaseReqvesteUrl);
+        }
+        
+        [HttpGet]
+        [Route("carrier-reg-second-step")]
+        public IActionResult CarrierRegSecondStep(PersonalDataViewModel personalDataView = null)
+        {
+            ViewData[NavConstants.TextError] = string.Empty;
+            ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
+            ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                
+            if(!ModelState.IsValid)
+            {
+                return Redirect(Config.BaseReqvesteUrl);
+            }
+
+            return View("carrier-reg-second-step", new FewMoreDetailsViewModel {
+                Type = new List<AccountType>
+                {
+                    new AccountType {Id = 1, TypeName = "Owner"},
+                    new AccountType {Id = 2, TypeName = "Driver"}
+                }, PersonalData = personalDataView});
+        }
+        
+        [HttpPost]
+        [Route("carrier-reg-second-step")]
+        public IActionResult CarrierRegSecondStep(FewMoreDetailsViewModel model)
+        {
+            ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
+            ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+            
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var company = companyService.AddShortCompany(model);
+
+                    return View("carrier-reg-congratulation");
+                }
+                catch
+                {
+
+                }
+            }
+            else
+            {
+                return View("carrier-reg-second-step", new FewMoreDetailsViewModel
+                {
+                    Type = new List<AccountType>
+                {
+                    new AccountType {Id = 1, TypeName = "Owner"},
+                    new AccountType {Id = 2, TypeName = "Driver"}
+                },
+                    PersonalData = model.PersonalData,
+                    SelectedType = model.SelectedType,
+                    HowYouFindUs = model.HowYouFindUs,
+                    Promo = model.Promo,
+                    Units = model.Units
+                });
+            }
+
+            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [HttpGet]
@@ -170,10 +317,6 @@ namespace WebDispacher.Controellers
             }
             else
             {
-                var errors = ModelState.Select(x => x.Value.Errors)
-                           .Where(y => y.Count > 0)
-                           .ToList();
-
                 return View("shipper-reg", model);
             }
 
@@ -207,7 +350,7 @@ namespace WebDispacher.Controellers
             
             var isEmail = userService.CheckEmail(email);
 
-            return Redirect(isEmail ? Config.BaseReqvesteUrl : $"/recovery-password-send-mail?error=No user found with this mail");
+            return Redirect(isEmail ? Config.BaseReqvesteUrl +"?alert=SuccessSendEmail"  : $"/recovery-password-send-mail?error=No user found with this Email");
         }
 
         [HttpPost]
@@ -237,8 +380,8 @@ namespace WebDispacher.Controellers
                 ViewData[NavConstants.Hidden] = NavConstants.Hidden;
                 ViewData[NavConstants.TextError] = UserConstants.PasswordEmailIncorrectly;
                 var error = UserConstants.PasswordEmailIncorrectly;
-                    
-                actionResult = Redirect($"/carrier-login?error={error}");
+
+                actionResult = Redirect($"/carrier-login?error={error}&email={Email}");
 
             }
             catch (Exception e)

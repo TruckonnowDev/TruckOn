@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ using DaoModels.DAO.Models;
 using DaoModels.DAO.Models.Settings;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using NodaTime;
 using Stripe;
 using WebDispacher.Business.Interfaces;
 using WebDispacher.Constants;
@@ -20,6 +22,7 @@ using WebDispacher.Models;
 using WebDispacher.Service;
 using WebDispacher.Service.EmailSmtp;
 using WebDispacher.ViewModels.Driver;
+using WebDispacher.ViewModels.Truck;
 
 namespace WebDispacher.Business.Services
 {
@@ -31,7 +34,7 @@ namespace WebDispacher.Business.Services
         private readonly IUserService userService;
         private readonly ICompanyService companyService;
         private readonly ITruckAndTrailerService truckAndTrailerService;
-
+        private readonly int maxFileLength = 6 * 1024 * 1024;
         public DriverService(
             IMapper mapper,
             Context db,
@@ -74,7 +77,7 @@ namespace WebDispacher.Business.Services
                         {
                             Id = driver.Id,
                             Description = CompanyConstants.RemoveCompanyDescription
-                        });
+                        }, DateTime.Now.ToString(DateTimeFormats.FullDateTimeInfo));
                 }
             });
         }
@@ -106,13 +109,13 @@ namespace WebDispacher.Business.Services
         {
             var tr = truckAndTrailerService.GetTr(idTr, typeTransport);
             var typeTransportVehikle =
-                tr is Truck ? TypeTransportVehikle.Truck : TypeTransportVehikle.Trailer;
+                tr is TruckViewModel ? TypeTransportVehikle.Truck : TypeTransportVehikle.Trailer;
             var profileSettings = new List<ProfileSettingsDTO>();
             var profileSettings1 = GetSetingsDb(idCompany, typeTransportVehikle, idTr);
 
             profileSettings.Add(new ProfileSettingsDTO()
             {
-                Name = DriverConstants.StandartName,
+                Name = DriverConstants.StandardName,
                 TypeTransportVehikle = typeTransportVehikle.ToString(),
                 Id = 0,
                 IsSelect = 0 == idProfile,
@@ -160,9 +163,9 @@ namespace WebDispacher.Business.Services
                 .First();
         }
 
-        public void RemoveDrive(string idCompany, DriverReportModel model)
+        public void RemoveDrive(string idCompany, DriverReportModel model,string localDate)
         {
-            RemoveDriveInDb(model);
+            RemoveDriveInDb(model, localDate);
             Task.Run(() => UpdatePlanSubscribe(idCompany));
         }
 
@@ -173,7 +176,7 @@ namespace WebDispacher.Business.Services
             if (driverEdit == null) return;
             
             driverEdit.FullName = driver.FullName;
-            driverEdit.EmailAddress = driver.EmailAddress;
+            driverEdit.EmailAddress = driver.EmailAddress.ToLower();
             driverEdit.Password = driver.Password;
             driverEdit.PhoneNumber = driver.PhoneNumber;
             driverEdit.TrailerCapacity = driver.TrailerCapacity;
@@ -184,18 +187,41 @@ namespace WebDispacher.Business.Services
 
         public async Task CreateDriver(DriverViewModel driver,
             IFormFile dLDoc, IFormFile medicalCardDoc, IFormFile sSNDoc, IFormFile proofOfWorkAuthorizationOrGCDoc,
-            IFormFile dQLDoc, IFormFile contractDoc, IFormFile drugTestResultsDo)
+            IFormFile dQLDoc, IFormFile contractDoc, IFormFile drugTestResultsDo, string dateTimeLocal)
         {
-            driver.DateRegistration = DateTime.Now.ToString();
+            driver.DateRegistration = dateTimeLocal;
 
             var id = AddDriver(mapper.Map<Driver>(driver));
-            
-            await SaveDocDriver(dLDoc, DocAndFileConstants.Dl, id.ToString());
-            await SaveDocDriver(medicalCardDoc, DocAndFileConstants.MedicalCard, id.ToString());
-            await SaveDocDriver(sSNDoc, DocAndFileConstants.Ssn, id.ToString());
-            await SaveDocDriver(proofOfWorkAuthorizationOrGCDoc,  DocAndFileConstants.ProofOfWork, id.ToString());
-            await SaveDocDriver(dQLDoc, DocAndFileConstants.Dql, id.ToString());
-            await SaveDocDriver(contractDoc, DocAndFileConstants.Contract, id.ToString());
+
+            if (dLDoc != null)
+            {
+                await SaveDocDriver(dLDoc, DocAndFileConstants.Dl, id.ToString());
+            }
+
+            if (medicalCardDoc != null)
+            {
+                await SaveDocDriver(medicalCardDoc, DocAndFileConstants.MedicalCard, id.ToString());
+            }
+
+            if (sSNDoc != null)
+            {
+                await SaveDocDriver(sSNDoc, DocAndFileConstants.Ssn, id.ToString());
+            }
+
+            if (proofOfWorkAuthorizationOrGCDoc != null)
+            {
+                await SaveDocDriver(proofOfWorkAuthorizationOrGCDoc, DocAndFileConstants.ProofOfWork, id.ToString());
+            }
+
+            if (dQLDoc != null)
+            {
+                await SaveDocDriver(dQLDoc, DocAndFileConstants.Dql, id.ToString());
+            }
+
+            if (contractDoc != null)
+            {
+                await SaveDocDriver(contractDoc, DocAndFileConstants.Contract, id.ToString());
+            }
 
             if (drugTestResultsDo != null)
             {
@@ -236,9 +262,14 @@ namespace WebDispacher.Business.Services
             return await GetDriversInDb(idCompany);
         }
 
-        public List<Driver> GetDrivers(int pag, string idCompany)
+        public async Task<List<Driver>> GetDrivers(int page, string idCompany)
         {
-            return GetDriversInDb(pag, idCompany);
+            return await GetDriversInDb(page, idCompany);
+        }
+
+        public async Task<int> GetCountDriversPages(string idCompany)
+        {
+            return await GetDriversPagesInDb(idCompany);
         }
 
         public void AddNewReportDriver(DriverReportViewModel driverReport)
@@ -251,16 +282,16 @@ namespace WebDispacher.Business.Services
 
         public List<DriverReport> GetDriversReport(string nameDriver, string driversLicense)
         {
-            var driverReports = db.DriverReports.OrderBy(x => x.DateFired).AsQueryable();
+            var driverReports = db.DriverReports.AsQueryable();
 
             if (!string.IsNullOrEmpty(nameDriver))
             {
-                driverReports = db.DriverReports.Where(x => x.FullName == nameDriver);
+                driverReports = driverReports.Where(x => x.FullName.Contains(nameDriver));
             }
 
             if (!string.IsNullOrEmpty(driversLicense))
             {
-                driverReports = db.DriverReports.Where(x => x.DriversLicenseNumber == driversLicense);
+                driverReports = driverReports.Where(x => x.DriversLicenseNumber.Contains(driversLicense));
             }
 
             driverReports = driverReports.OrderByDescending(x => x.Id);
@@ -440,7 +471,7 @@ namespace WebDispacher.Business.Services
                 profileSetting = new ProfileSettingsDTO()
                 {
                     Id = 0,
-                    Name = DriverConstants.StandartName,
+                    Name = DriverConstants.StandardName,
                     TransportVehicle = new TransportVehicle()
                     {
                         CountPhoto = transportVehicle.CountPhoto,
@@ -522,43 +553,48 @@ namespace WebDispacher.Business.Services
             return drivers;
         }
 
-        private List<Driver> GetDriversInDb(int page, string idCompany)
+        private async Task<List<Driver>> GetDriversInDb(int page, string idCompany)
         {
-            List<Driver> drivers = null;
-            drivers = db.Drivers.Where(d => !d.IsFired && d.CompanyId.ToString() == idCompany).ToList();
-            if (page == -1)
+            var drivers = db.Drivers.Where(d => !d.IsFired && d.CompanyId.ToString() == idCompany).OrderByDescending(x => x.Id).AsQueryable();
+
+            if (page == UserConstants.AllPagesNumber) return await drivers.ToListAsync();
+
+            try
             {
+                drivers = drivers.Skip(UserConstants.NormalPageCount * page - UserConstants.NormalPageCount);
+
+                drivers = drivers.Take(UserConstants.NormalPageCount);
             }
-            else if (page != 0)
+            catch (Exception)
             {
-                try
-                {
-                    drivers = drivers.GetRange((20 * page) - 20, 20);
-                }
-                catch (Exception)
-                {
-                    drivers = drivers.GetRange((20 * page) - 20, drivers.Count % 20);
-                }
+                drivers = drivers.Skip((UserConstants.NormalPageCount * page) - UserConstants.NormalPageCount);
             }
-            else
-            {
-                try
-                {
-                    drivers = drivers.GetRange(0, 20);
-                }
-                catch (Exception)
-                {
-                    drivers = drivers.GetRange(0, drivers.Count % 20);
-                }
-            }
+
+            var listDrivers = await drivers.ToListAsync();
             
-            drivers.Reverse();
-            
-            return drivers;
+            return listDrivers;
+        }
+        
+        private async Task<int> GetDriversPagesInDb(string idCompany)
+        {
+            var countDrivers = await db.Drivers.Where(d => !d.IsFired && d.CompanyId.ToString() == idCompany).CountAsync();
+
+            var countPages = GetCountPage(countDrivers, UserConstants.NormalPageCount);
+
+            return countPages;
+        }
+
+        private int GetCountPage(int countElements, int countElementsInOnePage)
+        {
+            var countPages = (countElements / countElementsInOnePage) % countElementsInOnePage;
+
+            return countPages > 0 ? countPages + 1 : countPages;
         }
 
         public async Task SaveDocDriver(IFormFile uploadedFile, string nameDoc, string id)
         {
+            if (uploadedFile.Length > maxFileLength) return;
+
             var path = $"../Document/Driver/{id}/" + uploadedFile.FileName;
 
             if (!Directory.Exists("../Document/Driver"))
@@ -596,6 +632,7 @@ namespace WebDispacher.Business.Services
 
         private int AddDriver(Driver driver)
         {
+            driver.EmailAddress = driver.EmailAddress != null ? driver.EmailAddress.ToLower() : driver.EmailAddress;
             db.Drivers.Add(driver);
 
             db.SaveChanges();
@@ -640,7 +677,7 @@ namespace WebDispacher.Business.Services
             db.SaveChanges();
         }
         
-        private void RemoveDriveInDb(DriverReportModel model)
+        private void RemoveDriveInDb(DriverReportModel model, string localDate)
         {
             var driver = db.Drivers
                 .FirstOrDefault(d => d.Id == model.Id);
@@ -656,7 +693,7 @@ namespace WebDispacher.Business.Services
                 FullName = driver.FullName,
                 IdDriver = driver.Id,
                 DateRegistration = driver.DateRegistration,
-                DateFired = DateTime.Now.ToString(),
+                DateFired = localDate,
                 AlcoholTendency = model.AlcoholTendency,
                 DrivingSkills = model.DrivingSkills,
                 DrugTendency = model.DrugTendency,

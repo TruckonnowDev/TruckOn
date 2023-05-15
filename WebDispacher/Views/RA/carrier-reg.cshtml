@@ -1,16 +1,20 @@
-﻿@using Microsoft.AspNetCore.Mvc.Localization
+﻿@using WebDispacher.Constants;
+@using iTextSharp.text.pdf.qrcode
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@model WebDispacher.ViewModels.RA.Carrier.Registration.PersonalDataViewModel
 
 @inject IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = "Carrier Registration";
 }
-
+<link href="~/css/Auth/login.css" rel="stylesheet" type="text/css" />
 <body>
     <div class="register-page">
         <div class="container">
-            <div class="row">
-                <div class="col-md-6">
+            <div class="row justify-content-center">
+                <div class="col-md-6 pl-4">
                     <div class="left-text">
                         <h1>@Localizer["BlockHeader"]</h1>
                         <p>@Localizer["BodyFirstPart"]</p>
@@ -21,9 +25,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 pl-4">
                     <div class="right-form">
-                        <form action="">
+                        <form action="" method="post">
+                            
                             <h3>@Localizer["Step1of3"]</h3>
                             <ul class="steps">
                                 <li class="active"></li>
@@ -31,10 +36,71 @@
                                 <li></li>
                             </ul>
                             <div class="step">
-                                <h3>USDOT</h3>
+                                <div class="validation" asp-validation-summary="ModelOnly"></div>
+                                <label for="">
+                                    @Html.DisplayNameFor(x => x.Email)
+                                    <div class="mt-2">
+                                        <input type="email" pattern="@PatternConstants.Email" id="address" name="Email" value="@Model.Email" placeholder="" required>
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                                </label>
+                                <label for="">
+                                    @Html.DisplayNameFor(x => x.Password)
+                                    <div class="d-flex align-items-center mt-2 hidden-password">
+                                        <input type="password" id="password-input" name="Password" value="@Model.Password" placeholder="" required>
+                                        <a href="#" class="password-control" onclick="return show_hide_password(this, 'password-input');"></a>
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                                </label>
+                                <label for="">
+                                    @Html.DisplayNameFor(x => x.FirstName)
+                                    <div class="mt-2">
+                                        <input type="text" id="firstName" pattern="@PatternConstants.OnlyLetters" name="FirstName" value="@Model.FirstName" placeholder="" required>
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                                </label>
+                                <label for="">
+                                    @Html.DisplayNameFor(x => x.LastName)
+                                    <div class="mt-2">
+                                        <input type="text" id="lastName" pattern="@PatternConstants.OnlyLetters" name="LastName" value="@Model.LastName" placeholder="" required>
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                                </label>
+                                <label for="">
+                                    @Html.DisplayNameFor(x => x.USDOTNumber)
+                                    <div class="mt-2">
+                                        <input type="number" id="usdot" name="USDOTNumber" value="@Model.USDOTNumber" placeholder="" required>
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.USDOTNumber, "", new { @class = "text-danger" })
+                                </label>
+                                <label for="">
+                                    @Html.DisplayNameFor(x => x.CompanyName)
+                                    <div class="mt-2">
+                                        <input type="text" id="companyName" name="CompanyName" value="@Model.CompanyName" placeholder="" required>
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.CompanyName, "", new { @class = "text-danger" })
+                                </label>
+                                <label for="">
+                                    @Html.DisplayNameFor(x => x.PhoneNumber)
+                                    <div class="mt-2">
+                                        <input type="text" id="phone" name="PhoneNumber" value="@Model.PhoneNumber" placeholder="" pattern="[0-9]+" required>
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
+                                </label>
+                                <input class="btn1-big" type="submit" value="@Localizer["Next"]" />
+                                <div class="term-message">
+                                    <div class="terms">
+                                        <p>
+                                            @Localizer["FirstPartAgreements"] <a href="">@Localizer["SecondPartAgreements"]</a> @Localizer["And"] <a href="">@Localizer["ThirdPartAgreements"]</a>
+                                        </p>
+                                    </div>
+                                </div>
+
+
+                                @*<h3>USDOT</h3>
                                 <label for=""><input type="text"></label>
                                 <p>USDOT +1 (773) 420-4444</p>
-                                <input type="submit" value="@Localizer["Verify"]" class="btn1-big">
+                                <input type="submit" value="@Localizer["Verify"]" class="btn1-big">*@
                             </div>
                         </form>
                     </div>
@@ -44,3 +110,37 @@
     </div>
 
 </body>
+
+<script>
+    $('#phone').on('input invalid', function () {
+        this.setCustomValidity('')
+        if (this.validity.valueMissing) {
+            this.setCustomValidity("@Localizer["OnlyNumbersValidMessage"]")
+        }
+        if (this.validity.typeMismatch) {
+            this.setCustomValidity("@Localizer["OnlyNumbersValidMessage"]")
+        }
+        if (this.validity.patternMismatch) {
+            this.setCustomValidity("@Localizer["OnlyNumbersValidMessage"]")
+        }
+    })
+
+     $('#firstName, #lastName').on('input invalid', function () {
+        this.setCustomValidity('')
+        if (this.validity.valueMissing) {
+            this.setCustomValidity("@Localizer["OnlyLettersValidMessage"]")
+        }
+        if (this.validity.typeMismatch) {
+            this.setCustomValidity("@Localizer["OnlyLettersValidMessage"]")
+        }
+        if (this.validity.patternMismatch) {
+            this.setCustomValidity("@Localizer["OnlyLettersValidMessage"]")
+        }
+    })
+</script>
+
+<style>
+    .term-message .terms p {
+        color: gray !important;
+    }
+</style>

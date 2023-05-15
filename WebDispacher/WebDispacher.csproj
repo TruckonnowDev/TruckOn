@@ -17,6 +17,49 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\libs\bootstrap\fonts\bootstrap-icons.woff2" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\autoplay\lg-autoplay.es5.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\autoplay\lg-autoplay.min.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\autoplay\lg-autoplay.umd.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\comment\lg-comment.es5.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\comment\lg-comment.min.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\comment\lg-comment.umd.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\fullscreen\lg-fullscreen.es5.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\fullscreen\lg-fullscreen.min.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\fullscreen\lg-fullscreen.umd.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\hash\lg-hash.es5.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\hash\lg-hash.min.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\hash\lg-hash.umd.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\mediumZoom\lg-medium-zoom.es5.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\mediumZoom\lg-medium-zoom.min.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\mediumZoom\lg-medium-zoom.umd.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\pager\lg-pager.es5.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\pager\lg-pager.min.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\pager\lg-pager.umd.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\relativeCaption\lg-relative-caption.es5.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\relativeCaption\lg-relative-caption.min.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\relativeCaption\lg-relative-caption.umd.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\rotate\lg-rotate.es5.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\rotate\lg-rotate.min.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\rotate\lg-rotate.umd.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\share\lg-share.es5.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\share\lg-share.min.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\share\lg-share.umd.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\thumbnail\lg-thumbnail.es5.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\thumbnail\lg-thumbnail.min.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\thumbnail\lg-thumbnail.umd.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\video\lg-video.es5.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\video\lg-video.min.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\video\lg-video.umd.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\vimeoThumbnail\lg-vimeo-thumbnail.es5.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\vimeoThumbnail\lg-vimeo-thumbnail.min.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\vimeoThumbnail\lg-vimeo-thumbnail.umd.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\zoom\lg-zoom.es5.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\zoom\lg-zoom.min.js" />
+    <None Include="wwwroot\libs\jquery\dist\plugins\zoom\lg-zoom.umd.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AngleSharp" Version="0.9.10" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageReference Include="FluentScheduler" Version="5.3.0" />
@@ -50,6 +93,10 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+    <Content Update="wwwroot\libs\jquery\lightgallery.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -76,6 +123,54 @@
     <EmbeddedResource Update="Resources\Views\Error\Error500.ru.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Error500.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\ViewModels\RA\Carrier\Registration\PersonalDataViewModel.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>PersonalDataViewModel.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\ViewModels\RA\Carrier\Registration\PersonalDataViewModel.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>PersonalDataViewModel.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\ViewModels\RA\Carrier\Registration\PersonalDataViewModel.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>PersonalDataViewModel.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\ViewModels\RA\Carrier\Registration\FewMoreDetailsViewModel.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>FewMoreDetailsViewModel.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\ViewModels\RA\Carrier\Registration\FewMoreDetailsViewModel.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>FewMoreDetailsViewModel.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\ViewModels\RA\Carrier\Registration\FewMoreDetailsViewModel.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>FewMoreDetailsViewModel.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\ConfirmDelete.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ConfirmDelete.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\ConfirmDelete.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ConfirmDelete.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\ConfirmDelete.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ConfirmDelete.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Commpany\CompanyInfo.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CompanyInfo.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Commpany\CompanyInfo.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CompanyInfo.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Commpany\CompanyInfo.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CompanyInfo.ru.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

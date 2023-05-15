@@ -1,0 +1,41 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using System.Globalization;
+@using WebDispacher.Constants;
+
+@model WebDispacher.ViewModels.Company.CompanyViewModel
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] =  Model.Name + " | Company Information";
+}
+
+<body>
+    <div class="admin Billing">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="title text-info-padding-5">
+                        <a href="#" onclick="history.back();">@Localizer["BackToCompanies"]</a>
+                    </div>
+                    <div class="title text-info-padding-5">
+
+                        <h1 class="text-info-header-1">@Localizer["InformationHeader"]</h1>
+                    </div>
+                    <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["Id"]:</b> <span>@Model.Id</span></p>
+                    <p class="text-info-p-1 text-info-padding-5">
+                        <b>@Localizer["Name"]:</b>
+                        <span>
+                               @Model.Name
+                        </span>
+                    </p>
+                    <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["Phone"]:</b> <span>@Model.Phone</span></p>
+                    <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["Email"]:</b> <span>@Model.Email</span></p>
+                    <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["Password"]:</b> <span>@Model.Password</span></p>
+                    <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["CompanyType"]:</b> <span>@Model.CompanyType</span></p>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

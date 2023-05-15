@@ -20,25 +20,53 @@ function ClearFile(str, labelId) {
     var parent = elemFile.parentElement.parentElement.parentElement;
     var input = document.getElementById(str);
     var label = document.getElementById(labelId);
+
     input.value = '';
     label.innerHTML = "";
+
+    if (input.hasAttribute('temp-required')) {
+        input.removeAttribute('temp-required');
+        input.required = false;
+    }
+
     if ($(input).prop('required')) {
         parent.classList.remove("green-valid");
         parent.classList.add("red-valid");
+    } else {
+        parent.classList.remove("green-valid");
+        parent.classList.remove("red-valid");
     }
+    parent.parentNode.getElementsByClassName("file-limit-exceeded")[0].innerHTML = "";
 
 }
 
-function CheckValid(elementFileId, elementInputId) {
+function CheckValid(elementFileId, elementInputId, errorMessage ="Selected file exceeds allowed maximum. Please select other file") {
     var input = document.getElementById(elementInputId);
 
-    var elemFile1 = document.getElementById(elementFileId);
-    var parent = elemFile1.parentElement.parentElement.parentElement;
+    var elemFile = document.getElementById(elementFileId);
+    var parent = elemFile.parentElement.parentElement.parentElement;
+    var fileGroupElements = parent.parentNode;
+
+    if (input.files.length != 0 && (input.files[0].size / 1024 / 1024) > 5.5) {
+        fileGroupElements.getElementsByClassName("file-limit-exceeded")[0].innerHTML = errorMessage;
+        input.value = null;
+        if (!$(input).prop('required')) {
+            input.required = true;
+            input.setAttribute('temp-required', '');
+        }
+        parent.classList.remove("green-valid");
+        parent.classList.add("red-valid")
+    }
+
+    if (input.files.length != 0 && (input.files[0].size / 1024 / 1024) < 5.5) {
+        fileGroupElements.getElementsByClassName("file-limit-exceeded")[0].innerHTML = "";
+    }
 
     if (input.value) {
         parent.classList.remove("red-valid");
         parent.classList.add("green-valid");
-    } else {
+    }
+    else if (input.hasAttribute('required') && !input.value) {
         parent.classList.remove("green-valid");
         parent.classList.add("red-valid");
     }

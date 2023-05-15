@@ -22,10 +22,8 @@ namespace WebDispacher.ViewModels
         public string ShipVia { get; set; }
         public string Condition { get; set; }
         
-        [Required]
         public string PriceListed { get; set; }
         
-        [Required]
         public string TotalPaymentToCarrier { get; set; }
         public string OnDeliveryToCarrier { get; set; }
         public string CompanyOwesCarrier { get; set; }
@@ -43,58 +41,44 @@ namespace WebDispacher.ViewModels
 
         public string NameP { get; set; }
         public string ContactNameP { get; set; }
-        
-        [Required]
+
         public string AddresP { get; set; }
         
-        [Required]
         [MinLength(2)]
         [MaxLength(2)]
         public string StateP { get; set; }
         
-        [Required]
         [MinLength(5)]
         [MaxLength(5)]
         public string ZipP { get; set; }
-        
-        [Required]
+
         public string CityP { get; set; }
         
-        [Required]
         [MinLength(4)]
-        [MaxLength(12)]
         public string PhoneP { get; set; }
         
-        [Required]
         public string EmailP { get; set; }
 
         /*      DELIVERY INFORMATION        */
 
         public string NameD { get; set; }
         public string ContactNameD { get; set; }
-        
-        [Required]
+
         public string AddresD { get; set; }
         
-        [Required]
         [MinLength(2)]
         [MaxLength(2)]
         public string StateD { get; set; }
         
-        [Required]
         [MinLength(5)]
         [MaxLength(5)]
         public string ZipD { get; set; }
         
-        [Required]
         public string CityD { get; set; }
-        
-        [Required]
+
         [MinLength(4)]
-        [MaxLength(12)]
         public string PhoneD { get; set; }
         
-        [Required]
         public string EmailD { get; set; }
 
              //DISPATCH INSTRUCTIONS       

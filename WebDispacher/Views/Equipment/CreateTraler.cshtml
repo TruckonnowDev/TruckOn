@@ -21,11 +21,23 @@
                         <form action="" method="post" enctype="multipart/form-data">
                             <label class="big-label" for="">
                                 @Localizer["NameTrailer"]
-                                <input type="text" class="height-input" name="Name" required>
+                                <input type="text" class="height-input" name="Name" maxlength="25">
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["Year"]
+                                <input type="text" class="height-input" name="Year" maxlength="4">
+                            </label>
+                             <label class="big-label" for="">
+                                @Localizer["Make"]
+                                <input type="text" class="height-input" name="Make" maxlength="15">
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["Model"]
+                                <input type="text" class="height-input" name="Model" maxlength="20">
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["TypeTrailer"] <br />
-                                <select class="height-input input-select" name="Type" onchange="SelectTrailer(this.options[this.selectedIndex].value)" required>
+                                <select class="height-input input-select" name="Type" onchange="SelectTrailer(this.options[this.selectedIndex].value)">
                                     <option value="">@Localizer["ChooseTrailerType"]</option>
                                     <option value="Bumperpool2CarEeclosedTraile">Bumperpool 2 Car Eeclosed Traile</option>
                                     @*<option value="GooseneckTrailerTwoVehicles">Gooseneck trailer for two vehicles</option>
@@ -46,44 +58,32 @@
                                 </select>
                             </label>
                             <label class="big-label" for="">
-                                @Localizer["Year"]
-                                <input type="text" class="height-input" name="Year">
-                            </label>
-                            <label class="big-label" for="">
-                                @Localizer["Make"]
-                                <input type="text" class="height-input" name="Make">
-                            </label>
-                            <label class="big-label" for="">
-                                @Localizer["Model"]
-                                <input type="text" class="height-input" name="Model">
-                            </label>
-                            <label class="big-label" for="">
                                 @Localizer["HowLong"]
-                                <input type="text" class="height-input" name="HowLong">
+                                <input type="text" class="height-input" name="HowLong" maxlength="5">
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["Vin"]#
-                                <input type="text" class="height-input" name="Vin">
+                                <input type="text" class="height-input" name="Vin" maxlength="17">
                             </label>
                             <label class="big-label" for="">
-                                @Localizer["Owner"]
-                                <input type="text" class="height-input" name="Owner">
-                            </label>
-                            <label class="big-label" for="">
-                                @Localizer["Color"]
-                                <input type="text" class="height-input" name="Color">
-                            </label>
-                            <label class="big-label" for="">
-                                @Localizer["PlateTrailer"]
-                                <input type="text" class="height-input" name="Plate" required>
+                                @Localizer["PlateTrailer"] #
+                                <input type="text" class="height-input" name="Plate" maxlength="10">
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["PlateExpTrailer"]
-                                <input type="text" class="height-input" name="Exp">
+                                <input type="text" class="height-input" id="plateExp" name="Exp">
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["Color"]
+                                <input type="text" class="height-input" name="Color" maxlength="15">
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["AnnualIns"]
-                                <input type="text" class="height-input" name="AnnualIns">
+                                <input type="text" class="height-input" name="AnnualIns" maxlength="12">
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["Owner"]
+                                <input type="text" class="height-input" name="Owner" maxlength="25">
                             </label>
                             <div class="full-label">
                                 <p class="a-label">@Localizer["DocTrailerReg"]</p>
@@ -98,16 +98,17 @@
                                                 <div class="select-button-1 d-flex justify-content-end">
                                                     <label>
                                                         @Localizer["SelectDoc"]
-                                                        <input class="height-input" id="fi1" type="file" onchange="GetFileName(this.value, 'fl1');" name="trailerRegistrationDoc" accept="application/pdf, image/jpeg, image/jpg" required>
+                                                        <input class="height-input" id="fi1" type="file" onchange="GetFileName(this.value, 'fl1');" name="trailerRegistrationDoc" accept="application/pdf, image/jpeg, image/jpg">
                                                     </label>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                    <p class="file-limit-exceeded text-danger"></p>
                                 </div>
                             </div>
                             <div class="full-label">
-                                <p class="a-label">@Localizer["DocTrailerAnnualIns"]</p>
+                                <p class="a-label">@Localizer["DocLeaseAgreement"]</p>
                                 <a class="pt-1 pb-1">@Localizer["InfoMessageUploadFiles"]</a>
                                 <div>
                                     <div class="file-group big-label">
@@ -119,16 +120,17 @@
                                                 <div class="select-button-1 d-flex justify-content-end">
                                                     <label>
                                                         @Localizer["SelectDoc"]
-                                                        <input class="height-input" id="fi2" type="file" onchange="GetFileName(this.value, 'fl2');" name="trailerAnnualInspectionDoc" accept="application/pdf, image/jpeg, image/jpg" required>
+                                                        <input class="height-input" id="fi2" type="file" onchange="GetFileName(this.value, 'fl2');" name="leaseAgreementDoc" accept="application/pdf, image/jpeg, image/jpg">
                                                     </label>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                    <p class="file-limit-exceeded text-danger"></p>
                                 </div>
                             </div>
                             <div class="full-label">
-                                <p class="a-label">@Localizer["DocLeaseAgreement"] (@Localizer["Optional"])</p>
+                                <p class="a-label">@Localizer["DocTrailerAnnualIns"]</p>
                                 <a class="pt-1 pb-1">@Localizer["InfoMessageUploadFiles"]</a>
                                 <div>
                                     <div class="file-group big-label">
@@ -140,12 +142,13 @@
                                                 <div class="select-button-1 d-flex justify-content-end">
                                                     <label>
                                                         @Localizer["SelectDoc"]
-                                                        <input class="height-input" id="fi3" type="file" onchange="GetFileName(this.value, 'fl3');" name="leaseAgreementDoc" accept="application/pdf, image/jpeg, image/jpg">
+                                                        <input class="height-input" id="fi3" type="file" onchange="GetFileName(this.value, 'fl3');" name="trailerAnnualInspectionDoc" accept="application/pdf, image/jpeg, image/jpg">
                                                     </label>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                    <p class="file-limit-exceeded text-danger"></p>
                                 </div>
                             </div>
                             <button class="height-input btn1 big-label big-font-size">@Localizer["SaveInfo"]</button>
@@ -213,23 +216,28 @@
 </body>
 
 <script>
-    $("#fi3").change(function () {
-        CheckValid('fl3', 'fi3');
+    $("#fi1").change(function () {
+        CheckValid('fl1', 'fi1');
     });
 
     $("#fi2").change(function () {
         CheckValid('fl2', 'fi2');
     });
 
-    $("#fi1").change(function () {
-        CheckValid('fl1', 'fi1');
+    $("#fi3").change(function () {
+        CheckValid('fl3', 'fi3');
     });
 
-    $("#button-save").on('click', function () {
+    $(".big-font-size").on('click', function () {
         CheckValid('fl1', 'fi1');
         CheckValid('fl2', 'fi2');
         CheckValid('fl3', 'fi3');
-    })
+    });
+
+    $(function(){
+        $("#plateExp").mask("99/99", { placeholder: "MM/YY" });
+    });
+
     var curentSelectPattern;
 
     function SelectTrailer(value) {

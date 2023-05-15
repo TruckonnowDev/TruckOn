@@ -1,4 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using System.Globalization;
+@using WebDispacher.Constants;
 
 @model WebDispacher.ViewModels.ShippingViewModel
 
@@ -6,13 +8,14 @@
 
 @{
     ViewData["Title"] = "Dashboard | Order Information";
+    DateTime dateTimeActionFormat = DateTime.MinValue;
 }
 
 <body xmlns="http://www.w3.org/1999/html">
     <div class="admin Billing">
         <div class="container">
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-12">
                     <div class="title text-info-padding-5">
                         <a href="#" onclick="history.back();">@Localizer["BackToOrders"]</a>
                     </div>
@@ -21,7 +24,15 @@
                         <h1 class="text-info-header-1">@Localizer["InformationHeader"]</h1>
                     </div>
                     <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["LoadId"]:</b> <span>@Model.IdOrder</span></p>
-                    <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["Price"]:</b> <span>@Model.PriceListed</span></p>
+                    <p class="text-info-p-1 text-info-padding-5">
+                        <b>@Localizer["Price"]:</b> 
+                        <span>
+                            @if (@Model.PriceListed != null)
+                        {
+                            <i class="bi bi-currency-dollar"></i>
+                        }
+                        @Model.PriceListed</span>
+</p>
                     <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["Status"]:</b> <span>@Model.CurrentStatus</span></p>
                     <div class="text-r">
                         <p class="text-info-header-3 text-info-padding-5"><b>@Localizer["Veh"]</b></p>
@@ -55,7 +66,7 @@
                         }
                     </table>
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="text-r">
                                 <h3 class="text-info-header-3 text-info-padding-5">@Localizer["Origin"]</h3>
                                 <p class="text-info-p">
@@ -65,9 +76,8 @@
                                     <b>@Localizer["PickupDate"]: </b> @Model.PickupExactly
                                 </p>
                             </div>
-
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="text-r">
                                 <h3 class="text-info-header-3">@Localizer["Destination"]</h3>
                                 <p class="text-info-p">
@@ -78,7 +88,18 @@
                                 </p>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
+                            <div class="text-r">
+                                <h3 class="text-info-header-3">@Localizer["Customer"]</h3>
+                                <p class="text-info-p">
+                                    <b>@Localizer["Contact"]:</b> @Model.ContactC<br>
+                                    <b>@Localizer["Phone"]:</b> @Model.PhoneC<br>
+                                    <b>@Localizer["Fax"]:</b> @Model.FaxC<br>
+                                    <b>@Localizer["McNumber"]:</b> @Model.IccmcC
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
                             <div class="text-r">
                                 <h3 class="text-info-header-3">@Localizer["PaymentInfo"]</h3>
                                 <p class="text-info-p">
@@ -88,18 +109,7 @@
                                 </p>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="text-r">
-                                <h3 class="text-info-header-3">@Localizer["Customer"]</h3>
-                                <p class="text-info-p">
-                                    <b>@Localizer["Contact"]:</b> @Model.ContactC<br>
-                                    <b>@Localizer["Phone"]:</b> @Model.PhoneC<br>
-                                    <b>@Localizer["Fax"]:</b> @Model.FaxC<br>
-                                    <b>Iccmc:</b> @Model.IccmcC
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
+                        <div class="col-md-8">
                             <div class="text-r">
                                 <h3 class="text-info-header-3">@Localizer["Instructions"]</h3>
                                 <p class="text-info-p">@Model.Titl1DI</p>
@@ -119,19 +129,143 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="right-bar-about">
-                        <h3 class="text-info-header-3">@Localizer["ActionHistory"]</h3>
-                        @for (var i = 0; i < ViewBag.Historys.Count; i++)
-                        {
-                            <div class="one text-info-p">
-                                <p>@ViewBag.Historys[i].Action</p>
-                                <p>@Localizer["DateAction"]: @ViewBag.Historys[i].DateAction</p>
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-12 mb-2">
+                            <div class="right-bar-about">
+                                <h3 class="text-info-header-3">@Localizer["ActionHistory"]</h3>
                             </div>
-                        }
+                        </div>
+                    </div> 
+                    <div class="archive-item">
+                        <div class="archive-title">
+                            <p style="font-size: 20px">
+                                @Localizer["ShowHistory"]
+                                <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                                    </svg>
+                                </span>
+                            </p>
+                        </div>
+                        <div class="content">
+                            <div class="row">
+                                @for (var i = 0; i < ViewBag.Historys.Count; i++)
+                                {
+                                    {
+                                        var dateTimeString = ViewBag.Historys[i].DateAction;
+
+                                        try
+                                        {
+                                            dateTimeActionFormat = DateTime.ParseExact(dateTimeString, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
+                                        }
+                                        catch
+                                        {
+
+                                        }
+                                    }
+                                    <div class="col-md-3 mb-4">
+                                        <div class="one text-info-p">
+                                            @if (dateTimeActionFormat.Year == 1)
+                                            {
+                                                <p><b>@Localizer["DateAction"]:</b> @ViewBag.Historys[i].DateAction</p>
+                                            }
+                                            else
+                                            {
+                                                    <p>
+                                                        <b>@Localizer["DateAction"]:</b> @dateTimeActionFormat.ToString(DateTimeFormats.FullDateTimeInfoUS)
+                                                        </p>
+                                            }
+                                            @*<p>
+                                                <b>User: </b> @ViewBag.Historys[i].User</p>*@
+                                            <p>
+                                                <b>Action: </b> @ViewBag.Historys[i].Action</p>
+                                        </div>
+                                    </div>
+                                    {
+                                        dateTimeActionFormat = DateTime.MinValue;
+                                    }
+                                }
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </body>
+
+<script>
+    const archiveItems = document.querySelectorAll(".archive-item");
+    archiveItems.forEach(item => {
+        item.querySelector(".archive-title").addEventListener("click", () => {
+            item.classList.toggle("active");
+            let contentItem = item.querySelector(".content");
+            if (contentItem.style.maxHeight) {
+                contentItem.style.maxHeight = null;
+            }else{
+                contentItem.style.maxHeight = contentItem.scrollHeight + 'px'
+            }
+        })
+    })
+</script>
+
+<style>
+    .archive-item {
+        cursor: pointer;
+    }
+
+    .archive-title {
+        display: flex;
+        justify-content: space-between;
+        align-items:center;
+    }
+
+    .archive-title h3 {
+        font-size: 1.7rem;
+    }
+
+    .archive-title span {
+        vertical-align: middle;
+    }
+
+    .content {
+        visibility: hidden;
+        overflow: hidden;
+        max-height: 0;
+        opacity: 0;
+        transition: visibility 1s, opacity 0.5s ease, max-height 0.5s ease;
+    }
+
+    .archive-item.active .content {
+        visibility: visible;
+        opacity: 1;
+        transition: visibility 1s, opacity 0.5s ease;
+    }
+
+    .archive-item .archive-title span svg {
+        transform: rotate(360deg);
+        transition: transform 0.3s ease;
+    }
+
+    .archive-item.active .archive-title span svg {
+        transform: rotate(180deg);
+        transition: transform 0.3s ease;
+    }
+
+    .archive-item p {
+        font-size: 13px;
+    }
+
+    p {
+        font-size: 16px;
+    }
+
+    h3 {
+        font-size: 18px;
+    }
+
+    .Billing table td{
+        width: 350px;
+    }
+</style>

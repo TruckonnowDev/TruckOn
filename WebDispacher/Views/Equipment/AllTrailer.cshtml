@@ -22,59 +22,113 @@
                     <div id="tabs">
                         <div class="tab" onclick="window.location.href='@Url.Action("Trucks", "Equipment")';">@Localizer["Trucks"]</div>
                         <div class="tab whiteborder" onclick="window.location.href='@Url.Action("CreateTrailer", "Equipment")';">@Localizer["Trailers"]</div>
-                        <div class="tabContent">
-                            <table class="truck-trailer-tab" style="width: 100%;">
-                                <thead>
-                                    <tr>
-                                        <th>@Localizer["Name"]</th>
-                                        <th>@Localizer["Type"]</th>
-                                        <th>@Localizer["Year"]</th>
-                                        <th style="word-break: break-word">@Localizer["Make"]</th>
-                                        <th>@Localizer["HowLong"]</th>
-                                        <th>@Localizer["Color"]</th>
-                                        <th>@Localizer["Plate"]#</th>
-                                        <th>@Localizer["PlateExp"]</th>
-                                        <th>@Localizer["Vin"] #</th>
-                                        <th style="padding: 10px 0;">@Localizer["Owner"]</th>
-                                        <th>@Localizer["AnnualIns"]</th>
-                                        <th style="width: 38px"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @for (int i = 0; i < ViewBag.Trailers.Count; i++)
-                                    {
-                                        <tr>
-                                            <td aria-label="@Localizer["Name"]">@ViewBag.Trailers[i].Name</td>
-                                            <td aria-label="@Localizer["Type"]" style="word-break: break-all">@ViewBag.Trailers[i].Type</td>
-                                            <td aria-label="@Localizer["Year"]">@ViewBag.Trailers[i].Year</td>
-                                            <td aria-label="@Localizer["Make"]">@ViewBag.Trailers[i].Make</td>
-                                            <td aria-label="@Localizer["HowLong"]">@ViewBag.Trailers[i].HowLong</td>
-                                            <td aria-label="@Localizer["Color"]">@ViewBag.Trailers[i].Color</td>
-                                            <td aria-label="@Localizer["Plate"]#">@ViewBag.Trailers[i].Plate</td>
-                                            <td aria-label="@Localizer["PlateExp"]">@ViewBag.Trailers[i].Exp</td>
-                                            <td aria-label="@Localizer["Vin"] #" style="word-break: break-all">@ViewBag.Trailers[i].Vin</td>
-                                            <td aria-label="@Localizer["Owner"]">@ViewBag.Trailers[i].Owner</td>
-                                            <td aria-label="@Localizer["AnnualIns"]">@ViewBag.Trailers[i].AnnualIns</td>
-                                            <td class="input-img mt-3 mb-3">
-                                                <div class="td-click-img-margin">
-                                                    <img src="~/img/arrow.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Driver/InspactionTrucks?idDriver=0&idTruck=0&idTrailer=@ViewBag.Trailers[i].Id&date=0';"/>
-                                                    <img src="~/img/pen.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/EditTrailer?idTrailer='+@ViewBag.Trailers[i].Id;">
-                                                    <img src="~/img/setting.svg" alt="" onclick="window.location.href='@ViewBag.BaseUrl/Settings?idTr=@ViewBag.Trailers[i].Id&page=s&idProfile=0&typeTransport=Trailer'">
-                                                    <img src="~/img/doc.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/Trailer/Doc?id='+@ViewBag.Trailers[i].Id;">
-                                                    <img src="~/img/delet.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/Trailer/Remove?id='+@ViewBag.Trailers[i].Id;">
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        <div id="tabs">
+            <div class="tabContent">
+                <table class="truck-trailer-tab" style="width: auto;margin-left: auto; margin-right: auto;overflow-x:scroll;">
+                    <thead>
+                        <tr>
+                            <th>@Localizer["Name"]</th>
+                            <th>@Localizer["Year"]</th>
+                            <th style="word-break: break-word">@Localizer["Make"]</th>
+                            <th>@Localizer["Type"]</th>
+                            <th>@Localizer["HowLong"]</th>
+                            <th>@Localizer["Vin"] #</th>
+                            <th>@Localizer["Plate"]#</th>
+                            <th>@Localizer["PlateExp"]</th>
+                            <th>@Localizer["Color"]</th>
+                            <th>@Localizer["AnnualIns"]</th>
+                            <th style="padding: 10px 0;">@Localizer["Owner"]</th>
+                            <th style="width: 60px"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < ViewBag.Trailers.Count; i++)
+                        {
+                            <tr>
+                                <td aria-label="@Localizer["Name"]">
+                                    <div class="value-td">@ViewBag.Trailers[i].Name</div>
+                                </td>
+                                <td aria-label="@Localizer["Year"]">
+                                    <div class="value-td">@ViewBag.Trailers[i].Year</div>
+                                </td>
+                                <td aria-label="@Localizer["Make"]">
+                                    <div class="value-td">@ViewBag.Trailers[i].Make</div>
+                                </td>
+                                <td aria-label="@Localizer["Type"]">
+                                    <div class="value-td">@ViewBag.Trailers[i].Type</div>
+                                </td>
+                                <td aria-label="@Localizer["HowLong"]">
+                                    <div class="value-td">@ViewBag.Trailers[i].HowLong</div>
+                                </td>
+                                <td aria-label="@Localizer["Vin"] #">
+                                    <div class="value-td">@ViewBag.Trailers[i].Vin</div>
+                                </td>
+                                <td aria-label="@Localizer["Plate"]#">
+                                    <div class="value-td">@ViewBag.Trailers[i].Plate</div>
+                                    </td>
+                                <td aria-label="@Localizer["PlateExp"]">
+                                    <div class="value-td">@ViewBag.Trailers[i].Exp</div>
+                                    </td>
+                                <td aria-label="@Localizer["Color"]">
+                                    <div class="value-td">@ViewBag.Trailers[i].Color</div>
+                                </td>
+                                <td aria-label="@Localizer["AnnualIns"]">
+                                    <div class="value-td">@ViewBag.Trailers[i].AnnualIns</div>
+                                    </td>
+                                <td aria-label="@Localizer["Owner"]">
+                                    <div class="value-td">@ViewBag.Trailers[i].Owner</div>
+                                </td>
+                                <td class="input-img mt-3 mb-3">
+                                    <div class="td-click-img-margin">
+                                        <div data-title="@Localizer["ViewNotificataion"]" class="ico-doc ico-doc-view" onclick="document.location.href = '@ViewBag.BaseUrl/Driver/InspactionTrucks?idDriver=0&idTruck=0&idTrailer=@ViewBag.Trailers[i].Id&date=0';">
+                                            <i class="bi bi-cursor-fill" style="color: #4caf50; font-size:20px"></i>
+                                        </div>
+                                        @*<img src="~/img/arrow.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Driver/InspactionTrucks?idDriver=0&idTruck=0&idTrailer=@ViewBag.Trailers[i].Id&date=0';" />*@
+
+                                        <div data-title="@Localizer["EditTrailerNotificataion"]" class="ico-doc ico-doc-edit" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/EditTrailer?idTrailer='+@ViewBag.Trailers[i].Id;">
+                                            <i class="bi bi-pencil-square" style="color: #ff9800; font-size:20px"></i>
+                                        </div>
+                                        @*<img src="~/img/pen.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/EditTrailer?idTrailer='+@ViewBag.Trailers[i].Id;">*@
+
+                                        <div data-title="@Localizer["CustomizeNotificataion"]" class="ico-doc ico-doc-settings" onclick="document.location.href = '@ViewBag.BaseUrl/Settings?idTr=@ViewBag.Trailers[i].Id&page=s&idProfile=0&typeTransport=Trailer'">
+                                            <i class="bi bi-gear-fill" style="color: #a3644d; font-size:20px"></i>
+                                        </div>
+                                        @*<img src="~/img/setting.svg" alt="" onclick="window.location.href='@ViewBag.BaseUrl/Settings?idTr=@ViewBag.Trailers[i].Id&page=s&idProfile=0&typeTransport=Trailer'">*@
+
+                                        <div data-title="@Localizer["DocNotificataion"]" class="ico-doc ico-doc-documents" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/Trailer/Doc?id='+@ViewBag.Trailers[i].Id;">
+                                            <i class="bi bi-file-earmark-medical-fill" style="color: #3f51b5; font-size:20px"></i>
+                                        </div>
+                                        @*<img src="~/img/doc.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/Trailer/Doc?id='+@ViewBag.Trailers[i].Id;">*@
+
+                                        <div data-title="@Localizer["DeleteNotificataion"]" class="ico-doc ico-doc-delete open-ConfirmDelete" data-toggle="modal" data-id="@ViewBag.Trailers[i].Id" href="#confirmDeleteEntryModal">
+                                            <i class="bi bi-x-lg" style="color: #f44336; font-size:20px"></i>
+                                        </div>
+                                        @*<img src="~/img/delet.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/Trailer/Remove?id='+@ViewBag.Trailers[i].Id;">*@
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <pagination-list actual-pages="functions.GetPages(ViewBag.SelectedPage, ViewBag.CountPages)" selected-page="ViewBag.SelectedPage" />
+            </div>
+        </div>
     </div>
+    @await Html.PartialAsync("~/Views/PartView/Modals/ConfirmDelete.cshtml");
 </body>
+
+<script>
+    ConfirmRemoveEntry(GetDateTimeInFormat(new Date()), `/Equipment/Trailer/Remove`, `/Equipment/Trailers`, '#confirmDeleteEntryModal');
+
+     $(document).ready(function () {
+        ShowAlert();
+     });
+
+</script>
 
 <style>
     img {

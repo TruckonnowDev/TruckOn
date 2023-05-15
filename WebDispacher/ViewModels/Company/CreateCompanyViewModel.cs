@@ -10,5 +10,11 @@ namespace WebDispacher.ViewModels.Company
             
             [Required(ErrorMessage ="EmailRequired")]
             public string Email { get; set; }
+
+            [Required(ErrorMessage ="PasswordRequired")]
+            public string Password { get; set; }
+        
+            [Required(ErrorMessage ="PhoneRequired")]
+            public string Phone { get; set; }
         }
 }

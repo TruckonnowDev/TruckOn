@@ -2,6 +2,9 @@
 {
     public class DateTimeFormats
     {
-        public const string FullDateTimeInfo = "dd.MM.yyyy HH:mm:ss";
+        public const string FullDateTimeInfo = "dd.MM.yyyy H:mm:ss";
+        public const string BaseCalendarDate = "yyyy-MM-dd";
+        public const string FullDateTimeInfoUS = "M.dd.yyyy h:mm:ss tt";
+        public const string DateTimeInfoUS = "M.dd.yyyy";
     }
 }

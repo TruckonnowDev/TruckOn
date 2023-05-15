@@ -72,7 +72,7 @@
                             @if (ViewBag.Orders[i].IsProblem)
                             {
                                 <p style="color:red" class="stPData">If the problem is resolved, then click the "Solved" button</p>
-                                <a href="/Dashbord/Order/Solved?id=@ViewBag.Orders[i].Id&page=Assigned" style="color:red" class="btnId">Solved</a>
+                            <a href="/Dashbord/Order/Solved?id=@ViewBag.Orders[i].Id&localDate=javascript:GetDateTimeInFormat(new Date())&page=Assigned" style="color:red" class="btnId">Solved</a>
                             }
                         </div>
                     </div>
@@ -98,7 +98,8 @@
             let url = "@ViewBag.BaseUrl/Dashbord/Unassign";
             let xmlHttp = new XMLHttpRequest();
             let idOrder = idOrderAndIdDriver.split(',')[0];
-            var body = 'idOrder=' + encodeURIComponent(idOrder);
+            var body = 'idOrder=' + encodeURIComponent(idOrder) +
+                '&localDate=' + GetDateTimeInFormat(new Date());
             xmlHttp.open("POST", url, false);
             xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xmlHttp.setRequestHeader('Accept-Encoding', 'br');
@@ -111,7 +112,8 @@
             let url = "@ViewBag.BaseUrl/Dashbord/Assign";
             let xmlHttp = new XMLHttpRequest();
             var body = 'idOrder=' + encodeURIComponent(idOrder) +
-                '&idDriver=' + encodeURIComponent(idDriver);
+                '&idDriver=' + encodeURIComponent(idDriver) +
+                '&localDate=' + GetDateTimeInFormat(new Date());
             xmlHttp.open("POST", url, false);
             xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xmlHttp.setRequestHeader('Accept-Encoding', 'br');

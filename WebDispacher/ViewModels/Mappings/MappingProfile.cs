@@ -5,6 +5,7 @@ using WebDispacher.ViewModels.Company;
 using WebDispacher.ViewModels.Contact;
 using WebDispacher.ViewModels.Dispatcher;
 using WebDispacher.ViewModels.Driver;
+using WebDispacher.ViewModels.RA.Carrier.Registration;
 using WebDispacher.ViewModels.Settings;
 using WebDispacher.ViewModels.Trailer;
 using WebDispacher.ViewModels.Truck;
@@ -106,6 +107,30 @@ namespace WebDispacher.ViewModels.Mappings
                 .ForMember(x => x.Id, opt => opt.MapFrom(s => s.Id))
                 .ForMember(x => x.idOrder, opt => opt.MapFrom(s => s.IdOrder))
                 .ReverseMap();
+            CreateMap<DaoModels.DAO.Models.VehiclwInformation, DaoModels.DAO.Models.VehicleHistory>()
+                .ForMember(x => x.VehicleId, opt => opt.MapFrom(d => d.Id))
+                .ForMember(x => x.Lot, opt => opt.MapFrom(d => d.Lot))
+                .ForMember(x => x.Make, opt => opt.MapFrom(d => d.Make))
+                .ForMember(x => x.AdditionalInfo, opt => opt.MapFrom(d => d.AdditionalInfo))
+                .ForMember(x => x.VIN, opt => opt.MapFrom(d => d.VIN))
+                .ForMember(x => x.Color, opt => opt.MapFrom(d => d.Color))
+                .ForMember(x => x.Model, opt => opt.MapFrom(d => d.Model))
+                .ForMember(x => x.Year, opt => opt.MapFrom(d => d.Year))
+                .ForMember(x => x.Type, opt => opt.MapFrom(d => d.Type))
+                .ForMember(x => x.Plate, opt => opt.MapFrom(d => d.Plate))
+                .ForMember(x => x.Id, opt => opt.Ignore())
+                .ReverseMap();
+            CreateMap<FewMoreDetailsViewModel, CreateCompanyViewModel>()
+                .ForMember(x => x.Email, opt => opt.MapFrom(d => d.PersonalData.Email))
+                .ForMember(x => x.Name, opt => opt.MapFrom(d => d.PersonalData.CompanyName))
+                .ReverseMap();
+            CreateMap<CompanyViewModel, Commpany>()
+                .ForMember(x => x.Id, opt => opt.MapFrom(d => d.Id))
+                .ForMember(x => x.Name, opt => opt.MapFrom(d => d.Name))
+                //.ForMember(x => x.Email, opt => opt.MapFrom(d => d.Email))
+                //.ForMember(x => x.Phone, opt => opt.MapFrom(d => d.Phone))
+                .ReverseMap();
+
         }
     }
 }

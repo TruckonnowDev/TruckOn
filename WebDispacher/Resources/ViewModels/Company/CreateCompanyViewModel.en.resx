@@ -104,4 +104,10 @@
 	<data name="EmailRequired" xml:space="preserve">
 		<value>The Email field is required</value>
 	</data>
+	<data name="PasswordRequired" xml:space="preserve">
+		<value>The Password field is required</value>
+	</data>
+	<data name="PhoneRequired" xml:space="preserve">
+		<value>The Phne field is required</value>
+	</data>
 </root>

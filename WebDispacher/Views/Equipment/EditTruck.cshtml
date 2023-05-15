@@ -1,10 +1,23 @@
 ﻿@model WebDispacher.ViewModels.Truck.TruckViewModel
 @using Microsoft.AspNetCore.Mvc.Localization
+@using WebDispacher.Constants;
 
 @inject IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = "Edit Truck";
+    var regDocName = string.Empty;
+    var leaseAgrDocName = string.Empty;
+    var annualInsDocName = string.Empty;
+    var bobTailPhysicalDamageDocName = string.Empty;
+    var nYHUTDocName = string.Empty;
+
+    @if(ViewBag.TruckDocs.TryGetValue(DocAndFileConstants.TruckRegistration,out regDocName));
+    @if(ViewBag.TruckDocs.TryGetValue(DocAndFileConstants.TruckAgreement,out leaseAgrDocName));
+    @if(ViewBag.TruckDocs.TryGetValue(DocAndFileConstants.TruckInspection,out annualInsDocName));
+    @if(ViewBag.TruckDocs.TryGetValue(DocAndFileConstants.BobTailPhysicalDamage,out bobTailPhysicalDamageDocName));
+    @if(ViewBag.TruckDocs.TryGetValue(DocAndFileConstants.NyHit,out nYHUTDocName));
+   
 }
 
 <body>
@@ -23,11 +36,23 @@
                             <input type="text" name="Id" required value="@Model.Id" style="display:none;" />
                             <label class="big-label" for="">
                                 @Localizer["NameTruck"]
-                                <input class="height-input" type="text" name="NameTruck" required value="@Model.NameTruck">
+                                <input class="height-input" type="text" name="NameTruck" value="@Model.NameTruck" maxlength="25">
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["Year"]
+                                <input class="height-input" type="text" name="Year" value="@Model.Year" maxlength="4" />
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["Make"]
+                                <input class="height-input" type="text" name="Make" value="@Model.Make" maxlength="15"/>
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["Model"]
+                                <input class="height-input" type="text" name="Model" value="@Model.Model" maxlength="20" />
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["TypeTruck"] <br />
-                                <select class="height-input input-select" name="Type" onchange="SelectTruck(this.options[this.selectedIndex].value)" required>
+                                <select class="height-input input-select" name="Type" onchange="SelectTruck(this.options[this.selectedIndex].value)">
                                     <option value="@Model.Type">@Model.Type</option>
                                     <option value="PickUpDually4TiresInTheBackMustHave4Door">Pick up Dually (4 tires in the bacK) must have 4 door</option>
                                     @*<option value="PickupFourWheel">Four-wheel pickup dually</option>
@@ -44,41 +69,199 @@
                                 </select>
                             </label>
                             <label class="big-label" for="">
-                                @Localizer["Year"]
-                                <input class="height-input" type="text" name="Year" value="@Model.Year" />
-                            </label>
-                            <label class="big-label" for="">
-                                @Localizer["Make"]
-                                <input class="height-input" type="text" name="Make" value="@Model.Make" />
-                            </label>
-                            <label class="big-label" for="">
-                                @Localizer["Model"]
-                                <input class="height-input" type="text" name="Model" value="@Model.Model" />
-                            </label>
-                            <label class="big-label" for="">
-                                @Localizer["State"]
-                                <input class="height-input" type="text" name="State" value="@Model.State" />
-                            </label>
-                            <label class="big-label" for="">
-                                @Localizer["PlateExp"]
-                                <input class="height-input" type="text" name="Exp" value="@Model.Exp" />
-                            </label>
-                            <label class="big-label" for="">
                                 @Localizer["Vin"]#
-                                <input class="height-input" type="text" name="Vin" value="@Model.Vin" />
-                            </label>
-                            <label class="big-label" for="">
-                                @Localizer["Owner"]
-                                <input class="height-input" type="text" name="Owner" value="@Model.Owner" />
+                                <input class="height-input" type="text" name="Vin" value="@Model.Vin" maxlength="17" />
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["PlateTruck"]
-                                <input class="height-input" type="text" name="PlateTruck" required value="@Model.PlateTruck" />
+                                <input class="height-input" type="text" name="PlateTruck" value="@Model.PlateTruck"  maxlength="10"/>
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["PlateExp"]
+                                <input class="height-input" type="text" name="Exp" id="plateExp" value="@Model.Exp" />
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["State"]
+                                <select class="height-input input-select" id="stateP" name="State" value="@Model.State">
+                                    <option value="AL">Alabama</option>
+                                    <option value="AK">Alaska</option>
+                                    <option value="AZ">Arizona</option>
+                                    <option value="AR">Arkansas</option>
+                                    <option value="CA">California</option>
+                                    <option value="CO">Colorado</option>
+                                    <option value="CT">Connecticut</option>
+                                    <option value="DE">Delaware</option>
+                                    <option value="DC">District Of Columbia</option>
+                                    <option value="FL">Florida</option>
+                                    <option value="GA">Georgia</option>
+                                    <option value="HI">Hawaii</option>
+                                    <option value="ID">Idaho</option>
+                                    <option value="IL">Illinois</option>
+                                    <option value="IN">Indiana</option>
+                                    <option value="IA">Iowa</option>
+                                    <option value="KS">Kansas</option>
+                                    <option value="KY">Kentucky</option>
+                                    <option value="LA">Louisiana</option>
+                                    <option value="ME">Maine</option>
+                                    <option value="MD">Maryland</option>
+                                    <option value="MA">Massachusetts</option>
+                                    <option value="MI">Michigan</option>
+                                    <option value="MN">Minnesota</option>
+                                    <option value="MS">Mississippi</option>
+                                    <option value="MO">Missouri</option>
+                                    <option value="MT">Montana</option>
+                                    <option value="NE">Nebraska</option>
+                                    <option value="NV">Nevada</option>
+                                    <option value="NH">New Hampshire</option>
+                                    <option value="NJ">New Jersey</option>
+                                    <option value="NM">New Mexico</option>
+                                    <option value="NY">New York</option>
+                                    <option value="NC">North Carolina</option>
+                                    <option value="ND">North Dakota</option>
+                                    <option value="OH">Ohio</option>
+                                    <option value="OK">Oklahoma</option>
+                                    <option value="OR">Oregon</option>
+                                    <option value="PA">Pennsylvania</option>
+                                    <option value="RI">Rhode Island</option>
+                                    <option value="SC">South Carolina</option>
+                                    <option value="SD">South Dakota</option>
+                                    <option value="TN">Tennessee</option>
+                                    <option value="TX">Texas</option>
+                                    <option value="UT">Utah</option>
+                                    <option value="VT">Vermont</option>
+                                    <option value="VA">Virginia</option>
+                                    <option value="WA">Washington</option>
+                                    <option value="WV">West Virginia</option>
+                                    <option value="WI">Wisconsin</option>
+                                    <option value="WY">Wyoming</option>
+                                </select>
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["Color"]
-                                <input class="height-input" type="text" name="ColorTruck" value="@Model.ColorTruck">
+                                <input class="height-input" type="text" name="ColorTruck" value="@Model.ColorTruck" maxlength="15">
                             </label>
+                            <label class="big-label" for="">
+                                @Localizer["Owner"]
+                                <input class="height-input" type="text" name="Owner" value="@Model.Owner" maxlength="25" />
+                            </label>
+                            <div class="big-label">
+                                <div class="full-label">
+                                    <p class="a-label">@Localizer["TruckRegistration"]</p>
+                                    <a class="pt-1 pb-1">@Localizer["InfoMessageUploadFiles"]</a>
+                                    <div>
+                                        <div class="file-group big-label">
+                                            <div class="row">
+                                                <div class="col-8 label-input d-flex align-items-center">
+                                                    <div onclick="ClearFile(`fi1`, 'fl1');" class="fi" id="fl1">
+                                                        @regDocName
+                                                    </div>
+                                                </div>
+                                                <div class="col-4 select-doc">
+                                                    <div class="select-button-1 d-flex justify-content-end">
+                                                        <label>
+                                                            @Localizer["SelectDoc"]
+                                                            <input class="height-input" id="fi1" onchange="GetFileName(this.value, 'fl1');" type="file" name="truckRegistrationDoc" accept="application/pdf, image/jpeg, image/jpg">
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p class="file-limit-exceeded text-danger"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="full-label">
+                                <p class="a-label">@Localizer["TruckLeaseAgreement"]</p>
+                                <a class="pt-1 pb-1">@Localizer["InfoMessageUploadFiles"]</a>
+                                <div>
+                                    <div class="file-group big-label">
+                                        <div class="row">
+                                            <div class="col-8 label-input d-flex align-items-center">
+                                                <div onclick="ClearFile(`fi2`, 'fl2');" class="fi" id="fl2">
+                                                    @leaseAgrDocName
+                                                </div>
+                                            </div>
+                                            <div class="col-4 select-doc">
+                                                <div class="select-button-1 d-flex justify-content-end">
+                                                    <label>
+                                                        @Localizer["SelectDoc"]
+                                                        <input class="height-input" id="fi2" onchange="GetFileName(this.value, 'fl2');" type="file" name="truckLeaseAgreementDoc" accept="application/pdf, image/jpeg, image/jpg">
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="file-limit-exceeded text-danger"></p>
+                                </div>
+                            </div>
+                            <div class="full-label">
+                                <p class="a-label">@Localizer["TruckAnnualIns"]</p>
+                                <a class="pt-1 pb-1">@Localizer["InfoMessageUploadFiles"]</a>
+                                <div>
+                                    <div class="file-group big-label">
+                                        <div class="row">
+                                            <div class="col-8 label-input d-flex align-items-center">
+                                                <div onclick="ClearFile(`fi3`, 'fl3');" class="fi" id="fl3">
+                                                    @annualInsDocName
+                                                </div>
+                                            </div>
+                                            <div class="col-4 select-doc">
+                                                <div class="select-button-1 d-flex justify-content-end">
+                                                    <label>
+                                                        @Localizer["SelectDoc"]
+                                                        <input class="height-input" id="fi3" onchange="GetFileName(this.value, 'fl3');" type="file" name="truckAnnualInspection" accept="application/pdf, image/jpeg, image/jpg">
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="file-limit-exceeded text-danger"></p>
+                                </div>
+                            </div>
+                            <div class="full-label">
+                                <p class="a-label">@Localizer["BobTailPhysicalDamage"]</p>
+                                <a class="pt-1 pb-1">@Localizer["InfoMessageUploadFiles"]</a>
+                                <div>
+                                    <div class="file-group big-label">
+                                        <div class="row">
+                                            <div class="col-8 label-input d-flex align-items-center">
+                                                <div onclick="ClearFile(`fi4`, 'fl4');" class="fi" id="fl4"></div>
+                                            </div>
+                                            <div class="col-4 select-doc">
+                                                <div class="select-button-1 d-flex justify-content-end">
+                                                    <label>
+                                                        @Localizer["SelectDoc"]
+                                                        <input class="height-input" id="fi4" onchange="GetFileName(this.value, 'fl4');" type="file" name="bobTailPhysicalDamage" accept="application/pdf, image/jpeg, image/jpg">
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="file-limit-exceeded text-danger"></p>
+                                </div>
+                            </div>
+                            <div class="full-label">
+                                <p class="a-label">@Localizer["NyHut"] (@Localizer["OptionalForNyRolling"])</p>
+                                <a class="pt-1 pb-1">@Localizer["InfoMessageUploadFiles"]</a>
+                                <div>
+                                    <div class="file-group big-label">
+                                        <div class="row">
+                                            <div class="col-8 label-input d-flex align-items-center">
+                                                <div onclick="ClearFile(`fi5`, 'fl5');" class="fi" id="fl5"></div>
+                                            </div>
+                                            <div class="col-4 select-doc">
+                                                <div class="select-button-1 d-flex justify-content-end">
+                                                    <label>
+                                                        @Localizer["SelectDoc"]
+                                                        <input class="height-input" id="fi5" onchange="GetFileName(this.value, 'fl5');" type="file" accept="application/pdf, image/jpeg, image/jpg" name="nYHUTDoc">
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="file-limit-exceeded text-danger"></p>
+                                </div>
+                            </div>
                             <button class="btn1 big-label height-input big-font-size">@Localizer["SaveInfo"]</button>
                         </form>
                     </div>
@@ -162,7 +345,56 @@
 </body>
 
 <script>
+    $("#fi1").change(function () {
+        CheckValid('fl1', 'fi1');
+    });
+
+    $("#fi2").change(function () {
+        CheckValid('fl2', 'fi2');
+    });
+
+    $("#fi3").change(function () {
+        CheckValid('fl3', 'fi3');
+    });
+    
+    $("#fi4").change(function () {
+        CheckValid('fl4', 'fi4');
+    });
+    
+    $("#fi5").change(function () {
+        CheckValid('fl5', 'fi5');
+    });
+
+    $(".big-font-size").on('click', function () {
+        CheckValid('fl1', 'fi1');
+        CheckValid('fl2', 'fi2');
+        CheckValid('fl3', 'fi3');
+        CheckValid('fl4', 'fi4');
+        CheckValid('fl5', 'fi5');
+    });
+
+    $(function () {
+        $("#plateExp").mask("99/99", { placeholder: "MM/YY" });
+    });
+
     var curentSelectPattern;
+
+    $(document).ready(function () {
+        $('#stateP').val('@Model.State').change();
+
+
+            GetFileName('@regDocName', 'fl1');
+
+            GetFileName('@annualInsDocName', 'fl2');
+
+            GetFileName('@annualInsDocName', 'fl3');
+
+            GetFileName('@bobTailPhysicalDamageDocName', 'fl4');
+
+            GetFileName('@nYHUTDocName', 'fl5');
+
+    });
+
 
     function SelectTruck(value) {
         if (curentSelectPattern || value == "") {

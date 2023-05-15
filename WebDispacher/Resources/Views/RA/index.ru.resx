@@ -202,9 +202,6 @@
   <data name="HeaderSixthBlock" xml:space="preserve">
     <value>Водители Любят Truckonnow</value>
   </data>
-  <data name="InMonth" xml:space="preserve">
-    <value>месяц</value>
-  </data>
   <data name="LargeFleetFirstBlock" xml:space="preserve">
     <value>Большой автопарк</value>
   </data>
@@ -212,9 +209,7 @@
     <value>Средний автопарк</value>
   </data>
   <data name="ModalDescription" xml:space="preserve">
-    <value>Пожалуйста, заполните краткую форму, и мы
-будет на связи с молниеносной скоростью.
-Или вы можете позвонить по указанному номеру</value>
+    <value>Пожалуйста, заполните эту форму, и мы свяжемся с вами как можно скорее или позвоните нам по любым вопросам по адресу</value>
   </data>
   <data name="ModalFooterDescription" xml:space="preserve">
     <value>Перевозка Автомобилей Стала Проще.
@@ -275,8 +270,7 @@
     <value>Начните сегодня</value>
   </data>
   <data name="StartPackageBody" xml:space="preserve">
-    <value>Начните сегодня по фиксированной месячной 
-цене</value>
+    <value>Фиксированная ежемесячная плата за доступ за единицу</value>
   </data>
   <data name="RepairLocator" xml:space="preserve">
     <value>Ремонтная поддержка</value>
@@ -304,5 +298,23 @@
   </data>
   <data name="DispatchManagement" xml:space="preserve">
     <value>Диспетчерское управление</value>
+  </data>
+  <data name="SuccessSendEmail" xml:space="preserve">
+    <value>Ссылка для сброса пароля была отправлена на ваш Email</value>
+  </data>
+  <data name="ContactFormHaveError" xml:space="preserve">
+    <value>Ваша информация не может быть предоставлена в данный момент!</value>
+  </data>
+  <data name="ContactFormSuccessSend" xml:space="preserve">
+    <value>Ваша информация была отправлена успешно!</value>
+  </data>
+  <data name="ContactFormNotSend" xml:space="preserve">
+    <value>Возникла проблема с отправкой вашей информации, пожалуйста, попробуйте еще раз!</value>
+  </data>
+  <data name="ModalFormPhone" xml:space="preserve">
+    <value>Ваш телефон</value>
+  </data>
+  <data name="ValidOnlyNumbersMessage" xml:space="preserve">
+    <value>Пожалуйста, используйте только цифры</value>
   </data>
 </root>

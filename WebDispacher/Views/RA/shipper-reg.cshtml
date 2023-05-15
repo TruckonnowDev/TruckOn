@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using WebDispacher.Constants;
 
 @model WebDispacher.ViewModels.Shipping.ShippingRegViewModel
 
@@ -24,27 +25,27 @@
                         <div class="validation" asp-validation-summary="ModelOnly"></div>
                         <label for="" class="w50">
                             @Localizer["FormFirstName"]*
-                            <input type="text" name="FirstName" required>
+                            <input type="text" name="FirstName" asp-for=FirstName  required>
                             @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
                         </label>
                         <label for="" class="w50">
                             @Localizer["FormLastName"]*
-                            <input type="text" name="LastName" required>
+                            <input type="text" asp-for=LastName name="LastName" required>
                             @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
                         </label>
                         <label for="">
                             @Localizer["FormCompanyName"]*
-                            <input type="text" name="CompanyName" required>
+                            <input type="text" asp-for=CompanyName name="CompanyName" required>
                             @Html.ValidationMessageFor(model => model.CompanyName, "", new { @class = "text-danger" })
                         </label>
                         <label for="">
                             @Localizer["Email"]*
-                            <input type="email" name="Email" required>
+                            <input pattern="@PatternConstants.Email" id="email" type="email" asp-for=Email name="Email" required>
                             @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
                         </label>
                         <label for="">
                             @Localizer["PhoneNumber"]*
-                            <input type="tel" id="phone" name="PhoneNumber" required />
+                            <input type="tel" id="phone" asp-for=PhoneNumber name="PhoneNumber" pattern="@PatternConstants.PhoneNumber" required />
                             @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
                         </label>
                         <label for="">@Localizer["HowManyCars"]?*
@@ -77,3 +78,18 @@
         </div>
     </div>
 </div>
+
+<script>
+    $('#email').on('input invalid', function () {
+        this.setCustomValidity('')
+        if (this.validity.valueMissing) {
+            this.setCustomValidity("@Localizer["EmailValidMessage"]")
+        }
+        if (this.validity.typeMismatch) {
+            this.setCustomValidity("@Localizer["EmailValidMessage"]")
+        }
+        if (this.validity.patternMismatch) {
+            this.setCustomValidity('@Localizer["EmailValidMessage"]')
+        }
+    })
+</script>

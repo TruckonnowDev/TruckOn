@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using WebDispacher.Constants;
 
 @inject IViewLocalizer Localizer
 
@@ -25,7 +26,7 @@
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["Email"]
-                                <input class="height-input" type="email" name="EmailAddress" required>
+                                <input class="height-input" id="email" pattern="@PatternConstants.Email" type="email" name="EmailAddress" required>
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["Password"]
@@ -55,13 +56,14 @@
                                                 <div class="select-button-1 d-flex justify-content-end">
                                                     <label>
                                                         @Localizer["SelectDocument"]
-                                                        <input class="height-input" id="fi1" type="file" onchange="GetFileName(this.value, 'fl1');" name="dLDoc" accept="application/pdf, image/jpeg, image/jpg" required>
+                                                        <input class="height-input" id="fi1" type="file" onchange="GetFileName(this.value, 'fl1');" name="dLDoc" accept="application/pdf, image/jpeg, image/jpg">
                                                     </label>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <a>@Localizer["InfoMessageUploadFiles"]</a>
+                                    <p class="file-limit-exceeded text-danger"></p>
                                 </div>
                             </div>
                             <div class="full-label">
@@ -76,13 +78,14 @@
                                                 <div class="select-button-1 d-flex justify-content-end">
                                                     <label>
                                                         @Localizer["SelectDocument"]
-                                                        <input class="height-input" id="fi2" type="file" onchange="GetFileName(this.value, 'fl2');" name="medicalCardDoc" accept="application/pdf, image/jpeg, image/jpg" required>
+                                                        <input class="height-input" id="fi2" type="file" onchange="GetFileName(this.value, 'fl2');" name="medicalCardDoc" accept="application/pdf, image/jpeg, image/jpg">
                                                     </label>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <a>@Localizer["InfoMessageUploadFiles"]</a>
+                                    <p class="file-limit-exceeded text-danger"></p>
                                 </div>
                             </div>
                             <div class="full-label">
@@ -97,13 +100,14 @@
                                                 <div class="select-button-1 d-flex justify-content-end">
                                                     <label>
                                                         @Localizer["SelectDocument"]
-                                                        <input class="height-input" id="fi3" type="file" onchange="GetFileName(this.value, 'fl3');" name="sSNDoc" accept="application/pdf, image/jpeg, image/jpg" required>
+                                                        <input class="height-input" id="fi3" type="file" onchange="GetFileName(this.value, 'fl3');" name="sSNDoc" accept="application/pdf, image/jpeg, image/jpg">
                                                     </label>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <a>@Localizer["InfoMessageUploadFiles"]</a>
+                                    <p class="file-limit-exceeded text-danger"></p>
                                 </div>
                             </div>
                             <div class="full-label">
@@ -118,13 +122,14 @@
                                                 <div class="select-button-1 d-flex justify-content-end">
                                                     <label>
                                                         @Localizer["SelectDocument"]
-                                                        <input class="height-input" id="fi4" type="file" onchange="GetFileName(this.value, 'fl4');" name="proofOfWorkAuthorizationOrGCDoc" accept="application/pdf, image/jpeg, image/jpg" required>
+                                                        <input class="height-input" id="fi4" type="file" onchange="GetFileName(this.value, 'fl4');" name="proofOfWorkAuthorizationOrGCDoc" accept="application/pdf, image/jpeg, image/jpg">
                                                     </label>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <a>@Localizer["InfoMessageUploadFiles"]</a>
+                                    <p class="file-limit-exceeded text-danger"></p>
                                 </div>
                             </div>
                             <div class="full-label">
@@ -139,13 +144,14 @@
                                                 <div class="select-button-1 d-flex justify-content-end">
                                                     <label>
                                                         @Localizer["SelectDocument"]
-                                                        <input class="height-input" id="fi5" type="file" onchange="GetFileName(this.value, 'fl5');" name="dQLDoc" accept="application/pdf, image/jpeg, image/jpg" required>
+                                                        <input class="height-input" id="fi5" type="file" onchange="GetFileName(this.value, 'fl5');" name="dQLDoc" accept="application/pdf, image/jpeg, image/jpg">
                                                     </label>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <a>@Localizer["InfoMessageUploadFiles"]</a>
+                                    <p class="file-limit-exceeded text-danger"></p>
                                 </div>
                             </div>
                             <div class="full-label">
@@ -160,13 +166,14 @@
                                                 <div class="select-button-1 d-flex justify-content-end">
                                                     <label>
                                                         @Localizer["SelectDocument"]
-                                                        <input class="height-input" id="fi6" onchange="GetFileName(this.value, 'fl6');" type="file" name="contractDoc" accept="application/pdf, image/jpeg, image/jpg" required>
+                                                        <input class="height-input" id="fi6" onchange="GetFileName(this.value, 'fl6');" type="file" name="contractDoc" accept="application/pdf, image/jpeg, image/jpg">
                                                     </label>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <a>@Localizer["InfoMessageUploadFiles"]</a>
+                                    <p class="file-limit-exceeded text-danger"></p>
                                 </div>
                             </div>
                             <div class="full-label">
@@ -181,15 +188,17 @@
                                                 <div class="select-button-1 d-flex justify-content-end">
                                                     <label>
                                                         @Localizer["SelectDocument"]
-                                                        <input class="height-input" id="fi7" onchange="GetFileName(this.value, 'fl7');" type="file" name="drugTestResultsDoc" accept="application/pdf, image/jpeg, image/jpg" required>
+                                                        <input class="height-input" id="fi7" onchange="GetFileName(this.value, 'fl7');" type="file" name="drugTestResultsDoc" accept="application/pdf, image/jpeg, image/jpg" >
                                                     </label>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <a>@Localizer["InfoMessageUploadFiles"]</a>
+                                    <p class="file-limit-exceeded text-danger"></p>
                                 </div>
                             </div>
+                            <input type="hidden" value="" name="dateTimeLocal"/>
                             <input type="submit" value="@Localizer["SaveInfo"]" class="height-input btn1 big-label big-font-size"/>
                         </form>
                     </div>
@@ -200,6 +209,19 @@
 </body>
 
 <script>
+    $('#email').on('input invalid', function () {
+        this.setCustomValidity('')
+        if (this.validity.valueMissing) {
+            this.setCustomValidity("@Localizer["EmailValidMessage"]")
+        }
+        if (this.validity.typeMismatch) {
+            this.setCustomValidity("@Localizer["EmailValidMessage"]")
+        }
+        if (this.validity.patternMismatch) {
+            this.setCustomValidity("@Localizer["EmailValidMessage"]")
+        }
+    })
+
     $("#fi1").change(function () {
         CheckValid('fl1', 'fi1');
     });
@@ -228,6 +250,8 @@
         CheckValid('fl7', 'fi7');
     });
 
+    const dateInput = document.querySelector("[name='dateTimeLocal']");
+
     $("input[type=submit]").on('click', function () {
         CheckValid('fl1', 'fi1');
         CheckValid('fl2', 'fi2');
@@ -236,5 +260,7 @@
         CheckValid('fl5', 'fi5');
         CheckValid('fl6', 'fi6');
         CheckValid('fl7', 'fi7');
+
+        dateInput.value = GetDateTimeInFormat(new Date());
     })
 </script>

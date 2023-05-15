@@ -73,7 +73,12 @@ namespace WebDispacher.Business.Services
             
             return commpany;
         }
-        
+
+        public bool CheckEmailDb(string email)
+        {
+            return db.User.FirstOrDefault(u => u.Login == email) != null;
+        }
+
         public bool CheckEmail(string email)
         {
             var isEmail = CheckEmailDb(email);
@@ -84,7 +89,7 @@ namespace WebDispacher.Business.Services
                 var idUser = AddRecoveryPassword(email, token);
                 var pattern = new PaternSourse().GetPaternRecoveryPassword($"{Config.BaseReqvesteUrl}/Recovery/Password?idUser={idUser}&token={token}");
                 
-                Task.Run(async () => await new AuthMessageSender().Execute(email,  UserConstants.PasswordRecovery, pattern));
+                Task.Run(async () => await new AuthMessageSender().Execute(email,  UserConstants.PasswordRecoverySubject, pattern));
             }
             
             return isEmail;
@@ -115,7 +120,7 @@ namespace WebDispacher.Business.Services
             var userEdit = db.User.FirstOrDefault(c => c.Id == user.Id);
             if (userEdit == null) return;
             
-            userEdit.Login = user.Login;
+            userEdit.Login = user.Login.ToLower();
             userEdit.Password = user.Password;
 
             db.SaveChanges();
@@ -133,12 +138,12 @@ namespace WebDispacher.Business.Services
             return mapper.Map<SettingsUserViewModel>(user);
         }
         
-        public void CreateUserForCompanyId(int id, string nameCompany, string password)
+        public void CreateUserForCompanyId(int id, string emailCompany, string password)
         {
             db.User.Add(new Users()
             {
                 CompanyId = id,
-                Login = nameCompany + UserConstants.Admin,
+                Login = emailCompany.ToLower(),
                 Password = password,
                 Date = DateTime.Now.ToString()
             });
@@ -151,7 +156,7 @@ namespace WebDispacher.Business.Services
             var users = new Users()
             {
                 CompanyId = Convert.ToInt32(idCompany),
-                Date = DateTime.Now.ToString(),
+                Date = user.Date,
                 Login = user.Login,
                 Password = user.Password
             };
@@ -254,15 +259,13 @@ namespace WebDispacher.Business.Services
             db.SaveChanges();
         }
         
-        private void AddUserDb(Users users)
+        private void AddUserDb(Users user)
         {
-            db.User.Add(users);
-            db.SaveChanges();
-        }
+            user.Login = user.Login != null ? user.Login.ToLower() : user.Login;
 
-        private bool CheckEmailDb(string email)
-        {
-            return db.User.FirstOrDefault(u => u.Login == email) != null;
+            db.User.Add(user);
+
+            db.SaveChanges();
         }
 
         private int ResetPasswordFoUserDb(string newPassword, string idUser, string token)

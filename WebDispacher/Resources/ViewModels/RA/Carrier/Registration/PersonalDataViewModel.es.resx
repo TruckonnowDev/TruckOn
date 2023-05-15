@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="MinLengthPhoneNumber" xml:space="preserve">
+        <value>Longitud mínima del teléfono {1} caracteres</value>
+    </data>
+    <data name="MaxLengthPhoneNumber" xml:space="preserve">
+        <value>Longitud máxima del teléfono {1} caracteres</value>
+    </data>
+    <data name="PhoneNumber" xml:space="preserve">
+        <value>Teléfono</value>
+    </data>
+    <data name="PhoneNumberRequired" xml:space="preserve">
+        <value>El campo Teléfono es obligatorio</value>
+    </data>
+    <data name="USDOTNumberRequired" xml:space="preserve">
+        <value>El campo de número de SPOT es obligatorio</value>
+    </data>
+    <data name="USDOTNumber" xml:space="preserve">
+        <value>Número de USDOT</value>
+    </data>
+    <data name="PasswordRequired" xml:space="preserve">
+        <value>El campo de contraseña es obligatorio</value>
+    </data>
+    <data name="Password" xml:space="preserve">
+        <value>Contraseña</value>
+    </data>
+    <data name="LastNameRequired" xml:space="preserve">
+        <value>El campo Apellido es obligatorio</value>
+    </data>
+    <data name="LastName" xml:space="preserve">
+        <value>apellido</value>
+    </data>
+    <data name="FirstNameRequired" xml:space="preserve">
+        <value>El campo Nombre es obligatorio</value>
+    </data>
+    <data name="FirstName" xml:space="preserve">
+        <value>Nombre</value>
+    </data>
+    <data name="EmailRequired" xml:space="preserve">
+        <value>El campo de correo electrónico es obligatorio</value>
+    </data>
+    <data name="Email" xml:space="preserve">
+        <value>Dirección de Correo Electrónico</value>
+    </data>
+    <data name="CompanyNameRequired" xml:space="preserve">
+        <value>El campo Nombre de la empresa es obligatorio</value>
+    </data>
+    <data name="CompanyName" xml:space="preserve">
+        <value>Nombre de la Empresa</value>
+    </data>
+</root>

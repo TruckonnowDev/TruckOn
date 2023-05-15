@@ -32,16 +32,26 @@
                                 </div>
                                 <div class="right">
                                     <a class="btn3" href="@ViewBag.BaseUrl/Contact/Edit?id=@ViewBag.Contacts[i].ID">@Localizer["Edit"]</a>
-                                    <a class="btn3" href="@ViewBag.BaseUrl/Contact/Delete?id=@ViewBag.Contacts[i].ID">@Localizer["Delete"]</a>
+                                    <a class="btn3 open-ConfirmDelete" data-toggle="modal" data-id="@ViewBag.Contacts[i].ID" href="#confirmDeleteEntryModal">@Localizer["Delete"]</a>
                                 </div>
                             </div>
                         </div>
                     }
+                    <pagination-list actual-pages="functions.GetPages(ViewBag.SelectedPage, ViewBag.CountPages)" selected-page="ViewBag.SelectedPage" />
                 </div>
             </div>
         </div>
     </div>
+    @await Html.PartialAsync("~/Views/PartView/Modals/ConfirmDelete.cshtml");
 </body>
+
+<script>
+    ConfirmRemoveEntry(GetDateTimeInFormat(new Date()), `/Contact/Delete`, `/Contact/Contacts`, '#confirmDeleteEntryModal');
+
+     $(document).ready(function () {
+            ShowAlert();
+     });
+</script>
 
 <style>
     .font-weight-normal {

@@ -104,4 +104,10 @@
 	<data name="NameRequired" xml:space="preserve">
 		<value>El campo Nombre es obligatorio</value>
 	</data>
+	<data name="PasswordRequired" xml:space="preserve">
+		<value>El campo de contraseña es obligatorio</value>
+	</data>
+	<data name="PhoneRequired" xml:space="preserve">
+		<value>El campo Teléfono es obligatorio</value>
+	</data>
 </root>

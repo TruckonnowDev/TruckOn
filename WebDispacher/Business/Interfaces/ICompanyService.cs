@@ -11,6 +11,7 @@ using WebDispacher.ViewModels.Company;
 using WebDispacher.ViewModels.Contact;
 using WebDispacher.ViewModels.Dispatcher;
 using WebDispacher.ViewModels.Payment;
+using WebDispacher.ViewModels.RA.Carrier.Registration;
 
 namespace WebDispacher.Business.Interfaces
 {
@@ -19,13 +20,15 @@ namespace WebDispacher.Business.Interfaces
         Dispatcher CheckKeyDispatcher(string key);
         List<Dispatcher> GetDispatchers(int idCompany);
         List<Commpany> GetCompanies();
-        List<CompanyDTO> GetCompaniesDTO();
+        Task<CompanyViewModel> GetCompanyById(int id);
+        Task<List<CompanyDTO>> GetCompaniesDTO(int page);
+        Task<int> GetCountCompaniesPages();
         ContactViewModel GetContact(int id);
         string RefreshTokenDispatch(string idDispatch);
         void CreateDispatch(DispatcherViewModel dispatcher, int idCompany);
         void EditContact(ContactViewModel contact);
         void EditDispatch(DispatcherViewModel dispatcher);
-        void DeleteContactById(int id);
+        Task DeleteContactById(int id);
         DispatcherViewModel GetDispatcherById(int idDispatch);
         void RemoveDispatchById(int idDispatch);
         ResponseStripe AddPaymentCard(string idCompany, CardViewModel card);
@@ -40,10 +43,13 @@ namespace WebDispacher.Business.Interfaces
         Task<List<DucumentCompany>> GetCompanyDoc(string id);
         void CreateContact(ContactViewModel contact, string idCompany);
 
-        Task AddCompany(CreateCompanyViewModel model, IFormFile MCNumberConfirmation, IFormFile IFTA,
-            IFormFile KYU, IFormFile logbookPapers, IFormFile COI, IFormFile permits);
+        Task AddShortCompany(FewMoreDetailsViewModel model);
 
-        List<Contact> GetContacts(string idCompany);
+        Task AddCompany(CreateCompanyViewModel model, IFormFile MCNumberConfirmation, IFormFile IFTA,
+            IFormFile KYU, IFormFile logbookPapers, IFormFile COI, IFormFile permits, string dateTimeLocal);
+        bool CheckCompanyName(string companyName);
+        Task<List<Contact>> GetContacts(int page, string idCompany);
+        Task<int> GetCountContactsPages(string idCompany);
         string GetTypeNavBar(string key, string idCompany, string typeNav = "Work");
         List<Models.Subscription.Subscription> GetSubscriptions();
         string SelectSub(string idPrice, string idCompany, string priodDays);

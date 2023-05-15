@@ -126,6 +126,9 @@
   <data name="Email" xml:space="preserve">
     <value>Электронная почта</value>
   </data>
+  <data name="EmailValidMessage" xml:space="preserve">
+    <value>Пожалуйста, введите адрес электронной почты в допустимом формате</value>
+  </data>
   <data name="FormCompanyName" xml:space="preserve">
     <value>Название компании</value>
   </data>

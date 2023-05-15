@@ -117,22 +117,43 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="And" xml:space="preserve">
+    <value>и принимаете</value>
+  </data>
   <data name="BlockHeader" xml:space="preserve">
-    <value>Начать</value>
+    <value>Давайте начнем действовать</value>
   </data>
   <data name="BodyFirstPart" xml:space="preserve">
-    <value>Чтобы начать, пожалуйста, сначала введите свой номер USDOT. Давайте проверим информацию о вашей компании, и вы отправитесь в путь.</value>
+    <value>Создание учетной записи займет у вас несколько минут, и вы будете полностью обеспечены многочисленными функциями и опциями, которые помогут вам увеличить свой бизнес и доходы.</value>
   </data>
   <data name="BodySecondPart" xml:space="preserve">
-    <value>Если у вас нет USDOT или вы работаете за пределами Штатов, пожалуйста, свяжитесь с нашей службой поддержки, чтобы продолжить процесс регистрации.</value>
+    <value>Если у вас есть какие-либо вопросы, не стесняйтесь звонить нам. Наша служба поддержки будет рада ответить на любые вопросы, которые у вас могут возникнуть.</value>
   </data>
   <data name="DontHaveUSDOT" xml:space="preserve">
     <value>У вас нет USDOT? Позвоните нам:</value>
   </data>
+  <data name="FirstPartAgreements" xml:space="preserve">
+    <value>Нажав "Далее", вы соглашаетесь с</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Далее</value>
+  </data>
+  <data name="SecondPartAgreements" xml:space="preserve">
+    <value>Правилами и Условиями</value>
+  </data>
   <data name="Step1of3" xml:space="preserve">
-    <value>Шаг 1 из 3: Проверка USDOT</value>
+    <value>Шаг 1: Персональные данные</value>
+  </data>
+  <data name="ThirdPartAgreements" xml:space="preserve">
+    <value>Политикой Конфиденциальности</value>
   </data>
   <data name="Verify" xml:space="preserve">
     <value>Проверить</value>
+  </data>
+  <data name="OnlyNumbersValidMessage" xml:space="preserve">
+    <value>Пожалуйста, используйте только цифры</value>
+  </data>
+  <data name="OnlyLettersValidMessage" xml:space="preserve">
+    <value>Пожалуйста, используйте только буквы</value>
   </data>
 </root>

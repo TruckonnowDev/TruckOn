@@ -121,7 +121,7 @@
     <value>Any person with a personalized Login information for the App gains a full access to a whole platform that can be accessed anywhere in the world</value>
   </data>
   <data name="BodySecondBlock" xml:space="preserve">
-    <value>Take a full control of your Car Transportation needs with our App today. Our highly advanced App will help your business and make sure your driver will not skip any steps assigned by your Company Admin.</value>
+    <value>Take a full control of your Car Transportation needs with our App today. Our highly advanced App will help your business and make sure your driver will not skip any steps assigned by your Company's Admin.</value>
   </data>
   <data name="BodySixthBlock" xml:space="preserve">
     <value>Truckonnow is easy to use, most compatible, and reliable driver's App in Auto Transportation Industry</value>
@@ -187,7 +187,7 @@
     <value>Full Access</value>
   </data>
   <data name="HeaderFirstBlock" xml:space="preserve">
-    <value>No Bussiness is Too Small with this App</value>
+    <value>No Bussiness is Too Small for this App</value>
   </data>
   <data name="HeaderFourthBlock" xml:space="preserve">
     <value>Car Hauling Made Simple. Try it for Free.</value>
@@ -201,9 +201,6 @@
   <data name="HeaderSixthBlock" xml:space="preserve">
     <value>Drivers Love Truckonnow</value>
   </data>
-  <data name="InMonth" xml:space="preserve">
-    <value>month</value>
-  </data>
   <data name="LargeFleetFirstBlock" xml:space="preserve">
     <value>Large Fleet</value>
   </data>
@@ -211,9 +208,7 @@
     <value>Medium Fleet</value>
   </data>
   <data name="ModalDescription" xml:space="preserve">
-    <value>Please fill out the quick form and we
-                            will be in touch with lightening speed.
-                            Or you can call the number</value>
+    <value>Please fill out this form and we will get in touch with you ASAP Or call us with any questions at</value>
   </data>
   <data name="ModalFooterDescription" xml:space="preserve">
     <value>Car Hauling Made Simple.
@@ -232,7 +227,7 @@
     <value>Your Message</value>
   </data>
   <data name="ModalFormName" xml:space="preserve">
-    <value>Your name</value>
+    <value>Your Name</value>
   </data>
   <data name="ModalFormSubmit" xml:space="preserve">
     <value>Submit</value>
@@ -274,7 +269,7 @@
     <value>Start Today</value>
   </data>
   <data name="StartPackageBody" xml:space="preserve">
-    <value>Start Today for flat Monthly price of</value>
+    <value>Flat Monthy Access Fee per Unit</value>
   </data>
   <data name="RepairLocator" xml:space="preserve">
     <value>Repair locator</value>
@@ -302,5 +297,23 @@
   </data>
   <data name="DispatchManagement" xml:space="preserve">
     <value>Dispatch Management</value>
+  </data>
+  <data name="SuccessSendEmail" xml:space="preserve">
+    <value>Password reset link was sent to your Email</value>
+  </data>
+  <data name="ContactFormSuccessSend" xml:space="preserve">
+    <value>Your information was submitted successfully!</value>
+  </data>
+  <data name="ContactFormNotSend" xml:space="preserve">
+    <value>There is an issue submitting your information, please try again!</value>
+  </data>
+  <data name="ContactFormHaveError" xml:space="preserve">
+    <value>Your information can not be submitted at this moment!</value>
+  </data>
+  <data name="ModalFormPhone" xml:space="preserve">
+    <value>Your Phone</value>
+  </data>
+  <data name="ValidOnlyNumbersMessage" xml:space="preserve">
+    <value>Please use numbers only</value>
   </data>
 </root>

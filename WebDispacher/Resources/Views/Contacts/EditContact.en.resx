@@ -99,9 +99,15 @@
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
 	<data name="InfoAboutContact" xml:space="preserve">
-		<value>Info About the Conatact</value>
+		<value>Contact’s Information</value>
 	</data>
 	<data name="Save" xml:space="preserve">
 		<value>Save</value>
+	</data>
+	<data name="PhoneValidMessage" xml:space="preserve">
+		<value>Please use numbers only</value>
+	</data>
+	<data name="EmailValidMessage" xml:space="preserve">
+		<value>Please put email in correct format</value>
 	</data>
 </root>

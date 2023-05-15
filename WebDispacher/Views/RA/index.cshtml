@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using WebDispacher.Constants;
 
 @inject IViewLocalizer Localizer
 
@@ -31,10 +32,10 @@
 <div class="bl-2">
     <div class="container">
         <div class="row align-items-center">
-            <div class="col-md-6">
+            <div class="col-md-12 mb-4" style="text-align: center">
                 <h1>@Localizer["HeaderFirstBlock"]</h1>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-10">
                 <div class="advantages">
                     <div class="one">
                         <div class="img">
@@ -75,10 +76,10 @@
                 <div class="text">
                     <h1>@Localizer["HeaderSecondBlock"]</h1>
                     <p>@Localizer["BodySecondBlock"]</p>
-                    <a href="">
+                    <a href="" target="_blank">
                         <img src="img/googleplay.svg" alt="">
                     </a>
-                    <a href="https://apps.apple.com/ae/app/truckonnow/id1608211023">
+                    <a href="https://apps.apple.com/ae/app/truckonnow/id1608211023" target="_blank">
                         <img src="img/appstore.svg" alt="https://apps.apple.com/ae/app/truckonnow/id1608211023">
                     </a>
                     <h6>* @Localizer["FooterSecondBlock"]</h6>
@@ -92,7 +93,7 @@
         <div class="row align-items-center">
             <div class="col-md-6">
                 <div class="text">
-                    <h1>@Localizer["FirstHeaderThirdBlock"]</h1>
+                    <h1 style="width: 106%">@Localizer["FirstHeaderThirdBlock"]</h1>
                     <p>@Localizer["FirstBodyThirdBlock"]</p>
                 </div>
             </div>
@@ -105,7 +106,7 @@
                 <img src="img/motorcycle.png" alt="">
             </div>
             <div class="col-md-6">
-                <div class="text">
+                <div class="text moto">
                     <h1>@Localizer["SecondHeaderThirdBlock"]</h1>
                     <p>@Localizer["SecondBodyThirdBlock"]</p>
                 </div>
@@ -134,8 +135,8 @@
 <div class="bl-6">
     <div class="container-fluid">
         <div class="row align-items-center" style="justify-content: end;">
-            <div class="ml-4 pl-4 col-md-3">
-                <div class="text">
+            <div class="ml-4 pl-4 col-md-5">
+                <div class="text" style="width: 90%">
                     <h1>@Localizer["HeaderFifthBlock"]</h1>
                     <p>@Localizer["BodyFifthBlock"]</p>
                 </div>
@@ -243,10 +244,10 @@
                     </div>
                     <div class="middle">
                         <div class="blue-header">
-                            $ 9.99<a>/@Localizer["InMonth"] </a>
+                            $ 9.99
                         </div>
                         <div class="packages-body">
-                            @Localizer["StartPackageBody"] 9.99$
+                            @Localizer["StartPackageBody"]
                         </div>
                     </div>
                     <div class="bottom">
@@ -257,17 +258,17 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        @*<div class="row">
             <div class="col-md-12">
                 <p>
                     @Localizer["FooterFirstPartEighthBlock"] <a href="/try_for_free">@Localizer["FooterSecordPartEighthBlock"]</a>
                 </p>
             </div>
-        </div>
+        </div>*@
     </div>
 </div>
-<div class="bl-5 dop">
-    <div class="container">
+<div @*class="bl-5 dop"*@>
+    @*<div class="container">
         <div class="row justify-content-between align-items-center">
             <div class="col-md-auto" style="max-width: 760px;">
                 <h1>
@@ -285,7 +286,7 @@
                 </a>
             </div>
         </div>
-    </div>
+    </div>*@
     <div class="modal fade" id="addNewDocFormModal" tabindex="-1" role="dialog" aria-labelledby="addNewDocFormModalLabel" aria-hidden="true">
         <content class="ng-modal-wrapper">
             <div class="modal-dialog modal-lg" role="document">
@@ -302,19 +303,25 @@
                     </div>
                     <div class="modal-body">
                         <div class="tabContent">
-                            <form action="">
+                            <form id="contactForm" action="">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="elem-1">
                                             <label for="">
                                                 @Localizer["ModalFormName"]
-                                                <input type="text" name="name" required>
+                                                <input type="text" id="user-name" name="name" required>
                                             </label>
                                         </div>
                                         <div class="elem-2">
                                             <label for="">
                                                 @Localizer["ModalFormEmail"]
-                                                <input type="email" name="email" required>
+                                                <input type="email" pattern="@PatternConstants.Email" id="user-email" name="email" required>
+                                            </label>
+                                        </div>
+                                        <div class="elem-2">
+                                            <label for="">
+                                                @Localizer["ModalFormPhone"]
+                                                <input type="text" id="phone" name="PhoneNumber" placeholder="" pattern="[0-9]+" required>
                                             </label>
                                         </div>
                                     </div>
@@ -322,16 +329,16 @@
                                         <div class="elem-3">
                                             <label for="">
                                                 @Localizer["ModalFormMessage"]
-                                                <textarea type="text" name="message" required></textarea>
+                                                <textarea type="text" id="user-message" name="message" required></textarea>
                                             </label>
-                                            <button type="submit" class="btn1 btn-modal">@Localizer["ModalFormSubmit"]</button>
+                                            <button type="submit" class="btn1 btn-modal submit-modal">@Localizer["ModalFormSubmit"]</button>
                                         </div>
                                     </div>
                                 </div>
                             </form>
                         </div>
                     </div>
-                    <div class="modal-footer">
+                   <div @*class="modal-footer"*@>@*
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="left-modal-footer" style="width: 100%">
@@ -355,7 +362,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div>*@
                     </div>
                 </div>
             </div>
@@ -364,17 +371,18 @@
 </div>
 <footer>
     <div class="container">
-        <div class="row align-items-center justify-content-between">
+        <div class="row align-items-center justify-content-between" style="text-align:center">
             <div class="col-md-auto">
                 <div class="logo">
                     <a href="">
                         <img src="img/logo-w.svg" alt="">
                     </a>
                 </div>
-                <p>
+                </div>
+                @*<p>
                     @Localizer["BodyTenthBlock"] <a href="tel:+1 (773) 420-4444">+1 (773) 420-4444</a>
                 </p>
-            </div>
+                </div>*@
             <div class="d-flex justify-content-end">
                 <div class="col-md-12 p-4">
                     <button class="btn1" style="width: 150px;padding: 16px 20px;" data-toggle="modal" data-target="#addNewDocFormModal">@Localizer["ContactUs"]</button>
@@ -384,6 +392,67 @@
         </div>
     </div>
 </footer>
+<script>
+    $(document).ready(function(){
+        if ("@TempData["Alert"]" === "SuccessSendEmail") {
+            SuccessAlert("@Localizer["SuccessSendEmail"]");
+        }
+    });
+
+    $("#phone").mask("(999)-999-9999", { placeholder: "(XXX)-XXX-XXXX" });
+
+    $('.submit-modal').on('click', function (event) {
+        let form = document.getElementById('contactForm');
+        if(form.checkValidity() == true){
+            event.preventDefault();
+            let body = "username=" + $('#user-name').val()
+                + "&email=" + $('#user-email').val()
+                + "&phone=" + $('#phone').val()
+                + "&message=" + $('#user-message').val();
+
+            $.ajax({
+                type: "post",
+                data: body,
+                async: true,
+                url: `/RA/ContactForm`,
+                success: function (response) {
+                    if(response === true){
+                        SuccessAlert("@Localizer["ContactFormSuccessSend"]")
+                        $('#user-name').val("");
+                        $('#user-email').val("");
+                        $('#phone').val("");
+                        $('#user-message').val("")
+                    }else{
+                        WarningAlert("@Localizer["ContactFormNotSend"]")
+                    }
+                },
+                error: function (response) {
+                    ErrorAlert("@Localizer["ContactFormHaveError"]");
+                },
+                complete: function () {
+                    $('#addNewDocFormModal').modal('hide');
+                }
+            });
+        }
+        
+    });
+
+</script>
+
+<script>
+    $('#phone').on('input invalid', function () {
+        this.setCustomValidity('')
+        if (this.validity.valueMissing) {
+            this.setCustomValidity("@Localizer["ValidOnlyNumbersMessage"]")
+        }
+        if (this.validity.typeMismatch) {
+            this.setCustomValidity("@Localizer["ValidOnlyNumbersMessage"]")
+        }
+        if (this.validity.patternMismatch) {
+            this.setCustomValidity("@Localizer["ValidOnlyNumbersMessage"]")
+        }
+    })
+</script>
 
 <style>
     input {
@@ -391,7 +460,7 @@
     }
 
     textarea {
-        height: 175px !important;
+        height: 285px !important;
     }
 
     .without-padding {
@@ -636,5 +705,9 @@
         margin-bottom: 10px;
         margin-left: auto;
         margin-right: auto;
+    }
+
+    .tabContent form label .intl-tel-input {
+        width: 100%;
     }
 </style>

@@ -5,7 +5,8 @@
 @{
     ViewData["Title"] = "Inspection Driver";
 }
-
+<link rel="stylesheet" href="~/css/BOL/bol.css">
+<link rel="stylesheet" href="~/libs/jquery/lightgallery.css">
 <body>
     <div class="admin Pickup">
         <div class="container">
@@ -23,21 +24,44 @@
                     <div class="col-md-12">
                         <h3>@Localizer["PhotoInspection"]</h3>
                     </div>
-                    @for (int i = 0; i < ViewBag.InspectionTruck.PhotosTruck.Count; i++)
-                    {
-                        try
+                    <div class="container">
+                        <div class="row" id="lightgallery">
+                    
+                        @for (int i = 0; i < ViewBag.InspectionTruck.PhotosTruck.Count; i++)
                         {
-                            <div class="col-md-3" style="width: 263px;height: 148px;margin-bottom:10px">
-                                <img src="@ViewBag.BaseUrl/Driver/Image?name=@ViewBag.InspectionTruck.PhotosTruck[i].path&type=jpg" width="263" height="148" />
-                            </div>
+                            try
+                            {
+                                    <div class="col-md-3" style="max-width: 263px;height: 148px;margin-bottom:10px" 
+                                        data-src="@ViewBag.BaseUrl/Driver/Image?name=@ViewBag.InspectionTruck.PhotosTruck[i].path&type=jpg">
+                                    <div class="image-box" style="cursor: zoom-in;">
+                                        <img style="max-width: 100%" src="@ViewBag.BaseUrl/Driver/Image?name=@ViewBag.InspectionTruck.PhotosTruck[i].path&type=jpg" />
+                                        @*<div class="text-mask">
+                                            <div class="text-content">
+                                                <h3>FileName</h3>
+                                            </div>
+                                        </div>*@
+                                    </div>
+                                </div>
+                            }
+                            catch
+                            {
+                                <p>@Localizer["NoPhoto"]</p>
+                            }
                         }
-                        catch
-                        {
-                            <p>@Localizer["NoPhoto"]</p>
-                        }
-                    }
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </body>
+
+<script src="~/libs//jquery/dist/lightgallery-all.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#lightgallery').lightGallery({
+
+        });
+    });
+</script>

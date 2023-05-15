@@ -126,6 +126,9 @@
   <data name="Email" xml:space="preserve">
     <value>Correo</value>
   </data>
+  <data name="EmailValidMessage" xml:space="preserve">
+    <value>Por favor, introduzca el correo electrónico en un formato válido</value>
+  </data>
   <data name="FormCompanyName" xml:space="preserve">
     <value>Nombre de la Empresa</value>
   </data>

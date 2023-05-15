@@ -34,7 +34,7 @@ namespace WebDispacher.Controellers
         }
 
         [Route("Trucks")]
-        public IActionResult Trucks()
+        public async Task<IActionResult> Trucks(int page = 1)
         {
             try
             {
@@ -54,8 +54,14 @@ namespace WebDispacher.Controellers
                     
                     ViewBag.NameCompany = companyName;
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    ViewBag.Trucks = truckAndTrailerService.GetTrucks(idCompany);
-                    
+                    ViewBag.Trucks = await truckAndTrailerService.GetTrucks(page, idCompany);
+
+                    var countPages = await truckAndTrailerService.GetCountTrucksPages(idCompany);
+
+                    ViewBag.CountPages = countPages;
+
+                    ViewBag.SelectedPage = page;
+
                     return View($"AllTruck");
                 }
 
@@ -73,7 +79,7 @@ namespace WebDispacher.Controellers
         }
 
         [Route("Trailers")]
-        public IActionResult Trailers()
+        public async Task<IActionResult> Trailers(int page = 1)
         {
             try
             {
@@ -93,8 +99,14 @@ namespace WebDispacher.Controellers
                     
                     ViewBag.NameCompany = companyName;
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    ViewBag.Trailers = truckAndTrailerService.GetTrailers(idCompany);
-                    
+                    ViewBag.Trailers = await truckAndTrailerService.GetTrailers(page, idCompany);
+
+                    var countPages = await truckAndTrailerService.GetCountTrailersPages(idCompany);
+
+                    ViewBag.CountPages = countPages;
+
+                    ViewBag.SelectedPage = page;
+
                     return View($"AllTrailer");
                 }
 
@@ -140,9 +152,38 @@ namespace WebDispacher.Controellers
             return Redirect(Config.BaseReqvesteUrl);
         }
 
+        [HttpPost]
+        [Route("Truck/Remove")]
+        public async Task<bool> DeleteTruck(string id)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                {
+                    await truckAndTrailerService.RemoveTruck(id);
+
+                    return true;
+                }
+
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                {
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+
+            return false;
+        }
+
         [HttpGet]
         [Route("CreateTruck")]
-        [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public IActionResult CreateDriver()
         {
             try
@@ -183,11 +224,11 @@ namespace WebDispacher.Controellers
         [HttpPost]
         [Route("CreateTruck")]
         [DisableRequestSizeLimit]
-        public IActionResult CreateDriver(TruckViewModel truck, IFormFile truckRegistrationDoc, 
+        public async Task<IActionResult> CreateDriver(TruckViewModel truck, IFormFile truckRegistrationDoc, 
             IFormFile truckLeaseAgreementDoc, IFormFile truckAnnualInspection, IFormFile bobTailPhysicalDamage, 
             IFormFile nYHUTDoc)
         {
-            if (ModelState.IsValid && truckAnnualInspection != null && truckRegistrationDoc != null &&  truckLeaseAgreementDoc != null)
+            if (ModelState.IsValid)
             {
                 try
                 {
@@ -197,7 +238,7 @@ namespace WebDispacher.Controellers
 
                     if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
                     {
-                        truckAndTrailerService.CreateTruck(truck, idCompany, truckRegistrationDoc,
+                        await truckAndTrailerService.CreateTruck(truck, idCompany, truckRegistrationDoc,
                             truckLeaseAgreementDoc, truckAnnualInspection, bobTailPhysicalDamage, nYHUTDoc);
 
                         return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trucks");
@@ -250,6 +291,36 @@ namespace WebDispacher.Controellers
             return Redirect(Config.BaseReqvesteUrl);
         }
 
+        [HttpPost]
+        [Route("Trailer/Remove")]
+        public async Task<bool> DeleteTrailer(string id)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                {
+                    await truckAndTrailerService.RemoveTrailer(id);
+
+                    return true;
+                }
+
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                {
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+            
+            return false;
+        }
+
         [HttpGet]
         [Route("CreateTrailer")]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
@@ -296,7 +367,7 @@ namespace WebDispacher.Controellers
         public IActionResult CreateTrailer(TrailerViewModel trailer,
             IFormFile trailerRegistrationDoc, IFormFile trailerAnnualInspectionDoc, IFormFile leaseAgreementDoc)
         {
-            if (ModelState.IsValid && trailerAnnualInspectionDoc != null && trailerRegistrationDoc != null)
+            if (ModelState.IsValid)
             {
                 try
                 {
@@ -333,7 +404,7 @@ namespace WebDispacher.Controellers
 
         [HttpGet]
         [Route("EditTruck")]
-        public IActionResult EditTruck(int idTruck)
+        public async Task<IActionResult> EditTruck(int idTruck)
         {
             try
             {
@@ -355,7 +426,9 @@ namespace WebDispacher.Controellers
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     
                     var truck = truckAndTrailerService.GetTruckById(idTruck);
-                    
+
+                    ViewBag.TruckDocs = await truckAndTrailerService.GetBaseTruckDoc(idTruck.ToString());
+
                     return View(truck);
                 }
 
@@ -375,7 +448,9 @@ namespace WebDispacher.Controellers
         [HttpPost]
         [Route("EditTruck")]
         [DisableRequestSizeLimit]
-        public IActionResult EditTruck(TruckViewModel truck)
+        public async Task<IActionResult> EditTruck(TruckViewModel truck, IFormFile truckRegistrationDoc,
+            IFormFile truckLeaseAgreementDoc, IFormFile truckAnnualInspection, IFormFile bobTailPhysicalDamage,
+            IFormFile nYHUTDoc)
         {
             if (ModelState.IsValid && truck.Id != 0)
             {
@@ -387,7 +462,8 @@ namespace WebDispacher.Controellers
 
                     if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
                     {
-                        truckAndTrailerService.EditTruck(truck);
+                        await truckAndTrailerService.EditTruck(truck, truckRegistrationDoc,
+                            truckLeaseAgreementDoc, truckAnnualInspection, bobTailPhysicalDamage, nYHUTDoc);
 
                         return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trucks");
                     }

@@ -50,17 +50,18 @@ namespace DaoModels.DAO
         public DbSet<Subscribe_ST> Subscribe_STs { get; set; }
         public DbSet<PaymentMethod_ST> PaymentMethods { get; set; }
         public DbSet<Dispatcher> Dispatchers { get; set; }
+        public DbSet<VehicleHistory> VehicleHistories { get; set; }
 
         public Context()
         {
             try
-            {
+            { 
                 //Database.EnsureCreated();
                 Database.Migrate();
             }
             catch (Exception e)
             {
-                File.AppendAllText("db.txt", e.Message);
+                //File.AppendAllText("db.txt", e.Message);
             }
         }
 

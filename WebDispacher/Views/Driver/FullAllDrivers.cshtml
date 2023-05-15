@@ -1,9 +1,12 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using System.Globalization;
+@using WebDispacher.Constants;
 
 @inject IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = "All Drivers";
+    DateTime dateTimeRegistrationFormat = DateTime.MinValue;
 }
 
 <body>
@@ -24,8 +27,21 @@
                         <div class="tab" onclick="window.location.href='@Url.Action("Check", "Driver")';">@Localizer["DriverCheck"]</div>
                         <div class="tab" onclick="window.location.href='@Url.Action("AddReport", "Driver")';">@Localizer["ReportDriver"]</div>
                         <div class="tabContent">
+                            
                             @for (int i = 0; i < ViewBag.Drivers.Count; i++)
                             {
+                                {
+                                    var dateTimeString = ViewBag.Drivers[i].DateRegistration;
+
+                                    try
+                                    {
+                                        dateTimeRegistrationFormat = DateTime.ParseExact(dateTimeString, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
+                                    }
+                                    catch
+                                    {
+                                        
+                                    }
+                                }
                                 <div class="one-line">
                                     <div class="top-line">
                                         <div class="left">
@@ -53,7 +69,14 @@
                                     <div class="top-line">
                                         <div class="left">
                                             <div class="contact">
-                                                <p class="text-p">@Localizer["Registration"]: @ViewBag.Drivers[i].DateRegistration</p>
+                                                @if(dateTimeRegistrationFormat.Year == 1)
+                                                {
+                                                    <p class="text-p">@Localizer["Registration"]: @ViewBag.Drivers[i].DateRegistration</p>
+                                                }
+                                                else
+                                                {
+                                                    <p class="text-p">@Localizer["Registration"]: @dateTimeRegistrationFormat.ToString(DateTimeFormats.FullDateTimeInfoUS)</p>
+                                                }
                                             </div>
                                         </div>
                                         <div class="right">
@@ -63,7 +86,12 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                {
+                                    dateTimeRegistrationFormat = DateTime.MinValue;
+                                }
                             }
+                            <pagination-list actual-pages="functions.GetPages(ViewBag.SelectedPage, ViewBag.CountPages)" selected-page="ViewBag.SelectedPage" />
                         </div>
                     </div>
                 </div>
@@ -184,15 +212,35 @@
                             </div>
                             <div class="form-group mb-0">
                                 <label class="mb-0" for="">
-                                    @Localizer["Terminated"] <span>(@Localizer["TerminatedInfo"])</span>
-                                    <label style="display:none;" value="Yes" id="terminatedInp">@Localizer["Yes"]</label><br />
+                                    @Localizer["Terminated"]
+                                    <label style="display:none;" value="No" id="terminatedInp">@Localizer["Yes"]</label><br />
                                     <div class="value-elem">
-                                        <input class="validation" checked required type="radio" name="terminated" onclick="terminatedInp.value='Yes'" />
+                                        <input class="validation" checked required type="radio" name="terminated" onclick="changeTerminated('Yes');" />
                                         <span style="text-align:center;">@Localizer["Yes"]</span>
                                     </div>
                                     <div class="value-elem">
-                                        <input class="validation" checked required type="radio" name="terminated" onclick="terminatedInp.value='No'" />
+                                        <input class="validation" checked required type="radio" name="terminated" onclick="changeTerminated('No')" />
                                         <span style="text-align:center;">@Localizer["No"]</span>
+                                    </div>
+                                    <div class="value-elem if-true-terminated" style="display: none">
+                                        <input class="validation" type="checkbox" value="Fired" onclick="SelectExperience(this.value, this.checked)" />
+                                        <span style="text-align:center;">Fired</span>
+                                    </div>
+                                    <div class="value-elem if-true-terminated" style="display: none">
+                                        <input class="validation" type="checkbox" value="Quit" onclick="SelectExperience(this.value, this.checked)" />
+                                        <span style="text-align:center;">Quit</span>
+                                    </div>
+                                    <div class="value-elem if-true-terminated" style="display: none">
+                                        <input class="validation" type="checkbox" value="Contract expiration" onclick="SelectExperience(this.value, this.checked)" />
+                                        <span style="text-align:center;">Contract expiration</span>
+                                    </div>
+                                    <div class="value-elem if-true-terminated" style="display: none">
+                                        <input class="validation" type="checkbox" value="Left truck without a notice" onclick="SelectExperience(this.value, this.checked)" />
+                                        <span style="text-align:center;">Left truck without a notice</span>
+                                    </div>
+                                    <div class="value-elem if-true-terminated" style="display: none">
+                                        <input class="validation" type="checkbox" value="Disappeared" onclick="SelectExperience(this.value, this.checked)" />
+                                        <span style="text-align:center;">Disappeared</span>
                                     </div>
                                 </label>
                             </div>
@@ -247,6 +295,18 @@
     </div>
 </body>
 <script>
+    const optionalCheckBoxes = document.querySelectorAll(".if-true-terminated");
+
+    function changeTerminated(changedValue) {
+        terminatedInp.value = changedValue;
+        if ('Yes' === changedValue){
+            optionalCheckBoxes.forEach(x => x.style.display = '');
+        }
+        else{
+            optionalCheckBoxes.forEach(x => x.style.display = 'none');
+        }
+    }
+
     var IdDriver;
     englishInp.oninput = function () {
         englishSpn.innerHTML = GetLevel(this.value);
@@ -328,7 +388,8 @@
                 + "&terminated=" + encodeURIComponent(terminatedInp.value)
                 + "&experience=" + encodeURIComponent(experienceInp.value)
                 + "&dotViolations=" + encodeURIComponent(dotViolationsInp.value)
-                + "&description=" + encodeURIComponent(descriptionTA.value);
+                + "&description=" + encodeURIComponent(descriptionTA.value)
+                + "&localDate=" + GetDateTimeInFormat(new Date());
 
             $.ajax({
                 type: "get",
@@ -351,23 +412,23 @@ function SendRemindInspection(idDriver, url) {
     xmlHttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             if (this.responseText == "true") {
-                alert("@Localizer["ReminderSent"]");
+                    SuccessAlert("@Localizer["ReminderSent"]")
             }
             else if (this.responseText == "false") {
-                alert("@Localizer["AlreadyPassed"]");
+                    WarningAlert("@Localizer["AlreadyPassed"]");
             }
             else if (this.responseText == "notlogin") {
 
             }
             else if (this.responseText == "error") {
-                alert("@Localizer["ServerError"]");
+                    ErrorAlert("@Localizer["ServerError"]");
             }
             else {
-                alert("@Localizer["ServerError"]");
+                ErrorAlert("@Localizer["ServerError"]");
             }
         }
         else if (this.readyState == 4 && this.status != 200) {
-            alert("@Localizer["ServerError"]");
+            ErrorAlert("@Localizer["ServerError"]");
         }
     };
     xmlHttp.open("POST", urlBase, true);
@@ -375,8 +436,9 @@ function SendRemindInspection(idDriver, url) {
     xmlHttp.send(body);
 }
 </script>
+<script src="~/js/notifications.js"></script>
 <style>
-
+    
     label {
         padding-left: 0px !important;
         padding-right: 0px !important;

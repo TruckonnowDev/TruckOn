@@ -3,7 +3,7 @@
     public static class DriverConstants
     {
         public const string Undefined = "undefined";
-        public const string StandartName = "Standart";
+        public const string StandardName = "Standard";
         public const string Yes = "Yes";
         public const string Canceled = "canceled";
         public const string SuccessfullyChangedPassword = "Password changed successfully";

@@ -1,9 +1,12 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using System.Globalization;
+@using WebDispacher.Constants;
 
 @inject IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = "Companies";
+    DateTime dateTimeRegistrationFormat = DateTime.MinValue;
 }
 
 <body>
@@ -21,7 +24,6 @@
                 <div class="col-md-12">
                     <div id="tabs">
                         <div class="tab whiteborder" onclick="window.location.href='@Url.Action("Companies", "Company")';">@Localizer["Companies"]</div>
-                        <div class="tab" onclick="window.location.href='@Url.Action("Users", "Company")';">@Localizer["AllUsers"]</div>
                         <div class="tabContent">
                             <table>
                                 <thead>
@@ -35,37 +37,66 @@
                                 <tbody>
                                     @for (int i = 0; i < ViewBag.Companies.Count; i++)
                                     {
+                                        {
+                                            var dateTimeString = ViewBag.Companies[i].DateRegistration;
+
+                                            try
+                                            {
+                                                dateTimeRegistrationFormat = DateTime.ParseExact(dateTimeString, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
+                                            }
+                                            catch
+                                            {
+
+                                            }
+                                        }
                                         <tr>
                                             <td>@ViewBag.Companies[i].Name</td>
-                                            <td>@ViewBag.Companies[i].DateRegistration</td>
+                                            @if (dateTimeRegistrationFormat.Year == 1)
+                                            {
+                                                <td>@ViewBag.Companies[i].DateRegistration</td>
+                                            }
+                                            else
+                                            {
+                                                <td>@dateTimeRegistrationFormat.ToString(DateTimeFormats.FullDateTimeInfoUS)</td>
+                                            }
                                             <td>@ViewBag.Companies[i].Type</td>
                                             <td>
-                                                <img src="~/img/arrow.svg" alt="" onclick="window.location.href = 'Users?idCompanySelect=@ViewBag.Companies[i].Id';" />
-                                                <img src="~/img/doc.svg" alt="" onclick="window.location.href = '@ViewBag.BaseUrl/Company/Doc?id=@ViewBag.Companies[i].Id';">
-                                                <img src="~/img/delet.svg" alt="" onclick="RemoveCompany(@ViewBag.Companies[i].Id)">
+                                                <div data-title="@Localizer["ViewNotificataion"]" class="ico-doc ico-doc-view" onclick="document.location.href = 'Company?id=@ViewBag.Companies[i].Id';">
+                                                    <i class="bi bi-cursor-fill" style="color: #4caf50; font-size:20px"></i>
+                                                </div>
+                                                @*<img src="~/img/arrow.svg" alt="" onclick="window.location.href = 'Users?idCompanySelect=@ViewBag.Companies[i].Id';" />*@
+
+                                                <div data-title="@Localizer["DocNotificataion"]" class="ico-doc ico-doc-documents" onclick="document.location.href = '@ViewBag.BaseUrl/Company/Doc?id=@ViewBag.Companies[i].Id';">
+                                                    <i class="bi bi-file-earmark-medical-fill" style="color: #3f51b5; font-size:20px"></i>
+                                                </div>
+                                                @*<img src="~/img/doc.svg" alt="" onclick="window.location.href = '@ViewBag.BaseUrl/Company/Doc?id=@ViewBag.Companies[i].Id';">*@
+
+                                                <div data-title="@Localizer["DeleteNotificataion"]" class="ico-doc ico-doc-delete open-ConfirmDelete" data-toggle="modal" data-id="@ViewBag.Companies[i].Id" href="#confirmDeleteEntryModal">
+                                                    <i class="bi bi-x-lg" style="color: #f44336; font-size:20px"></i>
+                                                </div>
+                                                @*<img src="~/img/delet.svg" alt="" onclick="RemoveCompany(@ViewBag.Companies[i].Id)">*@
                                             </td>
                                         </tr>
+                                        {
+                                            dateTimeRegistrationFormat = DateTime.MinValue;
+                                        }
                                     }
                                 </tbody>
                             </table>
+                            <pagination-list actual-pages="functions.GetPages(ViewBag.SelectedPage, ViewBag.CountPages)" selected-page="ViewBag.SelectedPage" />
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    @await Html.PartialAsync("~/Views/PartView/Modals/ConfirmDelete.cshtml");
 </body>
 
 <script>
-    function RemoveCompany(id) {
-        $.ajax({
-            type: "get",
-            url: `/Company/Remove?id=${id}`,
-            success: function () {
-                window.location.reload();
-            },
-            error: function (response) {
-            }
-        });
-    }
+    ConfirmRemoveEntry(GetDateTimeInFormat(new Date()), `/Company/Remove`, `/Company/Companies`, '#confirmDeleteEntryModal');
+
+    $(document).ready(function () {
+        ShowAlert();
+    });
 </script>

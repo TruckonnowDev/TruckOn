@@ -1083,6 +1083,37 @@ namespace DaoModels.Migrations
                     b.ToTable("User");
                 });
 
+            modelBuilder.Entity("DaoModels.DAO.Models.VehicleHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("AdditionalInfo");
+
+                    b.Property<string>("Color");
+
+                    b.Property<string>("Lot");
+
+                    b.Property<string>("Make");
+
+                    b.Property<string>("Model");
+
+                    b.Property<string>("Plate");
+
+                    b.Property<string>("Type");
+
+                    b.Property<string>("VIN");
+
+                    b.Property<int>("VehicleId");
+
+                    b.Property<string>("Year");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("VehicleHistories");
+                });
+
             modelBuilder.Entity("DaoModels.DAO.Models.VehiclwInformation", b =>
                 {
                     b.Property<int>("Id")

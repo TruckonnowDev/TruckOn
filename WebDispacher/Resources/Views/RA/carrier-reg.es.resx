@@ -117,22 +117,43 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="And" xml:space="preserve">
+    <value>y reconocer la</value>
+  </data>
   <data name="BlockHeader" xml:space="preserve">
-    <value>Comience</value>
+    <value>Pongámonos a Rodar</value>
   </data>
   <data name="BodyFirstPart" xml:space="preserve">
-    <value>Para comenzar, ingrese primero su número de USDOT. Verifiquemos la información de su empresa y estará en camino.</value>
+    <value>Le tomará unos minutos de su tiempo crear una cuenta y estará listo con numerosas funciones y opciones que lo ayudarán a hacer crecer su negocio y sus ingresos.</value>
   </data>
   <data name="BodySecondPart" xml:space="preserve">
-    <value>Si no tiene USDOT u opera fuera de los Estados Unidos, comuníquese con nuestro equipo de soporte para continuar con el proceso de registro.</value>
+    <value>Si tiene alguna pregunta, no dude en llamarnos. Nuestro equipo de soporte estará encantado de responder cualquier pregunta que pueda tener.</value>
   </data>
   <data name="DontHaveUSDOT" xml:space="preserve">
     <value>¿No tiene USDOT? Llámanos:</value>
   </data>
+  <data name="FirstPartAgreements" xml:space="preserve">
+    <value>Al hacer clic en "Siguiente", usted acepta la</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Siguiente</value>
+  </data>
+  <data name="SecondPartAgreements" xml:space="preserve">
+    <value>Términos y Condiciones</value>
+  </data>
   <data name="Step1of3" xml:space="preserve">
-    <value>Paso 1 de 3: Verificación del USDOT</value>
+    <value>Paso 1: Datos personales</value>
+  </data>
+  <data name="ThirdPartAgreements" xml:space="preserve">
+    <value>Política de Privacidad</value>
   </data>
   <data name="Verify" xml:space="preserve">
     <value>Verificar</value>
+  </data>
+  <data name="OnlyNumbersValidMessage" xml:space="preserve">
+    <value>Utilice solo números</value>
+  </data>
+  <data name="OnlyLettersValidMessage" xml:space="preserve">
+    <value>Por favor, use solo letras</value>
   </data>
 </root>

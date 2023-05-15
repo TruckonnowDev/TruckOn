@@ -12,10 +12,14 @@
             <div class="col-md-12">
                 <div class="title">
                     <h1>@Localizer["Orders"]</h1>
-                    <button class="btn1 mr-3" onClick='location.href="/Dashbord/Order/Creat"'>@Localizer["CreateOrder"]</button>
+                    <button class="btn1 mr-3" id="create-order-btn">@Localizer["CreateOrder"]</button>
                     <a style="background-color: white;color:#686F7C;" data-toggle="collapse" href="#search-form" role="button" aria-expanded="false" aria-controls="search-form">
                         @Localizer["SearchOrders"]
-                        <span>&#709;</span>
+                        <span class="open-chevron">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                            </svg>
+                        </span>
                     </a>
                 </div>
                 <div class="collapse multi-collapse" id="search-form">
@@ -36,14 +40,16 @@
         <div class="row">
             <div class="col-md-12">
                 <div id="tabs">
-                    <div class="tab" onclick="window.location.href='@Url.Action("NewLoad", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">@Localizer["NewLoad"]</div>
-                    <div class="tab" onclick="window.location.href='@Url.Action("Assigned", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">@Localizer["Assigned"]</div>
-                    <div class="tab" onclick="window.location.href = '@Url.Action("Pickedup", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">@Localizer["PickedUp"]</div>
-                    <div class="tab" onclick="window.location.href='@Url.Action("Delivered", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">@Localizer["Delivered"]</div>
-                    <div class="tab" onclick="window.location.href='@Url.Action("Billed", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">@Localizer["Billed"]</div>
-                    <div class="tab" onclick="window.location.href='@Url.Action("Paid", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">@Localizer["Paid"]</div>
-                    <div class="tab" onclick="window.location.href='@Url.Action("Archived", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">@Localizer["Archived"]</div>
-                    <div class="tab whiteborder" onclick="window.location.href='@Url.Action("Deleted", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">@Localizer["Deleted"]</div>
+                    <div class="d-flex orders">
+                        <div class="tab" onclick="window.location.href='@Url.Action("NewLoad", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">@Localizer["NewLoad"]</div>
+                        <div class="tab" onclick="window.location.href='@Url.Action("Assigned", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">@Localizer["Assigned"]</div>
+                        <div class="tab" onclick="window.location.href = '@Url.Action("Pickedup", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">@Localizer["PickedUp"]</div>
+                        <div class="tab" onclick="window.location.href='@Url.Action("Delivered", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">@Localizer["Delivered"]</div>
+                        <div class="tab" onclick="window.location.href='@Url.Action("Billed", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">@Localizer["Billed"]</div>
+                        <div class="tab" onclick="window.location.href='@Url.Action("Paid", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">@Localizer["Paid"]</div>
+                        <div class="tab" onclick="window.location.href='@Url.Action("Archived", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">@Localizer["Archived"]</div>
+                        <div class="tab whiteborder" onclick="window.location.href='@Url.Action("Deleted", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">@Localizer["Deleted"]</div>
+                    </div>
                     <div class="tabContent">
                         @for (int i = 0; i < ViewBag.Orders.Count; i++)
                         {
@@ -78,17 +84,7 @@
                                 </div>
                             </div>
                         }
-                        @if (ViewBag.count != 1)
-                        {
-                            <div class="center">
-                                <div class="pagination">
-                                    @for (int y = 1; y <= ViewBag.count; y++)
-                                    {
-                                        <a href="?page=@y">@y</a>
-                                    }
-                                </div>
-                            </div>
-                        }
+                        <pagination-list actual-pages="functions.GetPages(ViewBag.SelectedPage, ViewBag.count)" selected-page="ViewBag.SelectedPage" />
                     </div>
                 </div>
             </div>
@@ -99,6 +95,19 @@
 </div>
 
 <script>
+    $('#create-order-btn').on('click', function (e) {
+        var body = '?&localDate=' + GetDateTimeInFormat(new Date());
+
+        $.ajax({
+            type: "post",
+            async: true,
+            url: `/Dashbord/Order/Creat${body}`,
+            success: function (id) {
+                window.location.href = `/Dashbord/Order/Edit?id=${id}&status=NewLoad`
+            },
+        });
+    });
+
     $(document).ready(function () {
         const loadId = $('#loadId-input').val();
         const name = $('#name-input').val();

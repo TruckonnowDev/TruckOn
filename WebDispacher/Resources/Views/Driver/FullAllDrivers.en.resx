@@ -108,7 +108,7 @@
 		<value>Driver check</value>
 	</data>
 	<data name="ReportDriver" xml:space="preserve">
-		<value>Report driver</value>
+		<value>Report a driver</value>
 	</data>
 	<data name="TrailerCapacity" xml:space="preserve">
 		<value>Trailer capacity</value>
@@ -138,7 +138,7 @@
 		<value>Documents</value>
 	</data>
 	<data name="DriverReport" xml:space="preserve">
-		<value>Driver Report</value>
+		<value>Driver’s Report</value>
 	</data>
 	<data name="NumberOfAccidents" xml:space="preserve">
 		<value>Number Of Accidents</value>
@@ -216,7 +216,7 @@
 		<value>Description</value>
 	</data>
 	<data name="AddReportDriver" xml:space="preserve">
-		<value>Add Report Driver</value>
+		<value>Add Driver’s Report</value>
 	</data>
 	<data name="Close" xml:space="preserve">
 		<value>Close</value>
@@ -231,7 +231,7 @@
 		<value>No</value>
 	</data>
 	<data name="ReminderSent" xml:space="preserve">
-		<value>Reminder sent</value>
+		<value>Inspection Reminder was sent to a drive</value>
 	</data>
 	<data name="AlreadyPassed" xml:space="preserve">
 		<value>Today's inspection was already passed</value>

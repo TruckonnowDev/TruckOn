@@ -70,7 +70,7 @@
                         @if (ViewBag.Orders[i].IsProblem)
                         {
                             <p style="color:red" class="stPData">If the problem is resolved, then click the "Solved" button</p>
-                            <a href="/Dashbord/Order/Solved?id=@ViewBag.Orders[i].Id&page=Pickedup" style="color:red" class="btnId">Solved</a>
+                            <a href="/Dashbord/Order/Solved?id=@ViewBag.Orders[i].Id&localDate=javascript:GetDateTimeInFormat(new Date())&page=Pickedup" style="color:red" class="btnId">Solved</a>
                         }
                     </div>
                 </div>

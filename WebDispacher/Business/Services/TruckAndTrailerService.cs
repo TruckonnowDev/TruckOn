@@ -18,7 +18,7 @@ using WebDispacher.Business.Interfaces;
 using WebDispacher.Constants;
 using WebDispacher.Models;
 using WebDispacher.Service;
-using WebDispacher.ViewModels.Trailer;
+using WebDispacher.ViewModels.Trailer; 
 using WebDispacher.ViewModels.Truck;
 
 namespace WebDispacher.Business.Services
@@ -28,6 +28,7 @@ namespace WebDispacher.Business.Services
         private readonly Context db;
         private readonly IMapper mapper;
         private readonly IUserService userService;
+        private readonly int maxFileLength = 6 * 1024 * 1024;
 
         public TruckAndTrailerService(
             IMapper mapper,
@@ -80,22 +81,41 @@ namespace WebDispacher.Business.Services
         {
             return await GetTruckDocDb(id);
         }
-        
+        public async Task<Dictionary<string, string>> GetBaseTruckDoc(string id)
+        {
+            return await GetBaseTruckDocDb(id);
+        }
+
         public async Task<Truck> GetTruckByPlate(string truckPlate)
         {
             return await GetTruckByPlateDb(truckPlate);
         }
         
-        public void RemoveTruck(string id)
+        public async Task RemoveTruck(string id)
         {
-            RemoveTruckDb(id);
+            await RemoveTruckDb(id);
         }
         
-        public List<Truck> GetTrucks(string idCompany)
+        public async Task<List<Truck>> GetTrucks(int page, string idCompany)
         {
-            return GetTrucksDb(idCompany);
+            return await GetTrucksDb(page, idCompany);
         }
-        
+
+        public async Task<int> GetCountTrucksPages(string idCompany)
+        {
+            return await GetCountTrucksPagesInDb(idCompany);
+        }
+
+        public async Task<List<Trailer>> GetTrailers(int page, string idCompany)
+        {
+            return await GetTrailersDb(page, idCompany);
+        }
+
+        public async Task<int> GetCountTrailersPages(string idCompany)
+        {
+            return await GetCountTrailersPagesInDb(idCompany);
+        }
+
         public TruckViewModel GetTruckById(int idTruck)
         {
             return GetTruckByIdDb(idTruck);
@@ -121,18 +141,15 @@ namespace WebDispacher.Business.Services
             return await GetTrailerByPlateDb(trailerPlate);
         }
         
-        public List<Trailer> GetTrailers(string idCompany)
+        public async Task RemoveTrailer(string id)
         {
-            return GetTrailersDb(idCompany);
-        }
-        
-        public void RemoveTrailer(string id)
-        {
-            RemoveTrailerDb(id);
+            await RemoveTrailerDb(id);
         }
         
         public async Task SaveDocTrailer(IFormFile uploadedFile, string nameDoc, string id)
         {
+            if (uploadedFile.Length > maxFileLength) return;
+
             var path = $"../Document/Traile/{id}/" + uploadedFile.FileName;
             
             if (!Directory.Exists("../Document/Traile"))
@@ -157,7 +174,7 @@ namespace WebDispacher.Business.Services
         {
             var tr = GetTr(idTr, typeTransport);
             
-            return tr is Truck ? TypeTransportVehikle.Truck.ToString() : TypeTransportVehikle.Trailer.ToString();
+            return tr is TruckViewModel ? TypeTransportVehikle.Truck.ToString() : TypeTransportVehikle.Trailer.ToString();
         }
         
         public ITr GetTr(int idTr, string typeTransport)
@@ -194,10 +211,17 @@ namespace WebDispacher.Business.Services
         {
             trailer.CompanyId = Convert.ToInt32(idCompany);
             var id = CreateTrailerDb(trailer);
-            
-            await SaveDocTrailer(trailerRegistrationDoc, DocAndFileConstants.TrailerRegistration, id.ToString());
-            await SaveDocTrailer(trailerAnnualInspectionDoc, DocAndFileConstants.TrailerInspection, id.ToString());
-            
+
+            if (trailerRegistrationDoc != null)
+            {
+                await SaveDocTrailer(trailerRegistrationDoc, DocAndFileConstants.TrailerRegistration, id.ToString());
+            }
+
+            if (trailerAnnualInspectionDoc != null)
+            {
+                await SaveDocTrailer(trailerAnnualInspectionDoc, DocAndFileConstants.TrailerInspection, id.ToString());
+            }
+
             if (leaseAgreementDoc != null)
             {
                 await SaveDocTrailer(leaseAgreementDoc, DocAndFileConstants.LeaseAgreement, id.ToString());
@@ -211,25 +235,39 @@ namespace WebDispacher.Business.Services
             truck.CompanyId = Convert.ToInt32(idCompany);
             var id = await CreateTruckDb(truck);
             
-            await SaveDocTruck(truckRegistrationDoc, DocAndFileConstants.TruckRegistration, id.ToString());
-            await SaveDocTruck(truckLeaseAgreementDoc, DocAndFileConstants.TruckAgreement, id.ToString());
-            await SaveDocTruck(truckAnnualInspection, DocAndFileConstants.TruckInspection, id.ToString());
+            if(truckRegistrationDoc != null)
+            {
+                await SaveDocTruck(truckRegistrationDoc, DocAndFileConstants.TruckRegistration, id.ToString());
+            }
+
+            if (truckLeaseAgreementDoc != null)
+            {
+                await SaveDocTruck(truckLeaseAgreementDoc, DocAndFileConstants.TruckAgreement, id.ToString());
+            }
+
+            if (truckAnnualInspection != null)
+            {
+                await SaveDocTruck(truckAnnualInspection, DocAndFileConstants.TruckInspection, id.ToString());
+
+            }
             
             if (bobTailPhysicalDamage != null)
             {
                 await SaveDocTruck(bobTailPhysicalDamage, DocAndFileConstants.BobTailPhysicalDamage, id.ToString());
             }
             
-            if (bobTailPhysicalDamage != null)
+            if (nYHUTDoc != null)
             {
-                await SaveDocTruck(bobTailPhysicalDamage, DocAndFileConstants.NyHit, id.ToString());
+                await SaveDocTruck(nYHUTDoc, DocAndFileConstants.NyHit, id.ToString());
             }
         }
         
-        public void EditTruck(TruckViewModel model)
+        public async Task EditTruck(TruckViewModel model, IFormFile truckRegistrationDoc,
+            IFormFile truckLeaseAgreementDoc, IFormFile truckAnnualInspection, IFormFile bobTailPhysicalDamage,
+            IFormFile nYHUTDoc)
         {
             var editTruck = db.Trucks.FirstOrDefault(t => t.Id == model.Id);
-            
+
             if (editTruck == null) return;
 
             editTruck.NameTruk = model.NameTruck;
@@ -243,8 +281,34 @@ namespace WebDispacher.Business.Services
             editTruck.Owner = model.Owner;
             editTruck.PlateTruk = model.PlateTruck;
             editTruck.ColorTruk = model.ColorTruck;
-            
+
             db.SaveChanges();
+
+            if (truckRegistrationDoc != null)
+            {
+                await SaveDocTruck(truckRegistrationDoc, DocAndFileConstants.TruckRegistration, model.Id.ToString());
+            }
+
+            if (truckLeaseAgreementDoc != null)
+            {
+                await SaveDocTruck(truckLeaseAgreementDoc, DocAndFileConstants.TruckAgreement, model.Id.ToString());
+            }
+
+            if (truckAnnualInspection != null)
+            {
+                await SaveDocTruck(truckAnnualInspection, DocAndFileConstants.TruckInspection, model.Id.ToString());
+
+            }
+
+            if (bobTailPhysicalDamage != null)
+            {
+                await SaveDocTruck(bobTailPhysicalDamage, DocAndFileConstants.BobTailPhysicalDamage, model.Id.ToString());
+            }
+
+            if (nYHUTDoc != null)
+            {
+                await SaveDocTruck(nYHUTDoc, DocAndFileConstants.NyHit, model.Id.ToString());
+            }
         }
         
         private void EditTrailerDb(TrailerViewModel model)
@@ -272,7 +336,18 @@ namespace WebDispacher.Business.Services
         private void SaveDocTruckDb(string path, string id, string nameDoc)
         {
             var pref = path.Remove(0, path.LastIndexOf(".") + 1);
-            
+
+            var documentInDb = db.DocumentTruckAndTrailers.FirstOrDefault(x => x.NameDoc == nameDoc && x.IdTr == Convert.ToInt32(id));
+
+            if (documentInDb != null)
+            {
+                documentInDb.DocPath = path;
+                documentInDb.TypeDoc = pref;
+
+                db.SaveChanges();
+                return;
+            }
+
             var documentTruckAndTrailers = new DocumentTruckAndTrailers()
             {
                 DocPath = path,
@@ -281,14 +356,16 @@ namespace WebDispacher.Business.Services
                 TypeTr = TruckAndTrailerConstants.Truck,
                 TypeDoc = pref
             };
-            
+
             db.DocumentTruckAndTrailers.Add(documentTruckAndTrailers);
-            
+
             db.SaveChanges();
         }
         
         public async Task SaveDocTruck(IFormFile uploadedFile, string nameDoc, string id)
         {
+            if (uploadedFile.Length > maxFileLength) return;
+
             var path = $"../Document/Truck/{id}/" + uploadedFile.FileName;
             
             if(!Directory.Exists("../Document/Truck"))
@@ -300,7 +377,7 @@ namespace WebDispacher.Business.Services
             {
                 Directory.CreateDirectory($"../Document/Truck/{id}");
             }
-            
+
             using (var fileStream = new FileStream(path, FileMode.Create))
             {
                 uploadedFile.CopyTo(fileStream);
@@ -330,18 +407,20 @@ namespace WebDispacher.Business.Services
             return inspectionDrivers;
         }
         
-        private async Task<int> CreateTrailerDb(TrailerViewModel trailer)
+        private async Task<int> CreateTrailerDb(TrailerViewModel trailerViewModel)
         {
-            await db.Trailers.AddAsync(mapper.Map<Trailer>(trailer));
+            var trailer = mapper.Map<Trailer>(trailerViewModel);
+            await db.Trailers.AddAsync(trailer);
             
             await db.SaveChangesAsync();
             
             return trailer.Id;
         }
         
-        private async Task<int> CreateTruckDb(TruckViewModel truck)
+        private async Task<int> CreateTruckDb(TruckViewModel truckModel)
         {
-            await db.Trucks.AddAsync(mapper.Map<Truck>(truck));
+            var truck = mapper.Map<Truck>(truckModel);
+            await db.Trucks.AddAsync(truck);
             
             await db.SaveChangesAsync();
             
@@ -366,29 +445,46 @@ namespace WebDispacher.Business.Services
             db.SaveChanges();
         }
         
-        private void RemoveTrailerDb(string id)
+        private async Task RemoveTrailerDb(string id)
         {
-            var trailer = db.Trailers.FirstOrDefault(t => t.Id.ToString() == id);
+            var trailer = await db.Trailers.FirstOrDefaultAsync(t => t.Id.ToString() == id);
             if (trailer == null) return;
             
             db.Trailers.Remove(trailer);
             
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
         
-        private void RemoveTruckDb(string id)
+        private async Task RemoveTruckDb(string id)
         {
-            var truck = db.Trucks.FirstOrDefault(t => t.Id.ToString() == id);
+            var truck = await db.Trucks.FirstOrDefaultAsync(t => t.Id.ToString() == id);
             if (truck == null) return;
             
             db.Trucks.Remove(truck);
             
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
         
-        private List<Trailer> GetTrailersDb(string idCompany)
+        private async Task<List<Trailer>> GetTrailersDb(int page, string idCompany)
         {
-            return db.Trailers.Where(t => t.CompanyId.ToString() == idCompany).OrderByDescending(x => x.Id).ToList();
+            var trailers = db.Trailers.Where(t => t.CompanyId.ToString() == idCompany).OrderByDescending(x => x.Id).AsQueryable();
+
+            if (page == UserConstants.AllPagesNumber) return await trailers.ToListAsync();
+
+            try
+            {
+                trailers = trailers.Skip(UserConstants.LongPageCount * page - UserConstants.LongPageCount);
+
+                trailers = trailers.Take(UserConstants.LongPageCount);
+            }
+            catch (Exception)
+            {
+                trailers = trailers.Skip((UserConstants.LongPageCount * page) - UserConstants.LongPageCount);
+            }
+
+            var listTrailers = await trailers.ToListAsync();
+
+            return listTrailers;
         }
         
         private async Task<Trailer> GetTrailerByPlateDb(string trailerPlate)
@@ -444,9 +540,53 @@ namespace WebDispacher.Business.Services
             return mapper.Map<TruckViewModel>(truck);
         }
         
-        private List<Truck> GetTrucksDb(string idCompany)
+        private async Task<List<Truck>> GetTrucksDb(int page, string idCompany)
         {
-            return db.Trucks.Where(t => t.CompanyId.ToString() == idCompany).OrderByDescending(x => x.Id).ToList();
+            var trucks = db.Trucks.Where(t => t.CompanyId.ToString() == idCompany).OrderByDescending(x => x.Id).AsQueryable();
+
+            if (page == UserConstants.AllPagesNumber) return await trucks.ToListAsync();
+
+            try
+            {
+                trucks = trucks.Skip(UserConstants.LongPageCount * page - UserConstants.LongPageCount);
+
+                trucks = trucks.Take(UserConstants.LongPageCount);
+            }
+            catch (Exception)
+            {
+                trucks = trucks.Skip((UserConstants.LongPageCount * page) - UserConstants.LongPageCount);
+            }
+
+            var listTrucks = await trucks.ToListAsync();
+
+            return listTrucks;
+        }
+
+        private async Task<int> GetCountTrucksPagesInDb(string idCompany)
+        {
+            var countTrucks = await db.Trucks.Where(t => t.CompanyId.ToString() == idCompany).CountAsync();
+
+            var countPages = GetCountPage(countTrucks, UserConstants.LongPageCount);
+
+            return countPages;
+
+        }
+
+        private int GetCountPage(int countElements, int countElementsInOnePage)
+        {
+            var countPages = (countElements / countElementsInOnePage) % countElementsInOnePage;
+
+            return countPages > 0 ? countPages + 1 : countPages;
+        }
+
+        private async Task<int> GetCountTrailersPagesInDb(string idCompany)
+        {
+            var countTrailers = await db.Trailers.Where(t => t.CompanyId.ToString() == idCompany).CountAsync();
+
+            var countPages = GetCountPage(countTrailers, UserConstants.LongPageCount);
+
+            return countPages;
+
         }
 
         private async Task<Truck> GetTruckByPlateDb(string truckPlate)
@@ -459,6 +599,30 @@ namespace WebDispacher.Business.Services
             return await db.DocumentTruckAndTrailers
                 .Where(d => d.TypeTr == TruckAndTrailerConstants.Truck && d.IdTr.ToString() == id)
                 .ToListAsync();
+        }
+        
+        private async Task<Dictionary<string, string>> GetBaseTruckDocDb(string id)
+        {
+            var docs = await db.DocumentTruckAndTrailers
+                .Where(d => d.TypeTr == TruckAndTrailerConstants.Truck && d.IdTr.ToString() == id)
+                .ToListAsync();
+
+            var keyValues = new Dictionary<string, string>();
+
+            foreach(var item in docs)
+            {
+                keyValues.Add(item.NameDoc, GetFileNameWithPath(item.DocPath));
+            }
+
+
+            return keyValues;
+        }
+
+        private string GetFileNameWithPath(string path)
+        {
+            var fileName = path.Remove(0, path.LastIndexOf("/") + 1);
+
+            return fileName;
         }
     }
 }

@@ -22,6 +22,7 @@
                                 @Localizer["Password"]
                                 <input type="password" name="password" required>
                             </label>
+                            <input type="hidden" value="" name="date"/>
                             <input class="btn1" type="submit" value="@Localizer["Create"]" />
                         </form>
                     </div>
@@ -30,3 +31,12 @@
         </div>
     </div>
 </body>
+
+<script>
+    const dateInput = document.querySelector("[name='date']");
+
+    $("input[type=submit]").on('click', function () {
+
+        dateInput.value = GetDateTimeInFormat(new Date());
+    })
+</script>

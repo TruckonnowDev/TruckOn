@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Threading.Tasks;
 using WebDispacher.Business.Interfaces;
 using WebDispacher.Constants;
 using WebDispacher.Service;
@@ -75,7 +76,7 @@ namespace WebDispacher.Controellers.Settings
 
         [HttpGet]
         [Route("Trucks")]
-        public IActionResult GetTrucks()
+        public async Task<IActionResult> GetTrucks()
         {
             try
             {
@@ -97,7 +98,7 @@ namespace WebDispacher.Controellers.Settings
                         companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
                     
                     ViewBag.NameCompany = companyName;
-                    ViewBag.Trucks = truckAndTrailerService.GetTrucks(idCompany);
+                    ViewBag.Trucks = await truckAndTrailerService.GetTrucks(0, idCompany);
                     
                     return View("~/Views/Settings/Trucks.cshtml");
                 }
@@ -117,7 +118,7 @@ namespace WebDispacher.Controellers.Settings
 
         [HttpGet]
         [Route("Trailers")]
-        public IActionResult GetTrailers()
+        public async Task<IActionResult> GetTrailers()
         {
             try
             {
@@ -137,7 +138,7 @@ namespace WebDispacher.Controellers.Settings
                     
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
                     ViewBag.NameCompany = companyName;
-                    ViewBag.Trailers = truckAndTrailerService.GetTrailers(idCompany);
+                    ViewBag.Trailers = await truckAndTrailerService.GetTrailers(0, idCompany);
                     
                     return View("~/Views/Settings/Trailers.cshtml");
                 }

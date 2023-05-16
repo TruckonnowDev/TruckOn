@@ -24,6 +24,7 @@ namespace WebDispacher.Business.Interfaces
         Task<List<CompanyDTO>> GetCompaniesDTO(int page);
         Task<int> GetCountCompaniesPages();
         ContactViewModel GetContact(int id);
+        Task EditCompany(CompanyViewModel company);
         string RefreshTokenDispatch(string idDispatch);
         void CreateDispatch(DispatcherViewModel dispatcher, int idCompany);
         void EditContact(ContactViewModel contact);

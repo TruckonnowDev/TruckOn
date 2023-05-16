@@ -1,0 +1,137 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using WebDispacher.Constants;
+
+@model WebDispacher.ViewModels.Company.CompanyViewModel
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Edit Company";
+}
+
+<body>
+    <div class="admin">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="tabContent">
+                        <h2>@Localizer["InfoAboutCompany"]</h2>
+                        <form action="" method="post" id="company-form">
+                            <div class="validation" asp-validation-summary="ModelOnly"></div>
+                            <label class="big-label" for="">
+                                <label class="mb-0" asp-for="Name"></label>
+                                <input class="height-input" type="text" name="name" value="@Model.Name" required>
+                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                            </label>
+                            <label class="big-label" for="">
+                                <label class="mb-0" asp-for="Phone"></label>
+                                <input class="height-input" type="text" name="phone" id="phone" value="@Model.Phone" required>
+                                @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+                            </label>
+                            <label class="big-label" for="">
+                                <label class="mb-0" asp-for="Email"></label>
+                                <input class="height-input" type="text" name="email" pattern="@PatternConstants.Email" value="@Model.Email" required>
+                                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                            </label>
+                            <label class="big-label" for="">
+                                <label class="mb-0" asp-for="Password"></label>
+                                <input class="height-input" type="text" name="password" value="@Model.Password" required>
+                                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["TypeCompany"] <br />
+                                <select class="height-input input-select" name="Type">
+                                    <option selected value="Carrier">@Localizer["Carrier"]</option>
+                                    <option value="Shipper">@Localizer["Shipper"]</option>
+                                </select>
+                            </label>
+                            <input name="Id" value="@Model.Id" style="display:none" />
+                            <input class="btn1 big-label height-input" style="font-size:16px;" id="show-modal-save" type="button" value="@Localizer["Save"]" />
+                            <a href="/Company/Companies">
+                                <input type="button" class="btn2 big-label height-input" value="@Localizer["CancelEditCompany"]"/>
+                            </a>
+                            
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @await Html.PartialAsync("~/Views/PartView/Modals/ConfirmSaveChanges.cshtml");
+</body>
+
+<style>
+    .intl-tel-input {
+        width: 100%;
+    }
+
+    .btn1 {
+        cursor: pointer;
+    }
+
+    .btn1:hover {
+        background: #f9f9f9;
+        border: 1px solid #2c5deb;
+        color: #2c5deb;
+        -webkit-transition: .3s all;
+        -o-transition: .3s all;
+        transition: .3s all
+    }
+</style>
+
+<script>
+    const myInput = document.getElementById('show-modal-save');
+    const companyForm = document.getElementById("company-form");
+
+    myInput.addEventListener('click', () => {
+         if(companyForm.checkValidity() == false){
+            var list = companyForm.querySelectorAll(':invalid');
+            for (var item of list) {
+                item.focus();
+            }
+        }
+
+        if(companyForm.checkValidity() == true)
+        {
+            $("#confirmSaveChangesEntryModal").modal('show');
+        }
+    });
+
+    $("#save-changes-entry-button").on('click', function () {
+        localStorage.setItem('notification-save-changes', 'successSaveChanges');
+
+        companyForm.submit();
+    });
+
+    $(document).ready(function () {
+        $("#phone").val("@Model.Phone");
+    });
+
+    $("#phone").mask("(999)-999-9999", { placeholder: "(XXX)-XXX-XXXX" });
+
+    $('#email').on('input invalid', function () {
+        this.setCustomValidity('')
+        if (this.validity.valueMissing) {
+            this.setCustomValidity("@Localizer["EmailValidMessage"]")
+        }
+        if (this.validity.typeMismatch) {
+            this.setCustomValidity("@Localizer["EmailValidMessage"]")
+        }
+        if (this.validity.patternMismatch) {
+            this.setCustomValidity("@Localizer["EmailValidMessage"]")
+        }
+    })
+
+    $('#phone').on('input invalid', function () {
+        this.setCustomValidity('')
+        if (this.validity.valueMissing) {
+            this.setCustomValidity("@Localizer["PhoneValidMessage"]")
+        }
+        if (this.validity.typeMismatch) {
+            this.setCustomValidity("@Localizer["PhoneValidMessage"]")
+        }
+        if (this.validity.patternMismatch) {
+            this.setCustomValidity("@Localizer["PhoneValidMessage"]")
+        }
+    })
+</script>

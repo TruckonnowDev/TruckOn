@@ -144,4 +144,7 @@
   <data name="ViewNotificataion" xml:space="preserve">
     <value>Ver Inspección</value>
   </data>
+  <data name="EditNotificataion" xml:space="preserve">
+    <value>Editar Compañía</value>
+  </data>
 </root>

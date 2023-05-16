@@ -61,6 +61,10 @@
                                             }
                                             <td>@ViewBag.Companies[i].Type</td>
                                             <td>
+                                                <div data-title="@Localizer["EditNotificataion"]" class="ico-doc ico-doc-edit" onclick="document.location.href = 'EditCompany?id='+@ViewBag.Companies[i].Id;">
+                                                    <i class="bi bi-pencil-square" style="color: #ff9800; font-size:20px"></i>
+                                                </div>
+
                                                 <div data-title="@Localizer["ViewNotificataion"]" class="ico-doc ico-doc-view" onclick="document.location.href = 'Company?id=@ViewBag.Companies[i].Id';">
                                                     <i class="bi bi-cursor-fill" style="color: #4caf50; font-size:20px"></i>
                                                 </div>
@@ -98,5 +102,6 @@
 
     $(document).ready(function () {
         ShowAlert();
+        ShowAlertSaveChanges();
     });
 </script>

@@ -89,7 +89,9 @@ namespace WebDispacher.Business.Services
         
         public async Task<CompanyViewModel> GetCompanyById(int id)
         {
-            return await GetCompanyByIdDb(id);
+            var company = await GetCompanyByIdDb(id);
+            
+            return company ?? new CompanyViewModel();
         }
         
         public async Task<List<CompanyDTO>> GetCompaniesDTO(int page)
@@ -173,6 +175,19 @@ namespace WebDispacher.Business.Services
             contactEdit.Phone = contact.Phone;
             
             db.SaveChanges();
+        }
+        
+        public async Task EditCompany(CompanyViewModel company)
+        {
+            var companyEdit = await db.Commpanies.FirstOrDefaultAsync(c => c.Id == company.Id);
+            var userEdit = await db.User.FirstOrDefaultAsync(u => u.CompanyId == company.Id);
+            if (companyEdit == null || userEdit == null) return;
+
+            companyEdit.Name = company.Name;
+            userEdit.Password = company.Password;
+            userEdit.Login = company.Email.ToLower();
+            
+            await db.SaveChangesAsync();
         }
         
         public void EditDispatch(DispatcherViewModel dispatcher)
@@ -668,6 +683,7 @@ namespace WebDispacher.Business.Services
 
             companyViewModel.Password = userInfo.Password;
             companyViewModel.Email = userInfo.Login;
+
             return companyViewModel;
         }
 

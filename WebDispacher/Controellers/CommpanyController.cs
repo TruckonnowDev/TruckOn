@@ -160,6 +160,89 @@ namespace WebDispacher.Controellers
             return Redirect(Config.BaseReqvesteUrl);
         }
 
+        [HttpGet]
+        [Route("EditCompany")]
+        public async Task<IActionResult> EditCompany(int id)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
+
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Company))
+                {
+                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+
+                    if (isCancelSubscribe)
+                    {
+                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
+                    }
+
+                    ViewBag.NameCompany = companyName;
+
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
+
+                    var companyViewModel = await companyService.GetCompanyById(id);
+
+                    return View(companyViewModel);
+                }
+
+                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                {
+                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+
+            return Redirect(Config.BaseReqvesteUrl);
+        }
+
+        [HttpPost]
+        [Route("EditCompany")]
+        public async Task<IActionResult> EditCompany(CompanyViewModel company)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
+
+                    if (userService.CheckPermissions(key, idCompany, RouteConstants.Contact))
+                    {
+                        ViewBag.NameCompany = companyName;
+                        ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
+
+                        await companyService.EditCompany(company);
+
+                        return Redirect($"{Config.BaseReqvesteUrl}/Company/Companies");
+                    }
+
+                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    {
+                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+            else
+            {
+                return View(company);
+            }
+
+            return Redirect(Config.BaseReqvesteUrl);
+        }
+
         [Route("Remove")]
         public IActionResult RemoveCompany(string id)
         {
@@ -426,7 +509,7 @@ namespace WebDispacher.Controellers
                 Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
                 Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
 
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Contact))
+                if (userService.CheckPermissions(key, idCompany, RouteConstants.Company))
                 {
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
 

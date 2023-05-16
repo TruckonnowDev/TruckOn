@@ -144,4 +144,7 @@
   <data name="DeleteNotificataion" xml:space="preserve">
     <value>Удалить компанию</value>
   </data>
+  <data name="EditNotificataion" xml:space="preserve">
+    <value>Редактировать</value>
+  </data>
 </root>

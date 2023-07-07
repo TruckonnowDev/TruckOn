@@ -12,10 +12,15 @@ namespace WebDispacher.ViewModels.Contact
         public string Email { get; set; }
 
         [Required(ErrorMessage = "PhoneRequired")]
-        [MinLength(4, ErrorMessage = "MinLengthPhone")]
-        [MaxLength(12, ErrorMessage = "MaxLengthPhone")]
         [Display(Name = "Phone")]
         public string Phone { get; set; }
+
+        [Display(Name = "Position")]
+        public string Position { get; set; }
+
+        [Required(ErrorMessage = "ExtRequired")]
+        [Display(Name = "Ext")]
+        public string Ext { get; set; }
 
         [Required(ErrorMessage = "NameRequired")]
         [Display(Name = "Name")]

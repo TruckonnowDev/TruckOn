@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DaoModels.DAO.Enum;
 using DaoModels.DAO.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using WebDispacher.Business.Interfaces;
 using WebDispacher.Business.Services;
 using WebDispacher.Constants;
@@ -16,19 +18,17 @@ using WebDispacher.ViewModels.Shipping;
 
 namespace WebDispacher.Controellers
 {
-    public class RAController : Controller
+    public class RAController : BaseController
     {
-        private readonly IUserService userService;
         private readonly ICompanyService companyService;
         private readonly IDriverService driverService;
 
         public RAController(
             IUserService userService,
             ICompanyService companyService, 
-            IDriverService driverService)
+            IDriverService driverService) : base(userService)
         {
             this.driverService = driverService;
-            this.userService = userService;
             this.companyService = companyService;
         }
 
@@ -37,10 +37,10 @@ namespace WebDispacher.Controellers
             ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
             TempData["Alert"] = alert;
-            
-            if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+
+            if (Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key))
             {
-                return Redirect("/Dashbord/Order/NewLoad");
+                return BaseRedirect(key);
             }
 
             ViewData[NavConstants.TypeNavBar] = NavConstants.AllUsers;
@@ -75,9 +75,9 @@ namespace WebDispacher.Controellers
             ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
             
-            if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+            if (Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key))
             {
-                return Redirect("/Dashbord/Order/NewLoad");
+                return BaseRedirect(key);
             }
 
             ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
@@ -91,10 +91,10 @@ namespace WebDispacher.Controellers
         {
             ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-            
-            if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+
+            if (Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key))
             {
-                return Redirect("/Dashbord/Order/NewLoad");
+                return BaseRedirect(key);
             }
 
             ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
@@ -118,10 +118,10 @@ namespace WebDispacher.Controellers
         {
             ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-            
-            if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+
+            if (Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key))
             {
-                return Redirect("/Dashbord/Order/NewLoad");
+                return BaseRedirect(key);
             }
 
             ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
@@ -138,9 +138,9 @@ namespace WebDispacher.Controellers
             ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-            if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+            if (Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key))
             {
-                return Redirect("/Dashbord/Order/NewLoad");
+                return BaseRedirect(key);
             }
 
             ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
@@ -155,10 +155,10 @@ namespace WebDispacher.Controellers
         {
             ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-            
-            if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+
+            if (Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key))
             {
-                return Redirect("/Dashbord/Order/NewLoad");
+                return BaseRedirect(key);
             }
 
             ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
@@ -280,10 +280,10 @@ namespace WebDispacher.Controellers
         {
             ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-            
-            if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+
+            if (Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key))
             {
-                return Redirect("/Dashbord/Order/NewLoad");
+                return BaseRedirect(key);
             }
 
             ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
@@ -329,10 +329,10 @@ namespace WebDispacher.Controellers
         {
             ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-            
-            if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+
+            if (Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key))
             {
-                return Redirect("/Dashbord/Order/NewLoad");
+                return BaseRedirect(key);
             }
 
             ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
@@ -369,20 +369,34 @@ namespace WebDispacher.Controellers
 
                     var key = userService.CreateKey(Email, Password);
                     var Commpany = userService.GetUserByKeyUser(key);
+
+                    if (Commpany == null) BaseRedirect(key.ToString());
+
+                    switch (Commpany.Type)
+                    {
+                        case TypeCompany.NormalCompany:
+                            Response.Cookies.Append(CookiesKeysConstants.CarKey, key.ToString());
+                            Response.Cookies.Append(CookiesKeysConstants.CompanyIdKey, Commpany.Id.ToString());
+                            Response.Cookies.Append(CookiesKeysConstants.CompanyNameKey, Commpany.Name);
+                            break;
+                        case TypeCompany.BaseCommpany:
+                            Response.Cookies.Append(CookiesKeysConstants.CarKey, key.ToString());
+                            Response.Cookies.Append(CookiesKeysConstants.CompanyIdKey, Commpany.Id.ToString());
+                            Response.Cookies.Append(CookiesKeysConstants.CompanyNameKey, Commpany.Name);
+                            break;
+
+                        case TypeCompany.DeactivateCompany:
+                            return Redirect($"/carrier-login?error={UserConstants.CompanyDeactivateMessage}&email={Email}");
+                    }
+                
                     
-                    Response.Cookies.Append(CookiesKeysConstants.CarKey, key.ToString());
-                    Response.Cookies.Append(CookiesKeysConstants.CompanyIdKey, Commpany.Id.ToString());
-                    Response.Cookies.Append(CookiesKeysConstants.CompanyNameKey, Commpany.Name);
-                    
-                    return Redirect("/Dashbord/Order/NewLoad");
+                    return BaseRedirect(key.ToString());
                 }
 
                 ViewData[NavConstants.Hidden] = NavConstants.Hidden;
                 ViewData[NavConstants.TextError] = UserConstants.PasswordEmailIncorrectly;
-                var error = UserConstants.PasswordEmailIncorrectly;
 
-                actionResult = Redirect($"/carrier-login?error={error}&email={Email}");
-
+                actionResult = Redirect($"/carrier-login?error={UserConstants.PasswordEmailIncorrectly}&email={Email}");
             }
             catch (Exception e)
             {
@@ -476,6 +490,16 @@ namespace WebDispacher.Controellers
             }
             
             return null;
+        }
+
+        private IActionResult BaseRedirect(string key)
+        {
+            Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+
+            if (companyService.GetTypeNavBar(key, idCompany) == NavConstants.BaseCompany)
+                return Redirect("/Company/Companies");
+
+            return Redirect("/Dashbord/Order/NewLoad");
         }
     }
 }

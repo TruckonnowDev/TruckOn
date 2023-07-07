@@ -16,14 +16,17 @@
     <link rel="stylesheet" href="~/css/main.min.css">
     <link rel="stylesheet" href="~/libs/notie/notie.css">
     <link rel="stylesheet" href="~/libs/bootstrap/css/bootstrap-icons.css">
+    
     <link rel="icon" type="image/x-icon" href="~/icon/favicon.ico">
     <script src="~/js/scripts.min.js"></script>
     <script src="~/libs/bootstrap/css/bootstrap.min.css"></script>
     <script src="~/libs/jquery/dist/jquery.maskedinput.js"></script>
     <script src="~/libs/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/libs/bootstrap/js/bootstrap-datepicker.js"></script>
     <script src="~/js/orders.js"></script>
     <script src="~/js/driver.js"></script>
     <script src="~/js/equipment.js"></script>
+    <script src="~/js/confirm-login-company.js"></script>
     <script src="~/js/confirm-remove-modal.js"></script>
     <script src="~/js/confirm-save-changes.js"></script>
     <script src="~/js/date-format.js"></script>
@@ -91,6 +94,7 @@ else if (ViewData[NavConstants.TypeNavBar] == NavConstants.Error)
                 </ul>;
 }
 @RenderBody()
+
 <script>
         $(document).ready(function () {
             //$("body").fadeIn(1000);

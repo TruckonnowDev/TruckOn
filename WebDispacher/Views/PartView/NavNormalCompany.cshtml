@@ -13,11 +13,14 @@
             <div class="col-md-auto">
                 <ul class="menu top-nav_menu">
                     <li><a id="Dashbord" href="/Dashbord/Order/NewLoad">@Localizer["Orders"]</a></li>
-                    <li><a id="Geolcation" href="/Geolcation/Map">@Localizer["GPSTracking"]</a></li>
-                    <li><a id="Contact" href="/Contact/Contacts">@Localizer["Contacts"]</a></li>
                     <li><a id="Driver" href="/Driver/Drivers">@Localizer["Drivers"]</a></li>
                     <li><a id="Equipment" href="/Equipment/Trucks">@Localizer["Equipment"]</a></li>
-                    <li><a id="Settings" href="/Settings/User/Users">@Localizer["Settings"]</a></li>
+                    <li><a id="Geolcation" href="/Geolcation/Map">@Localizer["GPSTracking"]</a></li>
+                    <li><a id="Contact" href="/Contact/Contacts">@Localizer["Contacts"]</a></li>
+                    <li><a id="Checks" href="/Checks/DriverCheck">@Localizer["Checks"]</a></li>
+                    <li><a id="Marketplace" href="/Marketplace">@Localizer["Marketplace"]</a></li>
+                    <li><a id="Resources" href="/Resources">@Localizer["Resources"]</a></li>
+                    <li><a id="Settings" href="/Settings/Trucks">@Localizer["Settings"]</a></li>
                     <li><a href="/Exsit">@Localizer["Exit"]</a></li>
                 </ul>
                 <div class="burger">
@@ -34,7 +37,7 @@
 
 
 <script>
-    const NavItems = ['Dashbord', 'Geolcation', 'Contact', 'Driver', 'Equipment', 'Settings']
+    const NavItems = ['Checks', 'Dashbord', 'Geolcation', 'Contact', 'Driver', 'Equipment', 'Marketplace', 'Resources', 'Settings']
     $(document).ready(function () {
         var str = location.pathname
         for (let i = 0; i < NavItems.length; i++) {

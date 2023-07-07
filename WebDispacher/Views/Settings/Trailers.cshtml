@@ -55,7 +55,7 @@
                                             <td>@ViewBag.Trailers[i].Owner</td>
                                             <td>@ViewBag.Trailers[i].AnnualIns</td>
                                             <td>
-                                                <img src="~/img/setting.svg" alt="" onclick="window.location.href='@ViewBag.BaseUrl/Settings?idTr=@ViewBag.Trailers[i].Id&page=s&idProfile=0&typeTransport=Trailer'">
+                                                <img src="~/img/setting.svg" alt="" onclick="window.location.href='@ViewBag.BaseUrl/Settings/Get?idTr=@ViewBag.Trailers[i].Id&page=s&idProfile=0&typeTransport=Trailer'">
                                             </td>
                                         </tr>
                                     }

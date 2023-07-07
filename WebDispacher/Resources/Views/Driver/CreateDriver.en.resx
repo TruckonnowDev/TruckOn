@@ -139,7 +139,7 @@
     <value>Trailer capacity</value>
   </data>
   <data name="DriverLicenseNumber" xml:space="preserve">
-    <value>Driver's license number</value>
+    <value>Driver’s Licence Number</value>
   </data>
   <data name="DocumentDL" xml:space="preserve">
     <value>Upload DL</value>
@@ -173,5 +173,17 @@
   </data>
   <data name="EmailValidMessage" xml:space="preserve">
     <value>Please put email in correct format</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>First name</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Last name</value>
+  </data>
+  <data name="DateOfBirth" xml:space="preserve">
+    <value>Date of Birth</value>
+  </data>
+  <data name="DriverLicenseNumberInfoLabel" xml:space="preserve">
+    <value>Put DL# without dashes ( - )</value>
   </data>
 </root>

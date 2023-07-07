@@ -20,5 +20,12 @@ namespace WebDispacher.Controellers
 
             return  View("Error500");
         }
+
+        [HttpGet]
+        [Route("Notready")]
+        public IActionResult NotReadyPage()
+        {
+            return View("NotReady");
+        }
     }
 }

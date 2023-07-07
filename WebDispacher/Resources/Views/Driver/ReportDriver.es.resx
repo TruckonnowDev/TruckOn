@@ -200,4 +200,16 @@
 	<data name="None" xml:space="preserve">
 		<value>Ninguno</value>
 	</data>
+	<data name="FirstName" xml:space="preserve">
+		<value>Nombre</value>
+	</data>
+	<data name="LastName" xml:space="preserve">
+		<value>Apellido</value>
+	</data>
+	<data name="DateOfBirth" xml:space="preserve">
+		<value>Fecha de Nacimiento</value>
+	</data>
+	<data name="DriverLicenseNumberInfoLabel" xml:space="preserve">
+		<value>Poner DL# sin guiones ( - )</value>
+	</data>
 </root>

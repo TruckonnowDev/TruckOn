@@ -122,4 +122,13 @@
 	<data name="PhoneRequired" xml:space="preserve">
 		<value>El campo Teléfono es obligatorio</value>
 	</data>
+	<data name="Ext" xml:space="preserve">
+		<value>Ext</value>
+	</data>
+	<data name="ExtRequired" xml:space="preserve">
+		<value>El campo ext es obligatorio</value>
+	</data>
+	<data name="Position" xml:space="preserve">
+		<value>Posición</value>
+	</data>
 </root>

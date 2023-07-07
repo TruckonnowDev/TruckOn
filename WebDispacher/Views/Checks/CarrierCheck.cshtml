@@ -1,0 +1,37 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using System.Globalization;
+@using WebDispacher.Constants;
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Carrier Check";
+    DateTime dateTimeRegistrationFormat = DateTime.MinValue;
+}
+
+<body>
+    <div class="admin">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="title">
+                        <h1>@Localizer["CarrierCheck"]</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="tabs">
+                        <div class="tab" onclick="window.location.href='@Url.Action("DriverCheck", "Checks")';">@Localizer["DriverCheck"]</div>
+                        <div class="tab whiteborder" onclick="window.location.href='@Url.Action("CarrierCheck", "Checks")';">@Localizer["CarrierCheck"]</div>
+                        <div class="tab" onclick="window.location.href='@Url.Action("BrokerCheck", "Checks")';">@Localizer["BrokerCheck"]</div>
+                        <div class="tabContent">
+                            @await Html.PartialAsync("~/Views/Error/Notready.cshtml")
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>

@@ -8,20 +8,18 @@ using WebDispacher.Service;
 namespace WebDispacher.Controellers
 {
     [Route("Geolcation")]
-    public class GeolcationController : Controller
+    public class GeolcationController : BaseController
     {
-        private readonly IUserService userService;
         private readonly IDriverService driverService;
         private readonly ICompanyService companyService;
 
         public GeolcationController(
             IUserService userService,
             IDriverService driverService,
-            ICompanyService companyService)
+            ICompanyService companyService) : base(userService)
         {
             this.companyService = companyService;
             this.driverService = driverService;
-            this.userService = userService;
         }
 
         [Route("Map")]
@@ -31,11 +29,8 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Geolocation))
+                if (CheckPermissionsByCookies(RouteConstants.Geolocation, out var key, out var idCompany))
                 {
                     var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     
@@ -44,7 +39,7 @@ namespace WebDispacher.Controellers
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
                     
-                    ViewBag.NameCompany = companyName;
+                    ViewBag.NameCompany = GetCookieCompanyName();
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     ViewBag.Drivers = await driverService.GetDrivers(idCompany);
                     

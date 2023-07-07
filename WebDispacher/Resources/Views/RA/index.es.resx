@@ -318,4 +318,7 @@ O puede llamar al número</value>
   <data name="ValidOnlyNumbersMessage" xml:space="preserve">
     <value>Utilice solo números</value>
   </data>
+  <data name="ELDSerivce" xml:space="preserve">
+    <value>Servicio Eld</value>
+  </data>
 </root>

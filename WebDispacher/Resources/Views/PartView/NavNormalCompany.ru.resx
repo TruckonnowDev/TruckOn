@@ -138,4 +138,13 @@
   <data name="Settings" xml:space="preserve">
     <value>Настройки</value>
   </data>
+  <data name="Checks" xml:space="preserve">
+    <value>Проверки</value>
+  </data>
+  <data name="Marketplace" xml:space="preserve">
+    <value>Рыночная площадка</value>
+  </data>
+  <data name="Resources" xml:space="preserve">
+    <value>Ресурсы</value>
+  </data>
 </root>

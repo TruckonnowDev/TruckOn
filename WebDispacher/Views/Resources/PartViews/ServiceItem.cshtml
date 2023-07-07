@@ -1,0 +1,64 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@model WebDispacher.ViewModels.Resources.ResourceViewModel
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = $"{Model.Name} | Resources";
+}
+
+<div id="service-item">
+    <div class="container">
+        <div class="title">
+            <a href="/resources">@Localizer["BackToResources"]</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row" style="justify-content: center">
+            <div class="col-md-1">
+                <div class="picture">
+                    <img src="/@Model.UrlPicture" />
+                </div>
+            </div>
+            <div class="col-md-11" style="display:flex;align-items:center;">
+                <div class="header-name">
+                    <h1>@Model.Name</h1>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="info-service">
+                    <p>@Model.Info</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    #service-item .container{
+        margin-top: 2rem;
+    }
+
+    .title a {
+        font-size: 14px;
+    }
+
+    .picture img {
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 80px;
+        max-height: 80px;
+    }
+
+    .header-name h1 {
+        font-size: 36px;
+    }
+
+    .info-service p {
+        padding-top: 2rem;
+        font-size: 16px;
+        width: 100%;
+    }
+</style>

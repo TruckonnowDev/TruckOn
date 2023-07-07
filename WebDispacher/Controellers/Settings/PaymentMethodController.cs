@@ -16,17 +16,15 @@ using WebDispacher.ViewModels.Payment;
 namespace WebDispacher.Controellers.Settings
 {
     [Route("Settings/Biling")]
-    public class PaymentMethodController : Controller
+    public class PaymentMethodController : BaseController
     {
-        private readonly IUserService userService;
         private readonly ICompanyService companyService;
         
         public PaymentMethodController(
             IUserService userService,
-            ICompanyService companyService)
+            ICompanyService companyService) : base(userService)
         {
             this.companyService = companyService;
-            this.userService = userService;
         }
 
         [HttpGet]
@@ -36,18 +34,15 @@ namespace WebDispacher.Controellers.Settings
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.PaymentMethod))
+                if (CheckPermissionsByCookies(RouteConstants.PaymentMethod, out var key, out var idCompany))
                 {
                     var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     ViewData[NavConstants.TypeNavBar] = 
                         companyService.GetTypeNavBar(key, idCompany, isCancelSubscribe
                             ? NavConstants.TypeNavCancel : NavConstants.TypeNavSettings);
                     
-                    ViewBag.NameCompany = companyName;
+                    ViewBag.NameCompany = GetCookieCompanyName();
                     var paymentMethods = companyService.GetPaymentMethod(idCompany);
                     var paymentMethodSTs = companyService.GetPaymentMethodsST(idCompany);
                     var paymentMethodDTOs = paymentMethods.Select(z => new PaymentMethodDTO()
@@ -89,18 +84,15 @@ namespace WebDispacher.Controellers.Settings
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.PaymentMethod))
+                if (CheckPermissionsByCookies(RouteConstants.PaymentMethod, out var key, out var idCompany))
                 {
                     var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany, isCancelSubscribe
                         ? NavConstants.TypeNavCancel : NavConstants.TypeNavSettings);
                     
-                    ViewBag.NameCompany = companyName;
+                    ViewBag.NameCompany = GetCookieCompanyName();
                     ViewBag.TxtError = string.Empty;
                     
                     return View("~/Views/Settings/Biling/AddPaymentMethod.cshtml", new CardViewModel());
@@ -128,13 +120,10 @@ namespace WebDispacher.Controellers.Settings
                 try
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                    Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
 
-                    if (userService.CheckPermissions(key, idCompany, RouteConstants.PaymentMethod))
+                    if (CheckPermissionsByCookies(RouteConstants.PaymentMethod, out var key, out var idCompany))
                     {
-                        ViewBag.NameCompany = companyName;
+                        ViewBag.NameCompany = GetCookieCompanyName();
 
                         ViewData[NavConstants.TypeNavBar] =
                             companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
@@ -174,13 +163,10 @@ namespace WebDispacher.Controellers.Settings
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.PaymentMethod))
+                if (CheckPermissionsByCookies(RouteConstants.PaymentMethod, out var key, out var idCompany))
                 {
-                    ViewBag.NameCompany = companyName;
+                    ViewBag.NameCompany = GetCookieCompanyName();
                     
                     ViewData[NavConstants.TypeNavBar] = 
                         companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
@@ -210,13 +196,10 @@ namespace WebDispacher.Controellers.Settings
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.PaymentMethod))
+                if (CheckPermissionsByCookies(RouteConstants.PaymentMethod, out var key, out var idCompany))
                 {
-                    ViewBag.NameCompany = companyName;
+                    ViewBag.NameCompany = GetCookieCompanyName();
                     
                     ViewData[NavConstants.TypeNavBar] = 
                         companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);

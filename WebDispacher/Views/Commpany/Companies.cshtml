@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 @using System.Globalization;
 @using WebDispacher.Constants;
+@using WebDispacher.Service;
 
 @inject IViewLocalizer Localizer
 
@@ -29,8 +30,10 @@
                                 <thead>
                                     <tr>
                                         <th>@Localizer["Name"]</th>
-                                        <th>@Localizer["Registration"]</th>
+                                        <th>@Localizer["UserId"]</th>
+                                        <th>@Localizer["Password"]</th>
                                         <th>@Localizer["TypeOfCompany"]</th>
+                                        <th>@Localizer["Registration"]</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -49,8 +52,27 @@
 
                                             }
                                         }
-                                        <tr>
+
+                                        string entryType = string.Empty;
+                                        bool isActive = true;
+                                        switch (ViewBag.Companies[i].CompanyType)
+                                        {
+                                            case CompanyConstants.DeactivateCompany:
+                                                entryType = "deactivate";
+                                                isActive = false;
+                                                break;
+                                            case CompanyConstants.HomeCompany:
+                                                entryType = "admin-company";
+                                                break;
+                                            default:
+                                                break;
+                                        }
+
+                                        <tr class="@entryType">
                                             <td>@ViewBag.Companies[i].Name</td>
+                                            <td>@ViewBag.Companies[i].Email</td>
+                                            <td style="word-break:break-all; max-width:300px;" >@ViewBag.Companies[i].Password</td>
+                                            <td>@ViewBag.Companies[i].CompanyType</td>
                                             @if (dateTimeRegistrationFormat.Year == 1)
                                             {
                                                 <td>@ViewBag.Companies[i].DateRegistration</td>
@@ -59,8 +81,8 @@
                                             {
                                                 <td>@dateTimeRegistrationFormat.ToString(DateTimeFormats.FullDateTimeInfoUS)</td>
                                             }
-                                            <td>@ViewBag.Companies[i].Type</td>
-                                            <td>
+
+                                            <td class="control-panel">
                                                 <div data-title="@Localizer["EditNotificataion"]" class="ico-doc ico-doc-edit" onclick="document.location.href = 'EditCompany?id='+@ViewBag.Companies[i].Id;">
                                                     <i class="bi bi-pencil-square" style="color: #ff9800; font-size:20px"></i>
                                                 </div>
@@ -75,9 +97,26 @@
                                                 </div>
                                                 @*<img src="~/img/doc.svg" alt="" onclick="window.location.href = '@ViewBag.BaseUrl/Company/Doc?id=@ViewBag.Companies[i].Id';">*@
 
-                                                <div data-title="@Localizer["DeleteNotificataion"]" class="ico-doc ico-doc-delete open-ConfirmDelete" data-toggle="modal" data-id="@ViewBag.Companies[i].Id" href="#confirmDeleteEntryModal">
-                                                    <i class="bi bi-x-lg" style="color: #f44336; font-size:20px"></i>
+                                                <div data-title="@Localizer["LoginNotificataion"]" class="ico-doc ico-doc-login open-ConfirmLogin login-nt" data-toggle="modal" data-id="@ViewBag.Companies[i].Id" href="#CompanyLogin">
+                                                    <i class="bi bi-box-arrow-in-up-right" style="color: #03a9f4; font-size:20px"></i>
                                                 </div>
+
+                                                <div data-title="@Localizer["SendEmailNotificataion"]" class="ico-doc ico-doc-send-email open-SendEmailForm" data-toggle="modal" data-id="@ViewBag.Companies[i].Id" href="#sendEmailModalId">
+                                                    <i class="bi bi-chat-right-text" style="color: #607d8b; font-size:20px"></i>
+                                                </div>
+
+                                                @if (isActive)
+                                                {
+                                                    <div data-title="@Localizer["DeleteNotificataion"]" class="ico-doc ico-doc-delete open-ConfirmDelete deactivate-nt" data-toggle="modal" data-id="@ViewBag.Companies[i].Id" href="#CompanyDeactivate">
+                                                        <i class="bi bi-lightbulb-fill" style="color: #52bd5a; font-size:20px"></i>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                <div data-title="@Localizer["ActivateNotificataion"]" class="ico-doc ico-doc-activate open-ConfirmActivate activate-nt" data-toggle="modal" data-id="@ViewBag.Companies[i].Id" href="#CompanyActivate">
+                                                        <i class="bi bi-lightbulb" style="color: #f44336; font-size:20px"></i>
+                                                    </div>
+                                                }
                                                 @*<img src="~/img/delet.svg" alt="" onclick="RemoveCompany(@ViewBag.Companies[i].Id)">*@
                                             </td>
                                         </tr>
@@ -94,14 +133,129 @@
             </div>
         </div>
     </div>
-    @await Html.PartialAsync("~/Views/PartView/Modals/ConfirmDelete.cshtml");
+    @await Html.PartialAsync("~/Views/PartView/Modals/ConfirmDelete.cshtml", new ViewDataDictionary(ViewData) { {"ModalId", "CompanyDeactivate"}, { "ConfirmMessage", "CompanyDeactivate" } });
+    @await Html.PartialAsync("~/Views/PartView/Modals/ConfirmDelete.cshtml", new ViewDataDictionary(ViewData) { {"ModalId", "CompanyLogin"}, { "ConfirmMessage", "CompanyLogin" } });
+    @await Html.PartialAsync("~/Views/PartView/Modals/ConfirmDelete.cshtml", new ViewDataDictionary(ViewData) { {"ModalId", "CompanyActivate"}, { "ConfirmMessage", "CompanyActivate" } });
+    @await Html.PartialAsync("~/Views/PartView/Modals/EmailFormMessageSend.cshtml");
 </body>
 
 <script>
-    ConfirmRemoveEntry(GetDateTimeInFormat(new Date()), `/Company/Remove`, `/Company/Companies`, '#confirmDeleteEntryModal');
+    ConfirmDeactivateCompany(GetDateTimeInFormat(new Date()), `/Company/Remove`, `/Company/Companies`, '#CompanyDeactivate');
+    var entryId = '';
+
+    $(document).on("click", ".open-ConfirmLogin", function () {
+        entryId = $(this).data('id');
+        ConfirmLoginEntry();
+    });
+
+    $(document).on("click", ".open-SendEmailForm", function () {
+        entryId = $(this).data('id');
+    });
+    
+    $(document).on("click", ".open-ConfirmActivate", function () {
+        entryId = $(this).data('id');
+    });
+
+    function ConfirmDeactivateCompany(actualDate, requestUrl, responseUrl, modalSelector) {
+        $(document).on("click", ".open-ConfirmDelete", function () {
+            var entryId = $(this).data('id');
+            $("#remove-entry-button").on("click", function () {
+                var body = {
+                    id: entryId,
+                    localDate: actualDate,
+                };
+                $.ajax({
+                    type: "post",
+                    async: true,
+                    data: body,
+                    url: requestUrl,
+                    success: function () {
+                        window.location.href = responseUrl;
+                        localStorage.setItem('notification', 'successDeactivate');
+                    }
+                });
+
+                $(modalSelector).modal('hide');
+            });
+        });
+    }
+
+    function SendEmail() {
+        const formElement = document.getElementById("sendEmailModalId");
+
+        let subjectEl = formElement.getElementsByClassName("subject-input")[0];
+        let messageEl = formElement.getElementsByClassName("message-area-input")[0];
+        subjectEl.validity.valid;
+        messageEl.validity.valid;
+        if (subjectEl.validity.valid && messageEl.validity.valid) {
+            let companyId = entryId
+            var body = {
+                companyId: companyId,
+                subject: subjectEl.value,
+                message: messageEl.value,
+                localDate: GetDateTimeInFormat(new Date()),
+            };
+
+            $.ajax({
+                type: "post",
+                data: body, 
+                url: `/Company/SendEmail`,
+                success: function () {
+                    SuccessAlert("Email was sent successfully");
+                },
+                error: function (response) {
+                    ErrorAlert("Not success");
+                }
+            });
+
+            $("#sendEmailModalId").modal('hide');
+        }
+    }
+    
 
     $(document).ready(function () {
+        $("#CompanyLogin").find("#remove-entry-button").on("click", function () {
+            var body = {
+                companyId: entryId,
+                localDate: GetDateTimeInFormat(new Date()),
+            };
+
+            $.ajax({
+                type: "post",
+                async: true,
+                data: body,
+                url: "/Company/LoginUser",
+                success: function () {
+                    window.location.href = "@Config.BaseReqvesteUrl";
+                }
+            });
+
+            $("#CompanyLogin").modal('hide');
+        });
+
+        $("#CompanyActivate").find("#remove-entry-button").on("click", function () {
+            var body = {
+                companyId: entryId,
+                localDate: GetDateTimeInFormat(new Date()),
+            };
+
+            $.ajax({
+                type: "post",
+                async: true,
+                data: body,
+                url: "/Company/Activate",
+                success: function () {
+                    localStorage.setItem('notification', 'successActivate');
+                    window.location.href = "@Config.BaseReqvesteUrl";
+                }
+            });
+
+            $("#CompanyActivate").modal('hide');
+        });
+
         ShowAlert();
         ShowAlertSaveChanges();
     });
+
+
 </script>

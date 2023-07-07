@@ -253,9 +253,9 @@
     <value>No</value>
   </data>
   <data name="VehFormHaveError" xml:space="preserve">
-    <value>No se pudo guardar la información del conductor</value>
+    <value>No se pudo la información del conductor</value>
   </data>
   <data name="VehFormSuccessSend" xml:space="preserve">
-    <value>Información del conductor guardada correctamente</value>
+    <value>Información del conductor  correctamente</value>
   </data>
 </root>

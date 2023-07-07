@@ -142,9 +142,18 @@
     <value>Добавление/Просмотр документов</value>
   </data>
   <data name="DeleteNotificataion" xml:space="preserve">
-    <value>Удалить компанию</value>
+    <value>Деактивировать компанию</value>
   </data>
   <data name="EditNotificataion" xml:space="preserve">
     <value>Редактировать</value>
+  </data>
+  <data name="LoginNotificataion" xml:space="preserve">
+    <value>Авторизоваться</value>
+  </data>
+  <data name="SendEmailNotificataion" xml:space="preserve">
+    <value>Отправить письмо</value>
+  </data>
+  <data name="ActivateNotificataion" xml:space="preserve">
+    <value>Aктивировать компанию</value>
   </data>
 </root>

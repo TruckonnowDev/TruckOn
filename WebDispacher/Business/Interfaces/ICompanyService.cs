@@ -17,6 +17,13 @@ namespace WebDispacher.Business.Interfaces
 {
     public interface ICompanyService
     {
+        Task<bool> ActivateCompany(string companyId);
+        Task<bool> UploadCompanyRequiredDoc(IFormFile certificateOfInsurance, IFormFile mcLetter, string idCompany);
+        Task<bool> CheckCompanyRequiredDoc(string idCompany);
+        Task<List<ContactViewModel>> GetContactsViewModels(int page, string idCompany);
+        Task <Users> GetUserByCompanyId(string companyId);
+        Task<bool> SendEmailToUserByCompanyId(string companyId, string subject, string message);
+        Task<List<CompanyViewModel>> GetCompaniesViewModels(int page);
         Dispatcher CheckKeyDispatcher(string key);
         List<Dispatcher> GetDispatchers(int idCompany);
         List<Commpany> GetCompanies();

@@ -174,4 +174,16 @@
   <data name="EmailValidMessage" xml:space="preserve">
     <value>Пожалуйста, введите почту в правильном формате</value>
   </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Фамилия</value>
+  </data>
+  <data name="DateOfBirth" xml:space="preserve">
+    <value>Дата Рождения</value>
+  </data>
+  <data name="DriverLicenseNumberInfoLabel" xml:space="preserve">
+    <value>Поставьте DL# без тире ( - )</value>
+  </data>
 </root>

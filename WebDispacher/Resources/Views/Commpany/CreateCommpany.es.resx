@@ -157,12 +157,21 @@
     <value>Por favor, ponga el correo electrónico en el formato correcto</value>
   </data>
   <data name="Carrier" xml:space="preserve">
-    <value>Transportista</value>
+    <value>TMS de Transportista</value>
   </data>
   <data name="Shipper" xml:space="preserve">
-    <value>Expedidor</value>
+    <value>TMS de Expedidor</value>
   </data>
   <data name="TypeCompany" xml:space="preserve">
     <value>Tipo de Empresa</value>
+  </data>
+  <data name="PhoneCompany" xml:space="preserve">
+    <value>Company Phone</value>
+  </data>
+  <data name="PasswordCompany" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="BrokerTMS" xml:space="preserve">
+    <value>TMS de corredor</value>
   </data>
 </root>

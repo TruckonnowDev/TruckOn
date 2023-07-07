@@ -157,12 +157,21 @@
     <value>Пожалуйста, отправьте электронное письмо в правильном формате</value>
   </data>
   <data name="Shipper" xml:space="preserve">
-    <value>Грузоотправитель</value>
+    <value>Грузоотправитель ТМС</value>
   </data>
   <data name="Carrier" xml:space="preserve">
-    <value>Перевозчик</value>
+    <value>Перевозчик ТМС</value>
   </data>
   <data name="TypeCompany" xml:space="preserve">
     <value>Тип Компании</value>
+  </data>
+  <data name="PasswordCompany" xml:space="preserve">
+    <value>Пароль</value>
+  </data>
+  <data name="PhoneCompany" xml:space="preserve">
+    <value>Телефон</value>
+  </data>
+  <data name="BrokerTMS" xml:space="preserve">
+    <value>Брокер ТМС</value>
   </data>
 </root>

@@ -1,0 +1,99 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization;
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Resources";
+}
+
+<div id="all-items">
+    <div class="features-block">
+        <div class="container">
+            <div class="row" style="justify-content: center">
+                <div class="col-md-12">
+                    <h1 style="font-size: 36px;text-align:center">@Localizer["HeaderResource"]</h1>
+                </div>
+                <div class="col-md-10 mt-5">
+                    <div class="features" style="display: flex;flex-flow: row wrap;justify-content: center;">
+                        <div class="features-item m-2 mt-4">
+                            <a href="Resources/Eldservice">
+                                <img src="img/Main/Features/ELDService.svg" alt="">
+                                <h3>@Localizer["ELDSerivce"]</h3>
+                            </a>
+                        </div>
+                        
+                        <div class="features-item m-2 mt-4">
+                            <a href="Resources/InsuranceProviders">
+                                <img src="img/Main/Features/DriverCheck.svg" alt="">
+                                <h3>@Localizer["InsuranceProviders"]</h3>
+                            </a>
+                        </div>
+                        <div class="features-item m-2 mt-4">
+                            <a href="Resources/LegalHelp">
+                                <img src="img/Main/Features/LegalSupport.svg" alt="">
+                                <h3>@Localizer["LegalHelp"]</h3>
+                            </a>
+                        </div>
+                        <div class="features-item m-2 mt-4">
+                            <a href="Resources/ComplianceSafety">
+                                <img src="img/Main/Features/CompanyRating.svg" alt="">
+                                <h3>@Localizer["ComplianceSafety"]</h3>
+                            </a>
+                        </div>
+                        <div class="features-item m-2 mt-4">
+                            <a href="Resources/MechanicalShops">
+                                <img src="img/Main/Features/RepairLocator.svg" alt="">
+                                <h3>@Localizer["MechanicalShops"]</h3>
+                            </a>
+                        </div>
+                        <div class="features-item m-2 mt-4">
+                            <a href="Resources/BodyShops">
+                                <img src="img/Main/Features/Tracking.svg" alt="">
+                                <h3>@Localizer["BodyShops"]</h3>
+                            </a>
+                        </div>
+                        <div class="features-item m-2 mt-4">
+                            <a href="Resources/TruckTrailerRepair">
+                                <img src="img/Main/Features/TicketContest.svg" alt="">
+                                <h3>@Localizer["TruckTrailerRepair"]</h3>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .features-block {
+        padding-top: 30px;
+    }
+
+    .features-item {
+        text-align: center;
+    }
+
+    .features .features-item {
+        margin: 0.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .features-item img {
+        width: 76px;
+        height: 76px;
+        margin-left: auto;
+        margin-right: auto;
+        transition: all 0.3s ease
+    }
+    
+    .features-item img:hover {
+        transform: scale(1.3);
+        transform-origin: top top;
+    }
+
+    .features-item h3 {
+        margin-top: 1rem;
+        font-size: 16px;
+    }
+</style>

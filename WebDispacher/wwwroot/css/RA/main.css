@@ -1,7 +1,18 @@
+.bl-9 .features {
+    margin: 0 5rem;
+}
+
 @media screen and (max-width:1900px){
     .bl-9 .features-item img {
         width: 85px;
         height: 85px;
+    }
+
+}
+
+@media screen and (max-width: 1499px) {
+    .bl-9 .features {
+        margin: 0;
     }
 }
 
@@ -10,19 +21,27 @@
         width: 70px;
         height: 70px;
     }
+
+    .bl-9 .features {
+        margin: 0;
+    }
 }
 
 @media screen and (max-width: 767px) {
     .bl-9 .features-item img {
         margin: 31px auto 8px;
-        width: 100px;
-        height: 100px;
+        width: 80px;
+        height: 80px;
+    }
+
+    .bl-9 .features {
+        margin: 0;
     }
 }
 
 .bl-9 .features-item img {
-    width: 100px;
-    height: 100px;
+    width: 80px;
+    height: 80px;
     margin-bottom: 10px;
     margin-right: auto;
     margin-left: auto;

@@ -21,8 +21,12 @@
                         </div>
                         <form action="" method="post">
                             <label class="big-label" for="">
-                                @Localizer["Name"]
-                                <input class="height-input" type="text" name="FullName" value="@Model.FullName" required>
+                                @Localizer["FirstName"]
+                                <input class="height-input" type="text" name="FirstName" value="@Model.FullName" required>
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["LastName"]
+                                <input class="height-input" type="text" name="LastName" value="" required>
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["Email"]

@@ -12,17 +12,15 @@ using WebDispacher.ViewModels.Contact;
 
 namespace WebDispacher.Controellers
 {
-    public class ContactsController : Controller
+    public class ContactsController : BaseController
     {
-        private readonly IUserService userService;
         private readonly ICompanyService companyService;
 
         public ContactsController(
             IUserService userService,
-            ICompanyService companyService)
+            ICompanyService companyService) : base(userService)
         {
             this.companyService = companyService;
-            this.userService = userService;
         }
 
         [Route("Contact/Contacts")]
@@ -31,11 +29,8 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Contact))
+                if (CheckPermissionsByCookies(RouteConstants.Contact, out var key, out var idCompany))
                 {
                     var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     
@@ -44,10 +39,10 @@ namespace WebDispacher.Controellers
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
                     
-                    ViewBag.NameCompany = companyName;
+                    ViewBag.NameCompany = GetCookieCompanyName();
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
 
-                    ViewBag.Contacts = await companyService.GetContacts(page, idCompany);
+                    ViewBag.Contacts = await companyService.GetContactsViewModels(page, idCompany);
 
                     var countPages = await companyService.GetCountContactsPages(idCompany);
 
@@ -77,15 +72,11 @@ namespace WebDispacher.Controellers
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public IActionResult CreateContact()
         {
-            ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany,RouteConstants.Contact))
+                if (CheckPermissionsByCookies(RouteConstants.Contact, out var key, out var idCompany))
                 {
                     var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     
@@ -94,7 +85,7 @@ namespace WebDispacher.Controellers
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
                     
-                    ViewBag.NameCompany = companyName;
+                    ViewBag.NameCompany = GetCookieCompanyName();
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     
                     return View("CreateContact");
@@ -117,19 +108,14 @@ namespace WebDispacher.Controellers
         [Route("Contact/CreateContact")]
         public IActionResult CreateDriver(ContactViewModel model)
         {
-            ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
             if (ModelState.IsValid)
             {
                 try
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                    Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
 
-                    if (userService.CheckPermissions(key, idCompany, RouteConstants.Contact))
+                    if (CheckPermissionsByCookies(RouteConstants.Contact, out var key, out var idCompany))
                     {
-                        if (!ModelState.IsValid) return View("CreateContact");
-
                         companyService.CreateContact(model, idCompany);
 
                         return Redirect($"{Config.BaseReqvesteUrl}/Contact/Contacts");
@@ -160,11 +146,8 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Contact))
+                if (CheckPermissionsByCookies(RouteConstants.Contact, out var key, out var idCompany))
                 {
                     var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     
@@ -173,7 +156,7 @@ namespace WebDispacher.Controellers
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
                     
-                    ViewBag.NameCompany = companyName;
+                    ViewBag.NameCompany = GetCookieCompanyName();
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     var contact = companyService.GetContact(id);
                     
@@ -202,13 +185,10 @@ namespace WebDispacher.Controellers
                 try
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                    Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
 
-                    if (userService.CheckPermissions(key, idCompany, RouteConstants.Contact))
+                    if (CheckPermissionsByCookies(RouteConstants.Contact, out var key, out var idCompany))
                     {
-                        ViewBag.NameCompany = companyName;
+                        ViewBag.NameCompany = GetCookieCompanyName();
                         ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                         companyService.EditContact(contact);
 
@@ -240,13 +220,10 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Contact))
+                if (CheckPermissionsByCookies(RouteConstants.Contact, out var key, out var idCompany))
                 {
-                    ViewBag.NameCompany = companyName;
+                    ViewBag.NameCompany = GetCookieCompanyName();
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     companyService.DeleteContactById(id);
                     
@@ -273,13 +250,10 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Contact))
+                if (CheckPermissionsByCookies(RouteConstants.Contact, out var key, out var idCompany))
                 {
-                    ViewBag.NameCompany = companyName;
+                    ViewBag.NameCompany = GetCookieCompanyName();
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
 
                     await companyService.DeleteContactById(id);

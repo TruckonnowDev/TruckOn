@@ -62,7 +62,38 @@
                                     <div class="value-td">@ViewBag.Trucks[i].Model</div>
                                 </td>
                             <td aria-label="@Localizer["Type"]">
-                                    <div class="value-td">@ViewBag.Trucks[i].Type</div>
+                                    @{
+                                        var typeValue = ViewBag.Trucks[i].Type;
+                                        switch (ViewBag.Trucks[i].Type)
+                                        {
+                                            case "2DrPickupwithSingleWheel":
+                                                typeValue = "2Dr Pickup with Single Wheel";
+                                                break;
+                                            case "2DrPickupwithDuallyWheels":
+                                                typeValue = "2Dr Pickup with Dually Wheels";
+                                                break;
+                                            case "4DrCrewCabPickupwithSingleWheel":
+                                                typeValue = "4Dr Crew Cab Pickup with Single Wheel";
+                                                break;
+                                           case "4DrCrewCabPickupwithDuallyWheels":
+                                                typeValue = "4Dr Crew Cab Pickup with Dually Wheels";
+                                                break;
+                                            case "2DrPickupPickupwithSingleWheel":
+                                                typeValue = "2Dr Pickup ( flat bed ) Pickup with Single Wheel";
+                                                break;
+                                            case "2DrPickupPickupwithDuallyWheels":
+                                                typeValue = "2Dr Pickup ( flat bed ) Pickup with  Dually Wheels";
+                                                break;
+                                            case "4DrCrewCabPickupwithSingleWheelFlatBed":
+                                                typeValue = "4Dr Crew Cab ( flat bed ) Pickup with Single Wheel";
+                                                break;
+                                            case "4DrCrewCabPickupwithDuallyWheelsFlatBed":
+                                                typeValue = "4Dr Crew Cab ( flat bed ) Pickup with  Dually Wheels";
+                                                break;
+                                        }
+                                        <div class="value-td">@typeValue</div>
+                                    }
+                                    
                                 </td>
                             <td aria-label="@Localizer["Vin"] #">
                                     <div class="value-td">@ViewBag.Trucks[i].Vin</div>

@@ -24,6 +24,8 @@
         public const string LogbookPapers = "Logbook Papers (manual, certificate, malfunction letter)";
         public const string McNumber = "MC number confirmation";
         public const string Ifta = "IFTA (optional for 26000+)";
+        public const string CertificateOfInsurance = "Certificate Of Insurance";
+        public const string McLetter = "MC Letter";
         public const string True = "true";
         public const string False = "false";
         public const string NoneLevel = "None";

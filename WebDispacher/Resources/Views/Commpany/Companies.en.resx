@@ -127,7 +127,7 @@
     <value>All Users</value>
   </data>
   <data name="Name" xml:space="preserve">
-    <value>Name</value>
+    <value>Company Name</value>
   </data>
   <data name="Registration" xml:space="preserve">
     <value>Registration Date</value>
@@ -136,7 +136,7 @@
     <value>Company Type</value>
   </data>
   <data name="DeleteNotificataion" xml:space="preserve">
-    <value>Delete Company</value>
+    <value>Deactivate Company</value>
   </data>
   <data name="DocNotificataion" xml:space="preserve">
     <value>Add/View Documents</value>
@@ -146,5 +146,14 @@
   </data>
   <data name="EditNotificataion" xml:space="preserve">
     <value>Edit Company</value>
+  </data>
+  <data name="LoginNotificataion" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="SendEmailNotificataion" xml:space="preserve">
+    <value>Send Email</value>
+  </data>
+  <data name="ActivateNotificataion" xml:space="preserve">
+    <value>Activate Company</value>
   </data>
 </root>

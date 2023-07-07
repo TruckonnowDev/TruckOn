@@ -2,13 +2,33 @@
 
 @inject IViewLocalizer Localizer
 
-<div class="modal fade" id="confirmDeleteEntryModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteEntryModalLabel" aria-hidden="true">
+
+<div class="modal fade" id="modal-index" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteEntryModalLabel" aria-hidden="true">
     <content class="ng-modal-wrapper">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header modal-title">
-                    <h1 class="text-center" style="padding-left:25%" id="DeleteLabel">@Localizer["ConfirmMessage"]</h1>
-                    <button type="button" style="margin-left:90px;font-size:22px;" class="close text-right" data-dismiss="modal" aria-label="Close">
+
+                    @switch (ViewData["ConfirmMessage"])
+                    {
+                        case "CompanyDeactivate":
+                            <h1 class="text-center" style="width:100%" id="DeleteLabel">@Localizer["ConfirmMessageDeactivateCompany"]</h1>
+                            break;
+
+                        case "CompanyLogin":
+                            <h1 class="text-center" style="width:100%" id="DeleteLabel">@Localizer["ConfirmMessageLoginCompany"]</h1>
+                            break;
+
+                        case "CompanyActivate":
+                            <h1 class="text-center" style="width:100%" id="DeleteLabel">@Localizer["ConfirmMessageActivateCompany"]</h1>
+                            break;
+
+                        default:
+                            <h1 class="text-center" style="width:100%" id="DeleteLabel">@Localizer["ConfirmMessage"]</h1>
+                            break;
+                    }
+                        
+                    <button type="button" style="font-size:22px;" class="close text-right" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&#9587;</span>
                     </button>
                 </div>
@@ -24,6 +44,18 @@
         </div>
     </content>
 </div>
+
+<script>
+
+    $(document).ready(function() {
+        let modalIndex = "@ViewData["ModalId"]";
+
+        if(modalIndex !== ""){
+            $("#modal-index").attr('id', modalIndex);
+        }
+    });
+
+</script>
 
 <style>
     .full-label {

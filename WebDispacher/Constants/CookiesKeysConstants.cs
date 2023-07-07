@@ -2,9 +2,9 @@
 {
     public static class CookiesKeysConstants
     {
-        public const string CarKey = "KeyAvtho";
+        public const string CarKey = "KeyAuth";
         public const string CompanyIdKey = "CommpanyId";
         public const string CompanyNameKey = "CommpanyName";
-        public const string CarKeyTaxi = "KeyAvthoTaxi";
+        public const string CarKeyTaxi = "KeyAuthTaxi";
     }
 }

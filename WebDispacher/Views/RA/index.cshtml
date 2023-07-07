@@ -76,12 +76,14 @@
                 <div class="text">
                     <h1>@Localizer["HeaderSecondBlock"]</h1>
                     <p>@Localizer["BodySecondBlock"]</p>
-                    <a href="" target="_blank">
-                        <img src="img/googleplay.svg" alt="">
-                    </a>
-                    <a href="https://apps.apple.com/ae/app/truckonnow/id1608211023" target="_blank">
-                        <img src="img/appstore.svg" alt="https://apps.apple.com/ae/app/truckonnow/id1608211023">
-                    </a>
+                    <div class="market-places">
+                        <a class="mr-3" href="" target="_blank">
+                            <img src="img/googleplay.svg" alt="">
+                        </a>
+                        <a href="https://apps.apple.com/ae/app/truckonnow/id1608211023" target="_blank">
+                            <img src="img/appstore.svg" alt="https://apps.apple.com/ae/app/truckonnow/id1608211023">
+                        </a>
+                    </div>
                     <h6>* @Localizer["FooterSecondBlock"]</h6>
                 </div>
             </div>
@@ -93,7 +95,7 @@
         <div class="row align-items-center">
             <div class="col-md-6">
                 <div class="text">
-                    <h1 style="width: 106%">@Localizer["FirstHeaderThirdBlock"]</h1>
+                    <h1>@Localizer["FirstHeaderThirdBlock"]</h1>
                     <p>@Localizer["FirstBodyThirdBlock"]</p>
                 </div>
             </div>
@@ -135,8 +137,8 @@
 <div class="bl-6">
     <div class="container-fluid">
         <div class="row align-items-center" style="justify-content: end;">
-            <div class="ml-4 pl-4 col-md-5">
-                <div class="text" style="width: 90%">
+            <div class="ml-4 col-md-4">
+                <div class="text">
                     <h1>@Localizer["HeaderFifthBlock"]</h1>
                     <p>@Localizer["BodyFifthBlock"]</p>
                 </div>
@@ -186,8 +188,8 @@
                     <h1 style="font-size: 36px;">@Localizer["HeaderSeventhBlock"]</h1>
                 </div>
                 <div class="col-md-10 mt-5">
-                    <div style="display: flex; flex-flow: row wrap; justify-content: center;">
-                        <div class="features-item features-first-item m-2 mt-4">
+                    <div class="features" style="display: flex; flex-flow: row wrap; justify-content: center;">
+                        <div class="features-item m-2 mt-4">
                             <img src="img/Main/Features/Marketplace.svg" alt="">
                             <h3>@Localizer["Marketplace"]</h3>
                         </div>
@@ -199,7 +201,7 @@
                             <img src="img/Main/Features/CompanyRating.svg" alt="">
                             <h3>@Localizer["CompanyRating"]</h3>
                         </div>
-                        <div class="features-item features-last-item m-2 mt-4">
+                        <div class="features-item m-2 mt-4">
                             <img src="img/Main/Features/RepairLocator.svg" alt="">
                             <h3>@Localizer["RepairLocator"]</h3>
                         </div>
@@ -222,6 +224,10 @@
                         <div class="features-item m-2 mt-4">
                             <img src="img/Main/Features/DispatchManagement.svg" alt="">
                             <h3>@Localizer["DispatchManagement"]</h3>
+                        </div>
+                        <div class="features-item m-2 mt-4">
+                            <img src="img/Main/Features/ELDService.svg" alt="">
+                            <h3>@Localizer["ELDSerivce"]</h3>
                         </div>
                     </div>
                 </div>
@@ -321,7 +327,7 @@
                                         <div class="elem-2">
                                             <label for="">
                                                 @Localizer["ModalFormPhone"]
-                                                <input type="text" id="phone" name="PhoneNumber" placeholder="" pattern="[0-9]+" required>
+                                                <input type="text" id="phone" name="PhoneNumber" required>
                                             </label>
                                         </div>
                                     </div>
@@ -409,7 +415,6 @@
                 + "&email=" + $('#user-email').val()
                 + "&phone=" + $('#phone').val()
                 + "&message=" + $('#user-message').val();
-
             $.ajax({
                 type: "post",
                 data: body,
@@ -568,29 +573,23 @@
         background: #f0f4fa;
     }
 
-        .bl-3 img {
-            width: 100%;
-            height: auto
-        }
 
-        .bl-3 .text h6 {
-            font-style: normal;
-            font-weight: 500;
-            font-size: 16px;
-            line-height: 1.25;
-            color: #686f7c
-        }
+    .bl-3 .text h6 {
+        font-style: normal;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 1.25;
+        color: #686f7c
+    }
 
-        .bl-3 .text a {
-            width: 45%;
-            display: inline-block
-        }
+    .bl-3 .text a {
+        width: 30%;
+        display: inline-block
+    }
 
-            .bl-3 .text a img {
-                width: 80%;
-                margin-top: 15%;
-                margin-bottom: 5%;
-            }
+    .bl-3 .text a img {
+        width: 96%;
+    }
 
     .row {
         justify-content: center;

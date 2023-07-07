@@ -8,17 +8,15 @@ using WebDispacher.Service;
 namespace WebDispacher.Controellers.Settings
 {
     [Route("Settings/Subscription")]
-    public class SubscriptionController : Controller
+    public class SubscriptionController : BaseController
     {
-        private readonly IUserService userService;
         private readonly ICompanyService companyService;
 
         public SubscriptionController(
             IUserService userService,
-            ICompanyService companyService)
+            ICompanyService companyService) : base(userService)
         {
             this.companyService = companyService;
-            this.userService = userService;
         }
 
         [Route("Subscriptions")]
@@ -27,11 +25,8 @@ namespace WebDispacher.Controellers.Settings
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Subscription))
+                if (CheckPermissionsByCookies(RouteConstants.Subscription, out var key, out var idCompany))
                 {
                     var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     
@@ -63,11 +58,8 @@ namespace WebDispacher.Controellers.Settings
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Subscription ))
+                if (CheckPermissionsByCookies(RouteConstants.Subscription, out var key, out var idCompany))
                 {
                     ViewData[NavConstants.TypeNavBar] = 
                         companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
@@ -96,11 +88,8 @@ namespace WebDispacher.Controellers.Settings
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Subscription))
+                if (CheckPermissionsByCookies(RouteConstants.Subscription, out var key, out var idCompany))
                 {
                     ViewData[NavConstants.TypeNavBar] = 
                         companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
@@ -129,11 +118,8 @@ namespace WebDispacher.Controellers.Settings
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Subscription))
+                if (CheckPermissionsByCookies(RouteConstants.Subscription, out var key, out var idCompany))
                 {
                     ViewData[NavConstants.TypeNavBar] =
                         companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);

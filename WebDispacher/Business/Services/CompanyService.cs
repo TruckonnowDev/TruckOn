@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -67,6 +68,31 @@ namespace WebDispacher.Business.Services
                 .ToList();
         }
 
+        public async Task<bool> UploadCompanyRequiredDoc(
+            IFormFile certificateOfInsurance,
+            IFormFile mcLetter,
+            string idCompany)
+        {
+            try
+            {
+                await SaveDocCompany(certificateOfInsurance, DocAndFileConstants.CertificateOfInsurance, idCompany);
+                await SaveDocCompany(mcLetter, DocAndFileConstants.McLetter, idCompany);
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public async Task<bool> CheckCompanyRequiredDoc(string idCompany)
+        {
+            var companyDocs = await GetCompanyDoc(idCompany);
+
+            return IsHaveRequredDocs(companyDocs);
+        }
+
         public bool CheckCompanyName(string companyName)
         {
             return db.Commpanies.FirstOrDefault(u => u.Name == companyName) != null;
@@ -93,7 +119,25 @@ namespace WebDispacher.Business.Services
             
             return company ?? new CompanyViewModel();
         }
-        
+
+        public async Task<bool> SendEmailToUserByCompanyId(string companyId, string subject, string message)
+        {
+            var user = await GetUserByCompanyId(companyId);
+
+            var pattern = new PaternSourse().GetPatternSendMessageToUser(message);
+
+            try
+            {
+                await new AuthMessageSender().Execute(user.Login, subject, pattern);
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public async Task<List<CompanyDTO>> GetCompaniesDTO(int page)
         {
             var companies = await GetCompaniesDb(page);
@@ -111,6 +155,50 @@ namespace WebDispacher.Business.Services
             }).ToList();
 
             return companiesDTO;
+        }
+        
+        public async Task<List<CompanyViewModel>> GetCompaniesViewModels(int page)
+        {
+            var companies = await GetCompaniesDb(page);
+
+            if (companies == null) return null;
+
+            var users = db.User.ToList();
+            var companyWithUsersInfo = new List<CompanyViewModel>();
+
+            
+            foreach (var x in companies)
+            {
+                var actualUser = users.FirstOrDefault(u => u.CompanyId == x.Id);
+                if (actualUser == null) continue;
+
+                companyWithUsersInfo.Add(new CompanyViewModel()
+                {
+                    Id = x.Id,
+                    UserId = actualUser.Id,
+                    Name = x.Name,
+                    Email = actualUser.Login,
+                    Password = actualUser.Password,
+                    CompanyType = x.Type == TypeCompany.BaseCommpany
+                        ? CompanyConstants.HomeCompany : x.Type == TypeCompany.NormalCompany
+                            ? CompanyConstants.RegularCompany : x.Type == TypeCompany.DeactivateCompany ? CompanyConstants.DeactivateCompany : CompanyConstants.Unknown,
+                    DateRegistration = x.DateRegistration
+                });
+
+            }
+
+            return companyWithUsersInfo;
+        }
+
+
+        public async Task<Users> GetUserByCompanyId(string companyId)
+        {
+            int companyIndex = Convert.ToInt32(companyId);
+            var userInfo = await db.User.FirstOrDefaultAsync(x => x.CompanyId == companyIndex);
+
+            if (userInfo == null) return null;
+
+            return userInfo;
         }
 
         public ContactViewModel GetContact(int id)
@@ -300,7 +388,6 @@ namespace WebDispacher.Business.Services
 
             var addContact = mapper.Map<Contact>(contact);
             
-
             db.Contacts.AddAsync(addContact);
             
             db.SaveChangesAsync();
@@ -326,6 +413,34 @@ namespace WebDispacher.Business.Services
             var pattern = new PaternSourse().GetPatternRegistrationMail();
 
             await new AuthMessageSender().Execute(companyModel.Email, UserConstants.ThankRegistrationSubject, pattern);
+        }
+
+        public async Task<bool> ActivateCompany(string companyId)
+        {
+            var company = await db.Commpanies.FirstOrDefaultAsync(x => x.Id == Convert.ToInt32(companyId));
+            var companyUser = await GetUserByCompanyId(companyId);
+
+            if (company == null || companyUser == null) return false;
+
+            try
+            {
+                company.Type = TypeCompany.NormalCompany;
+                company.Active = true;
+
+                await db.SaveChangesAsync();
+
+                InitStripeForCompany(company.Name, companyUser.Login, company.Id);
+
+                var pattern = new PaternSourse().GetPatternSendMessageActivateCompany();
+
+                await new AuthMessageSender().Execute(companyUser.Login, UserConstants.ActivateEmailSubject, pattern);
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public async Task AddCompany(CreateCompanyViewModel model,
@@ -378,6 +493,11 @@ namespace WebDispacher.Business.Services
         public async Task<List<Contact>> GetContacts(int page, string idCompany)
         {
             return await GetContactsInDb(page, idCompany);
+        }
+        
+        public async Task<List<ContactViewModel>> GetContactsViewModels(int page, string idCompany)
+        {
+            return await GetContactsViewModelInDb(page, idCompany);
         }
 
         public async Task<int> GetCountContactsPages(string idCompany)
@@ -627,6 +747,41 @@ namespace WebDispacher.Business.Services
             var listContacts = await contacts.ToListAsync();
 
             return listContacts;
+        }
+
+        private bool IsHaveRequredDocs(List<DucumentCompany> docs)
+        {
+            var requredDocsNames = new List<string> {
+                DocAndFileConstants.CertificateOfInsurance,
+                DocAndFileConstants.McLetter };
+
+            foreach (var item in requredDocsNames)
+            {
+                if (!docs.Any(x => x.NameDoc == item)) return false;
+            }
+
+            return true;
+        }
+        private async Task<List<ContactViewModel>> GetContactsViewModelInDb(int page, string idCompany)
+        {
+            var contacts = db.Contacts.Where(c => c.CompanyId.ToString() == idCompany).AsQueryable();
+
+            if (page == UserConstants.AllPagesNumber) return mapper.Map<List<ContactViewModel>>(await contacts.ToListAsync());
+
+            try
+            {
+                contacts = contacts.Skip(UserConstants.NormalPageCount * page - UserConstants.NormalPageCount);
+
+                contacts = contacts.Take(UserConstants.NormalPageCount);
+            }
+            catch (Exception)
+            {
+                contacts = contacts.Skip((UserConstants.NormalPageCount * page) - UserConstants.NormalPageCount);
+            }
+
+            var listContacts = await contacts.ToListAsync();
+
+            return mapper.Map<List<ContactViewModel>>(listContacts);
         }
 
         private void UpdateTypeActiveSubById(int idSub, ActiveType activeType)

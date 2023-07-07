@@ -1,0 +1,24 @@
+﻿@using WebDispacher.Service;
+<div id="vehicleId" class="row" style="display:none;">
+    @for(var i = 1; i < Convert.ToInt32(ViewData["CountPhoto"]) +1; i++)
+    {
+        {
+            var srcPhoto = $"{Config.BaseReqvesteUrl}Equipment/Image?name=../TruckPattern/" + ViewData["VehicleName"] + "/" + i + ".png&type=png";
+        
+            <div class="col-md-auto m-2">
+                <img src="@srcPhoto" alt="">
+            </div>
+        }
+    }
+</div>
+
+<script>
+    $(document).ready(function() {
+        let modalIndex = "@ViewData["VehicleName"]";
+
+        if(modalIndex !== ""){
+            $("#vehicleId").attr('id', modalIndex);
+        }
+    });
+
+</script>

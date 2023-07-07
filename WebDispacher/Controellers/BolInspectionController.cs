@@ -12,10 +12,9 @@ using WebDispacher.Service;
 
 namespace WebDispacher.Controellers
 {
-    public class BolInspectionController : Controller
+    public class BolInspectionController : BaseController
     {
         private readonly ITruckAndTrailerService truckAndTrailerService;
-        private readonly IUserService userService;
         private readonly ICompanyService companyService;
         private readonly IOrderService orderService;
 
@@ -23,11 +22,10 @@ namespace WebDispacher.Controellers
             ITruckAndTrailerService truckAndTrailerService,
             IUserService userService,
             IOrderService orderService,
-            ICompanyService companyService)
+            ICompanyService companyService) : base(userService)
         {
             this.orderService = orderService;
             this.companyService = companyService;
-            this.userService = userService;
             this.truckAndTrailerService = truckAndTrailerService;
         }
 
@@ -36,11 +34,8 @@ namespace WebDispacher.Controellers
         public IActionResult GetPhotoInspection(int idVech)
         {
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-            Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-            Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-            Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
             
-            if (userService.CheckPermissions(key, idCompany, RouteConstants.Bol))
+            if (CheckPermissionsByCookies(RouteConstants.Bol, out var key, out var idCompany))
             {
                 var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                 
@@ -55,7 +50,7 @@ namespace WebDispacher.Controellers
                 
                 if (shipping != null)
                 {
-                    ViewBag.NameCompany = companyName;
+                    ViewBag.NameCompany = GetCookieCompanyName();
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                     ViewBag.Shipp = shipping;

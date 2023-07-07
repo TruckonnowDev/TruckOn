@@ -58,6 +58,7 @@ namespace WebDispacher.Business.Services
         public async Task RemoveCompany(string idCompany)
         {
             RemoveCompanyDb(idCompany);
+            
             var customerSt = companyService.GetCustomer_STByIdCompany(idCompany);
             var customer = stripeApi.RemoveCustomer(customerSt);
 
@@ -67,25 +68,40 @@ namespace WebDispacher.Business.Services
                 RemoveSubscribeST(customerSt);
             }
 
-            await Task.Run(() =>
+            var pattern = new PaternSourse().GetPatternSendMessageDeactivateCompany();
+
+            try
             {
-                var drivers = GetDriversByIdCompany(idCompany);
-                foreach (var driver in drivers)
-                {
-                    RemoveDrive(idCompany,
-                        new DriverReportModel
-                        {
-                            Id = driver.Id,
-                            Description = CompanyConstants.RemoveCompanyDescription
-                        }, DateTime.Now.ToString(DateTimeFormats.FullDateTimeInfo));
-                }
-            });
+                var user = await companyService.GetUserByCompanyId(idCompany);
+                await new AuthMessageSender().Execute(user.Login, UserConstants.DeactivateEmailSubject, pattern);
+            }
+            catch
+            {
+            }
+
+            /* await Task.Run(() =>
+             {
+                 var drivers = GetDriversByIdCompany(idCompany);
+                 foreach (var driver in drivers)
+                 {
+                     RemoveDrive(idCompany,
+                         new DriverReportModel
+                         {
+                             Id = driver.Id,
+                             Description = CompanyConstants.RemoveCompanyDescription
+                         }, DateTime.Now.ToString(DateTimeFormats.FullDateTimeInfo));
+                 }
+             });*/
         }
 
         private void RemoveCompanyDb(string id)
         {
-            db.User.RemoveRange(db.User.Where(u => u.CompanyId.ToString() == id));
-            db.Commpanies.Remove(db.Commpanies.First(dc => dc.Id.ToString() == id));
+            var company = db.Commpanies.First(dc => dc.Id.ToString() == id);
+            if (company == null) return;
+
+            company.Type = TypeCompany.DeactivateCompany;
+            company.Active = false;
+
             db.SaveChanges();
         }
 
@@ -278,6 +294,19 @@ namespace WebDispacher.Business.Services
             {
                 AddNewReportDriverDb(driverReport);
             }
+        }
+
+        public async Task<List<DriverReportViewModel>> GetDriverReportsByCompnayId(DriverSearchViewModel model, string companyId)
+        {
+            var driverReports = db.DriverReports.Where(dr => dr.IdCompany.ToString() == companyId).AsQueryable();
+
+            driverReports = driverReports.Where(dr => dr.FullName == model.FirstName && dr.DriversLicenseNumber == model.LicenseNumber).OrderByDescending(x => x.Id);
+
+            var driverReportsList = await driverReports.ToListAsync();
+
+            var result = mapper.Map<List<DriverReportViewModel>>(driverReportsList);
+
+            return result;
         }
 
         public List<DriverReport> GetDriversReport(string nameDriver, string driversLicense)

@@ -52,9 +52,15 @@
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["TypeTruck"] <br />
-                                <select class="height-input input-select" name="Type" onchange="SelectTruck(this.options[this.selectedIndex].value)">
-                                    <option value="@Model.Type">@Model.Type</option>
-                                    <option value="PickUpDually4TiresInTheBackMustHave4Door">Pick up Dually (4 tires in the bacK) must have 4 door</option>
+                                <select class="height-input input-select" name="Type" id="typeId" onchange="SelectTruck(this.options[this.selectedIndex].value)" value="@Model.Type">
+                                    <option value="2DrPickupwithSingleWheel">2Dr Pickup with Single Wheel</option>
+                                    <option value="2DrPickupwithDuallyWheels">2Dr Pickup with Dually Wheels</option>
+                                    <option value="4DrCrewCabPickupwithSingleWheel">4Dr Crew Cab Pickup with Single Wheel</option>
+                                    <option value="4DrCrewCabPickupwithDuallyWheels">4Dr Crew Cab Pickup with Dually Wheels</option>
+                                    <option value="2DrPickupPickupwithSingleWheel">2Dr Pickup ( flat bed ) Pickup with Single Wheel</option>
+                                    <option value="2DrPickupPickupwithDuallyWheels">2Dr Pickup ( flat bed ) Pickup with  Dually Wheels</option>
+                                    <option value="4DrCrewCabPickupwithSingleWheelFlatBed">4Dr Crew Cab ( flat bed ) Pickup with Single Wheel</option>
+                                    <option value="4DrCrewCabPickupwithDuallyWheelsFlatBed">4Dr Crew Cab ( flat bed ) Pickup with  Dually Wheels</option>
                                     @*<option value="PickupFourWheel">Four-wheel pickup dually</option>
                                         <option value="FourDoorTruckChassisOpenFrame">Four-door truck with double chassis and open frame</option>
                                         <option value="BoxTruckSingleWheel">Box Truck Single Wheel</option>
@@ -267,7 +273,7 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div id="PickUpDually4TiresInTheBackMustHave4Door" class="row" style="display:none;">
+                    <div id="4DrCrewCabPickupwithDuallyWheels" class="row" style="display:none;">
                         <div class="col-md-auto">
                             <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door1.png&type=png" alt="">
                         </div>
@@ -338,6 +344,13 @@
                             <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door23.png&type=png" alt="">
                         </div>
                     </div>
+                    @await Html.PartialAsync("~/Views/Equipment/VehicleImages.cshtml", new ViewDataDictionary(ViewData) { {"CountPhoto", "32"}, { "VehicleName", "2DrPickupwithSingleWheel" } })
+                    @await Html.PartialAsync("~/Views/Equipment/VehicleImages.cshtml", new ViewDataDictionary(ViewData) { {"CountPhoto", "35"}, { "VehicleName", "2DrPickupwithDuallyWheels" } })
+                    @await Html.PartialAsync("~/Views/Equipment/VehicleImages.cshtml", new ViewDataDictionary(ViewData) { {"CountPhoto", "35"}, { "VehicleName", "4DrCrewCabPickupwithSingleWheel" } })
+                    @await Html.PartialAsync("~/Views/Equipment/VehicleImages.cshtml", new ViewDataDictionary(ViewData) { {"CountPhoto", "12"}, { "VehicleName", "2DrPickupPickupwithSingleWheel" } })
+                    @await Html.PartialAsync("~/Views/Equipment/VehicleImages.cshtml", new ViewDataDictionary(ViewData) { {"CountPhoto", "30"}, { "VehicleName", "2DrPickupPickupwithDuallyWheels" } })
+                    @await Html.PartialAsync("~/Views/Equipment/VehicleImages.cshtml", new ViewDataDictionary(ViewData) { {"CountPhoto", "30"}, { "VehicleName", "4DrCrewCabPickupwithSingleWheelFlatBed" } })
+                    @await Html.PartialAsync("~/Views/Equipment/VehicleImages.cshtml", new ViewDataDictionary(ViewData) { {"CountPhoto", "30"}, { "VehicleName", "4DrCrewCabPickupwithDuallyWheelsFlatBed" } })
                 </div>
             </div>
         </div>
@@ -380,6 +393,7 @@
     var curentSelectPattern;
 
     $(document).ready(function () {
+        $('#typeId').val('@Model.Type').change();
         $('#stateP').val('@Model.State').change();
 
 
@@ -399,10 +413,14 @@
     function SelectTruck(value) {
         if (curentSelectPattern || value == "") {
             curentSelectPattern.style.display = "none";
+            curentSelectPattern.style.justifyContent = "unset";
+            curentSelectPattern.style.alignItems = "unset";
         }
         let selectTypeDiv = document.getElementById(value);
         if (selectTypeDiv) {
             selectTypeDiv.style.display = "flex";
+            selectTypeDiv.style.justifyContent = "center";
+            selectTypeDiv.style.alignItems = "center";
             curentSelectPattern = selectTypeDiv;
         }
     }

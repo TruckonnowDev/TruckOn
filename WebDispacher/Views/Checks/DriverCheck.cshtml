@@ -1,0 +1,188 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using System.Globalization;
+@using WebDispacher.Constants;
+
+@model WebDispacher.ViewModels.Driver.DriverSearchViewModel;
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Driver Check";
+    DateTime dateTimeRegistrationFormat = DateTime.MinValue;
+    DateTime dateTimeStringFiredFormat = DateTime.MinValue;
+}
+
+<body>
+    <div class="admin">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="title">
+                        <h1>@Localizer["DriverCheck"]</h1>
+                    </div><form method="get">
+                    <div class="card border card-body" style="display: flex;flex-direction: row;">
+                        
+                        <div class="item-search">                            
+                            <label>
+                                @Localizer["FirstName"]
+                                    <input class="type-button" id="search-first-name-driver" placeholder="@Localizer["FirstNameLabel"]" asp-for="FirstName" type="text" maxlength="20" required>
+                                
+                            </label>
+                        </div>
+                        <div class="item-search">
+                            <label>
+                                @Localizer["LastName"]
+                                <input class="type-button" id="search-last-name-driver" placeholder="@Localizer["LastNameLabel"]" asp-for="LastName" type="text" maxlength="20" required>
+                              
+                            </label>
+                        </div>
+                        <div class="item-search big-item ">
+                            <label>
+                                @Localizer["DriverLicenseSearch"]
+                                <input class="type-button" id="search-driver-license-number" placeholder="@Localizer["DriverLicenseSearch"]" asp-for="LicenseNumber" maxlength="30" type="text" required>
+                                
+                                <span class="info-gray-message">@Localizer["DriverLicenseNumberInfoLabel"]</span>
+                            </label>
+                        </div>
+                        <div class="item-search small-item">
+                            <label id="dateOfBirthLabel">
+                                @Localizer["DateOfBirth"]
+                                    <input class="type-button" id="search-date-of-birth-driver" placeholder="MM/DD/YYYY" name="dateOfBirth" type="text" required>
+                                <p class="dob-not-current-format text-danger"></p>
+                            </label>
+                        </div>
+                        <div class="item-search item-search-button">
+                            <button type="submit" class="btn1 btn-modal">@Localizer["Search"]</button>
+                        </div>
+                        
+                        
+                    </div></form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="tabs">
+                        <div class="tab whiteborder" onclick="window.location.href='@Url.Action("DriverCheck", "Checks")';">@Localizer["DriverCheck"]</div>
+                        <div class="tab" onclick="window.location.href='@Url.Action("CarrierCheck", "Checks")';">@Localizer["CarrierCheck"]</div>
+                        <div class="tab" onclick="window.location.href='@Url.Action("BrokerCheck", "Checks")';">@Localizer["BrokerCheck"]</div>
+                        <div class="tabContent">
+                            @for (int i = 0; i < ViewBag.Drivers.Count; i++)
+                            {
+                                {
+                                    var dateTimeString = ViewBag.Drivers[i].DateRegistration;
+                                    var dateTimeStringFired = ViewBag.Drivers[i].DateFired;
+
+                                    try
+                                    {
+                                        dateTimeRegistrationFormat = DateTime.ParseExact(dateTimeString, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
+                                        dateTimeStringFiredFormat = DateTime.ParseExact(dateTimeStringFired, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
+                                    }
+                                    catch
+                                    {
+
+                                    }
+                                }
+                                <div class="one-line">
+                                    <div class="top-line">
+                                        <div class="left">
+                                            <div class="contact">
+                                                <p><strong>@ViewBag.Drivers[i].FullName</strong></p>
+                                                <p><strong>NaN(Surname)</strong></p>
+                                                <p><strong>@ViewBag.Drivers[i].DriversLicenseNumber</strong></p>
+                                                @if (dateTimeRegistrationFormat.Year == 1)
+                                                {
+                                                    <p><strong>@Localizer["Registration"]:</strong> @ViewBag.Drivers[i].DateRegistration</p>
+                                                }
+                                                else
+                                                {
+                                                    <p><strong>@Localizer["Registration"]:</strong> @dateTimeRegistrationFormat.ToString(DateTimeFormats.FullDateTimeInfoUS)</p>
+                                                }
+                                                @if (dateTimeStringFiredFormat.Year == 1)
+                                                {
+                                                    <p><strong>@Localizer["Fired"]:</strong> @ViewBag.Drivers[i].DateFired</p>
+                                                }
+                                                else
+                                                {
+                                                    <p><strong>@Localizer["Fired"]:</strong> @dateTimeStringFiredFormat.ToString(DateTimeFormats.FullDateTimeInfoUS)</p>
+                                                }
+                                                <p>@ViewBag.Drivers[i].Comment</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {
+                                    dateTimeRegistrationFormat = DateTime.MinValue;
+                                    dateTimeStringFiredFormat = DateTime.MinValue;
+                                }
+                            }
+                        </div>
+                     </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+<script src="~/js/input-replacer.js"></script>
+<script>
+    setReplacer(document.querySelector('#search-first-name-driver'), @ExpressionConstants.OnlyDigits);
+    setReplacer(document.querySelector('#search-last-name-driver'), @ExpressionConstants.OnlyDigits);
+    setReplacer(document.querySelector('#search-driver-license-number'), @ExpressionConstants.WithoutDashes);
+    
+    $.fn.setCursorPosition = function (pos) {
+        if ($(this).get(0).setSelectionRange) {
+            $(this).get(0).setSelectionRange(pos, pos);
+        }
+        else if ($(this).get(0).createTextRange) {
+            var range = $(this).get(0).createTextRange();
+            range.collapse(true);
+            range.moveEnd('character', pos);
+            range.moveStart('character', pos);
+            range.select();
+        }
+    };
+
+    $('input[name="DateOfBirth"]').on('click', function () {
+        $(this).setCursorPosition(0);
+    });
+
+    $("input[type=submit]").on('click', function (e) {
+        CheckValidDoB(e, "search-date-of-birth-driver", "dob-not-current-format", "dateOfBirthLabel");
+        
+    });
+
+    $("#search-date-of-birth-driver").mask("99/99/9999", { placeholder: "MM/DD/YYYY" });
+
+</script>
+
+<style>
+    .type-button {
+        width: 100%;
+    }
+
+    .item-search {
+        display: flex;
+        margin-right: 0.5rem;
+        max-width: 400px;
+    }
+
+    .big-item {
+        max-width: 400px;
+    }
+
+    .small-item {
+        max-width: 200px;
+    }
+
+    .btn1 {
+        height: 54px;
+        line-height: unset;
+        padding: 8px 20px;
+    }
+
+    .item-search-button {
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+</style>

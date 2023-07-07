@@ -24,15 +24,34 @@
                                 @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
                             </label>
                             <label for="">
+                                <label class="mb-0" asp-for="Position"></label>
+                                <input type="text" name="Position" id="position">
+                                @Html.ValidationMessageFor(model => model.Position, "", new { @class = "text-danger" })
+                            </label>
+                            <label for="">
                                 <label class="mb-0" asp-for="Email"></label>
                                 <input type="email" id="email" name="Email" pattern="@PatternConstants.Email" required>
                                 @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
                             </label>
-                            <label for="">
-                                <label class="mb-0" asp-for="Phone"></label>
-                                <input type="text" id="phone" name="Phone" placeholder="XXXXXXXXXX" pattern="[0-9]{4,12}" required>
+                            <div style="width:500px">
+                                <div style="display:flex;justify-content:space-between;">
+                                    <div class="elem" style="width: 75%">
+                                        <label class="mb-0" asp-for="Phone" style="width:100%;"></label>
+                                        <label for="" style="width:100%">
+                                            <input type="text" id="phone" name="Phone" placeholder="(XXX)-XXX-XXXX" required>
+                                        </label>
+                                    </div>
+                                    <div class="elem" style="width: 20%">
+                                        <label class="mb-0" asp-for="Ext" style="width:100%;"></label>
+                                        <label for="" style="width:100%">
+                                            <input type="text" name="Ext" id="Ext" class="mt-0" maxlength="5"  required/>
+                                        </label>
+                                        
+                                    </div>
+                                </div>
                                 @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
-                            </label>
+                            </div> 
+                            
                             <input class="btn1" type="submit" value="@Localizer["Save"]" />
                         </form>
                     </div>
@@ -49,6 +68,22 @@
 </style>
 
 <script>
+    $.fn.setCursorPosition = function (pos) {
+        if ($(this).get(0).setSelectionRange) {
+            $(this).get(0).setSelectionRange(pos, pos);
+        }
+        else if ($(this).get(0).createTextRange) {
+            var range = $(this).get(0).createTextRange();
+            range.collapse(true);
+            range.moveEnd('character', pos);
+            range.moveStart('character', pos);
+            range.select();
+        }
+    };
+
+    $('input[name="Phone"]').on('click', function () {
+        $(this).setCursorPosition(1);
+    });
     $('#phone').on('input invalid', function () {
         this.setCustomValidity('')
         if (this.validity.valueMissing) {
@@ -56,10 +91,10 @@
         }
         if (this.validity.typeMismatch) {
             this.setCustomValidity("@Localizer["PhoneValidMessage"]")
-        }
+        } 
         if (this.validity.patternMismatch) {
             this.setCustomValidity("@Localizer["PhoneValidMessage"]")
-        }
+        } 
     })
 
     $('#email').on('input invalid', function () {
@@ -74,4 +109,8 @@
             this.setCustomValidity("@Localizer["EmailValidMessage"]")
         }
     })
+
+    $(document).ready(function () {
+        $("#phone").mask("(999)-999-9999", { placeholder: "(XXX)-XXX-XXXX" });
+    });
 </script>

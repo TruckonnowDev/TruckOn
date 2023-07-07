@@ -14,5 +14,10 @@
         public const string Geolocation = "Geolcation";
         public const string Equipment = "Equipment";
         public const string Driver = "Driver";
+        public const string Marketplace = "Marketplace";
+        public const string Resources = "Resources";
+        public const string DriverCheck = "DriverCheck";
+        public const string CarrierCheck = "CarrierCheck";
+        public const string BrokerCheck = "BrokerCheck";
     }
 }

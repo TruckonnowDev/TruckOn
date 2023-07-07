@@ -316,4 +316,7 @@
   <data name="ValidOnlyNumbersMessage" xml:space="preserve">
     <value>Please use numbers only</value>
   </data>
+  <data name="ELDSerivce" xml:space="preserve">
+    <value>ELD Service</value>
+  </data>
 </root>

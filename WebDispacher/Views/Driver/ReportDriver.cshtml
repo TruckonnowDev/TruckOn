@@ -1,11 +1,13 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using WebDispacher.Constants;
+
+@model WebDispacher.ViewModels.Driver.DriverReportViewModel
 
 @inject IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = "Report Driver";
 }
-
 <body>
     <div class="admin">
         <div class="container">
@@ -26,59 +28,73 @@
                             <form action="" method="post">
                                 <input style="display:none;" name="Experience" id="experienceInp" /><br />
                                 <label class="big-label" for="">
-                                    @Localizer["Name"]
-                                    <input class="height-input" name="FullName" type="text" required>
+                                    @Localizer["FirstName"]
+                                    <input class="height-input" name="FullName" type="text" id="firstName" value="@Model.FullName" required>
+                                    @Html.ValidationMessageFor(model => model.FullName, "", new { @class = "text-danger" })
+                                </label>
+                                <label class="big-label" for="">
+                                    @Localizer["LastName"]
+                                    <input class="height-input" name="LastName" id="lastName" type="text" required>
+                                </label>
+                                <label class="big-label" id="dateOfBirthLabel" for="">
+                                    @Localizer["DateOfBirth"]
+                                    <input class="height-input" name="DateOfBirth" id="dateOfBirth" type="text">
+                                    <p class="dob-not-current-format text-danger"></p>
                                 </label>
                                 <label class="big-label" for="">
                                     @Localizer["DriverLicenseNumber"]
-                                    <input class="height-input" name="DriversLicenseNumber" type="text" required>
+                                    <input class="height-input" name="DriversLicenseNumber" value="@Model.DriversLicenseNumber" id="driverNumber" maxlength="30" type="text" required>
+                                    <span class="info-gray-message">@Localizer["DriverLicenseNumberInfoLabel"]</span>
+                                    @Html.ValidationMessageFor(model => model.DriversLicenseNumber, "", new { @class = "text-danger" })
                                 </label>
                                 <label class="big-label" for="">
                                     @Localizer["NumberOfAccidents"]
-                                    <input class="height-input" name="NumberOfAccidents" type="text" required>
+                                    <input class="height-input" name="NumberOfAccidents" value="@Model.NumberOfAccidents" type="text" required>
+                                    @Html.ValidationMessageFor(model => model.NumberOfAccidents, "", new { @class = "text-danger" })
                                 </label>
                                 <label class="big-label" for="">
                                     @Localizer["DotViolations"]
-                                    <input class="height-input" name="DotViolations" type="text" required>
+                                    <input class="height-input" name="DotViolations" type="text" value="@Model.DotViolations" required>
+                                    @Html.ValidationMessageFor(model => model.DotViolations, "", new { @class = "text-danger" })
                                 </label>
                                 <label class="big-label" for="">
                                     @Localizer["English"] <span>(@Localizer["DragThePointRight"])</span>
-                                    <input type="range" name="English" min="1" max="3" step="1" list="range-list">
+                                    <input type="range" name="English" min="1" max="3" step="1" list="range-list" value="@Model.English">
                                     <div class="value"><p>@Localizer["Poor"]</p> <p>@Localizer["Middle"]</p> <p>@Localizer["Good"]</p></div>
                                 </label>
                                 <label class="big-label" for="">
                                     @Localizer["ReturnedEquipment"]
-                                    <input type="range" name="ReturnedEquipmen" min="1" max="3" step="1" list="range-list">
+                                    <input type="range" name="ReturnedEquipmen" min="1" max="3" step="1" list="range-list" value="@Model.ReturnedEquipmen">
                                     <div class="value"><p>@Localizer["Poor"]</p> <p>@Localizer["Middle"]</p> <p>@Localizer["Good"]</p></div>
                                 </label>
                                 <label class="big-label" for="">
                                     @Localizer["WorkingEfficiency"]
-                                    <input type="range" name="WorkingEfficiency" min="1" max="3" step="1" list="range-list">
+                                    <input type="range" name="WorkingEfficiency" min="1" max="3" step="1" list="range-list" value="@Model.WorkingEfficiency">
                                     <div class="value"><p>@Localizer["Poor"]</p> <p>@Localizer["Middle"]</p> <p>@Localizer["Good"]</p></div>
                                 </label>
                                 <label class="big-label" for="">
                                     @Localizer["Eld"]
-                                    <input type="range" name="EldKnowledge" min="1" max="3" step="1" list="range-list">
+                                    <input type="range" name="EldKnowledge" min="1" max="3" step="1" list="range-list" value="@Model.EldKnowledge">
                                     <div class="value"><p>@Localizer["Poor"]</p> <p>@Localizer["Middle"]</p> <p>@Localizer["Good"]</p></div>
                                 </label>
                                 <label class="big-label" for="">
                                     @Localizer["DriverSkills"]
-                                    <input type="range" name="DrivingSkills" min="1" max="3" step="1" list="range-list">
+                                    <input type="range" name="DrivingSkills" min="1" max="3" step="1" list="range-list" value="@Model.DrivingSkills">
                                     <div class="value"><p>@Localizer["Poor"]</p> <p>@Localizer["Middle"]</p> <p>@Localizer["Good"]</p></div>
                                 </label>
                                 <label class="big-label" for="">
                                     @Localizer["PaymentHanding"]
-                                    <input type="range" name="PaymentHandling" min="1" max="3" step="1" list="range-list">
+                                    <input type="range" name="PaymentHandling" min="1" max="3" step="1" list="range-list" value="@Model.PaymentHandling">
                                     <div class="value"><p>@Localizer["Poor"]</p> <p>@Localizer["Middle"]</p> <p>@Localizer["Good"]</p></div>
                                 </label>
                                 <label class="big-label" for="">
                                     @Localizer["AlcoholTendency"]
-                                    <input type="range" name="AlcoholTendency" min="0" max="3" step="1" list="range-list">
+                                    <input type="range" name="AlcoholTendency" min="0" max="3" step="1" list="range-list" value="@Model.AlcoholTendency">
                                     <div class="value"><p>@Localizer["None"]</p> <p>@Localizer["Poor"]</p> <p>@Localizer["Middle"]</p> <p>@Localizer["Good"]</p></div>
                                 </label>
                                 <label class="big-label" for="">
                                     @Localizer["DrugTendency"]
-                                    <input type="range" name="DrugTendency" min="0" max="3" step="1" list="range-list">
+                                    <input type="range" name="DrugTendency" min="0" max="3" step="1" list="range-list" value="@Model.DrugTendency">
                                     <div class="value"><p>@Localizer["None"]</p> <p>@Localizer["Poor"]</p> <p>@Localizer["Middle"]</p> <p>@Localizer["Good"]</p></div>
                                 </label>
                                 <label class="big-label" for="">
@@ -92,23 +108,23 @@
                                         <input type="radio" name="Terminated" checked required id="terminatedNo" onclick="changeTerminated('No')">@Localizer["No"]
                                         </label>
                                     <label class="if-true-terminated" style="display: none">
-                                        <input class="validation" type="checkbox" value="Fired" onclick="SelectExperience(this.value, this.checked)" />
+                                        <input class="validation" type="checkbox" value="Fired" />
                                         <span style="text-align:center;">Fired</span>
                                     </label>
                                     <label class="if-true-terminated" style="display: none">
-                                        <input class="validation" type="checkbox" value="Quit" onclick="SelectExperience(this.value, this.checked)" />
+                                        <input class="validation" type="checkbox" value="Quit"/>
                                         <span style="text-align:center;">Quit</span>
                                     </label>
                                     <label class="if-true-terminated" style="display: none">
-                                        <input class="validation" type="checkbox" value="Contract expiration" onclick="SelectExperience(this.value, this.checked)" />
+                                        <input class="validation" type="checkbox" value="Contract expiration" />
                                         <span style="text-align:center;">Contract expiration</span>
                                     </label>
                                     <label class="if-true-terminated" style="display: none">
-                                        <input class="validation" type="checkbox" value="Left truck without a notice" onclick="SelectExperience(this.value, this.checked)" />
+                                        <input class="validation" type="checkbox" value="Left truck without a notice" />
                                         <span style="text-align:center;">Left truck without a notice</span>
                                     </label>
                                     <label class="if-true-terminated" style="display: none">
-                                        <input class="validation" type="checkbox" value="Disappeared" onclick="SelectExperience(this.value, this.checked)" />
+                                        <input class="validation" type="checkbox" value="Disappeared" />
                                         <span style="text-align:center;">Disappeared</span>
                                     </label>
                                 </div>
@@ -124,7 +140,8 @@
                                 </div>
                                 <label class="big-label" for="">
                                     @Localizer["Description"]
-                                    <textarea name="Comment" cols="5" rows="10" required></textarea>
+                                    <textarea name="Comment" cols="5" rows="10" required>@Model.Comment</textarea>
+                                    @Html.ValidationMessageFor(model => model.Comment, "", new { @class = "text-danger" })
                                 </label>
                                 <input type="submit" value="@Localizer["AddReportDriver"]" class="btn1 big-label">
                             </form>
@@ -135,7 +152,39 @@
         </div>
     </div>
 </body>
+
+<script src="~/js/input-replacer.js"></script>
 <script>
+    setReplacer(document.querySelector('#firstName'), @ExpressionConstants.OnlyDigits);
+    setReplacer(document.querySelector('#lastName'), @ExpressionConstants.OnlyDigits);
+    setReplacer(document.querySelector('#driverNumber'), @ExpressionConstants.WithoutDashes);
+
+$.fn.setCursorPosition = function (pos) {
+        if ($(this).get(0).setSelectionRange) {
+            $(this).get(0).setSelectionRange(pos, pos);
+        }
+        else if ($(this).get(0).createTextRange) {
+            var range = $(this).get(0).createTextRange();
+            range.collapse(true);
+            range.moveEnd('character', pos);
+            range.moveStart('character', pos);
+            range.select();
+        }
+    };
+
+    $('input[name="DateOfBirth"]').on('click', function () {
+        $(this).setCursorPosition(0);
+    });
+
+    $("input[type=submit]").on('click', function (e) {
+        $('input[name="Terminated"]').val($("#terminatedYes").is(":checked"));
+
+        CheckValidDoB(e, "dateOfBirth", "dob-not-current-format", "dateOfBirthLabel");
+        
+    });
+
+    $("#dateOfBirth").mask("99/99/9999", { placeholder: "MM/DD/YYYY" });  
+    
     const optionalCheckBoxes = document.querySelectorAll(".if-true-terminated");
     const checkedYes = document.getElementById("terminatedYes");
     const checkedNo = document.getElementById("terminatedNo");
@@ -166,6 +215,10 @@
     }
 </script>
 <style>
+    .danger-input {
+        border-color: red!important;
+    }
+
     .text-gray {
         color: #686f7c;
     }

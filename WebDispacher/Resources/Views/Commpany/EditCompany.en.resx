@@ -33,4 +33,7 @@
     <data name="Save" xml:space="preserve">
         <value>SAVE</value>
     </data>
+    <data name="TypeCompany" xml:space="preserve">
+        <value>Company Type</value>
+    </data>
 </root>

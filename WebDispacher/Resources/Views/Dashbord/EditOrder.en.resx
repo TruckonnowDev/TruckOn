@@ -253,9 +253,9 @@
     <value>No</value>
   </data>
   <data name="VehFormSuccessSend" xml:space="preserve">
-    <value>Information about the driver has been successfully saved</value>
+    <value>Vehicle was added to an order</value>
   </data>
   <data name="VehFormHaveError" xml:space="preserve">
-    <value>Information about the driver could not be saved</value>
+    <value>The vehicle was not added to the order</value>
   </data>
 </root>

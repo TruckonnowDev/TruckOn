@@ -14,10 +14,9 @@ using WebDispacher.ViewModels.Truck;
 namespace WebDispacher.Controellers
 {
     [Route("Equipment")]
-    public class EquipmentController : Controller
+    public class EquipmentController : BaseController
     {
         private readonly ITruckAndTrailerService truckAndTrailerService;
-        private readonly IUserService userService;
         private readonly ICompanyService companyService;
         private readonly IOrderService orderService;
 
@@ -25,11 +24,10 @@ namespace WebDispacher.Controellers
             ITruckAndTrailerService truckAndTrailerService,
             IUserService userService,
             IOrderService orderService,
-            ICompanyService companyService)
+            ICompanyService companyService) : base(userService)
         {
             this.orderService = orderService;
             this.companyService = companyService;
-            this.userService = userService;
             this.truckAndTrailerService = truckAndTrailerService;
         }
 
@@ -39,11 +37,8 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
                 {
                     var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     
@@ -52,7 +47,7 @@ namespace WebDispacher.Controellers
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
                     
-                    ViewBag.NameCompany = companyName;
+                    ViewBag.NameCompany = GetCookieCompanyName();
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     ViewBag.Trucks = await truckAndTrailerService.GetTrucks(page, idCompany);
 
@@ -84,11 +79,8 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
                 {
                     var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     
@@ -97,7 +89,7 @@ namespace WebDispacher.Controellers
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
                     
-                    ViewBag.NameCompany = companyName;
+                    ViewBag.NameCompany = GetCookieCompanyName();
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     ViewBag.Trailers = await truckAndTrailerService.GetTrailers(page, idCompany);
 
@@ -129,10 +121,8 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
                 
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
                 {
                     truckAndTrailerService.RemoveTruck(id);
                     
@@ -159,10 +149,8 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
                 
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
                 {
                     await truckAndTrailerService.RemoveTruck(id);
 
@@ -189,11 +177,8 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
                 {
                     var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     
@@ -202,7 +187,7 @@ namespace WebDispacher.Controellers
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
                     
-                    ViewBag.NameCompany = companyName;
+                    ViewBag.NameCompany = GetCookieCompanyName();
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     
                     return View("CreateTruck");
@@ -233,10 +218,8 @@ namespace WebDispacher.Controellers
                 try
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                    Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
 
-                    if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                    if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
                     {
                         await truckAndTrailerService.CreateTruck(truck, idCompany, truckRegistrationDoc,
                             truckLeaseAgreementDoc, truckAnnualInspection, bobTailPhysicalDamage, nYHUTDoc);
@@ -268,10 +251,8 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
                 
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
                 {
                     truckAndTrailerService.RemoveTrailer(id);
                     
@@ -298,10 +279,8 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
                 
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
                 {
                     await truckAndTrailerService.RemoveTrailer(id);
 
@@ -329,11 +308,8 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
                 {
                     var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     
@@ -342,7 +318,7 @@ namespace WebDispacher.Controellers
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
                     
-                    ViewBag.NameCompany = companyName;
+                    ViewBag.NameCompany = GetCookieCompanyName();
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     
                     return View("CreateTraler");
@@ -372,10 +348,8 @@ namespace WebDispacher.Controellers
                 try
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                    Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
 
-                    if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                    if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
                     {
                         truckAndTrailerService.CreateTrailer(trailer, idCompany, trailerRegistrationDoc,
                             trailerAnnualInspectionDoc, leaseAgreementDoc);
@@ -409,11 +383,8 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
                 {
                     var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     
@@ -422,7 +393,7 @@ namespace WebDispacher.Controellers
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
                     
-                    ViewBag.NameCompany = companyName;
+                    ViewBag.NameCompany = GetCookieCompanyName();
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     
                     var truck = truckAndTrailerService.GetTruckById(idTruck);
@@ -457,10 +428,8 @@ namespace WebDispacher.Controellers
                 try
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                    Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
 
-                    if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                    if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
                     {
                         await truckAndTrailerService.EditTruck(truck, truckRegistrationDoc,
                             truckLeaseAgreementDoc, truckAnnualInspection, bobTailPhysicalDamage, nYHUTDoc);
@@ -493,11 +462,8 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
-                
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+
+                if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
                 {
                     var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     
@@ -506,7 +472,7 @@ namespace WebDispacher.Controellers
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
                     
-                    ViewBag.NameCompany = companyName;
+                    ViewBag.NameCompany = GetCookieCompanyName();
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     
                     var model = truckAndTrailerService.GetTrailerById(idTrailer);
@@ -537,10 +503,8 @@ namespace WebDispacher.Controellers
                 try
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                    Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
 
-                    if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                    if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
                     {
                         truckAndTrailerService.EditTrailer(trailer);
 
@@ -572,10 +536,8 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKeyTaxi, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var idCompany);
                 
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
                 {
                     if (uploadedFile != null)
                     {
@@ -631,11 +593,8 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
                 {
                     var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     
@@ -644,7 +603,7 @@ namespace WebDispacher.Controellers
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
                     
-                    ViewBag.NameCompany = companyName;
+                    ViewBag.NameCompany = GetCookieCompanyName();
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     ViewBag.TruckDoc = await truckAndTrailerService.GetTruckDoc(id);
                     ViewBag.TruckId = id;
@@ -672,11 +631,8 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyNameKey, out var companyName);
                 
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
                 {
                     var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
                     
@@ -685,7 +641,7 @@ namespace WebDispacher.Controellers
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
                     
-                    ViewBag.NameCompany = companyName;
+                    ViewBag.NameCompany = GetCookieCompanyName();
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
                     ViewBag.TrailerDoc = await truckAndTrailerService.GetTrailerDoc(id);
                     ViewBag.TrailerId = id;
@@ -715,10 +671,8 @@ namespace WebDispacher.Controellers
                 try
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                    Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
 
-                    if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                    if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
                     {
                         truckAndTrailerService.SaveDocTruck(uploadedFile, nameDoc, id);
                         
@@ -751,10 +705,8 @@ namespace WebDispacher.Controellers
                 try
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                    Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
 
-                    if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                    if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
                     {
                         truckAndTrailerService.SaveDocTrailer(uploadedFile, nameDoc, id);
 
@@ -788,10 +740,8 @@ namespace WebDispacher.Controellers
                 try
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                    Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
 
-                    if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                    if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
                     {
                         truckAndTrailerService.SaveDocTruck(uploadedFile, nameDoc, id);
 
@@ -824,10 +774,8 @@ namespace WebDispacher.Controellers
                 try
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                    Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                    Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
 
-                    if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                    if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
                     {
                         truckAndTrailerService.SaveDocTrailer(uploadedFile, nameDoc, id);
                         
@@ -859,10 +807,8 @@ namespace WebDispacher.Controellers
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key);
-                Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
                 
-                if (userService.CheckPermissions(key, idCompany, RouteConstants.Equipment))
+                if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
                 {
                     orderService.RemoveDoc(idDock);
                     

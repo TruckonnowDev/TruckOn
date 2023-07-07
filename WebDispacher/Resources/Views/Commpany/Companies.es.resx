@@ -136,7 +136,7 @@
     <value>Tipo de Empresa</value>
   </data>
   <data name="DeleteNotificataion" xml:space="preserve">
-    <value>Eliminar Empresa</value>
+    <value>Desactivar Empresa</value>
   </data>
   <data name="DocNotificataion" xml:space="preserve">
     <value>Agregar / Ver Documentos</value>
@@ -146,5 +146,14 @@
   </data>
   <data name="EditNotificataion" xml:space="preserve">
     <value>Editar Compañía</value>
+  </data>
+  <data name="LoginNotificataion" xml:space="preserve">
+    <value>Iniciar Sesión</value>
+  </data>
+  <data name="SendEmailNotificataion" xml:space="preserve">
+    <value>Enviar Correo Electrónico</value>
+  </data>
+  <data name="ActivateNotificataion" xml:space="preserve">
+    <value>Activar Empresa</value>
   </data>
 </root>

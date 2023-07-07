@@ -128,4 +128,10 @@
 	<data name="TrailerCapacity" xml:space="preserve">
 		<value>Capacidad del remolque</value>
 	</data>
+	<data name="LastName" xml:space="preserve">
+		<value>Apellido</value>
+	</data>
+	<data name="FirstName" xml:space="preserve">
+		<value>Nombre</value>
+	</data>
 </root>

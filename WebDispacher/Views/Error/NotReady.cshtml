@@ -1,0 +1,54 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Page not ready";
+}
+
+<body>
+    <div class="for-ty-for">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 mt-5">
+                    <div class="for icon-pos">
+                        <i class="bi bi-cup-hot" style="color: brown; font-size:100px"></i>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                        <h3> @Localizer["Message"]</h3>
+                </div>@*
+                <div class="col-md-12">
+                    <div class="button">
+                        <button class="btn3 bolt-button" onclick="window.history.back()">@Localizer["BackLastPage"]</button>
+                        <button class="btn1 bolt-button" onclick="window.location.href = '@ViewBag.BaseUrl'">@Localizer["BackHomePage"]</button>
+                    </div>
+                </div>*@
+            </div>
+        </div>
+    </div>
+</body>
+
+<style>
+    .icon-pos {
+        margin-top: 10rem;
+        margin-bottom: 3rem;
+    }
+
+    h2 {
+        font-size: 48px !important;
+        color: brown !important;
+    }
+
+    h3 {
+        font-size: 28px !important;
+    }
+
+    .btn3 {
+        margin-right: 2%;
+    }
+
+    .bolt-button {
+        font-size: 18px;
+    }
+</style>

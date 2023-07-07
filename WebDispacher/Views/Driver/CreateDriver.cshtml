@@ -21,8 +21,22 @@
                         </div>
                         <form action="" method="post" enctype="multipart/form-data">
                             <label class="big-label" for="">
-                                @Localizer["Name"]
-                                <input class="height-input" type="text" name="FullName" required>
+                                @Localizer["FirstName"]
+                                <input class="height-input" type="text" name="FullName" id="firstName" required>
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["LastName"]
+                                <input class="height-input" type="text" name="LastName" id="lastName" required>
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["DriverLicenseNumber"]
+                                <input class="height-input" name="DriversLicenseNumber" id="driverNumber"  maxlength="30" type="text" required>
+                                <span class="info-gray-message">@Localizer["DriverLicenseNumberInfoLabel"]</span>
+                            </label>
+                             <label class="big-label" id="dateOfBirthLabel" for="">
+                                @Localizer["DateOfBirth"]
+                                <input class="height-input" name="DateOfBirth" id="dateOfBirth" type="text">
+                                <p class="dob-not-current-format text-danger"></p>
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["Email"]
@@ -39,10 +53,6 @@
                             <label class="big-label" for="">
                                 @Localizer["TrailerCapacity"]
                                 <input class="height-input" type="text" name="TrailerCapacity">
-                            </label>
-                            <label class="big-label" for="">
-                                @Localizer["DriverLicenseNumber"]
-                                <input class="height-input" type="text" name="DriversLicenseNumber" required>
                             </label>
                             <div class="full-label">
                                 <a class="a-label">@Localizer["DocumentDL"]</a>
@@ -208,7 +218,31 @@
     </div>
 </body>
 
+<script src="~/js/input-replacer.js"></script>
 <script>
+    setReplacer(document.querySelector('#firstName'), /\d/g);
+    setReplacer(document.querySelector('#lastName'), /\d/g);
+    setReplacer(document.querySelector('#driverNumber'), /\-/);
+
+    $.fn.setCursorPosition = function (pos) {
+        if ($(this).get(0).setSelectionRange) {
+            $(this).get(0).setSelectionRange(pos, pos);
+        }
+        else if ($(this).get(0).createTextRange) {
+            var range = $(this).get(0).createTextRange();
+            range.collapse(true);
+            range.moveEnd('character', pos);
+            range.moveStart('character', pos);
+            range.select();
+        }
+    };
+
+     $('input[name="DateOfBirth"]').on('click', function () {
+        $(this).setCursorPosition(0);
+    });
+
+    $("#dateOfBirth").mask("99/99/9999", { placeholder: "MM/DD/YYYY" });  
+
     $('#email').on('input invalid', function () {
         this.setCustomValidity('')
         if (this.validity.valueMissing) {
@@ -252,7 +286,7 @@
 
     const dateInput = document.querySelector("[name='dateTimeLocal']");
 
-    $("input[type=submit]").on('click', function () {
+    $("input[type=submit]").on('click', function (e) {
         CheckValid('fl1', 'fi1');
         CheckValid('fl2', 'fi2');
         CheckValid('fl3', 'fi3');
@@ -260,6 +294,8 @@
         CheckValid('fl5', 'fi5');
         CheckValid('fl6', 'fi6');
         CheckValid('fl7', 'fi7');
+
+        CheckValidDoB(e, "dateOfBirth", "dob-not-current-format", "dateOfBirthLabel");
 
         dateInput.value = GetDateTimeInFormat(new Date());
     })

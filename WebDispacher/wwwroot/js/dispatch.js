@@ -89,3 +89,28 @@ function GetFileName(str, id) {
     }
 
 }
+
+function CheckValidDoB(e, inputId, errorMessageClassNameElem, label) {
+
+    let currentDoB = $(`#${inputId}`);
+    let dtNow = new Date();
+    let currentDoBValue = currentDoB.val();
+
+    if (currentDoBValue !== "underfiend" && currentDoBValue !== "") {
+        let currentDate = new Date(currentDoBValue);
+
+        if (dtNow >= currentDate) { }
+        else {
+            e.preventDefault();
+            document.getElementsByClassName(errorMessageClassNameElem)[0].innerHTML = '<i class="bi bi-exclamation-circle-fill" style="font-size: 16px"></i> Please enter a valid date';
+            currentDoB.addClass("danger-input");
+            document.getElementById(label).scrollIntoView();
+        }
+    }
+    else {
+        e.preventDefault();
+        document.getElementsByClassName(errorMessageClassNameElem)[0].innerHTML = '<i class="bi bi-exclamation-circle-fill" style="font-size: 16px"></i>Please fill in a complete birthday';
+        currentDoB.addClass("danger-input");
+        document.getElementById(label).scrollIntoView();
+    }
+}

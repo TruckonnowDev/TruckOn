@@ -99,7 +99,11 @@
             </div>
         </div>
     </div>
-    @await Html.PartialAsync("~/Views/PartView/Modals/ConfirmDelete.cshtml");
+    @await Html.PartialAsync("~/Views/PartView/Modals/ConfirmDelete.cshtml")
+    @if (ViewBag.CheckedCompany != null && !ViewBag.CheckedCompany)
+    {
+        @await Html.PartialAsync("~/Views/PartView/Modals/RequiredDocPopUp.cshtml")
+    }
 </div>
 
 <script>
@@ -122,6 +126,9 @@
 
     $(document).ready(function () {
         ShowAlert();
+        if ("@ViewBag.CheckedCompany" !== "" && "@ViewBag.CheckedCompany" === "False"){
+            $("#addRequredDoc").modal('show');
+        }
 
         const loadId = $('#loadId-input').val();
         const name = $('#name-input').val();

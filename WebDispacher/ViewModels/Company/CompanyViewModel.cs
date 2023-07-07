@@ -24,5 +24,8 @@ namespace WebDispacher.ViewModels.Company
 
         [Display(Name = "Type")]
         public string CompanyType { get; set; }
+
+        public string DateRegistration { get; set; }
+        public int UserId { get; set; }
     }
 }

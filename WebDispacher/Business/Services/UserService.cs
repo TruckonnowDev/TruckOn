@@ -37,7 +37,7 @@ namespace WebDispacher.Business.Services
         
         public bool CheckPermissions(string key, string idCompany, string route)
         {
-            return CheckKey(key) && IsPermission(key, idCompany, route);
+            return IsPermission(key, idCompany, route);
         }
         
         public Users GetUserByEmailAndPasswrod(string email, string password)
@@ -54,16 +54,13 @@ namespace WebDispacher.Business.Services
 
         public bool IsPermission(string key, string idCompany, string route)
         {
-            var isPermission = false;
-            var users = GetUserByKey(key);
             var company = GetCompanyById(idCompany);
-            
-            if(users != null && company != null)
-            {
-                isPermission = ValidCompanyRoute(company.Type, route);
-            }
-            
-            return isPermission;
+
+            if (company == null) return false;
+
+            if (company.Type == TypeCompany.DeactivateCompany) return false;
+
+            return ValidCompanyRoute(company.Type, route) && CheckKey(key);
         }
         
         public Commpany GetUserByKeyUser(int key)
@@ -354,7 +351,7 @@ namespace WebDispacher.Business.Services
         private bool ValidCompanyRoute(TypeCompany typeCompany, string route)
         {
             var validCompany = false;
-            
+
             if (route == RouteConstants.Company)
             {
                 if (typeCompany == TypeCompany.BaseCommpany)
@@ -364,9 +361,14 @@ namespace WebDispacher.Business.Services
             }
             else
             {
-                validCompany = true;
+                if (typeCompany == TypeCompany.NormalCompany)
+                {
+                    validCompany = true;
+                }
             }
-            
+
+            if (route == RouteConstants.SettingsUser || route == RouteConstants.SettingsExtension || route == RouteConstants.Settings) validCompany = true;
+
             return validCompany;
         }
         

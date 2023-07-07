@@ -128,4 +128,10 @@
 	<data name="SaveInfo" xml:space="preserve">
 		<value>Сохранить</value>
 	</data>
+	<data name="FirstName" xml:space="preserve">
+		<value>Имя</value>
+	</data>
+	<data name="LastName" xml:space="preserve">
+		<value>Фамилия</value>
+	</data>
 </root>

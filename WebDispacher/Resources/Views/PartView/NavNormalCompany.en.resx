@@ -138,4 +138,13 @@
   <data name="Exit" xml:space="preserve">
     <value>Exit</value>
   </data>
+  <data name="Marketplace" xml:space="preserve">
+    <value>Marketplace</value>
+  </data>
+  <data name="Checks" xml:space="preserve">
+    <value>Records</value>
+  </data>
+  <data name="Resources" xml:space="preserve">
+    <value>Resources</value>
+  </data>
 </root>

@@ -157,12 +157,24 @@
     <value>Please put email in correct format</value>
   </data>
   <data name="Shipper" xml:space="preserve">
-    <value>Shipper</value>
+    <value>Shipper TMS</value>
   </data>
   <data name="Carrier" xml:space="preserve">
-    <value>Carrier</value>
+    <value>Carrier TMS</value>
   </data>
   <data name="TypeCompany" xml:space="preserve">
     <value>Company Type</value>
+  </data>
+  <data name="PasswordCompany" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="PhoneCompany" xml:space="preserve">
+    <value>Company Phone</value>
+  </data>
+  <data name="PhoneValidMessage" xml:space="preserve">
+    <value>Only numbers used but it gives error</value>
+  </data>
+  <data name="BrokerTMS" xml:space="preserve">
+    <value>Broker TMS</value>
   </data>
 </root>

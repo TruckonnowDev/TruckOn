@@ -253,9 +253,9 @@
     <value>Нет</value>
   </data>
   <data name="VehFormSuccessSend" xml:space="preserve">
-    <value>Информация о водителе успешно сохранена</value>
+    <value>Информация успешно сохранена</value>
   </data>
   <data name="VehFormHaveError" xml:space="preserve">
-    <value>Информацию о водителе не удалось сохранить</value>
+    <value>Информацию не удалось сохранить</value>
   </data>
 </root>

@@ -317,4 +317,7 @@
   <data name="ValidOnlyNumbersMessage" xml:space="preserve">
     <value>Пожалуйста, используйте только цифры</value>
   </data>
+  <data name="ELDSerivce" xml:space="preserve">
+    <value>Выездное обслуживание</value>
+  </data>
 </root>

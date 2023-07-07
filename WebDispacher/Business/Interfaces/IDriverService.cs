@@ -12,6 +12,7 @@ namespace WebDispacher.Business.Interfaces
 {
     public interface IDriverService
     {
+        Task<List<DriverReportViewModel>> GetDriverReportsByCompnayId(DriverSearchViewModel model, string companyId);
         List<Driver> GetDriversByIdCompany(string idCompany);
         void RemoveDrive(string idCompany, DriverReportModel model, string localDate);
         int CheckTokenFoDriver(string idDriver, string token);

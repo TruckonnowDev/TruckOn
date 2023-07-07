@@ -122,4 +122,13 @@
 	<data name="Name" xml:space="preserve">
 		<value>Имя</value>
 	</data>
+	<data name="Ext" xml:space="preserve">
+		<value>Ext</value>
+	</data>
+	<data name="ExtRequired" xml:space="preserve">
+		<value>Ext должен быть заполнен</value>
+	</data>
+	<data name="Position" xml:space="preserve">
+		<value>Позиция</value>
+	</data>
 </root>

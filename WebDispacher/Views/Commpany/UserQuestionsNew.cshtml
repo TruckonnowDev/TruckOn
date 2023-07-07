@@ -5,7 +5,7 @@
 @inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "User Messages";
+    ViewData["Title"] = "Mail Control";
 }
 
 <body>
@@ -14,7 +14,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="title">
-                        <h1>User Messages</h1>
+                        <h1>@Localizer["MailControl"]</h1>
                     </div>
                 </div>
             </div>
@@ -28,10 +28,10 @@
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>Sending time</th>
-                                        <th>Email</th>
-                                        <th>Phone</th>
-                                        <th>Name</th>
+                                        <th>@Localizer["DateReceived"]</th>
+                                        <th>@Localizer["SenderEmail"]</th>
+                                        <th>@Localizer["SenderPhone"]</th>
+                                        <th>@Localizer["SenderName"]</th>
                                         <th>Message</th>
                                         <th></th>
                                         <th></th>
@@ -46,7 +46,7 @@
                                         <td>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium,
                                             totam rem aperiam...</td>
                                             <td style="padding-bottom: 20px;padding-top: 20px;">
-                                            <button type="button" class="btn1" data-bs-toggle="modal" id="modalClick" data-bs-target="#answerModal">Answer</button>
+                                            <button type="button" class="btn1" data-bs-toggle="modal" id="modalClick" data-bs-target="#answerModal">@Localizer["Reply"]</button>
                                             </td>
                                     </tr>
                                 </tbody>

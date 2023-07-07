@@ -55,7 +55,7 @@
                                             <td>@ViewBag.Trucks[i].Vin</td>
                                             <td>@ViewBag.Trucks[i].Owner</td>
                                             <td>
-                                                <img src="~/img/setting.svg" alt="" onclick="window.location.href='@ViewBag.BaseUrl/Settings?idTr=@ViewBag.Trucks[i].Id&page=s&idProfile=0&typeTransport=Truck'">
+                                                <img src="~/img/setting.svg" alt="" onclick="window.location.href='@ViewBag.BaseUrl/Settings/Get?idTr=@ViewBag.Trucks[i].Id&page=s&idProfile=0&typeTransport=Truck'">
                                             </td>
                                         </tr>
                                     }

@@ -1,5 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 
+@model List<DaoModels.DAO.Models.DocumentTrailer>
+
 @inject IViewLocalizer Localizer
 
 @{
@@ -19,26 +21,26 @@
                         <button class="btn1" data-toggle="modal" data-target="#addNewDocFormModal">@Localizer["AddDocument"]</button>
                     </div>
                 </div>
-                @for (int i = 0; i < ViewBag.TrailerDoc.Count; i++)
+                @for (int i = 0; i < Model.Count; i++)
                 {
-                    string pref = ViewBag.TrailerDoc[i].DocPath.Remove(0, @ViewBag.TrailerDoc[i].DocPath.LastIndexOf('.') + 1);
+                    string pref = Model[i].DocPath.Remove(0, Model[i].DocPath.LastIndexOf('.') + 1);
                     <div class="row col-md-12">
                         <div class="col-md-auto pb-3">
                             <div style="display: flex;justify-content: space-between;">
                                 <p class="mr-2">
-                                @ViewBag.TrailerDoc[i].NameDoc
+                                    @Model[i].Name
                                 </p>
                                 <p>
-                                    <a href="#" onclick="RemoveDoc(@ViewBag.TrailerDoc[i].Id, @ViewBag.TrailerId)">@Localizer["DeleteDoc"]</a>
+                                    <a href="#" onclick="RemoveDoc(@Model[i].Id, @ViewBag.TrailerId)">@Localizer["DeleteDoc"]</a>
                                 </p>
                             </div>
                             @if (pref == "pdf")
                             {
-                                <embed src="@ViewBag.BaseUrl/Equipment/GetDockPDF?docPath=@ViewBag.TrailerDoc[i].DocPath" width="900" height="1200" />
+                                <embed src="@ViewBag.BaseUrl/Equipment/GetDockPDF?docPath=@Model[i].DocPath" width="900" height="1200" />
                             }
                             else
                             {
-                                <img src="@ViewBag.BaseUrl/Equipment/GetDock?docPath=@ViewBag.TrailerDoc[i].DocPath&type=image/@pref" width="900" alt="">
+                                <img src="@ViewBag.BaseUrl/Equipment/GetDock?docPath=@Model[i].DocPath&type=image/@pref" width="900" alt="">
                             }
                         </div>
                     </div>
@@ -87,6 +89,7 @@
                                 </div>
                                 <p class="file-limit-exceeded text-danger"></p>
                             </div>
+                            <input type="hidden" value="" name="localDate" />
                             <div class="form-group full-label">
                                 <button class="button-custom submit-add">@Localizer["ButtonAddDoc"]</button>
                             </div>
@@ -101,18 +104,22 @@
     </div>
 </body>
 <script>
+    const dateInput = document.querySelector("[name='localDate']");
+
     $("#fi1").change(function () {
         CheckValid('fl1', 'fi1');
     });
 
     $(".submit-add").on('click', function () {
         CheckValid('fl1', 'fi1');
+
+        dateInput.value = GetDateTimeInFormat(new Date());
     })
 
     function RemoveDoc(idDock, id) {
         $.ajax({
             type: "get",
-            url: `/Equipment/RemoveDoc/?idDock=${idDock}&id=${id}&type=Trailer`,
+            url: `/Equipment/Trailer/RemoveDoc/?docId=${idDock}&id=${id}`,
             success: function () {
                 window.location.reload();
             },

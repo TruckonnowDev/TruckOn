@@ -1,7 +1,10 @@
-﻿@using Microsoft.AspNetCore.Mvc.Localization
+﻿@using DaoModels.DAO.Enum;
+@using Microsoft.AspNetCore.Mvc.Localization
 @using WebDispacher.Constants;
 
 @inject IViewLocalizer Localizer
+
+@model WebDispacher.ViewModels.Company.CreateCompanyViewModel;
 
 @{
     ViewData["Title"] = "Create Company";
@@ -17,26 +20,33 @@
                         <form action="" method="post" enctype="multipart/form-data">
                             <label class="big-label" for="">
                                 @Localizer["NameCompany"]
-                                <input class="height-input" type="text" name="name" required>
+                                <input class="height-input" id="name" type="text" asp-for="Name" required>
+                                <span asp-validation-for="Name" class="text-danger"></span>
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["PhoneCompany"]
-                                <input class="height-input" type="text" id="phone" name="phone" required>
+                                <input class="height-input" type="text" id="phone" asp-for="PhoneNumber.Number" pattern="@PatternConstants.PhoneNumberWithoutCountryCode" placeholder="(XXX)-XXX-XXXX" required>
+                                <input type="hidden" id="country-code-dialcode" name="PhoneNumber.DialCode">
+                                <input type="hidden" id="country-code-iso2" name="PhoneNumber.Iso2">
+                                <input type="hidden" id="country-code-name" name="PhoneNumber.Name">
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["EmailCompany"]
-                                <input class="height-input" pattern="@PatternConstants.Email" type="email" id="email" name="email" required>
+                                <input class="height-input" pattern="@PatternConstants.Email" type="email" id="email" asp-for="Email" required>
+                                <span asp-validation-for="Email" class="text-danger"></span>
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["PasswordCompany"]
-                                <input class="height-input" type="text" id="password" name="password" required>
+                                <input class="height-input" type="text" id="password" asp-for="Password" required>
+                                <span asp-validation-for="Password" class="text-danger"></span>
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["TypeCompany"] <br />
-                                <select class="height-input input-select" name="Type">
-                                    <option selected value="Carrier">@Localizer["Carrier"]</option>
-                                    <option value="Shipper">@Localizer["Shipper"]</option>
-                                    <option value="Shipper">@Localizer["BrokerTMS"]</option>
+                                <select class="height-input input-select" asp-for="CompanyType">
+                                    <option selected value="@CompanyType.Carrier">@Localizer["Carrier"]</option>
+                                    <option value="@CompanyType.Shipper">@Localizer["Shipper"]</option>
+                                    <option value="@CompanyType.Broker">@Localizer["BrokerTMS"]</option>
                                 </select>
                             </label>
                             <div class="full-label">
@@ -183,7 +193,10 @@
     </div>
 </body>
 
+<script src="~/js/input-replacer.js"></script>
 <script>
+
+    setReplacer(document.querySelector('#name'), @ExpressionConstants.OnlyDigits);
     $("#fi1").change(function () {
         CheckValid('fl1', 'fi1');
     });
@@ -210,7 +223,28 @@
 
     const dateInput = document.querySelector("[name='dateTimeLocal']");
 
-    $("#phone").mask("(999)-999-9999", { placeholder: "(XXX)-XXX-XXXX" });
+    
+
+    $(document).ready(function () {
+        $("#phone").mask("(999)-999-9999", { placeholder: "(XXX)-XXX-XXXX" });
+        if (!$("#country-code-iso2").val()) {
+            $("#country-code-iso2").val("us");
+            $("#country-code-dialcode").val("1");
+            $("#country-code-name").val("United States");
+        }
+
+        var phoneNumber = $("#phone-number");
+        phoneNumber.intlTelInput({
+            initialCountry: $("#country-code-iso2").val() ? $("#country-code-iso2").val() : "us",
+            separateDialCode: true,
+        });
+
+        input.on("countrychange", function (e, countryData) {
+            $("#country-code-dialcode").val(countryData.dialCode);
+            $("#country-code-iso2").val(countryData.iso2);
+            $("#country-code-name").val(countryData.name);
+        });
+    });
 
     $("input[type=submit]").on('click', function () {
         CheckValid('fl1', 'fi1');

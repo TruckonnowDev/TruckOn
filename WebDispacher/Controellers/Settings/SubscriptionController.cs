@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Threading.Tasks;
 using WebDispacher.Business.Interfaces;
 using WebDispacher.Constants;
+using WebDispacher.Constants.Identity;
 using WebDispacher.Models.Subscription;
 using WebDispacher.Service;
 
@@ -20,29 +23,22 @@ namespace WebDispacher.Controellers.Settings
         }
 
         [Route("Subscriptions")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         public IActionResult GetSubscription(string errorText)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Subscription, out var key, out var idCompany))
-                {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
                     
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany, isCancelSubscribe
-                        ? NavConstants.TypeNavCancel : NavConstants.TypeNavSettings);
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId, isCancelSubscribe
+                    ? NavConstants.TypeNavCancel : NavConstants.TypeNavSettings);
                     
-                    ViewData[NavConstants.TextErrorSub] = errorText;
-                    ViewBag.Subscription = companyService.GetSubscription(idCompany);
+                ViewData[NavConstants.TextErrorSub] = errorText;
+                ViewBag.Subscription = companyService.GetSubscription(CompanyId);
                     
-                    return View("~/Views/Settings/Subscription/Subscription.cshtml");
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                return View("~/Views/Settings/Subscription/Subscription.cshtml");
             }
             catch (Exception e)
             {
@@ -53,26 +49,19 @@ namespace WebDispacher.Controellers.Settings
         }
 
         [Route("All")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         public IActionResult GetSubscriptions()
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Subscription, out var key, out var idCompany))
-                {
-                    ViewData[NavConstants.TypeNavBar] = 
-                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+                ViewData[NavConstants.TypeNavBar] = 
+                    companyService.GetTypeNavBar(CompanyId, NavConstants.TypeNavSettings);
                     
-                    ViewBag.Subscriptions = companyService.GetSubscriptions();
+                ViewBag.Subscriptions = companyService.GetSubscriptions();
                     
-                    return View("~/Views/Settings/Subscription/AllSubscriptions.cshtml");
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                return View("~/Views/Settings/Subscription/AllSubscriptions.cshtml");
             }
             catch (Exception e)
             {
@@ -83,26 +72,19 @@ namespace WebDispacher.Controellers.Settings
         }
 
         [Route("Select")]
-        public IActionResult SelectSubscriptions(string idPrice, string priodDays)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> SelectSubscriptions(string idPrice, string priodDays)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Subscription, out var key, out var idCompany))
-                {
-                    ViewData[NavConstants.TypeNavBar] = 
-                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+                ViewData[NavConstants.TypeNavBar] = 
+                    companyService.GetTypeNavBar(CompanyId, NavConstants.TypeNavSettings);
                     
-                    var errorText = companyService.SelectSub(idPrice, idCompany, priodDays);
+                var errorText = await companyService.SelectSub(idPrice, CompanyId, priodDays);
                     
-                    return Redirect($"~/Settings/Subscription/Subscriptions?errorText={errorText.Replace("customer", "Company")}");
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                return Redirect($"~/Settings/Subscription/Subscriptions?errorText={errorText.Replace("customer", "Company")}");
             }
             catch (Exception e)
             {
@@ -113,25 +95,18 @@ namespace WebDispacher.Controellers.Settings
         }
 
         [Route("CancelNext")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         public IActionResult CancelSubscriptionsNext()
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Subscription, out var key, out var idCompany))
-                {
-                    ViewData[NavConstants.TypeNavBar] =
-                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
-                    companyService.CancelSubscriptionsNext(idCompany);
+                ViewData[NavConstants.TypeNavBar] =
+                    companyService.GetTypeNavBar(CompanyId, NavConstants.TypeNavSettings);
+                companyService.CancelSubscriptionsNext(CompanyId);
                     
-                    return Redirect("~/Settings/Subscription/Subscriptions");
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                return Redirect("~/Settings/Subscription/Subscriptions");
             }
             catch (Exception e)
             {

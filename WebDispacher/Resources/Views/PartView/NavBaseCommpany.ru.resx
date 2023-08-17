@@ -122,4 +122,7 @@
 	<data name="Settings" xml:space="preserve">
 		<value>Настройки</value>
 	</data>
+	<data name="MailControl" xml:space="preserve">
+		<value>Управление почтой</value>
+	</data>
 </root>

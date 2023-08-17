@@ -105,9 +105,9 @@ namespace WebDispacher.Service
             return responseStripe;
         }
 
-        internal List<PaymentMethod> GetPaymentMethodsByCustomerST(string idCustomerST)
+        internal List<Stripe.PaymentMethod> GetPaymentMethodsByCustomerST(string idCustomerST)
         {
-            List<PaymentMethod> paymentMethods = null;
+            List<Stripe.PaymentMethod> paymentMethods = null;
             try
             {
                 var options = new PaymentMethodListOptions
@@ -127,7 +127,7 @@ namespace WebDispacher.Service
             return paymentMethods;
         }
 
-        internal Customer RemoveCustomer(Customer_ST customer_ST)
+        internal Customer RemoveCustomer(CustomerST customer_ST)
         {
             Customer customer = null;
             try
@@ -175,7 +175,7 @@ namespace WebDispacher.Service
 
                 };
                 var service = new PaymentMethodService();
-                PaymentMethod paymentMethod = service.Create(options);
+                Stripe.PaymentMethod paymentMethod = service.Create(options);
                 responseStripe.Content = paymentMethod;
             }
             catch (Exception e)
@@ -238,7 +238,7 @@ namespace WebDispacher.Service
             }
         }
 
-        internal ResponseStripe CreateSupsctibe(string idPrice, Customer_ST customer_ST)
+        internal ResponseStripe CreateSupsctibe(string idPrice, CustomerST customer_ST)
         {
             ResponseStripe responseStripe = new ResponseStripe()
             {

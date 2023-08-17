@@ -2,20 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using DaoModels.DAO.DTO;
 using DaoModels.DAO.Models;
-using MDispatch.View.GlobalDialogView;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
+using Stripe;
 using WebDispacher.Business.Interfaces;
 using WebDispacher.Business.Services;
 using WebDispacher.Constants;
+using WebDispacher.Constants.Identity;
 using WebDispacher.Models;
 using WebDispacher.Service;
 using WebDispacher.ViewModels;
 using WebDispacher.ViewModels.Dashboard;
+using WebDispacher.ViewModels.Order;
+using WebDispacher.ViewModels.Vehicles;
 
 namespace WebDispacher.Controellers
 {
@@ -24,17 +29,19 @@ namespace WebDispacher.Controellers
         private readonly ICompanyService companyService;
         private readonly IDriverService driverService;
         private readonly IOrderService orderService;
-
+        private readonly IMapper mapper;
 
         public DashbordController(
             IOrderService orderService,
             IUserService userService,
             ICompanyService companyService,
-            IDriverService driverService) : base(userService)
+            IDriverService driverService,
+            IMapper mapper) : base(userService)
         {
             this.orderService = orderService;
             this.driverService = driverService;
             this.companyService = companyService;
+            this.mapper = mapper;
         }
         private string Status { get; set; }
 
@@ -53,7 +60,7 @@ namespace WebDispacher.Controellers
                 
                 if (dispatcher != null)
                 {
-                    var shipping = await orderService.AddNewOrder(urlPage, dispatcher);
+                    //var shipping = await orderService.AddNewOrder(urlPage, dispatcher);
                 }
             }
             catch (Exception exception)
@@ -66,6 +73,7 @@ namespace WebDispacher.Controellers
 
         [HttpPost]
         [Route("/Dashboard/Company/SaveDocs")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         public async Task<IActionResult> SaveCompanyDoc(IFormFile certificateOfInsurance, IFormFile mcLetter)
         {
             if (certificateOfInsurance != null && mcLetter != null)
@@ -74,17 +82,9 @@ namespace WebDispacher.Controellers
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-                    if (CheckPermissionsByCookies(RouteConstants.Dashboard, out var _, out var idCompany))
-                    {
-                        await companyService.UploadCompanyRequiredDoc(certificateOfInsurance, mcLetter, idCompany);
+                    await companyService.UploadCompanyRequiredDoc(certificateOfInsurance, mcLetter, CompanyId);
 
-                        return Redirect(Config.BaseReqvesteUrl);
-                    }
-
-                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                    {
-                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                    }
+                    return Redirect(Config.BaseReqvesteUrl);
                 }
                 catch (Exception e)
                 {
@@ -95,88 +95,72 @@ namespace WebDispacher.Controellers
             return Redirect(Config.BaseReqvesteUrl);
         }
 
+        [HttpGet]
         [Route("Dashbord/Order/NewLoad")]
-        public async Task<IActionResult> NewLoad(string loadId, string name, string address, string phone, string email, string price, int page = 1)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> NewLoad(string loadId, string name, string address, string phone, string email, decimal price, int page = 1)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Dashboard, out var key, out var idCompany))
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                ViewBag.CheckedCompany = await companyService.CheckCompanyRequiredDoc(CompanyId);
+
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                if(isCancelSubscribe)
                 {
-                    ViewBag.NameCompany = GetCookieCompanyName();
-
-                    ViewBag.CheckedCompany = await companyService.CheckCompanyRequiredDoc(idCompany);
-
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    if(isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    
-                    ViewBag.Orders = await orderService.GetOrders(OrderConstants.OrderStatusNewLoad, page, loadId, name, address, phone, email, price);
-
-                    ViewBag.Drivers = await driverService.GetDrivers(idCompany);
-
-                    var countPages = await orderService.GetCountPage(OrderConstants.OrderStatusNewLoad, loadId, name, address, phone, email, price);
-
-                    ViewBag.count = countPages;// orderService.GetCountPage(countPage);
-                    
-
-                    ViewBag.LoadId = loadId;
-                    ViewBag.Name = name;
-                    ViewBag.Address = address;
-                    ViewBag.Phone = phone;
-                    ViewBag.Email = email;
-                    ViewBag.price = price;
-
-                    ViewBag.SelectedPage = page;
-
-                    return View("NewLoad");
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                    
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+                    
+                var orders = await orderService.GetOrders(CompanyId, OrderConstants.OrderStatusNewLoad, page, loadId, name, address, phone, email, price);
+
+                ViewBag.Drivers = await driverService.GetDriversByCompanyId(CompanyId);
+
+                var countPages = await orderService.GetCountPage(CompanyId, OrderConstants.OrderStatusNewLoad, loadId, name, address, phone, email, price);
+
+                ViewBag.count = countPages;// orderService.GetCountPage(countPage);
+                    
+
+                ViewBag.LoadId = loadId;
+                ViewBag.Name = name;
+                ViewBag.Address = address;
+                ViewBag.Phone = phone;
+                ViewBag.Email = email;
+                ViewBag.price = price == 0 ? string.Empty : price.ToString();
+
+                ViewBag.SelectedPage = page;
+
+                return View("NewLoad", mapper.Map<List<ShortOrderViewModel>>(orders));
             }
             catch (Exception exception)
             {
-
             }
 
             return Redirect(Config.BaseReqvesteUrl);
         }
 
+        [HttpPost]
         [Route("Dashbord/Assign")]
-        [HttpPost]
-        public async Task<string> DriverSelect(string idOrder, string idDriver, string localDate)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<string> DriverSelect(int orderId, string driverId, string localDate)
         {
             var actionResult = false;
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Dashboard, out var key, out var idCompany))
-                {
-                    ViewBag.NameCompany = GetCookieCompanyName();
+                //ViewBag.NameCompany = GetCookieCompanyName();
 
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
                     
-                    if (!string.IsNullOrEmpty(idDriver) && !string.IsNullOrEmpty(idOrder))
-                    {
-                        await orderService.Assign(idOrder, idDriver);
-                        await orderService.AddHistory(key, "0", idOrder, "0",  idDriver, OrderConstants.ActionAssign, localDate);
-                        actionResult = true;
-                    }
-                }
-                else
+                if (!string.IsNullOrEmpty(driverId) && orderId != 0)
                 {
-                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                    {
-                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                    }
+                    await orderService.Assign(orderId, driverId);
+                    //await orderService.AddHistory(key, "0", idOrder, "0",  idDriver, OrderConstants.ActionAssign, localDate);
+                    actionResult = true;
                 }
             }
             catch (Exception exception)
@@ -187,30 +171,20 @@ namespace WebDispacher.Controellers
             return actionResult.ToString();
         }
 
-        [Route("Dashbord/Unassign")]
         [HttpPost]
-        public string DriverUnSelect(string idOrder, string localDate)
+        [Route("Dashbord/Unassign")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<string> DriverUnSelect(int orderId, string localDate)
         {
             var actionResult = false;
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                
-                if (CheckPermissionsByCookies(RouteConstants.Dashboard, out var key, out var idCompany))
+                if (orderId != 0)
                 {
-                    if (!string.IsNullOrEmpty(idOrder))
-                    {
-                        orderService.AddHistory(key, "0", idOrder, "0", "0", OrderConstants.ActionUnAssign, localDate);
-                        orderService.Unassign(idOrder);
-                        actionResult = true;
-                    }
-                }
-                else
-                {
-                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                    {
-                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                    }
+                    //orderService.AddHistory(key, "0", idOrder, "0", "0", OrderConstants.ActionUnAssign, localDate);
+                    await orderService.Unassign(orderId);
+                    actionResult = true;
                 }
             }
             catch (Exception exception)
@@ -220,26 +194,19 @@ namespace WebDispacher.Controellers
             return actionResult.ToString();
         }
 
-        [Route("Dashbord/Order/Solved")]
         [HttpGet]
+        [Route("Dashbord/Order/Solved")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         public IActionResult Solved(string id,string localDate, string page)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Dashboard, out var key, out var idCompany))
-                {
-                    orderService.Solved(id);
-                    Task.Run(() => orderService.AddHistory(key, "0", id, "0", "0", OrderConstants.ActionSolved, localDate));
+                orderService.Solved(id);
+                //Task.Run(() => orderService.AddHistory(key, "0", id, "0", "0", OrderConstants.ActionSolved, localDate));
                     
-                    return Redirect($"{page}");
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                return Redirect($"{page}");
             }
             catch (Exception exception)
             {
@@ -249,62 +216,57 @@ namespace WebDispacher.Controellers
             return Redirect(Config.BaseReqvesteUrl);
         }
 
+        [HttpGet]
         [Route("Dashbord/Order/Archived")]
-        public async Task<IActionResult> Archived(string loadId, string name, string address, string phone, string email, string price, int page = 1)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> Archived(string loadId, string name, string address, string phone, string email, decimal price, int page = 1)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Dashboard, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    
-                    var shippings = await orderService.GetOrders(OrderConstants.OrderStatusArchivedBilled, page, loadId, name, address, phone, email, price);
-                    if (shippings.Count < 20)
-                    {
-                        shippings.AddRange(await orderService.GetOrders(OrderConstants.OrderStatusArchivedPaid, page, loadId,  name, address, phone, email, price));
-                    }
-                    if (shippings.Count < 20)
-                    {
-                        shippings.AddRange(await orderService.GetOrders(OrderConstants.OrderStatusArchived, page, loadId, name, address, phone, email, price));
-                    }
-                    var drivers = await driverService.GetDrivers(idCompany);
-                    
-                    ViewBag.Drivers = drivers;
-                    ViewBag.Orders = GetShippingDTOs(shippings, drivers);
-
-                    var countPages = await orderService.GetCountPage(OrderConstants.OrderStatusArchived, loadId, name, address, phone, email, price);
-
-                    countPages += await orderService.GetCountPage(OrderConstants.OrderStatusArchivedBilled, loadId, name, address, phone, email, price);
-
-                    countPages += await orderService.GetCountPage(OrderConstants.OrderStatusArchivedPaid, loadId, name, address, phone, email, price);
-
-                    ViewBag.count = countPages;
-
-                    ViewBag.LoadId = loadId;
-                    ViewBag.Name = name;
-                    ViewBag.Address = address;
-                    ViewBag.Phone = phone;
-                    ViewBag.Email = email;
-                    ViewBag.price = price;
-
-                    ViewBag.SelectedPage = page;
-
-                    return View("Archived");
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+                    
+                var shippings = await orderService.GetOrders(CompanyId, OrderConstants.OrderStatusArchivedBilled, page, loadId, name, address, phone, email, price);
+                
+                if (shippings.Count < 20)
                 {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                    shippings.AddRange(await orderService.GetOrders(CompanyId, OrderConstants.OrderStatusArchivedPaid, page, loadId,  name, address, phone, email, price));
                 }
+                if (shippings.Count < 20)
+                {
+                    shippings.AddRange(await orderService.GetOrders(CompanyId, OrderConstants.OrderStatusArchived, page, loadId, name, address, phone, email, price));
+                }
+                var drivers = await driverService.GetDriversByCompanyId(CompanyId);
+                    
+                ViewBag.Drivers = drivers;
+                //ViewBag.Orders = GetShippingDTOs(shippings, drivers);
+
+                var countPages = await orderService.GetCountPage(CompanyId, OrderConstants.OrderStatusArchived, loadId, name, address, phone, email, price);
+
+                countPages += await orderService.GetCountPage(CompanyId, OrderConstants.OrderStatusArchivedBilled, loadId, name, address, phone, email, price);
+
+                countPages += await orderService.GetCountPage(CompanyId, OrderConstants.OrderStatusArchivedPaid, loadId, name, address, phone, email, price);
+
+                ViewBag.count = countPages;
+
+                ViewBag.LoadId = loadId;
+                ViewBag.Name = name;
+                ViewBag.Address = address;
+                ViewBag.Phone = phone;
+                ViewBag.Email = email;
+                ViewBag.price = price == 0 ? string.Empty : price.ToString();
+
+                ViewBag.SelectedPage = page;
+
+                return View("Archived", mapper.Map<List<ShortOrderViewModel>>(shippings));
             }
             catch (Exception exception)
             {
@@ -313,55 +275,48 @@ namespace WebDispacher.Controellers
 
             return Redirect(Config.BaseReqvesteUrl);
         }
-        
 
+        [HttpGet]
         [Route("Dashbord/Order/Assigned")]
-        public async Task<IActionResult> Assigned(string loadId, string name, string address, string phone, string email, string price, int page = 1)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> Assigned(string loadId, string name, string address, string phone, string email, decimal price, int page = 1)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Dashboard, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    
-                    var shippings =
-                        await orderService.GetOrders(OrderConstants.OrderStatusAssigned, page, loadId, name, address, phone, email, price);
-                    var drivers = await driverService.GetDrivers(idCompany);
-                    
-                    ViewBag.Orders = GetShippingDTOs(shippings, drivers);
-                    ViewBag.Drivers = drivers;
-
-                    var countPages = await orderService.GetCountPage(OrderConstants.OrderStatusAssigned, loadId, name, address, phone, email, price);
-
-                    ViewBag.count = countPages; //orderService.GetCountPage(countPage);
-                    
-                    ViewBag.LoadId = loadId;
-                    ViewBag.Name = name;
-                    ViewBag.Address = address;
-                    ViewBag.Phone = phone;
-                    ViewBag.Email = email;
-                    ViewBag.price = price;
-
-                    ViewBag.SelectedPage = page;
-
-                    return View("Assigned");
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
+                    
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                    
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+                    
+                var shippings =
+                    await orderService.GetOrders(CompanyId, OrderConstants.OrderStatusAssigned, page, loadId, name, address, phone, email, price);
+                var drivers = await driverService.GetDriversByCompanyId(CompanyId);
+                    
+                // ViewBag.Orders = GetShippingDTOs(shippings, drivers);
+                ViewBag.Drivers = drivers;
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                var countPages = await orderService.GetCountPage(CompanyId, OrderConstants.OrderStatusAssigned, loadId, name, address, phone, email, price);
+
+                ViewBag.count = countPages; //orderService.GetCountPage(countPage);
+                    
+                ViewBag.LoadId = loadId;
+                ViewBag.Name = name;
+                ViewBag.Address = address;
+                ViewBag.Phone = phone;
+                ViewBag.Email = email;
+                ViewBag.price = price == 0 ? string.Empty : price.ToString();
+
+                ViewBag.SelectedPage = page;
+
+                return View("Assigned", mapper.Map<List<ShortOrderViewModel>>(shippings));
             }
             catch (Exception)
             {
@@ -371,51 +326,45 @@ namespace WebDispacher.Controellers
             return Redirect(Config.BaseReqvesteUrl);
         }
 
+        [HttpGet]
         [Route("Dashbord/Order/Billed")]
-        public async Task<IActionResult> Billed(string loadId, string name, string address, string phone, string email, string price,int page = 1)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> Billed(string loadId, string name, string address, string phone, string email, decimal price,int page = 1)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Dashboard, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-
-                    var shippings =
-                        await orderService.GetOrders(OrderConstants.OrderStatusDeliveredBilled, page, loadId, name, address, phone, email, price);
-                    
-                    ViewBag.Drivers = await driverService.GetDrivers(idCompany);;
-                    ViewBag.Orders = GetShippingDTOs(shippings, ViewBag.Drivers);
-                    
-                    var countPage = await orderService.GetCountPage(OrderConstants.OrderStatusDeliveredBilled, loadId, name, address, phone, email, price);
-
-                    ViewBag.count = orderService.GetCountPage(countPage);
-                    
-                    ViewBag.LoadId = loadId;
-                    ViewBag.Name = name;
-                    ViewBag.Address = address;
-                    ViewBag.Phone = phone;
-                    ViewBag.Email = email;
-                    ViewBag.price = price;
-
-                    ViewBag.SelectedPage = page;
-
-                    return View("Billed");
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
+                    
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                var shippings =
+                    await orderService.GetOrders(CompanyId ,OrderConstants.OrderStatusDeliveredBilled, page, loadId, name, address, phone, email, price);
+                    
+                ViewBag.Drivers = await driverService.GetDriversByCompanyId(CompanyId);;
+                //ViewBag.Orders = GetShippingDTOs(shippings, ViewBag.Drivers);
+                    
+                var countPage = await orderService.GetCountPage(CompanyId, OrderConstants.OrderStatusDeliveredBilled, loadId, name, address, phone, email, price);
+
+                ViewBag.count = orderService.GetCountPage(countPage);
+                    
+                ViewBag.LoadId = loadId;
+                ViewBag.Name = name;
+                ViewBag.Address = address;
+                ViewBag.Phone = phone;
+                ViewBag.Email = email;
+                ViewBag.price = price == 0 ? string.Empty : price.ToString();
+
+                ViewBag.SelectedPage = page;
+
+                return View("Billed", mapper.Map<List<ShortOrderViewModel>>(shippings));
             }
             catch (Exception exception)
             {
@@ -425,67 +374,61 @@ namespace WebDispacher.Controellers
             return Redirect(Config.BaseReqvesteUrl);
         }
 
+        [HttpGet]
         [Route("Dashbord/Order/Deleted")]
-        public async Task<IActionResult> Deleted(string loadId, string name, string address, string phone, string email, string price, int page = 1)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> Deleted(string loadId, string name, string address, string phone, string email, decimal price, int page = 1)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Dashboard, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-        
-                    var shippings = await orderService.GetOrders(OrderConstants.OrderStatusDeletedBilled, page, loadId, name, address, phone, email, price);
-                    
-                    if (shippings.Count < 20)
-                    {
-                        shippings.AddRange(await orderService.GetOrders(OrderConstants.OrderStatusDeletedPaid, page, loadId, name, address, phone, email, price));
-                    }
-                    
-                    if (shippings.Count < 20)
-                    {
-                        shippings.AddRange(await orderService.GetOrders(OrderConstants.OrderStatusDeleted, page, loadId, name, address, phone, email, price));
-                    }
-                    
-                    var drivers = await driverService.GetDrivers(idCompany);
-                    
-                    ViewBag.Orders = GetShippingDTOs(shippings, drivers);
-                    
-                    ViewBag.Drivers = drivers;
-        
-                    var countPages = await orderService.GetCountPage(OrderConstants.OrderStatusDeleted, loadId, name, address, phone, email, price);
-        
-                    countPages += await orderService.GetCountPage(OrderConstants.OrderStatusDeletedBilled, loadId, name, address, phone, email, price);
-        
-                    countPages += await orderService.GetCountPage(OrderConstants.OrderStatusDeletedPaid, loadId, name, address, phone, email, price);
-
-                    ViewBag.count = countPages;
-                    
-                    ViewBag.LoadId = loadId;
-                    ViewBag.Name = name;
-                    ViewBag.Address = address;
-                    ViewBag.Phone = phone;
-                    ViewBag.Email = email;
-                    ViewBag.price = price;
-
-                    ViewBag.SelectedPage = page;
-
-                    return View("Deleted");
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
+                    
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
         
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                var shippings = await orderService.GetOrders(CompanyId, OrderConstants.OrderStatusDeletedBilled, page, loadId, name, address, phone, email, price);
+                    
+                if (shippings.Count < 20)
                 {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                    shippings.AddRange(await orderService.GetOrders(CompanyId, OrderConstants.OrderStatusDeletedPaid, page, loadId, name, address, phone, email, price));
                 }
+                    
+                if (shippings.Count < 20)
+                {
+                    shippings.AddRange(await orderService.GetOrders(CompanyId, OrderConstants.OrderStatusDeleted, page, loadId, name, address, phone, email, price));
+                }
+                    
+                var drivers = await driverService.GetDriversByCompanyId(CompanyId);
+                    
+                //ViewBag.Orders = GetShippingDTOs(shippings, drivers);
+                    
+                ViewBag.Drivers = drivers;
+        
+                var countPages = await orderService.GetCountPage(CompanyId, OrderConstants.OrderStatusDeleted, loadId, name, address, phone, email, price);
+        
+                countPages += await orderService.GetCountPage(CompanyId, OrderConstants.OrderStatusDeletedBilled, loadId, name, address, phone, email, price);
+        
+                countPages += await orderService.GetCountPage(CompanyId, OrderConstants.OrderStatusDeletedPaid, loadId, name, address, phone, email, price);
+
+                ViewBag.count = countPages;
+                    
+                ViewBag.LoadId = loadId;
+                ViewBag.Name = name;
+                ViewBag.Address = address;
+                ViewBag.Phone = phone;
+                ViewBag.Email = email;
+                ViewBag.price = price == 0 ? string.Empty : price.ToString();
+
+                ViewBag.SelectedPage = page;
+
+                return View("Deleted", mapper.Map<List<ShortOrderViewModel>>(shippings));
             }
             catch (Exception)
             {
@@ -495,66 +438,60 @@ namespace WebDispacher.Controellers
             return Redirect(Config.BaseReqvesteUrl);
         }
 
+        [HttpGet]
         [Route("Dashbord/Order/Delivered")]
-        public async Task<IActionResult> Delivered(string loadId, string name, string address, string phone, string email, string price, int page = 1)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> Delivered(string loadId, string name, string address, string phone, string email, decimal price, int page = 1)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Dashboard, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
+                }
                     
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+
+                var shippings = await orderService.GetOrders(CompanyId, OrderConstants.OrderStatusDeliveredPaid, page, loadId, name, address, phone, email, price);
                     
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-
-                    var shippings = await orderService.GetOrders(OrderConstants.OrderStatusDeliveredPaid, page, loadId, name, address, phone, email, price);
-                    
-                    if (shippings.Count < 20)
-                    {
-                        shippings.AddRange(await orderService.GetOrders(OrderConstants.OrderStatusDeliveredBilled, page, loadId, name, address, phone, email, price));
-                    }
-
-                    if (shippings.Count < 20)
-                    {
-                        shippings.AddRange(await orderService.GetOrders(OrderConstants.OrderStatusDelivered, page, loadId, name, address, phone, email, price));
-                    }
-
-                    var drivers = await driverService.GetDrivers(idCompany);
-                    
-                    ViewBag.Orders = GetShippingDTOs(shippings, drivers);
-
-                    ViewBag.Drivers = drivers;
-
-                    var countPages = await orderService.GetCountPage(OrderConstants.OrderStatusDeliveredBilled, loadId, name, address, phone, email, price);
-
-                    countPages += await orderService.GetCountPage(OrderConstants.OrderStatusDeliveredPaid, loadId, name, address, phone, email, price);
-                    countPages += await orderService.GetCountPage(OrderConstants.OrderStatusDelivered, loadId, name, address, phone, email, price);
-
-                    ViewBag.count = countPages;
-                    
-                    ViewBag.LoadId = loadId;
-                    ViewBag.Name = name;
-                    ViewBag.Address = address;
-                    ViewBag.Phone = phone;
-                    ViewBag.Email = email;
-                    ViewBag.price = price;
-
-                    ViewBag.SelectedPage = page;
-
-                    return View("Delivered");
+                if (shippings.Count < 20)
+                {
+                    shippings.AddRange(await orderService.GetOrders(CompanyId, OrderConstants.OrderStatusDeliveredBilled, page, loadId, name, address, phone, email, price));
                 }
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                if (shippings.Count < 20)
                 {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                    shippings.AddRange(await orderService.GetOrders(CompanyId, OrderConstants.OrderStatusDelivered, page, loadId, name, address, phone, email, price));
                 }
+
+                var drivers = await driverService.GetDriversByCompanyId(CompanyId);
+                    
+                //ViewBag.Orders = GetShippingDTOs(shippings, drivers);
+
+                ViewBag.Drivers = drivers;
+
+                var countPages = await orderService.GetCountPage(CompanyId, OrderConstants.OrderStatusDeliveredBilled, loadId, name, address, phone, email, price);
+
+                countPages += await orderService.GetCountPage(CompanyId, OrderConstants.OrderStatusDeliveredPaid, loadId, name, address, phone, email, price);
+                countPages += await orderService.GetCountPage(CompanyId, OrderConstants.OrderStatusDelivered, loadId, name, address, phone, email, price);
+
+                ViewBag.count = countPages;
+                    
+                ViewBag.LoadId = loadId;
+                ViewBag.Name = name;
+                ViewBag.Address = address;
+                ViewBag.Phone = phone;
+                ViewBag.Email = email;
+                ViewBag.price = price == 0 ? string.Empty : price.ToString();
+
+                ViewBag.SelectedPage = page;
+
+                return View("Delivered", mapper.Map<List<ShortOrderViewModel>>(shippings));
             }
             catch (Exception)
             {
@@ -564,53 +501,47 @@ namespace WebDispacher.Controellers
             return Redirect(Config.BaseReqvesteUrl);
         }
 
+        [HttpGet]
         [Route("Dashbord/Order/Paid")]
-        public async Task<IActionResult> Paid(string loadId, string name, string address, string phone, string email, string price, int page = 1)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> Paid(string loadId, string name, string address, string phone, string email, decimal price, int page = 1)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Dashboard, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-
-                    var shippings =
-                        await orderService.GetOrders(OrderConstants.OrderStatusDeliveredPaid, page, loadId, name, address, phone, email, price);
-                    
-                    var drivers = await driverService.GetDrivers(idCompany);
-                    ViewBag.Orders = GetShippingDTOs(shippings, drivers);
-                    ViewBag.Drivers = drivers;
-
-                    var countPages = await 
-                        orderService.GetCountPage(OrderConstants.OrderStatusDeliveredPaid, loadId, name, address, phone, email, price);
-
-                    ViewBag.count = countPages;
-
-                    ViewBag.LoadId = loadId;
-                    ViewBag.Name = name;
-                    ViewBag.Address = address;
-                    ViewBag.Phone = phone;
-                    ViewBag.Email = email;
-                    ViewBag.price = price;
-
-                    ViewBag.SelectedPage = page;
-
-                    return View("Paid");
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
+                    
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                var shippings =
+                    await orderService.GetOrders(CompanyId, OrderConstants.OrderStatusDeliveredPaid, page, loadId, name, address, phone, email, price);
+                    
+                var drivers = await driverService.GetDriversByCompanyId(CompanyId);
+                //ViewBag.Orders = GetShippingDTOs(shippings, drivers);
+                ViewBag.Drivers = drivers;
+
+                var countPages = await 
+                    orderService.GetCountPage(CompanyId, OrderConstants.OrderStatusDeliveredPaid, loadId, name, address, phone, email, price);
+
+                ViewBag.count = countPages;
+
+                ViewBag.LoadId = loadId;
+                ViewBag.Name = name;
+                ViewBag.Address = address;
+                ViewBag.Phone = phone;
+                ViewBag.Email = email;
+                ViewBag.price = price == 0 ? string.Empty : price.ToString();
+
+                ViewBag.SelectedPage = page;
+
+                return View("Paid", mapper.Map<List<ShortOrderViewModel>>(shippings));
             }
             catch (Exception)
             {
@@ -620,51 +551,45 @@ namespace WebDispacher.Controellers
             return Redirect(Config.BaseReqvesteUrl);
         }
 
+        [HttpGet]
         [Route("Dashbord/Order/Pickedup")]
-        public async Task<IActionResult> Pickedup(string loadId, string name, string address, string phone, string email, string price, int page = 1)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> Pickedup(string loadId, string name, string address, string phone, string email, decimal price, int page = 1)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Dashboard, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    var shippings = await orderService.GetOrders(OrderConstants.OrderStatusPickedUp, page, loadId, name, address, phone, email, price);
-                    
-                    var drivers = await driverService.GetDrivers(idCompany);
-                    
-                    ViewBag.Orders = GetShippingDTOs(shippings, drivers);
-                    ViewBag.Drivers = drivers;
-
-                    var countPages = await orderService.GetCountPage(OrderConstants.OrderStatusPickedUp, loadId, name, address, phone, email, price);
-
-                    ViewBag.count = countPages;
-
-                    ViewBag.LoadId = loadId;
-                    ViewBag.Name = name;
-                    ViewBag.Address = address;
-                    ViewBag.Phone = phone;
-                    ViewBag.Email = email;
-                    ViewBag.price = price;
-
-                    ViewBag.SelectedPage = page;
-
-                    return View("Pickedup");
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
+                    
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+                var shippings = await orderService.GetOrders(CompanyId, OrderConstants.OrderStatusPickedUp, page, loadId, name, address, phone, email, price);
+                    
+                var drivers = await driverService.GetDriversByCompanyId(CompanyId);
+                    
+                //ViewBag.Orders = GetShippingDTOs(shippings, drivers);
+                ViewBag.Drivers = drivers;
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                var countPages = await orderService.GetCountPage(CompanyId, OrderConstants.OrderStatusPickedUp, loadId, name, address, phone, email, price);
+
+                ViewBag.count = countPages;
+
+                ViewBag.LoadId = loadId;
+                ViewBag.Name = name;
+                ViewBag.Address = address;
+                ViewBag.Phone = phone;
+                ViewBag.Email = email;
+                ViewBag.price = price == 0 ? string.Empty : price.ToString();
+
+                ViewBag.SelectedPage = page;
+
+                return View("Pickedup", mapper.Map<List<ShortOrderViewModel>>(shippings));
             }
             catch (Exception)
             {
@@ -675,24 +600,16 @@ namespace WebDispacher.Controellers
         }
 
         [Route("Dashbord/Order/DeletedOrder")]
-        public async Task<IActionResult> DeletedOrder(string id, string status, string localDate, string filters)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> DeletedOrder(int id, string status, string localDate, string filters)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Dashboard, out var key, out var idCompany))
-                {
-                    await orderService.DeleteOrder(id);
-                    await Task.Run(() => orderService.AddHistory(key, "0", id, "0", "0", OrderConstants.ActionDeletedOrder, localDate));
-                    
-                    return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{status}?{filters}");
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                await orderService.DeleteOrder(id, localDate);
+                   
+                return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{status}?{filters}");
             }
             catch (Exception)
             {
@@ -704,25 +621,18 @@ namespace WebDispacher.Controellers
 
         [HttpPost]
         [Route("Dashbord/Order/DeletedOrder")]
-        public async Task<bool> DeletedOrder(string id, string localDate)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<bool> DeletedOrder(int id, string localDate)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Dashboard, out var key, out var idCompany))
-                {
-                    await orderService.DeleteOrder(id);
+                await orderService.DeleteOrder(id, localDate);
 
-                    await orderService.AddHistory(key, "0", id, "0", "0", OrderConstants.ActionDeletedOrder, localDate);
+                //await orderService.AddHistory(key, "0", id, "0", "0", OrderConstants.ActionDeletedOrder, localDate);
 
-                    return true;
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                return true;
             }
             catch (Exception)
             {
@@ -733,25 +643,16 @@ namespace WebDispacher.Controellers
         }
         
         [Route("Dashbord/Order/ArchivedOrder")]
-        public async Task<IActionResult> ArchivedOrder(string id, string filters, string localDate, string status = OrderConstants.OrderStatusNewLoad)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> ArchivedOrder(int id, string filters, string localDate, string status = OrderConstants.OrderStatusNewLoad)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Dashboard, out var key, out var idCompany))
-                {
-                    await orderService.ArchiveOrder(id);
-                    
-                     await Task.Run(() => orderService.AddHistory(key, "0", id, "0", "0", OrderConstants.ActionArchivedOrder, localDate));
-
-                    return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{status}?{filters}");
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                await orderService.ArchiveOrder(id, localDate);
+                
+                return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{status}?{filters}");
             }
             catch (Exception)
             {
@@ -763,71 +664,47 @@ namespace WebDispacher.Controellers
 
         [HttpPost]
         [Route("Dashbord/Order/ArchivedOrder")]
-        public async Task<bool> ArchivedOrder(string id,string localDate)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<bool> ArchivedOrder(int id,string localDate)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Dashboard, out var key, out var idCompany))
-                {
-                    await orderService.ArchiveOrder(id);
+                await orderService.ArchiveOrder(id, localDate);
                     
-                    await Task.Run(() => orderService.AddHistory(key, "0", id, "0", "0", OrderConstants.ActionArchivedOrder, localDate));
+                //await Task.Run(() => orderService.AddHistory(key, "0", id, "0", "0", OrderConstants.ActionArchivedOrder, localDate));
 
-                    return true;
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                return true;
             }
             catch (Exception)
             {
-
+                return false;
             }
-
-            return false;
         }
 
         [Route("Dashbord/Order/FullInfoOrder")]
-        public IActionResult FullInfoOrder(string id, string status)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> FullInfoOrder(int id, string status)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Dashboard, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-
-                    if (string.IsNullOrEmpty(id)) return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{status}");
-                    var order = orderService.GetOrder(id);
-
-                    ViewBag.Historys = orderService.GetHistoryOrder(id).Select(x => new ShowHistoryViewModel()
-                    {
-                            Action = orderService.GetStrAction(key, x.IdConmpany.ToString(), x.IdOreder.ToString(),
-                                x.IdVech.ToString(), x.IdDriver.ToString(), x.TypeAction),
-                            DateAction = x.DateAction
-                        })
-                       .Reverse().ToList();
-
-                    return View("FullInfoOrder", order);
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+
+                if (id == 0) return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{status}");
+                var order = await orderService.GetOrderWithHistory(CompanyId, id);
+
+                return View("FullInfoOrder", order);
             }
             catch (Exception)
             {
@@ -836,44 +713,39 @@ namespace WebDispacher.Controellers
             
             return Redirect(Config.BaseReqvesteUrl);
         }
-        
-         [Route("Dashbord/Order/Edit")]
-         [ResponseCache(Location = ResponseCacheLocation.None, Duration = 300)]
-         public IActionResult EditOrder(string id, string status)
-         {
-             try
-             {
-                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+        [HttpGet]
+        [Route("Dashbord/Order/Edit")]
+        [ResponseCache(Location = ResponseCacheLocation.None, Duration = 300)]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> EditOrder(int id, string status)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                  
-                 if (CheckPermissionsByCookies(RouteConstants.Dashboard, out var key, out var idCompany))
-                 {
-                     ViewBag.NameCompany = GetCookieCompanyName();
-                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
 
-                     if (string.IsNullOrEmpty(id)) return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{status}");
+                if (id==0) return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{status}");
                      
-                     var order = orderService.GetOrder(id);
+                var order = await orderService.GetEditCompanyOrderById(CompanyId, id);
                      
-                     Status = status;
-                     ViewBag.Status = status;
+                Status = status;
+                ViewBag.Status = status;
 
-                     return View(order);
-                 }
-
-                 if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                 {
-                     Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                 }
-             }
-             catch (Exception)
-             {
+                return View(order);
+            }
+            catch (Exception)
+            {   
          
-             }
+            }
              
-             return Redirect(Config.BaseReqvesteUrl);
-         }
+            return Redirect(Config.BaseReqvesteUrl);
+        }
          
         [Route("Dashbord/Order/EditReload")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         [ResponseCache(Location = ResponseCacheLocation.None, Duration = 300)]
         public IActionResult EditReload(string id, string status, ShippingViewModel model)
         {
@@ -881,55 +753,47 @@ namespace WebDispacher.Controellers
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Dashboard, out var key, out var idCompany))
-                {
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
 
-                    if (string.IsNullOrEmpty(id)) return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{status}");
-                    var searchOrder = orderService.GetOrder(id);
+                if (string.IsNullOrEmpty(id)) return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/{status}");
+                var searchOrder = new ShippingViewModel();// orderService.GetOrder(id);
                         
-                    var order = searchOrder ?? new ShippingViewModel();
+                var order = searchOrder ?? new ShippingViewModel();
                         
-                    order.NameP = model.NameP;
-                    order.ContactNameP = model.ContactNameP;
-                    order.CurrentStatus = model.CurrentStatus;
-                    order.AddresP = model.AddresP;
-                    order.CityP = model.CityP;
-                    order.StateP = model.StateP;
-                    order.IdOrder = model.IdOrder;
-                    order.ZipP = model.ZipP;
-                    order.PhoneP = model.PhoneP;
-                    order.EmailP = model.EmailP;
-                    order.PickupExactly = model.PickupExactly;
-                    order.Titl1DI = model.Titl1DI;
-                    order.NameD = model.NameD;
-                    order.ContactNameD = model.ContactNameD;
-                    order.AddresD = model.AddresD;
-                    order.CityD = model.CityD;
-                    order.StateD = model.StateD;
-                    order.ZipD = model.ZipD;
-                    order.PhoneD = model.PhoneD;
-                    order.EmailD = model.EmailD;
-                    order.TotalPaymentToCarrier = model.TotalPaymentToCarrier;
-                    order.PriceListed = model.PriceListed;
-                    order.BrokerFee = model.BrokerFee;
-                    order.ContactC = model.ContactC;
-                    order.FaxC = model.FaxC;
-                    order.PhoneC = model.PhoneC;
-                    order.IccmcC = model.IccmcC;
+                order.NameP = model.NameP;
+                order.ContactNameP = model.ContactNameP;
+                order.CurrentStatus = model.CurrentStatus;
+                order.AddresP = model.AddresP;
+                order.CityP = model.CityP;
+                order.StateP = model.StateP;
+                order.IdOrder = model.IdOrder;
+                order.ZipP = model.ZipP;
+                order.PhoneP = model.PhoneP;
+                order.EmailP = model.EmailP;
+                order.PickupExactly = model.PickupExactly;
+                order.Titl1DI = model.Titl1DI;
+                order.NameD = model.NameD;
+                order.ContactNameD = model.ContactNameD;
+                order.AddresD = model.AddresD;
+                order.CityD = model.CityD;
+                order.StateD = model.StateD;
+                order.ZipD = model.ZipD;
+                order.PhoneD = model.PhoneD;
+                order.EmailD = model.EmailD;
+                order.TotalPaymentToCarrier = model.TotalPaymentToCarrier;
+                order.PriceListed = model.PriceListed;
+                order.BrokerFee = model.BrokerFee;
+                order.ContactC = model.ContactC;
+                order.FaxC = model.FaxC;
+                order.PhoneC = model.PhoneC;
+                order.IccmcC = model.IccmcC;
                         
-                    Status = status;
-                    ViewBag.Status = status;
+                Status = status;
+                ViewBag.Status = status;
 
-                    return View("EditOrder", order);
+                return View("EditOrder", order);
 
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
             }
             catch (Exception)
             {
@@ -938,7 +802,8 @@ namespace WebDispacher.Controellers
             return Redirect(Config.BaseReqvesteUrl);
         }
         
-        [Route("Dashbord/Order/Creat")]
+        [Route("Dashbord/Order/Create")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         [ResponseCache(Location = ResponseCacheLocation.None, Duration = 300)]
         public async Task<IActionResult> CreatOrderpage(string localDate)
         {
@@ -946,22 +811,10 @@ namespace WebDispacher.Controellers
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Dashboard, out var key, out var idCompany))
-                {
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    var shipping = await orderService.CreateShipping();
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+                var shipping = await orderService.CreateOrder(CompanyId, localDate);
 
-                    await orderService.AddHistory(key, "0", shipping.Id, "0", "0", OrderConstants.ActionCreate, localDate);
-
-                    return RedirectToAction("EditOrder", new { id = shipping.Id, status = "NewLoad" });
-                    //return Redirect($"{Config.BaseReqvesteUrl}/Dashbord/Order/Edit?id={shipping.Id}&status=NewLoad");
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                return RedirectToAction("EditOrder", new { id = shipping.Id, status = "NewLoad" });
             }
             catch (Exception)
             {
@@ -972,29 +825,23 @@ namespace WebDispacher.Controellers
         }
 
         [HttpPost]
-        [Route("Dashbord/Order/Creat")]
+        [Route("Dashbord/Order/Create")]
         [ResponseCache(Location = ResponseCacheLocation.None, Duration = 300)]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         public async Task<string> CreatOrder(string localDate)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Dashboard, out var key, out var idCompany))
-                {
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    var shipping = await orderService.CreateShipping();
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+                var shipping = await orderService.CreateOrder(CompanyId, localDate);
 
-                    await orderService.AddHistory(key, "0", shipping.Id, "0", "0", OrderConstants.ActionCreate, localDate);
+                //await orderService.AddHistory(key, "0", shipping.Id, "0", "0", OrderConstants.ActionCreate, localDate);
 
-                    return shipping.Id;
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                return shipping.Id.ToString();
+                //return shipping.Id;
             }
             catch (Exception)
             {
@@ -1004,34 +851,25 @@ namespace WebDispacher.Controellers
             return null;
         }
 
+        [HttpPost]
         [Route("Dashbord/Order/SavaOrder")]
-        public async Task<IActionResult> SaveOrder(ShippingViewModel shipping, string localDate)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> SaveOrder(EditOrderViewModel model, string dateTimeLocal)
         {
-            ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
+            ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
             if (ModelState.IsValid)
             {
                 try
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-                    if (CheckPermissionsByCookies(RouteConstants.Dashboard, out var key, out var idCompany))
-                    {
-                        var updatedOrder = await orderService.UpdateOrder(shipping);
+                    var updatedOrder = await orderService.UpdateOrder(model, dateTimeLocal);
 
-                        await Task.Run(() =>
-                            orderService.AddHistory(key, "0", shipping.Id, "0", "0", OrderConstants.ActionSaveOrder, localDate));
+                    var navReturnPage = updatedOrder.CurrentStatus.StatusName.Replace(" ", "");
 
-                        var navReturnPage = updatedOrder.CurrentStatus.Replace(" ", "");
-
-                        return Redirect(updatedOrder == null
-                            ? $"{Config.BaseReqvesteUrl}/Dashbord/Order/NewLoad"
-                            : $"{Config.BaseReqvesteUrl}/Dashbord/Order/{navReturnPage}");
-                    }
-
-                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                    {
-                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                    }
+                    return Redirect(updatedOrder == null
+                        ? $"{Config.BaseReqvesteUrl}/Dashbord/Order/NewLoad"
+                        : $"{Config.BaseReqvesteUrl}/Dashbord/Order/{navReturnPage}");
                 }
                 catch (Exception)
                 {
@@ -1047,90 +885,117 @@ namespace WebDispacher.Controellers
         }
 
         [Route("Dashbord/Order/SavaVech")]
-        public async Task<bool> SavaVech(string idOrder, string idVech, string VIN, string Year,
-            string Make, string Model, string Type, string Color, string LotNumber, string localDate)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<bool> SavaVech(int orderId, int vehicleId, string VIN, string Year,
+            string Make, string Model, string Type, string body, string Color, string LotNumber, string localDate)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Dashboard, out var key, out var idCompany))
-                {
-                    await orderService.SaveVechi(idVech, VIN, Year, Make, Model, Type,  Color, LotNumber);
+                if(!string.IsNullOrEmpty(Make) && !string.IsNullOrEmpty(Model) && !string.IsNullOrEmpty(Type) && !string.IsNullOrEmpty(body))
+                    await orderService.SaveVechicle(vehicleId, VIN, Year, Make, Model, Type, body, Color, LotNumber, localDate);
 
-                    await orderService.AddHistory(key, "0", "0", idVech, "0", OrderConstants.ActionSaveOrder, localDate);
-
-                    return true;
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                return true;
             }
             catch (Exception)
             {
                 return false;
             }
-
-            return false;
         }
 
         [Route("Dashbord/Order/RemoveVech")]
-        public async Task<string> RemoveVech(string idVech, string localDate)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<PartialViewResult> RemoveVech(int vehicleId, int orderId, string localDate)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-                if (CheckPermissionsByCookies(RouteConstants.Dashboard, out var key, out var idCompany))
-                {
-                    await orderService.AddHistory(key, "0", "0", idVech, "0", OrderConstants.ActionRemoveVech, localDate);
+                await orderService.RemoveVechicle(vehicleId);
 
-                    await orderService.RemoveVechi(idVech);
-                    
-                    return OrderConstants.SuccessfullyRemovedVehicle;
-                }
+                var updatedVehiclesList = await orderService.GetVehicleDetailsByOrderId(orderId);
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
-                return OrderConstants.UnAuthorizedUserCannotChangeOrder;
+                return PartialView("~/Views/PartView/Vehicles/_VehiclesTable.cshtml", updatedVehiclesList);
             }
             catch (Exception)
             {
-                return OrderConstants.ErrorRemovedVehicle;
+                return PartialView("~/Views/PartView/Vehicles/_VehiclesTable.cshtml", new List<VehicleDetails>());
             }
         }
 
-        [Route("Dashbord/Order/AddVech")]
-        public async Task<string> AddVech(string idOrder, string localDate)
+        [Route("Dashbord/Order/GetVehicleModels")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<List<string>> GetVehicleModels(string searchName, string vehicleBrand)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                
-                if (CheckPermissionsByCookies(RouteConstants.Dashboard, out var key, out var idCompany))
-                {
-                    var vehiclwInformation = await orderService.AddVechi(idOrder);
-                    
-                    await Task.Run(() => orderService.AddHistory(key, "0", idOrder, vehiclwInformation.Id.ToString(),
-                        "0", OrderConstants.ActionAddVech, localDate));
-                    ViewBag.Vech = vehiclwInformation;
-                    return OrderConstants.SuccessfullyAddedVehicle;
-                }
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
-                
-                return OrderConstants.UnAuthorizedUserCannotChangeOrder;
+                var vehiclesModels = await orderService.GetVehicleModels(searchName, vehicleBrand);
+
+                return vehiclesModels;
             }
             catch (Exception)
             {
-                return OrderConstants.ErrorAddedVehicle;
+                return new List<string>();
+            }
+        }
+        
+        [Route("Dashbord/Order/GetVehicleBrands")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<List<string>> GetVehicleBrands(string searchName, string vehicleType)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+                var vehicleBrands = await orderService.GetVehicleBrands(searchName, vehicleType);
+
+                return vehicleBrands;
+            }
+            catch (Exception)
+            {
+                return new List<string>();
+            }
+        }
+        
+        [Route("Dashbord/Order/GetVehiclesTypes")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<List<string>> GetVehiclesTypes(string searchName)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+                var vehicleTypes = await orderService.GetVehicleTypes(searchName);
+
+                return vehicleTypes;
+            }
+            catch (Exception)
+            {
+                return new List<string>();
+            }
+        }
+
+        [HttpPost]
+        [Route("Dashbord/Order/AddVech")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<PartialViewResult> AddVech(int orderId, string localDate)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+                var vehiclwInformation = await orderService.AddVechicle(orderId, localDate);
+
+                var updatedVehiclesList = await orderService.GetVehicleDetailsByOrderId(orderId);
+
+                return PartialView("~/Views/PartView/Vehicles/_VehiclesTable.cshtml", updatedVehiclesList);
+            }
+            catch (Exception ex)
+            {
+                return PartialView("~/Views/PartView/Vehicles/_VehiclesTable.cshtml", new List<VehicleDetails>());
             }
         }
 
@@ -1143,9 +1008,9 @@ namespace WebDispacher.Controellers
             return File(imageFileStream, $"image/{type}");
         }
 
-        private List<ShippingDTO> GetShippingDTOs(List<Shipping> shippings, List<Driver> drivers)
+        private List<ShippingDTO> GetShippingDTOs(List<DaoModels.DAO.Models.Order> shippings, List<Driver> drivers)
         {
-            return shippings.Select(z => new ShippingDTO()
+            /*return shippings.Select(z => new ShippingDTO()
             {
                 Id = z.Id,
                 AddresD = z.AddresD,
@@ -1198,7 +1063,8 @@ namespace WebDispacher.Controellers
                 VehiclwInformations = z.VehiclwInformations,
                 ZipD = z.ZipD,
                 ZipP = z.ZipP
-            }).ToList();
+            }).ToList();*/
+            return null;
         }
     }
 }

@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
 using DaoModels.DAO.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebDispacher.Business.Interfaces;
 using WebDispacher.Constants;
+using WebDispacher.Constants.Identity;
 using WebDispacher.Service;
 using WebDispacher.ViewModels.Trailer;
 using WebDispacher.ViewModels.Truck;
@@ -32,38 +35,31 @@ namespace WebDispacher.Controellers
         }
 
         [Route("Trucks")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         public async Task<IActionResult> Trucks(int page = 1)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    ViewBag.Trucks = await truckAndTrailerService.GetTrucks(page, idCompany);
-
-                    var countPages = await truckAndTrailerService.GetCountTrucksPages(idCompany);
-
-                    ViewBag.CountPages = countPages;
-
-                    ViewBag.SelectedPage = page;
-
-                    return View($"AllTruck");
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+
+                var trucks = await truckAndTrailerService.GetTrucks(page, CompanyId);
+
+                var countPages = await truckAndTrailerService.GetCountTrucksPages(CompanyId);
+
+                ViewBag.CountPages = countPages;
+
+                ViewBag.SelectedPage = page;
+
+                return View($"AllTruck", trucks);
             }
             catch (Exception)
             {
@@ -74,38 +70,31 @@ namespace WebDispacher.Controellers
         }
 
         [Route("Trailers")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         public async Task<IActionResult> Trailers(int page = 1)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    ViewBag.Trailers = await truckAndTrailerService.GetTrailers(page, idCompany);
-
-                    var countPages = await truckAndTrailerService.GetCountTrailersPages(idCompany);
-
-                    ViewBag.CountPages = countPages;
-
-                    ViewBag.SelectedPage = page;
-
-                    return View($"AllTrailer");
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+                
+                var trailers = await truckAndTrailerService.GetTrailers(page, CompanyId);
+
+                var countPages = await truckAndTrailerService.GetCountTrailersPages(CompanyId);
+
+                ViewBag.CountPages = countPages;
+
+                ViewBag.SelectedPage = page;
+
+                return View($"AllTrailer", trailers);
             }
             catch (Exception)
             {
@@ -116,23 +105,16 @@ namespace WebDispacher.Controellers
         }
 
         [Route("Truck/Remove")]
-        public IActionResult RemoveTruck(string id)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> RemoveTruck(int id)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
-                {
-                    truckAndTrailerService.RemoveTruck(id);
+                await truckAndTrailerService.RemoveTruck(id);
                     
-                    return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trucks");
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trucks");
             }
             catch (Exception)
             {
@@ -144,23 +126,16 @@ namespace WebDispacher.Controellers
 
         [HttpPost]
         [Route("Truck/Remove")]
-        public async Task<bool> DeleteTruck(string id)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<bool> DeleteTruck(int id)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
-                {
-                    await truckAndTrailerService.RemoveTruck(id);
+                await truckAndTrailerService.RemoveTruck(id);
 
-                    return true;
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                return true;
             }
             catch (Exception)
             {
@@ -172,31 +147,24 @@ namespace WebDispacher.Controellers
 
         [HttpGet]
         [Route("CreateTruck")]
-        public IActionResult CreateDriver()
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public IActionResult CreateTruck()
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    
-                    return View("CreateTruck");
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                    
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+                    
+                return View("CreateTruck");
             }
             catch (Exception)
             {
@@ -209,9 +177,10 @@ namespace WebDispacher.Controellers
         [HttpPost]
         [Route("CreateTruck")]
         [DisableRequestSizeLimit]
-        public async Task<IActionResult> CreateDriver(TruckViewModel truck, IFormFile truckRegistrationDoc, 
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> CreateTruck(TruckViewModel truck, IFormFile truckRegistrationDoc, 
             IFormFile truckLeaseAgreementDoc, IFormFile truckAnnualInspection, IFormFile bobTailPhysicalDamage, 
-            IFormFile nYHUTDoc)
+            IFormFile nYHUTDoc, string dateTimeLocal)
         {
             if (ModelState.IsValid)
             {
@@ -219,18 +188,10 @@ namespace WebDispacher.Controellers
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-                    if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
-                    {
-                        await truckAndTrailerService.CreateTruck(truck, idCompany, truckRegistrationDoc,
-                            truckLeaseAgreementDoc, truckAnnualInspection, bobTailPhysicalDamage, nYHUTDoc);
+                    await truckAndTrailerService.CreateTruck(truck, CompanyId, truckRegistrationDoc,
+                        truckLeaseAgreementDoc, truckAnnualInspection, bobTailPhysicalDamage, nYHUTDoc, dateTimeLocal);
 
-                        return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trucks");
-                    }
-
-                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                    {
-                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                    }
+                    return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trucks");
                 }
                 catch (Exception)
                 {
@@ -239,30 +200,23 @@ namespace WebDispacher.Controellers
             }
             else
             {
-                return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trucks");
+                return View("CreateTruck", truck);
             }
 
             return Redirect(Config.BaseReqvesteUrl);
         }
 
         [Route("Trailer/Remove")]
-        public IActionResult RemoveTrailer(string id)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> RemoveTrailer(int id)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
-                {
-                    truckAndTrailerService.RemoveTrailer(id);
+                await truckAndTrailerService.RemoveTrailer(id);
                     
-                    return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trailers");
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trailers");
             }
             catch (Exception)
             {
@@ -274,23 +228,16 @@ namespace WebDispacher.Controellers
 
         [HttpPost]
         [Route("Trailer/Remove")]
-        public async Task<bool> DeleteTrailer(string id)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<bool> DeleteTrailer(int id)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
-                {
-                    await truckAndTrailerService.RemoveTrailer(id);
+                await truckAndTrailerService.RemoveTrailer(id);
 
-                    return true;
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                return true;
             }
             catch (Exception)
             {
@@ -302,6 +249,7 @@ namespace WebDispacher.Controellers
 
         [HttpGet]
         [Route("CreateTrailer")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public IActionResult CreateTrailer()
         {
@@ -309,25 +257,17 @@ namespace WebDispacher.Controellers
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    
-                    return View("CreateTraler");
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                    
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+                    
+                return View("CreateTraler");
             }
             catch (Exception)
             {
@@ -340,27 +280,25 @@ namespace WebDispacher.Controellers
         [HttpPost]
         [Route("CreateTrailer")]
         [DisableRequestSizeLimit]
-        public IActionResult CreateTrailer(TrailerViewModel trailer,
-            IFormFile trailerRegistrationDoc, IFormFile trailerAnnualInspectionDoc, IFormFile leaseAgreementDoc)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> CreateTrailer(TrailerViewModel trailer,
+            IFormFile trailerRegistrationDoc, IFormFile trailerAnnualInspectionDoc, IFormFile leaseAgreementDoc, string dateTimeLocal)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
+                   /* if (DateTime.TryParseExact(trailer.Exp, "MM/yy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate))
+                    {
+
+                    }*/
+
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-                    if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
-                    {
-                        truckAndTrailerService.CreateTrailer(trailer, idCompany, trailerRegistrationDoc,
-                            trailerAnnualInspectionDoc, leaseAgreementDoc);
+                    await truckAndTrailerService.CreateTrailer(trailer, CompanyId, trailerRegistrationDoc,
+                        trailerAnnualInspectionDoc, leaseAgreementDoc, dateTimeLocal);
 
-                        return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trailers");
-                    }
-
-                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                    {
-                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                    }
+                    return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trailers");
                 }
                 catch (Exception)
                 {
@@ -369,7 +307,7 @@ namespace WebDispacher.Controellers
             }
             else
             {
-                return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trailers");
+                return View("CreateTraler", trailer);
             }
             
 
@@ -378,35 +316,28 @@ namespace WebDispacher.Controellers
 
         [HttpGet]
         [Route("EditTruck")]
-        public async Task<IActionResult> EditTruck(int idTruck)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> EditTruck(int truckId)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    
-                    var truck = truckAndTrailerService.GetTruckById(idTruck);
-
-                    ViewBag.TruckDocs = await truckAndTrailerService.GetBaseTruckDoc(idTruck.ToString());
-
-                    return View(truck);
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
+                    
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+                    
+                var truck = await truckAndTrailerService.GetTruckById(truckId);
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                ViewBag.TruckDocs = await truckAndTrailerService.GetBaseTruckDoc(truckId.ToString());
+
+                return View(truck);
             }
             catch (Exception)
             {
@@ -419,9 +350,10 @@ namespace WebDispacher.Controellers
         [HttpPost]
         [Route("EditTruck")]
         [DisableRequestSizeLimit]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         public async Task<IActionResult> EditTruck(TruckViewModel truck, IFormFile truckRegistrationDoc,
             IFormFile truckLeaseAgreementDoc, IFormFile truckAnnualInspection, IFormFile bobTailPhysicalDamage,
-            IFormFile nYHUTDoc)
+            IFormFile nYHUTDoc, string localDate)
         {
             if (ModelState.IsValid && truck.Id != 0)
             {
@@ -429,18 +361,11 @@ namespace WebDispacher.Controellers
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-                    if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
-                    {
-                        await truckAndTrailerService.EditTruck(truck, truckRegistrationDoc,
-                            truckLeaseAgreementDoc, truckAnnualInspection, bobTailPhysicalDamage, nYHUTDoc);
+                    await truckAndTrailerService.EditTruck(truck, truckRegistrationDoc,
+                        truckLeaseAgreementDoc, truckAnnualInspection, bobTailPhysicalDamage, nYHUTDoc, localDate);
 
-                        return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trucks");
-                    }
 
-                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                    {
-                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                    }
+                    return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trucks");
                 }
                 catch (Exception)
                 {
@@ -449,7 +374,8 @@ namespace WebDispacher.Controellers
             }
             else
             {
-                return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trucks");
+                ViewBag.TruckDocs = await truckAndTrailerService.GetBaseTruckDoc(truck.Id.ToString());
+                return View("EditTruck", truck);
             }
 
             return Redirect(Config.BaseReqvesteUrl);
@@ -457,33 +383,26 @@ namespace WebDispacher.Controellers
 
         [HttpGet]
         [Route("EditTrailer")]
-        public IActionResult EditTrailer(int idTrailer)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public IActionResult EditTrailer(int trailerId)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-                if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    
-                    var model = truckAndTrailerService.GetTrailerById(idTrailer);
-                    
-                    return View(model);
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                    
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+                    
+                var model = truckAndTrailerService.GetTrailerById(trailerId);
+                    
+                return View(model);
             }
             catch (Exception)
             {
@@ -493,10 +412,11 @@ namespace WebDispacher.Controellers
             return Redirect(Config.BaseReqvesteUrl);
         }
 
-        [HttpPost]
+        [HttpPost] 
         [Route("EditTrailer")]
         [DisableRequestSizeLimit]
-        public IActionResult EditTrailer(TrailerViewModel trailer)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> EditTrailer(TrailerViewModel trailer, string localDate)
         {
             if (ModelState.IsValid && trailer.Id != 0)
             {
@@ -504,17 +424,9 @@ namespace WebDispacher.Controellers
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-                    if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
-                    {
-                        truckAndTrailerService.EditTrailer(trailer);
+                    await truckAndTrailerService.EditTrailer(trailer, localDate);
 
-                        return Redirect($"{Config.BaseReqvesteUrl}/Equipment/trailers");
-                    }
-
-                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                    {
-                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                    }
+                    return Redirect($"{Config.BaseReqvesteUrl}/Equipment/trailers");
                 }
                 catch (Exception)
                 {
@@ -523,7 +435,7 @@ namespace WebDispacher.Controellers
             }
             else
             {
-                return Redirect($"{Config.BaseReqvesteUrl}/Equipment/trailers");
+                return View(trailer);
             }
 
             return Redirect(Config.BaseReqvesteUrl);
@@ -531,31 +443,22 @@ namespace WebDispacher.Controellers
 
         [HttpPost]
         [Route("SaveFile")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         public string AddFile(IFormFile uploadedFile, string id)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
+                if (uploadedFile != null)
                 {
-                    if (uploadedFile != null)
-                    {
-                        var path = $"../Document/Truck/{id}/" + uploadedFile.FileName;
-                        Directory.CreateDirectory($"../Document/Truck/{id}");
-                        orderService.SavePath(id, path);
+                    var path = $"../Document/Truck/{id}/" + uploadedFile.FileName;
+                    Directory.CreateDirectory($"../Document/Truck/{id}");
+                    orderService.SavePath(id, path);
                         
-                        using (var fileStream = new FileStream(path, FileMode.Create))
-                        {
-                            uploadedFile.CopyTo(fileStream);
-                        }
-                    }
-                }
-                else
-                {
-                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKeyTaxi))
+                    using (var fileStream = new FileStream(path, FileMode.Create))
                     {
-                        Response.Cookies.Delete(CookiesKeysConstants.CarKeyTaxi);
+                        uploadedFile.CopyTo(fileStream);
                     }
                 }
             }
@@ -588,34 +491,29 @@ namespace WebDispacher.Controellers
 
         [Route("Truck/Doc")]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
-        public async Task<IActionResult> GoToViewTruckDoc(string id)
+        public async Task<IActionResult> GoToViewTruckDoc(int id)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
-                {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                    var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
                     
                     if (isCancelSubscribe)
                     {
                         return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                     }
                     
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    ViewBag.TruckDoc = await truckAndTrailerService.GetTruckDoc(id);
+                    //ViewBag.NameCompany = GetCookieCompanyName();
+
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+
+                    var truckDocs = await truckAndTrailerService.GetTruckDoc(id);
+
                     ViewBag.TruckId = id;
                     
-                    return View("DocTruck");
+                    return View("DocTruck", truckDocs);
                 }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
-            }
             catch (Exception e)
             {
 
@@ -625,34 +523,27 @@ namespace WebDispacher.Controellers
         }
 
         [Route("Trailer/Doc")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
-        public async Task<IActionResult> GoToViewTraileDoc(string id)
+        public async Task<IActionResult> GoToViewTraileDoc(int id)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    ViewBag.TrailerDoc = await truckAndTrailerService.GetTrailerDoc(id);
-                    ViewBag.TrailerId = id;
-                    
-                    return View("DocTrailer");
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                    
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+                var trailerDocs = await truckAndTrailerService.GetTrailerDocsById(id);
+                ViewBag.TrailerId = id;
+                    
+                return View("DocTrailer", trailerDocs);
             }
             catch (Exception e)
             {
@@ -663,26 +554,19 @@ namespace WebDispacher.Controellers
         }
         
         [Route("Truck/SaveDoc")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
-        public IActionResult SaveDocTruck(IFormFile uploadedFile, string nameDoc, string id)
+        public async Task<IActionResult> SaveDocTruck(IFormFile uploadedFile, string nameDoc, int id, string localDate)
         {
-            if (!string.IsNullOrEmpty(nameDoc) && !string.IsNullOrEmpty(id) && uploadedFile != null)
+            if (!string.IsNullOrEmpty(nameDoc) && uploadedFile != null)
             {
                 try
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-                    if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
-                    {
-                        truckAndTrailerService.SaveDocTruck(uploadedFile, nameDoc, id);
+                    await truckAndTrailerService.SaveDocTruck(uploadedFile, nameDoc, id, localDate);
                         
-                        return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Truck/Doc?id={id}");
-                    }
-
-                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                    {
-                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                    }
+                    return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Truck/Doc?id={id}");
                 }
                 catch (Exception e)
                 {
@@ -698,25 +582,18 @@ namespace WebDispacher.Controellers
         }
         
         [Route("Trailer/DocSaveById")]
-        public IActionResult Trailer(IFormFile uploadedFile, string nameDoc, string id)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> Trailer(IFormFile uploadedFile, string nameDoc, int id, string localDate)
         {
-            if (!string.IsNullOrEmpty(nameDoc) && !string.IsNullOrEmpty(id) && uploadedFile != null)
+            if (!string.IsNullOrEmpty(nameDoc) && uploadedFile != null)
             {
                 try
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-                    if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
-                    {
-                        truckAndTrailerService.SaveDocTrailer(uploadedFile, nameDoc, id);
+                    await truckAndTrailerService.SaveDocTrailer(uploadedFile, nameDoc, id, localDate);
 
-                        return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trailer/Doc?id={id}");
-                    }
-
-                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                    {
-                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                    }
+                    return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trailer/Doc?id={id}");
                 }
                 catch (Exception e)
                 {
@@ -732,26 +609,19 @@ namespace WebDispacher.Controellers
         }
         
         [Route("Truck/DocSaveById")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
-        public IActionResult DocSaveById(IFormFile uploadedFile, string nameDoc, string id)
+        public async Task<IActionResult> DocSaveById(IFormFile uploadedFile, string nameDoc, int id, string localDate)
         {
-            if (!string.IsNullOrEmpty(nameDoc) && !string.IsNullOrEmpty(id) && uploadedFile != null)
+            if (!string.IsNullOrEmpty(nameDoc) && uploadedFile != null)
             {
                 try
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-                    if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
-                    {
-                        truckAndTrailerService.SaveDocTruck(uploadedFile, nameDoc, id);
+                    await truckAndTrailerService.SaveDocTruck(uploadedFile, nameDoc, id, localDate);
 
-                        return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Truck/Doc/?id={id}");
-                    }
-
-                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                    {
-                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                    }
+                    return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Truck/Doc/?id={id}");
                 }
                 catch (Exception e)
                 {
@@ -767,25 +637,18 @@ namespace WebDispacher.Controellers
         }
 
         [Route("Trailer/SaveDoc")]
-        public IActionResult SaveDocTrailer(IFormFile uploadedFile, string nameDoc, string id)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> SaveDocTrailer(IFormFile uploadedFile, string nameDoc, int id, string localDate)
         {
-            if (!string.IsNullOrEmpty(nameDoc) && !string.IsNullOrEmpty(id) && uploadedFile != null)
+            if (!string.IsNullOrEmpty(nameDoc) && uploadedFile != null)
             {
                 try
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-                    if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
-                    {
-                        truckAndTrailerService.SaveDocTrailer(uploadedFile, nameDoc, id);
+                    await truckAndTrailerService.SaveDocTrailer(uploadedFile, nameDoc, id, localDate);
                         
-                        return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trailer/Doc?id={id}");
-                    }
-
-                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                    {
-                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                    }
+                    return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trailer/Doc?id={id}");
                 }
                 catch (Exception e)
                 {
@@ -800,25 +663,39 @@ namespace WebDispacher.Controellers
             return Redirect(Config.BaseReqvesteUrl);
         }
 
-        [Route("RemoveDoc")]
-        public IActionResult RemoveDoc(string idDock, string id, string type)
+        [Route("Trailer/RemoveDoc")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> RemoveTrailerDoc(int docId, string id)
         {
             ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Equipment, out var key, out var idCompany))
-                {
-                    orderService.RemoveDoc(idDock);
+                await truckAndTrailerService.RemoveDocTrailer(docId);
                     
-                    return Redirect($"{Config.BaseReqvesteUrl}/Equipment/{type}/Doc?id={id}");
-                }
+                return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trailer/Doc?id={id}");
+            }
+            catch (Exception e)
+            {
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+            }
+            
+            return Redirect(Config.BaseReqvesteUrl);
+        }
+        
+        [Route("Truck/RemoveDoc")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> RemoveTruckDoc(int docId, string id)
+        {
+            ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                
+                await truckAndTrailerService.RemoveDocTruck(docId);
+                    
+                return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Truck/Doc?id={id}");
             }
             catch (Exception e)
             {
@@ -829,6 +706,7 @@ namespace WebDispacher.Controellers
         }
 
         [Route("GetDock")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public IActionResult GetDock(string docPath, string type)
         {
@@ -838,6 +716,7 @@ namespace WebDispacher.Controellers
         }
 
         [Route("GetDockPDF")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public IActionResult GetDockPDF(string docPath)
         {
@@ -848,6 +727,7 @@ namespace WebDispacher.Controellers
 
         [HttpGet]
         [Route("Image")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public IActionResult GetShiping(string name, string type)
         {

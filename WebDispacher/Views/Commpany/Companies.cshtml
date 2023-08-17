@@ -1,7 +1,9 @@
-﻿@using Microsoft.AspNetCore.Mvc.Localization
-@using System.Globalization;
+﻿@using DaoModels.DAO.Enum;
+@using Microsoft.AspNetCore.Mvc.Localization
 @using WebDispacher.Constants;
 @using WebDispacher.Service;
+
+@model List<DaoModels.DAO.Models.Company>
 
 @inject IViewLocalizer Localizer
 
@@ -38,90 +40,70 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @for (int i = 0; i < ViewBag.Companies.Count; i++)
+                                    @for (int i = 0; i < Model.Count; i++)
                                     {
+                                        foreach (var item in Model[i].CompanyUsers)
                                         {
-                                            var dateTimeString = ViewBag.Companies[i].DateRegistration;
-
-                                            try
+                                            string entryType = string.Empty;
+                                            bool isActive = true;
+                                            switch (Model[i].CompanyStatus)
                                             {
-                                                dateTimeRegistrationFormat = DateTime.ParseExact(dateTimeString, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
-                                            }
-                                            catch
-                                            {
-
-                                            }
-                                        }
-
-                                        string entryType = string.Empty;
-                                        bool isActive = true;
-                                        switch (ViewBag.Companies[i].CompanyType)
-                                        {
-                                            case CompanyConstants.DeactivateCompany:
-                                                entryType = "deactivate";
-                                                isActive = false;
-                                                break;
-                                            case CompanyConstants.HomeCompany:
-                                                entryType = "admin-company";
-                                                break;
-                                            default:
-                                                break;
-                                        }
-
-                                        <tr class="@entryType">
-                                            <td>@ViewBag.Companies[i].Name</td>
-                                            <td>@ViewBag.Companies[i].Email</td>
-                                            <td style="word-break:break-all; max-width:300px;" >@ViewBag.Companies[i].Password</td>
-                                            <td>@ViewBag.Companies[i].CompanyType</td>
-                                            @if (dateTimeRegistrationFormat.Year == 1)
-                                            {
-                                                <td>@ViewBag.Companies[i].DateRegistration</td>
-                                            }
-                                            else
-                                            {
-                                                <td>@dateTimeRegistrationFormat.ToString(DateTimeFormats.FullDateTimeInfoUS)</td>
+                                                case CompanyStatus.Deactivate:
+                                                    entryType = "deactivate";
+                                                    isActive = false;
+                                                    break;
+                                                case CompanyStatus.Admin:
+                                                    entryType = "admin-company";
+                                                    break;
+                                                default:
+                                                    break;
                                             }
 
-                                            <td class="control-panel">
-                                                <div data-title="@Localizer["EditNotificataion"]" class="ico-doc ico-doc-edit" onclick="document.location.href = 'EditCompany?id='+@ViewBag.Companies[i].Id;">
-                                                    <i class="bi bi-pencil-square" style="color: #ff9800; font-size:20px"></i>
-                                                </div>
+                                            <tr class="@entryType">
+                                                <td>@Model[i].Name</td>
+                                                <td>@item.User.Email</td>
+                                                <td style="word-break:break-all; max-width:300px;">@item.User.PasswordHash</td>
+                                                <td>@Model[i].CompanyType</td>
+                                                <td>@Model[i].DateTimeRegistration.ToString(DateTimeFormats.FullDateTimeInfoUS)</td>
 
-                                                <div data-title="@Localizer["ViewNotificataion"]" class="ico-doc ico-doc-view" onclick="document.location.href = 'Company?id=@ViewBag.Companies[i].Id';">
-                                                    <i class="bi bi-cursor-fill" style="color: #4caf50; font-size:20px"></i>
-                                                </div>
-                                                @*<img src="~/img/arrow.svg" alt="" onclick="window.location.href = 'Users?idCompanySelect=@ViewBag.Companies[i].Id';" />*@
-
-                                                <div data-title="@Localizer["DocNotificataion"]" class="ico-doc ico-doc-documents" onclick="document.location.href = '@ViewBag.BaseUrl/Company/Doc?id=@ViewBag.Companies[i].Id';">
-                                                    <i class="bi bi-file-earmark-medical-fill" style="color: #3f51b5; font-size:20px"></i>
-                                                </div>
-                                                @*<img src="~/img/doc.svg" alt="" onclick="window.location.href = '@ViewBag.BaseUrl/Company/Doc?id=@ViewBag.Companies[i].Id';">*@
-
-                                                <div data-title="@Localizer["LoginNotificataion"]" class="ico-doc ico-doc-login open-ConfirmLogin login-nt" data-toggle="modal" data-id="@ViewBag.Companies[i].Id" href="#CompanyLogin">
-                                                    <i class="bi bi-box-arrow-in-up-right" style="color: #03a9f4; font-size:20px"></i>
-                                                </div>
-
-                                                <div data-title="@Localizer["SendEmailNotificataion"]" class="ico-doc ico-doc-send-email open-SendEmailForm" data-toggle="modal" data-id="@ViewBag.Companies[i].Id" href="#sendEmailModalId">
-                                                    <i class="bi bi-chat-right-text" style="color: #607d8b; font-size:20px"></i>
-                                                </div>
-
-                                                @if (isActive)
-                                                {
-                                                    <div data-title="@Localizer["DeleteNotificataion"]" class="ico-doc ico-doc-delete open-ConfirmDelete deactivate-nt" data-toggle="modal" data-id="@ViewBag.Companies[i].Id" href="#CompanyDeactivate">
-                                                        <i class="bi bi-lightbulb-fill" style="color: #52bd5a; font-size:20px"></i>
+                                                <td class="control-panel">
+                                                    <div data-title="@Localizer["EditNotificataion"]" class="ico-doc ico-doc-edit" onclick="document.location.href = 'EditCompany?id='+@Model[i].Id;">
+                                                        <i class="bi bi-pencil-square" style="color: #ff9800; font-size:20px"></i>
                                                     </div>
-                                                }
-                                                else
-                                                {
-                                                <div data-title="@Localizer["ActivateNotificataion"]" class="ico-doc ico-doc-activate open-ConfirmActivate activate-nt" data-toggle="modal" data-id="@ViewBag.Companies[i].Id" href="#CompanyActivate">
-                                                        <i class="bi bi-lightbulb" style="color: #f44336; font-size:20px"></i>
+
+                                                    <div data-title="@Localizer["ViewNotificataion"]" class="ico-doc ico-doc-view" onclick="document.location.href = 'Company?id=@Model[i].Id';">
+                                                        <i class="bi bi-cursor-fill" style="color: #4caf50; font-size:20px"></i>
                                                     </div>
-                                                }
-                                                @*<img src="~/img/delet.svg" alt="" onclick="RemoveCompany(@ViewBag.Companies[i].Id)">*@
-                                            </td>
-                                        </tr>
-                                        {
-                                            dateTimeRegistrationFormat = DateTime.MinValue;
+                                                    @*<img src="~/img/arrow.svg" alt="" onclick="window.location.href = 'Users?idCompanySelect=@ViewBag.Companies[i].Id';" />*@
+
+                                                    <div data-title="@Localizer["DocNotificataion"]" class="ico-doc ico-doc-documents" onclick="document.location.href = '@ViewBag.BaseUrl/Company/Doc?id=@Model[i].Id';">
+                                                        <i class="bi bi-file-earmark-medical-fill" style="color: #3f51b5; font-size:20px"></i>
+                                                    </div>
+                                                    @*<img src="~/img/doc.svg" alt="" onclick="window.location.href = '@ViewBag.BaseUrl/Company/Doc?id=@ViewBag.Companies[i].Id';">*@
+
+                                                    <div data-title="@Localizer["LoginNotificataion"]" class="ico-doc ico-doc-login open-ConfirmLogin login-nt" data-toggle="modal" data-id="@Model[i].Id" href="#CompanyLogin">
+                                                        <i class="bi bi-box-arrow-in-up-right" style="color: #03a9f4; font-size:20px"></i>
+                                                    </div>
+
+                                                    <div data-title="@Localizer["SendEmailNotificataion"]" class="ico-doc ico-doc-send-email open-SendEmailForm" data-toggle="modal" data-id="@Model[i].Id" href="#sendEmailModalId">
+                                                        <i class="bi bi-chat-right-text" style="color: #607d8b; font-size:20px"></i>
+                                                    </div>
+
+                                                    @if (isActive)
+                                                    {
+                                                        <div data-title="@Localizer["DeleteNotificataion"]" class="ico-doc ico-doc-delete open-ConfirmDelete deactivate-nt" data-toggle="modal" data-id="@Model[i].Id" href="#CompanyDeactivate">
+                                                            <i class="bi bi-lightbulb-fill" style="color: #52bd5a; font-size:20px"></i>
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div data-title="@Localizer["ActivateNotificataion"]" class="ico-doc ico-doc-activate open-ConfirmActivate activate-nt" data-toggle="modal" data-id="@Model[i].Id" href="#CompanyActivate">
+                                                            <i class="bi bi-lightbulb" style="color: #f44336; font-size:20px"></i>
+                                                        </div>
+                                                    }
+                                                    @*<img src="~/img/delet.svg" alt="" onclick="RemoveCompany(@ViewBag.Companies[i].Id)">*@
+                                                </td>
+                                            </tr>
                                         }
                                     }
                                 </tbody>
@@ -207,6 +189,8 @@
                     ErrorAlert("Not success");
                 }
             });
+            subjectEl.value = "";
+            messageEl.value = "";
 
             $("#sendEmailModalId").modal('hide');
         }

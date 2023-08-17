@@ -1,61 +1,73 @@
 ﻿using DaoModels.DAO.Models;
 using DaoModels.DAO.Models.Settings;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using System;
-using System.IO;
 
 namespace DaoModels.DAO
 {
-    public class Context : DbContext
+    public class Context : IdentityDbContext<User>
     {
         public static IMemoryCache _cache = null;
 
-        public DbSet<Shipping> Shipping { get; set; }
-        public DbSet<Users> User { get; set; }
-        public DbSet<VehiclwInformation> VehiclwInformation { get; set; }
-        public DbSet<Driver> Drivers { get; set; }
-        public DbSet<Photo> Photos { get; set; }
-        public DbSet<PhotoDriver> PhotoDrivers { get; set; }
-        public DbSet<Ask> Asks { get; set; }
-        public DbSet<PhotoInspection> PhotoInspections { get; set; }
-        public DbSet<Ask1> Ask1s { get; set; }
-        public DbSet<Ask2> Ask2s { get; set; }
-        public DbSet<AskFromUser> AskFromUsers { get; set; }
-        public DbSet<Feedback> Feedbacks { get; set; }
-        public DbSet<AskDelyvery> AskDelyveries { get; set; }
-        public DbSet<AskForUserDelyveryM> askForUserDelyveryMs { get; set; }
-        public DbSet<Damage> Damages { get; set; }
-        public DbSet<Geolocations> geolocations { get; set; }
-        public DbSet<DamageForUser> DamageForUsers { get; set; }
-        public DbSet<InspectionDriver> InspectionDrivers { get; set; }
+        public DbSet<AddressInformation> AddressInformations { get; set; }
+        public DbSet<AdminAnswer> AdminAnswers { get; set; }
+        public DbSet<AnswerOption> AnswerOptions { get; set; }
+        public DbSet<Company> Companies { get; set; }
+        public DbSet<CompanyUser> CompanyUsers { get; set; }
         public DbSet<Contact> Contacts { get; set; }
-        public DbSet<Video> Videos { get; set; }
-        public DbSet<LogTask> LogTasks { get; set; }
-        public DbSet<TaskLoad> TaskLoads { get; set; }
-        public DbSet<Truck> Trucks { get; set; }
-        public DbSet<Trailer> Trailers { get; set; }
-        public DbSet<DocumentTruckAndTrailers> DocumentTruckAndTrailers { get; set; }
-        public DbSet<DucumentCompany> DucumentCompanies { get; set; }
-        public DbSet<PasswordRecovery> PasswordRecoveries { get; set; }
-        public DbSet<DriverReport> DriverReports { get; set; }
-        public DbSet<HistoryOrder> HistoryOrders { get; set; }
-        public DbSet<Commpany> Commpanies { get; set; }
-        public DbSet<TransportVehicle> TransportVehicles { get; set; }
-        public DbSet<NamePatern> NamePaterns { get; set; }
-        public DbSet<Layouts> Layouts { get; set; }
-        public DbSet<ProfileSetting> ProfileSettings { get; set; }
-        public DbSet<DucumentDriver> DucumentDrivers { get; set; }
-        public DbSet<Customer_ST> Customer_STs { get; set; }
-        public DbSet<Subscribe_ST> Subscribe_STs { get; set; }
-        public DbSet<PaymentMethod_ST> PaymentMethods { get; set; }
+        public DbSet<CurrentStatus> CurrentStatuses { get; set; }
+        public DbSet<CustomerST> CustomerST { get; set; }
+        public DbSet<Damage> Damages { get; set; }
+        public DbSet<DamageForUser> DamageForUsers { get; set; }
         public DbSet<Dispatcher> Dispatchers { get; set; }
-        public DbSet<VehicleHistory> VehicleHistories { get; set; }
+        public DbSet<DispatcherType> DispatchersTypes { get; set; }
+        public DbSet<DocumentCompany> DocumentsCompanies { get; set; }
+        public DbSet<DocumentDriver> DocumentsDrivers { get; set; }
+        public DbSet<DocumentTrailer> DocumentsTrailers { get; set; }
+        public DbSet<DocumentTruck> DocumentsTrucks { get; set; }
+        public DbSet<Driver> Drivers { get; set; }
+        public DbSet<DriverControl> DriversControls { get; set; }
+        public DbSet<DriverInspection> DriversInspections { get; set; }
+        public DbSet<DriverReport> DriversReports { get; set; }
+        public DbSet<Geolocation> Geolocations { get; set; }
+        public DbSet<HistoryOrderAction> HistoriesOrdersActions { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<PasswordRecovery> PasswordsRecoveries { get; set; }
+        public DbSet<PaymentMethod> PaymentsMethods { get; set; }
+        public DbSet<Photo> Photos { get; set; }
+        public DbSet<PhotoAnswer> PhotosAnswers { get; set; }
+        public DbSet<PhotoDriverInspection> PhotosDriversInspections { get; set; }
+        public DbSet<PhotoType> PhotoTypes { get; set; }
+        public DbSet<PhotoVehicleInspection> PhotosVehiclesInspections { get; set; }
+        public DbSet<Question> Questions { get; set; }
+        public DbSet<Questionnaire> Questionnaires { get; set; }
+        public DbSet<RecoveryType> RecoveriesTypes { get; set; }
+        public DbSet<SubscribeST> SubscribeST { get; set; }
+        public DbSet<Trailer> Trailers { get; set; }
+        public DbSet<Truck> Trucks { get; set; }
+        public DbSet<UserAnswer> UsersAnswers { get; set; }
+        public DbSet<UserMailQuestion> UsersMailsQuestions { get; set; }
+        public DbSet<UserQuestionnaire> UsersQuestionnaires { get; set; }
+        public DbSet<VehicleBody> VehiclesBodies { get; set; }
+        public DbSet<VehicleBrand> VehiclesBrands { get; set; }
+        public DbSet<VehicleDetails> VehiclesDetails { get; set; }
+        public DbSet<VehicleInspection> VehiclesInspections { get; set; }
+        public DbSet<VehicleModel> VehiclesModels { get; set; }
+        public DbSet<VehicleType> VehiclesTypes { get; set; }
+        public DbSet<Video> Videos { get; set; }
+        public DbSet<VideoAnswer> VideosAnswers { get; set; }
+        public DbSet<VideoType> VideoTypes { get; set; }
+        public DbSet<Layouts> Layouts { get; set; }
+        public DbSet<ProfileSettings> ProfileSettings { get; set; }
+        public DbSet<TransportVehicle> TransportVehicles { get; set; }
+        public DbSet<PhoneNumber> PhonesNumbers { get; set; }
 
         public Context()
         {
             try
-            { 
+            {
                 //Database.EnsureCreated();
                 Database.Migrate();
             }
@@ -70,10 +82,29 @@ namespace DaoModels.DAO
             if (!optionsBuilder.IsConfigured)
             {
                 //optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=WebDispatchDB;Trusted_Connection=True;");
-                optionsBuilder.UseSqlServer("Data Source=212.224.113.5;Initial Catalog=WebDispatch;Integrated Security=False;User ID=roma;Password=123;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False");
+                //optionsBuilder.UseSqlServer("Server=localhost\\SQLEXPRESS;Database=WebDispatch2;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;");
+                optionsBuilder.UseSqlServer("Data Source=212.224.113.5;Initial Catalog=WebDispatchNew;Integrated Security=False;User ID=roma;Password=123;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False");
                 //optionsBuilder.UseSqlServer("Data Source=127.0.0.1;Initial Catalog=WebDispatch;Integrated Security=False;User ID=roma;Password=123;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False");
                 //optionsBuilder.UseSqlServer("Data Source=127.0.0.1;Initial Catalog=WebDispatchDev;Integrated Security=False;User ID=roma;Password=123;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False");
             }
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<CompanyUser>()
+            .HasKey(cu => new { cu.CompanyId, cu.UserId });
+
+            modelBuilder.Entity<CompanyUser>()
+                .HasOne(cu => cu.Company)
+                .WithMany(c => c.CompanyUsers)
+                .HasForeignKey(cu => cu.CompanyId);
+
+            modelBuilder.Entity<CompanyUser>()
+                .HasOne(cu => cu.User)
+                .WithMany(u => u.CompanyUsers)
+                .HasForeignKey(cu => cu.UserId);
         }
     }
 }

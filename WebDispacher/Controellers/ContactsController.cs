@@ -1,5 +1,5 @@
 ﻿using DaoModels.DAO.Models;
-using iTextSharp.text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using WebDispacher.Business.Interfaces;
 using WebDispacher.Business.Services;
 using WebDispacher.Constants;
+using WebDispacher.Constants.Identity;
 using WebDispacher.Service;
 using WebDispacher.ViewModels.Contact;
 
@@ -24,39 +25,32 @@ namespace WebDispacher.Controellers
         }
 
         [Route("Contact/Contacts")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         public async Task<IActionResult> Contacts(int page = 1)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Contact, out var key, out var idCompany))
-                {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
                     
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-
-                    ViewBag.Contacts = await companyService.GetContactsViewModels(page, idCompany);
-
-                    var countPages = await companyService.GetCountContactsPages(idCompany);
-
-                    ViewBag.CountPages = countPages;
-
-                    ViewBag.SelectedPage = page;
-
-                    return View("FullContacts");
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                if (isCancelSubscribe)
                 {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
+                    
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+
+                var contacts = await companyService.GetContactsByCompanyId(page, CompanyId);
+
+                var countPages = await companyService.GetCountContactsPages(CompanyId);
+
+                ViewBag.CountPages = countPages;
+
+                ViewBag.SelectedPage = page;
+
+                return View("FullContacts", contacts);
             }
             catch (Exception)
             {
@@ -69,6 +63,7 @@ namespace WebDispacher.Controellers
 
         [HttpGet]
         [Route("Contact/CreateContact")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public IActionResult CreateContact()
         {
@@ -76,25 +71,17 @@ namespace WebDispacher.Controellers
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Contact, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    
-                    return View("CreateContact");
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                    
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+                    
+                return View("CreateContact");
             }
             catch (Exception)
             {
@@ -106,25 +93,20 @@ namespace WebDispacher.Controellers
 
         [HttpPost]
         [Route("Contact/CreateContact")]
-        public IActionResult CreateDriver(ContactViewModel model)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> CreateContact(ContactViewModel model, string localDate)
         {
+            ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+
             if (ModelState.IsValid)
             {
                 try
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-                    if (CheckPermissionsByCookies(RouteConstants.Contact, out var key, out var idCompany))
-                    {
-                        companyService.CreateContact(model, idCompany);
+                    await companyService.CreateContact(model, CompanyId, localDate);
 
-                        return Redirect($"{Config.BaseReqvesteUrl}/Contact/Contacts");
-                    }
-
-                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                    {
-                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                    }
+                    return Redirect($"{Config.BaseReqvesteUrl}/Contact/Contacts");
                 }
                 catch (Exception)
                 {
@@ -141,32 +123,26 @@ namespace WebDispacher.Controellers
 
         [HttpGet]
         [Route("Contact/Edit")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         public IActionResult EditContact(int id)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Contact, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    var contact = companyService.GetContact(id);
-                    
-                    return View("EditContact", contact);
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
+                
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                var contact = companyService.GetContact(id);
+                    
+                return View("EditContact", contact);
             }
             catch (Exception)
             {
@@ -178,27 +154,21 @@ namespace WebDispacher.Controellers
 
         [HttpPost]
         [Route("Contact/Edit")]
-        public IActionResult EditContact(ContactViewModel contact)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> EditContact(ContactViewModel model, string localDate)
         {
+            ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
             if (ModelState.IsValid)
             {
                 try
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-                    if (CheckPermissionsByCookies(RouteConstants.Contact, out var key, out var idCompany))
-                    {
-                        ViewBag.NameCompany = GetCookieCompanyName();
-                        ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                        companyService.EditContact(contact);
+                    //ViewBag.NameCompany = GetCookieCompanyName();
 
-                        return Redirect($"{Config.BaseReqvesteUrl}/Contact/Contacts");
-                    }
+                    await companyService.EditContact(model, localDate);
 
-                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                    {
-                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                    }
+                    return Redirect($"{Config.BaseReqvesteUrl}/Contact/Contacts");
                 }
                 catch (Exception)
                 {
@@ -207,7 +177,7 @@ namespace WebDispacher.Controellers
             }
             else
             {
-                return Redirect($"{Config.BaseReqvesteUrl}/Contact/Contacts");
+                return View("EditContact", model);
             }
 
             return Redirect(Config.BaseReqvesteUrl);
@@ -215,25 +185,20 @@ namespace WebDispacher.Controellers
 
         [HttpGet]
         [Route("Contact/Delete")]
-        public IActionResult DeleteContact(int id)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> DeleteContact(int id)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Contact, out var key, out var idCompany))
-                {
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    companyService.DeleteContactById(id);
-                    
-                    return Redirect($"{Config.BaseReqvesteUrl}/Contact/Contacts");
-                }
+                //ViewBag.NameCompany = GetCookieCompanyName();
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+
+                await companyService.DeleteContactById(id);
+                    
+                return Redirect($"{Config.BaseReqvesteUrl}/Contact/Contacts");
             }
             catch (Exception)
             {
@@ -245,26 +210,20 @@ namespace WebDispacher.Controellers
         
         [HttpPost]
         [Route("Contact/Delete")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         public async Task<bool> RemoveContact(int id)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Contact, out var key, out var idCompany))
-                {
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
+                //ViewBag.NameCompany = GetCookieCompanyName();
 
-                    await companyService.DeleteContactById(id);
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
 
-                    return true;
-                }
+                await companyService.DeleteContactById(id);
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                return true;
             }
             catch (Exception)
             {

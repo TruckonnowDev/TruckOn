@@ -1,6 +1,7 @@
 ﻿function ConfirmRemoveEntry(actualDate, requestUrl, responseUrl, modalSelector) {
     $(document).on("click", ".open-ConfirmDelete", function () {
         var entryId = $(this).data('id');
+        $(modalSelector).modal('show');
         $("#remove-entry-button").on("click", function () {
             var body = {
                 id: entryId,
@@ -36,6 +37,10 @@ function ShowAlert() {
         }
         else if (notif === 'successActivate') {
             SuccessAlert("Company was successfully activated");
+            localStorage.removeItem('notification');
+        }
+        else if (notif === 'successSendMessage') {
+            SuccessAlert("Message sent successfully");
             localStorage.removeItem('notification');
         }
     }

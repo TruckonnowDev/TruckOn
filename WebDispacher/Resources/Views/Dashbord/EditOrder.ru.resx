@@ -258,4 +258,10 @@
   <data name="VehFormHaveError" xml:space="preserve">
     <value>Информацию не удалось сохранить</value>
   </data>
+  <data name="VehFormSuccessSendAndRemove" xml:space="preserve">
+    <value>Машина удалена из заказа</value>
+  </data>
+  <data name="VehFormInfoSuccessSend" xml:space="preserve">
+    <value>Транспортное средство было успешно сохранено в заказе</value>
+  </data>
 </root>

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebDispacher.Business.Interfaces;
 using WebDispacher.Constants;
+using WebDispacher.Constants.Identity;
 using WebDispacher.Service;
 
 namespace WebDispacher.Controellers
@@ -23,6 +25,7 @@ namespace WebDispacher.Controellers
         }
 
         [Route("Map")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public async Task<IActionResult> GeolocationPageGet()
         {
@@ -30,26 +33,18 @@ namespace WebDispacher.Controellers
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Geolocation, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    ViewBag.Drivers = await driverService.GetDrivers(idCompany);
-                    
-                    return View("MapsGeoDriver");
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                    
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+                var drivers = await driverService.GetDriversByCompanyId(CompanyId);
+                    
+                return View("MapsGeoDriver", drivers);
             }
             catch (Exception)
             {

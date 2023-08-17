@@ -1,0 +1,138 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization;
+@using WebDispacher.Service;
+
+@model List<DaoModels.DAO.Models.VehicleDetails>
+@inject IViewLocalizer Localizer
+
+
+<table class="tab12">
+    <thead>
+        <tr>
+            <th style="min-width: 35px;">№</th>
+            <th>VIN</th>
+            <th>@Localizer["Type"]</th>
+            <th>@Localizer["Make"]</th>
+            <th>@Localizer["Model"]</th>
+            <th>@Localizer["Body"]</th>
+            <th>@Localizer["Year"]</th>
+            <th>@Localizer["Color"]</th>
+            <th>@Localizer["LotNumber"]</th>
+            <th style="min-width: 120px;">&nbsp;</th>
+            <th style="min-width: 35px;">&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            @for (int i = 0; i < Model.Count; i++)
+            {
+
+                <form action="SavaVech" method="POST" class="tr car-form" id="@Model[i].Id">
+                    <tr>
+                        <td aria-label="№" class="header-id-control">
+                                @i
+                            <input type='hidden' name="id" value="@Model[i].Id" id="car-id-@i" />
+                        </td>
+
+                        <td aria-label="VIN">
+                            <input type='text' name="VIN" value="@Model[i].VIN" id="car-vin-@i" />
+                        </td>
+
+                        <td aria-label="@Localizer["Type"]">
+                            <div class="autocomplete-wrapper">
+                                <input class="carType" type='text' name="Type" value="@Model[i].VehicleModel?.VehicleBrand.Name" id="carType_@i" required />
+                                <ul class="autocomplete-list" style="margin: 0" id="carTypeList_@i"></ul>
+                            </div>
+                        </td>
+                        <td aria-label="@Localizer["Make"]">
+                            <div class="autocomplete-wrapper">
+                                <input class="carMaker" type='text' name="Make" value="@Model[i].VehicleModel?.VehicleBrand.Name" id="carMaker_@i" required />
+                                <ul class="autocomplete-list" style="margin: 0" id="carMakerList_@i"></ul>
+                            </div>
+                        </td>
+                        <td aria-label="@Localizer["Model"]">
+                            <div class="autocomplete-wrapper">
+                                <input class="carModel" type='text' name="Model" value="@Model[i].VehicleModel?.Name" id="carModel_@i" required />
+                                <ul class="autocomplete-list" style="margin: 0" id="carModelList_@i"></ul>
+                            </div>
+                        </td>
+                        <td aria-label="@Localizer["Body"]">
+                            <div class="autocomplete-wrapper">
+                                <input type='text' name="Body" value="@Model[i].VehicleModel?.VehicleBody?.Name" id="carBody_@i" required />
+                                <ul class="autocomplete-list" style="margin: 0" id="carBodyList_@i"></ul>
+                            </div>
+                        </td>
+                        <td aria-label="@Localizer["Year"]">
+                             @{
+                                string yearString = Convert.ToInt32(Model[i]?.VehicleModel?.Year) != 0
+                                ? Model[i]?.VehicleModel?.Year.ToString()
+                                : string.Empty;
+                            }
+                            <input type='text' name="Year" value="@yearString" id="car-year_@i" />
+                        </td>
+
+                        <td aria-label="@Localizer["Color"]">
+                            <input type='text' name="Color" value="@Model[i].Color" id="car-color_@i" />
+                        </td>
+                        <td aria-label="@Localizer["LotNumber"]">
+                            <input type='text' name="LotNumber" value="@Model[i].Lot" id="car-lot_@i" />
+                        </td>
+                        <td class="button-control">
+                            <input type="hidden" name="localDate" form-novalidate="car-localDate" />
+                            <button type='submit' class="btn1">@Localizer["Save"]</button>
+                        </td>
+                        <td class="button-control">
+                            <a class="open-ConfirmDeleteVeh" data-toggle="modal" data-id="@Model[i].Id" href="#confirmDeleteEntryModal">
+                                <img src="/img/delete.svg" />
+                            </a>
+                        </td>
+                        <td style="display: none">
+                            <input type="text" name="vehicleId" style="display:none;" value="@Model[i].Id" />
+                        <input type="text" name="orderIdcar" value="@Model[i].OrderId" />
+                        </td>
+                    </tr>
+                </form>
+            }
+        }
+    </tbody>
+</table>
+
+
+<script src="~/js/input-replacer.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const expression = /\d/g;
+        const inputs = document.querySelectorAll('input[id^="carType_"]');
+
+        inputs.forEach(input => {
+            setReplacer(input, expression);
+        });
+    });
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        const expression = /\d/g;
+        const inputs = document.querySelectorAll('input[id^="carMaker_"]');
+
+        inputs.forEach(input => {
+            setReplacer(input, expression);
+        });
+    });
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        const expression = /\d/g;
+        const inputs = document.querySelectorAll('input[id^="carModel_"]');
+
+        inputs.forEach(input => {
+            setReplacer(input, expression);
+        });
+    });
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        const expression = /\d/g;
+        const inputs = document.querySelectorAll('input[id^="carBody_"]');
+
+        inputs.forEach(input => {
+            setReplacer(input, expression);
+        });
+    });
+</script>

@@ -15,341 +15,312 @@ namespace DaoModels.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.14-servicing-32113")
+                .HasAnnotation("ProductVersion", "3.1.32")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("DaoModels.DAO.Models.Ask", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Anyone_Rushing_you_to_perform_the_inspection");
-
-                    b.Property<string>("Enough_space_to_take_pictures");
-
-                    b.Property<string>("How_far_from_trailer");
-
-                    b.Property<string>("Lightbrightness");
-
-                    b.Property<string>("Name_of_the_person_who_gave_you_keys");
-
-                    b.Property<string>("Plate");
-
-                    b.Property<string>("Safe_delivery_location");
-
-                    b.Property<string>("TypeVehicle");
-
-                    b.Property<string>("Vehicle");
-
-                    b.Property<string>("Weather_conditions");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("Asks");
-                });
-
-            modelBuilder.Entity("DaoModels.DAO.Models.Ask1", b =>
+            modelBuilder.Entity("DaoModels.DAO.Models.AddressInformation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Did_someone_help_you_load_it");
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Did_someone_load_the_vehicle_for_you");
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Did_you_Damage_anything_at_the_pick_up");
+                    b.Property<string>("ContactName")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Did_you_jumped_the_vehicle_to_start");
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Did_you_notice_any_mechanical_imperfections_wile_loading");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Exact_Mileage");
+                    b.Property<int?>("PhoneNumberId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Have_you_used_winch");
+                    b.Property<string>("State")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("What_method_of_exit_did_you_use");
+                    b.Property<string>("ZipCode")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Ask1s");
+                    b.HasIndex("PhoneNumberId");
+
+                    b.ToTable("AddressInformations");
                 });
 
-            modelBuilder.Entity("DaoModels.DAO.Models.Ask2", b =>
+            modelBuilder.Entity("DaoModels.DAO.Models.AdminAnswer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Car_locked");
+                    b.Property<string>("AdminName")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Client_friendliness");
+                    b.Property<DateTime>("DateTimeAnswer")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("How_many_keys_total_you_been_given");
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Keys_location");
+                    b.Property<int>("UserMailQuestionId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Ask2s");
+                    b.HasIndex("UserMailQuestionId");
+
+                    b.ToTable("AdminAnswers");
                 });
 
-            modelBuilder.Entity("DaoModels.DAO.Models.AskDelyvery", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("After_inspecting_the_car_press_the_confirm_button");
-
-                    b.Property<string>("All_locks_on_the_trailer");
-
-                    b.Property<string>("Anyone_Rushing_you_to_perform_the_delivery");
-
-                    b.Property<string>("Anyone_helping_you_unload");
-
-                    b.Property<string>("Did_someone_else_unloaded_the_vehicle_for_you");
-
-                    b.Property<string>("Did_the_vehicle_starts");
-
-                    b.Property<string>("Did_you_meet_the_client");
-
-                    b.Property<string>("Did_you_notice_any_imperfections_on_body_wile_vehicle_been_transported");
-
-                    b.Property<string>("Does_the_vehicle_Drives");
-
-                    b.Property<string>("Exact_mileage_after_unloading");
-
-                    b.Property<string>("How_Far_is_the_Trailer_from_Delivery_destination");
-
-                    b.Property<string>("How_did_you_get_inside_of_the_vehicle");
-
-                    b.Property<string>("Lightbrightness");
-
-                    b.Property<string>("Safe_delivery_location_Truck_and_trailer_parked_on");
-
-                    b.Property<string>("Time_Of_Delivery");
-
-                    b.Property<string>("Truck_locked");
-
-                    b.Property<string>("Truck_on_emergency_brake");
-
-                    b.Property<string>("Vehicle_Condition_on_delivery");
-
-                    b.Property<string>("Vehicle_parked_in_the_safe_location");
-
-                    b.Property<string>("Weather_Conditions");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("AskDelyveries");
-                });
-
-            modelBuilder.Entity("DaoModels.DAO.Models.AskForUserDelyveryM", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("App_will_ask_for_name_of_the_client_signature");
-
-                    b.Property<int?>("App_will_ask_for_signature_of_the_client_signatureId");
-
-                    b.Property<string>("CountPay");
-
-                    b.Property<string>("EmailPay");
-
-                    b.Property<string>("Have_you_inspected_the_vehicle_For_any_additional_imperfections_other_than_listed_at_the_pick_up");
-
-                    b.Property<bool>("IsProblem");
-
-                    b.Property<string>("NamePaymment");
-
-                    b.Property<int?>("PhotoPayId");
-
-                    b.Property<string>("Please_rate_the_driver");
-
-                    b.Property<int?>("VideoRecordId");
-
-                    b.Property<string>("What_form_of_payment_are_you_using_to_pay_for_transportation");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("App_will_ask_for_signature_of_the_client_signatureId");
-
-                    b.HasIndex("PhotoPayId");
-
-                    b.HasIndex("VideoRecordId");
-
-                    b.ToTable("askForUserDelyveryMs");
-                });
-
-            modelBuilder.Entity("DaoModels.DAO.Models.AskFromUser", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Any_titles_been_given_to_driver");
-
-                    b.Property<int?>("App_will_ask_for_signature_of_the_client_signatureId");
-
-                    b.Property<string>("CountPay");
-
-                    b.Property<string>("EmailPay");
-
-                    b.Property<string>("How_many_keys_are_driver_been_given");
-
-                    b.Property<bool>("IsProblem");
-
-                    b.Property<string>("NamePaymment");
-
-                    b.Property<int?>("PhotoPayId");
-
-                    b.Property<int?>("VideoRecordId");
-
-                    b.Property<string>("What_form_of_payment_are_you_using_to_pay_for_transportation");
-
-                    b.Property<string>("Your_Full_Name");
-
-                    b.Property<string>("Your_phone");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("App_will_ask_for_signature_of_the_client_signatureId");
-
-                    b.HasIndex("PhotoPayId");
-
-                    b.HasIndex("VideoRecordId");
-
-                    b.ToTable("AskFromUsers");
-                });
-
-            modelBuilder.Entity("DaoModels.DAO.Models.Commpany", b =>
+            modelBuilder.Entity("DaoModels.DAO.Models.AnswerOption", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<bool>("Active");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DateRegistration");
-
-                    b.Property<string>("Name");
-
-                    b.Property<int>("Type");
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Commpanies");
+                    b.HasIndex("QuestionId");
+
+                    b.ToTable("AnswerOptions");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.Company", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CompanyStatus")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CompanyType")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DateTimeLastUpdate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateTimeRegistration")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PhoneNumberId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("USDOT")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PhoneNumberId");
+
+                    b.ToTable("Companies");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.CompanyUser", b =>
+                {
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("CompanyId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CompanyUsers");
                 });
 
             modelBuilder.Entity("DaoModels.DAO.Models.Contact", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CompanyId");
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Email");
+                    b.Property<DateTime>("DateTimeCreate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("Name");
+                    b.Property<DateTime>("DateTimeLastUpdate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("Phone");
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ID");
+                    b.Property<string>("Ext")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PhoneNumberId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Position")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("PhoneNumberId");
 
                     b.ToTable("Contacts");
                 });
 
-            modelBuilder.Entity("DaoModels.DAO.Models.Customer_ST", b =>
+            modelBuilder.Entity("DaoModels.DAO.Models.CurrentStatus", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("DateCreated");
-
-                    b.Property<int>("IdCompany");
-
-                    b.Property<string>("IdCustomerST");
-
-                    b.Property<string>("NameCompany");
-
-                    b.Property<string>("NameCompanyST");
+                    b.Property<string>("StatusName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Customer_STs");
+                    b.ToTable("CurrentStatuses");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.CustomerST", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("IdCustomerST")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NameCompanyST")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("CustomerST");
                 });
 
             modelBuilder.Entity("DaoModels.DAO.Models.Damage", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("FullNameDamage");
+                    b.Property<string>("FullNameDamage")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("HeightDamage");
+                    b.Property<int>("HeightDamage")
+                        .HasColumnType("int");
 
-                    b.Property<int>("IndexDamage");
+                    b.Property<int>("IndexDamage")
+                        .HasColumnType("int");
 
-                    b.Property<string>("IndexImageVech");
+                    b.Property<string>("IndexImageVech")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PhotoInspectionId");
+                    b.Property<int>("PhotoVehicleInspectionId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("TypeCurrentStatus");
+                    b.Property<string>("TypeCurrentStatus")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TypeDamage");
+                    b.Property<string>("TypeDamage")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TypePrefDamage");
+                    b.Property<string>("TypePrefDamage")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("WidthDamage");
+                    b.Property<int>("WidthDamage")
+                        .HasColumnType("int");
 
-                    b.Property<double>("XInterest");
+                    b.Property<double>("XInterest")
+                        .HasColumnType("float");
 
-                    b.Property<double>("YInterest");
+                    b.Property<double>("YInterest")
+                        .HasColumnType("float");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
-                    b.HasIndex("PhotoInspectionId");
+                    b.HasIndex("PhotoVehicleInspectionId");
 
                     b.ToTable("Damages");
                 });
 
             modelBuilder.Entity("DaoModels.DAO.Models.DamageForUser", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("FullNameDamage");
+                    b.Property<string>("FullNameDamage")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("HeightDamage");
+                    b.Property<int>("HeightDamage")
+                        .HasColumnType("int");
 
-                    b.Property<int>("IndexDamage");
+                    b.Property<int>("IndexDamage")
+                        .HasColumnType("int");
 
-                    b.Property<string>("ShippingId");
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("TypeCurrentStatus");
+                    b.Property<string>("TypeCurrentStatus")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TypeDamage");
+                    b.Property<string>("TypeDamage")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TypePrefDamage");
+                    b.Property<string>("TypePrefDamage")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("WidthDamage");
+                    b.Property<int>("WidthDamage")
+                        .HasColumnType("int");
 
-                    b.Property<double>("XInterest");
+                    b.Property<double>("XInterest")
+                        .HasColumnType("float");
 
-                    b.Property<double>("YInterest");
+                    b.Property<double>("YInterest")
+                        .HasColumnType("float");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
-                    b.HasIndex("ShippingId");
+                    b.HasIndex("OrderId");
 
                     b.ToTable("DamageForUsers");
                 });
@@ -358,415 +329,752 @@ namespace DaoModels.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("IdCompany");
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Login");
+                    b.Property<int>("DispatcherTypeId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Password");
+                    b.Property<string>("Key")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Type");
+                    b.Property<string>("Login")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("key");
+                    b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("DispatcherTypeId");
 
                     b.ToTable("Dispatchers");
                 });
 
-            modelBuilder.Entity("DaoModels.DAO.Models.DocumentTruckAndTrailers", b =>
+            modelBuilder.Entity("DaoModels.DAO.Models.DispatcherType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("DocPath");
-
-                    b.Property<int>("IdTr");
-
-                    b.Property<string>("NameDoc");
-
-                    b.Property<string>("TypeDoc");
-
-                    b.Property<string>("TypeTr");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("DocumentTruckAndTrailers");
+                    b.ToTable("DispatchersTypes");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.DocumentCompany", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DateTimeUpload")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DocPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("DocumentsCompanies");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.DocumentDriver", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("DateTimeUpload")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DocPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DriverId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DriverId");
+
+                    b.ToTable("DocumentsDrivers");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.DocumentTrailer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("DateTimeUpload")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DocPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TrailerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TrailerId");
+
+                    b.ToTable("DocumentsTrailers");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.DocumentTruck", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("DateTimeUpload")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DocPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TruckId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TruckId");
+
+                    b.ToTable("DocumentsTrucks");
                 });
 
             modelBuilder.Entity("DaoModels.DAO.Models.Driver", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CompanyId");
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("DateRegistration");
+                    b.Property<DateTime>("DateLastUpdate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("DriversLicenseNumber");
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("EmailAddress");
+                    b.Property<DateTime>("DateRegistration")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("EmailOrLogin");
+                    b.Property<int>("DriverControlId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("FullName");
+                    b.Property<string>("DriverLicenseNumber")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsFired");
+                    b.Property<int?>("DriverReportId")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("IsInspectionDriver");
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsInspectionToDayDriver");
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("IssuingState_Province");
+                    b.Property<int?>("GeolocationId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("LastDateInspaction");
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Password");
+                    b.Property<string>("Login")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PhoneNumber");
-
-                    b.Property<string>("Token");
-
-                    b.Property<string>("TokenShope");
-
-                    b.Property<string>("TrailerCapacity");
-
-                    b.Property<int?>("geolocationsID");
+                    b.Property<int?>("PhoneNumberId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("geolocationsID");
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("DriverControlId");
+
+                    b.HasIndex("DriverReportId")
+                        .IsUnique()
+                        .HasFilter("[DriverReportId] IS NOT NULL");
+
+                    b.HasIndex("GeolocationId");
+
+                    b.HasIndex("PhoneNumberId");
 
                     b.ToTable("Drivers");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.DriverControl", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("IsInspectionDriver")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsInspectionToDayDriver")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("IssuingStateProvince")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastDateInspaction")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Login")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TokenShope")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TrailerCapacity")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DriversControls");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.DriverInspection", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("DateTimeInspection")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DriverId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TrailerId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TruckId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DriverId");
+
+                    b.HasIndex("TrailerId");
+
+                    b.HasIndex("TruckId");
+
+                    b.ToTable("DriversInspections");
                 });
 
             modelBuilder.Entity("DaoModels.DAO.Models.DriverReport", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("AlcoholTendency");
+                    b.Property<string>("AlcoholTendency")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Comment");
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DateFired");
+                    b.Property<DateTime>("DateFired")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("DateRegistration");
+                    b.Property<string>("DotViolations")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DotViolations");
+                    b.Property<string>("DriverSkills")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DriversLicenseNumber");
+                    b.Property<string>("DrugTendency")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DrivingSkills");
+                    b.Property<string>("EldKnowledge")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DrugTendency");
+                    b.Property<string>("English")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("EldKnowledge");
+                    b.Property<string>("Experience")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("English");
+                    b.Property<string>("NumberAccidents")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Experience");
+                    b.Property<string>("PaymentHandling")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FullName");
+                    b.Property<string>("ReturnEquipment")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("IdCompany");
+                    b.Property<string>("Terminated")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("IdDriver");
-
-                    b.Property<string>("NumberOfAccidents");
-
-                    b.Property<string>("PaymentHandling");
-
-                    b.Property<string>("ReturnedEquipmen");
-
-                    b.Property<string>("Terminated");
-
-                    b.Property<string>("WorkingEfficiency");
+                    b.Property<string>("WorkEffeciency")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("DriverReports");
+                    b.ToTable("DriversReports");
                 });
 
-            modelBuilder.Entity("DaoModels.DAO.Models.DucumentCompany", b =>
+            modelBuilder.Entity("DaoModels.DAO.Models.Geolocation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("DocPath");
+                    b.Property<string>("Latitude")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("IdCommpany");
-
-                    b.Property<string>("NameDoc");
+                    b.Property<string>("Longitude")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("DucumentCompanies");
+                    b.ToTable("Geolocations");
                 });
 
-            modelBuilder.Entity("DaoModels.DAO.Models.DucumentDriver", b =>
+            modelBuilder.Entity("DaoModels.DAO.Models.HistoryOrderAction", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("DocPath");
+                    b.Property<int>("ActionType")
+                        .HasColumnType("int");
 
-                    b.Property<int>("IdDriver");
+                    b.Property<string>("ContentFrom")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("NameDoc");
+                    b.Property<string>("ContentTo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateTimeAction")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FieldAction")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("VehicleId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("DucumentDrivers");
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("HistoriesOrdersActions");
                 });
 
-            modelBuilder.Entity("DaoModels.DAO.Models.Feedback", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("How_Are_You_Satisfied_With_Service");
-
-                    b.Property<string>("How_did_the_driver_perform");
-
-                    b.Property<string>("Would_You_Like_To_Get_An_notification_If_We_Have_Any_Promotion");
-
-                    b.Property<string>("Would_You_Use_Our_Company_Again");
-
-                    b.HasKey("id");
-
-                    b.ToTable("Feedbacks");
-                });
-
-            modelBuilder.Entity("DaoModels.DAO.Models.Geolocations", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Latitude");
-
-                    b.Property<string>("Longitude");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("geolocations");
-                });
-
-            modelBuilder.Entity("DaoModels.DAO.Models.HistoryOrder", b =>
+            modelBuilder.Entity("DaoModels.DAO.Models.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("DateAction");
+                    b.Property<decimal>("BrokerFee")
+                        .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("IdConmpany");
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("IdDriver");
+                    b.Property<string>("Contact")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("IdOreder");
+                    b.Property<int>("CurrentStatusId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("IdUser");
+                    b.Property<DateTime>("DateTimeCancelOrder")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("IdVech");
+                    b.Property<DateTime>("DateTimeCreate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("TypeAction");
+                    b.Property<DateTime>("DateTimeDelivery")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateTimeLastUpdate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateTimePaid")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateTimePickedUp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DeliveryId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("DriverId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Fax")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Instructions")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("McNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrderId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaymentMethod")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PhoneNumberId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PickedUpId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("UrlRequest")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("HistoryOrders");
-                });
+                    b.HasIndex("CompanyId");
 
-            modelBuilder.Entity("DaoModels.DAO.Models.InspectionDriver", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.HasIndex("CurrentStatusId");
 
-                    b.Property<int>("CountPhotoTrailer");
-
-                    b.Property<int>("CountPhotoTruck");
-
-                    b.Property<string>("Date");
-
-                    b.Property<int?>("DriverId");
-
-                    b.Property<int>("IdITrailer");
-
-                    b.Property<int>("IdITruck");
-
-                    b.HasKey("Id");
+                    b.HasIndex("DeliveryId");
 
                     b.HasIndex("DriverId");
 
-                    b.ToTable("InspectionDrivers");
-                });
+                    b.HasIndex("PhoneNumberId");
 
-            modelBuilder.Entity("DaoModels.DAO.Models.LogTask", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.HasIndex("PickedUpId");
 
-                    b.HasKey("Id");
-
-                    b.ToTable("LogTasks");
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("DaoModels.DAO.Models.PasswordRecovery", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Date");
+                    b.Property<DateTime>("DateTimeAction")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("IdDriver");
+                    b.Property<int>("EntityRecoveryId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("IdUser");
+                    b.Property<int>("RecoveryTypeId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Token");
+                    b.Property<string>("Token")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("PasswordRecoveries");
+                    b.HasIndex("RecoveryTypeId");
+
+                    b.ToTable("PasswordsRecoveries");
                 });
 
-            modelBuilder.Entity("DaoModels.DAO.Models.PaymentMethod_ST", b =>
+            modelBuilder.Entity("DaoModels.DAO.Models.PaymentMethod", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("IdCompany");
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("IdCustomerAttachPaymentMethod");
+                    b.Property<string>("CustomerAttachPaymentMethodId")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("IdPaymentMethod_ST");
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("IsDefault");
+                    b.Property<string>("PaymentMethodSTId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("PaymentMethods");
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("PaymentsMethods");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.PhoneNumber", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("DialCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Iso2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Number")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PhonesNumbers");
                 });
 
             modelBuilder.Entity("DaoModels.DAO.Models.Photo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("Ask1Id");
+                    b.Property<DateTime>("DateTimeUpload")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int?>("Ask1Id1");
+                    b.Property<double>("Height")
+                        .HasColumnType("float");
 
-                    b.Property<int?>("Ask2Id");
+                    b.Property<string>("PhotoPath")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Ask2Id1");
+                    b.Property<int>("PhotoTypeId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("AskDelyveryID");
+                    b.Property<string>("PhotoUrl")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("AskForUserDelyveryMID");
-
-                    b.Property<int?>("AskID");
-
-                    b.Property<double>("Height");
-
-                    b.Property<int?>("PhotoInspectionId");
-
-                    b.Property<double>("Width");
-
-                    b.Property<string>("path");
+                    b.Property<double>("Width")
+                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Ask1Id");
-
-                    b.HasIndex("Ask1Id1");
-
-                    b.HasIndex("Ask2Id");
-
-                    b.HasIndex("Ask2Id1");
-
-                    b.HasIndex("AskDelyveryID");
-
-                    b.HasIndex("AskForUserDelyveryMID");
-
-                    b.HasIndex("AskID");
-
-                    b.HasIndex("PhotoInspectionId");
+                    b.HasIndex("PhotoTypeId");
 
                     b.ToTable("Photos");
                 });
 
-            modelBuilder.Entity("DaoModels.DAO.Models.PhotoDriver", b =>
+            modelBuilder.Entity("DaoModels.DAO.Models.PhotoAnswer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<double>("Height");
+                    b.Property<int>("PhotoId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("IdInspaction");
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("IndexPhoto");
-
-                    b.Property<int?>("InspectionDriverId");
-
-                    b.Property<double>("Width");
-
-                    b.Property<string>("path");
+                    b.Property<int?>("UserQuestionnaireId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("InspectionDriverId");
+                    b.HasIndex("PhotoId");
 
-                    b.ToTable("PhotoDrivers");
+                    b.HasIndex("QuestionId");
+
+                    b.HasIndex("UserQuestionnaireId");
+
+                    b.ToTable("PhotosAnswers");
                 });
 
-            modelBuilder.Entity("DaoModels.DAO.Models.PhotoInspection", b =>
+            modelBuilder.Entity("DaoModels.DAO.Models.PhotoDriverInspection", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("CurrentStatusPhoto");
+                    b.Property<int>("DriverInspectionId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("IndexPhoto");
+                    b.Property<int>("IndexPhoto")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("VehiclwInformationId");
+                    b.Property<int>("PhotoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("VehiclwInformationId");
+                    b.HasIndex("DriverInspectionId");
 
-                    b.ToTable("PhotoInspections");
+                    b.HasIndex("PhotoId");
+
+                    b.ToTable("PhotosDriversInspections");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.PhotoType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Type")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PhotoTypes");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.PhotoVehicleInspection", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("IndexPhoto")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PhotoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VehicleInspectionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PhotoId");
+
+                    b.HasIndex("VehicleInspectionId");
+
+                    b.ToTable("PhotosVehiclesInspections");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.Question", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("QuestionnaireId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuestionnaireId");
+
+                    b.ToTable("Questions");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.Questionnaire", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Questionnaires");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.RecoveryType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RecoveriesTypes");
                 });
 
             modelBuilder.Entity("DaoModels.DAO.Models.Settings.Layouts", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Index");
+                    b.Property<string>("Index")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsUsed");
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OrdinalIndex");
+                    b.Property<int>("OrdinalIndex")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("TransportVehicleId");
+                    b.Property<int?>("TransportVehicleId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -775,36 +1083,30 @@ namespace DaoModels.Migrations
                     b.ToTable("Layouts");
                 });
 
-            modelBuilder.Entity("DaoModels.DAO.Models.Settings.NamePatern", b =>
+            modelBuilder.Entity("DaoModels.DAO.Models.Settings.ProfileSettings", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Name");
+                    b.Property<int>("IdCompany")
+                        .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<int>("IdTr")
+                        .HasColumnType("int");
 
-                    b.ToTable("NamePaterns");
-                });
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
 
-            modelBuilder.Entity("DaoModels.DAO.Models.Settings.ProfileSetting", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("IdCompany");
+                    b.Property<int?>("TransportVehicleId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("IdTr");
-
-                    b.Property<bool>("IsUsed");
-
-                    b.Property<string>("Name");
-
-                    b.Property<int?>("TransportVehicleId");
-
-                    b.Property<string>("TypeTransportVehikle");
+                    b.Property<string>("TypeTransportVehikle")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -817,212 +1119,124 @@ namespace DaoModels.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CountPhoto");
+                    b.Property<int>("CountPhoto")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("IsNextInspection");
+                    b.Property<bool>("IsNextInspection")
+                        .HasColumnType("bit");
 
-                    b.Property<string>("PlateTraler");
+                    b.Property<string>("PlateTraler")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PlateTruck");
+                    b.Property<string>("PlateTruck")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Type");
+                    b.Property<string>("Type")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TypeTransportVehicle");
+                    b.Property<string>("TypeTransportVehicle")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("TransportVehicles");
                 });
 
-            modelBuilder.Entity("DaoModels.DAO.Models.Shipping", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("AddresD");
-
-                    b.Property<string>("AddresP");
-
-                    b.Property<int?>("Ask2Id");
-
-                    b.Property<int?>("AskFromUserid");
-
-                    b.Property<string>("BrokerFee");
-
-                    b.Property<string>("CDReference");
-
-                    b.Property<string>("CityD");
-
-                    b.Property<string>("CityP");
-
-                    b.Property<string>("CompanyOwesCarrier");
-
-                    b.Property<string>("Condition");
-
-                    b.Property<string>("ContactC");
-
-                    b.Property<string>("ContactNameD");
-
-                    b.Property<string>("ContactNameP");
-
-                    b.Property<string>("CurrentStatus");
-
-                    b.Property<string>("DataCancelOrder");
-
-                    b.Property<string>("DataFullArcive");
-
-                    b.Property<string>("DataPaid");
-
-                    b.Property<string>("DeliveryEstimated");
-
-                    b.Property<string>("Description");
-
-                    b.Property<string>("DispatchDate");
-
-                    b.Property<string>("EmailD");
-
-                    b.Property<string>("EmailP");
-
-                    b.Property<string>("FaxC");
-
-                    b.Property<string>("IccmcC");
-
-                    b.Property<int>("IdDriver");
-
-                    b.Property<string>("InternalLoadID");
-
-                    b.Property<bool>("IsInstructinRead");
-
-                    b.Property<bool>("IsProblem");
-
-                    b.Property<string>("LastUpdated");
-
-                    b.Property<string>("NameD");
-
-                    b.Property<string>("NameP");
-
-                    b.Property<string>("OnDeliveryToCarrier");
-
-                    b.Property<string>("PhoneC");
-
-                    b.Property<string>("PhoneD");
-
-                    b.Property<string>("PhoneP");
-
-                    b.Property<string>("PickupExactly");
-
-                    b.Property<string>("PriceListed");
-
-                    b.Property<string>("ShipVia");
-
-                    b.Property<string>("StateD");
-
-                    b.Property<string>("StateP");
-
-                    b.Property<string>("Titl1DI");
-
-                    b.Property<string>("TotalPaymentToCarrier");
-
-                    b.Property<string>("UrlReqvest");
-
-                    b.Property<string>("ZipD");
-
-                    b.Property<string>("ZipP");
-
-                    b.Property<int?>("askForUserDelyveryMID");
-
-                    b.Property<string>("idOrder");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Ask2Id");
-
-                    b.HasIndex("AskFromUserid");
-
-                    b.HasIndex("askForUserDelyveryMID");
-
-                    b.ToTable("Shipping");
-                });
-
-            modelBuilder.Entity("DaoModels.DAO.Models.Subscribe_ST", b =>
+            modelBuilder.Entity("DaoModels.DAO.Models.SubscribeST", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("ActiveType");
+                    b.Property<int>("ActiveType")
+                        .HasColumnType("int");
 
-                    b.Property<int>("IdCompany");
+                    b.Property<int>("CustomerSTId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("IdCustomerST");
+                    b.Property<string>("ItemSubscribeSTId")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("IdItemSubscribeST");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
-                    b.Property<string>("IdSubscribeST");
-
-                    b.Property<string>("Status");
+                    b.Property<string>("SubscribeSTId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Subscribe_STs");
-                });
+                    b.HasIndex("CustomerSTId");
 
-            modelBuilder.Entity("DaoModels.DAO.Models.TaskLoad", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<byte[]>("Array");
-
-                    b.Property<string>("IdDriver");
-
-                    b.Property<int?>("LogTaskId");
-
-                    b.Property<string>("NameMethod");
-
-                    b.Property<string>("OptionalParameter");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LogTaskId");
-
-                    b.ToTable("TaskLoads");
+                    b.ToTable("SubscribeST");
                 });
 
             modelBuilder.Entity("DaoModels.DAO.Models.Trailer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("AnnualIns");
+                    b.Property<string>("AnnualIns")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Color");
+                    b.Property<string>("Brand")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CompanyId");
+                    b.Property<string>("Color")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Exp");
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("HowLong");
+                    b.Property<DateTime>("DateTimeCreate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("Make");
+                    b.Property<DateTime>("DateTimeLastUpdate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("HowLong")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Owner");
+                    b.Property<string>("Model")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Plate");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Type");
+                    b.Property<string>("Owner")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Vin");
+                    b.Property<string>("Plate")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Year");
+                    b.Property<DateTime?>("PlateExpires")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("State")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("VehicleModelId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Vin")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("VehicleModelId");
 
                     b.ToTable("Trailers");
                 });
@@ -1031,317 +1245,1082 @@ namespace DaoModels.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("ColorTruk");
+                    b.Property<string>("Brand")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CompanyId");
+                    b.Property<string>("Color")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Exp");
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Make");
+                    b.Property<DateTime>("DateTimeCreate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("Model");
+                    b.Property<DateTime>("DateTimeLastUpdate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("NameTruk");
+                    b.Property<string>("Model")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Owner");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PlateTruk");
+                    b.Property<string>("Owner")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Satet");
+                    b.Property<string>("Plate")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Type");
+                    b.Property<DateTime?>("PlateExpires")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("Vin");
+                    b.Property<string>("State")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Yera");
+                    b.Property<string>("Type")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VIN")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("VehicleModelId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("VehicleModelId");
 
                     b.ToTable("Trucks");
                 });
 
-            modelBuilder.Entity("DaoModels.DAO.Models.Users", b =>
+            modelBuilder.Entity("DaoModels.DAO.Models.User", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("CompanyId");
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Date");
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("KeyAuthorized");
+                    b.Property<DateTime?>("DateTimeLastLogin")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("Login");
+                    b.Property<DateTime?>("DateTimeLastUpdate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("Password");
+                    b.Property<DateTime>("DateTimeRegistration")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
 
                     b.HasKey("Id");
 
-                    b.ToTable("User");
+                    b.HasIndex("NormalizedEmail")
+                        .HasName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("DaoModels.DAO.Models.VehicleHistory", b =>
+            modelBuilder.Entity("DaoModels.DAO.Models.UserAnswer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("AdditionalInfo");
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Color");
+                    b.Property<string>("TextAnswer")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Lot");
-
-                    b.Property<string>("Make");
-
-                    b.Property<string>("Model");
-
-                    b.Property<string>("Plate");
-
-                    b.Property<string>("Type");
-
-                    b.Property<string>("VIN");
-
-                    b.Property<int>("VehicleId");
-
-                    b.Property<string>("Year");
+                    b.Property<int?>("UserQuestionnaireId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("VehicleHistories");
+                    b.HasIndex("QuestionId");
+
+                    b.HasIndex("UserQuestionnaireId");
+
+                    b.ToTable("UsersAnswers");
                 });
 
-            modelBuilder.Entity("DaoModels.DAO.Models.VehiclwInformation", b =>
+            modelBuilder.Entity("DaoModels.DAO.Models.UserMailQuestion", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("AdditionalInfo");
+                    b.Property<DateTime>("DateTimeReceived")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int?>("Ask1Id");
+                    b.Property<int>("MailStatus")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("AskDelyveryID");
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("AskID");
+                    b.Property<int?>("PhoneNumberId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Color");
+                    b.Property<string>("SenderEmail")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Lot");
+                    b.Property<string>("SenderName")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Make");
-
-                    b.Property<string>("Model");
-
-                    b.Property<string>("Plate");
-
-                    b.Property<int?>("ScanId");
-
-                    b.Property<string>("ShippingId");
-
-                    b.Property<string>("Type");
-
-                    b.Property<string>("VIN");
-
-                    b.Property<string>("Year");
+                    b.Property<string>("SenderPhoneCountryCode")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Ask1Id");
+                    b.HasIndex("PhoneNumberId");
 
-                    b.HasIndex("AskDelyveryID");
+                    b.ToTable("UsersMailsQuestions");
+                });
 
-                    b.HasIndex("AskID");
+            modelBuilder.Entity("DaoModels.DAO.Models.UserQuestionnaire", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.HasIndex("ScanId");
+                    b.Property<DateTime?>("DateTimeCompleted")
+                        .HasColumnType("datetime2");
 
-                    b.HasIndex("ShippingId");
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit");
 
-                    b.ToTable("VehiclwInformation");
+                    b.Property<int>("QuestionnaireId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuestionnaireId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UsersQuestionnaires");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.VehicleBody", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("VehiclesBodies");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.VehicleBrand", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("VehicleTypeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VehicleTypeId");
+
+                    b.ToTable("VehiclesBrands");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.VehicleDetails", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("AdditionalInfo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Color")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Lot")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Plate")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VIN")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("VehicleModelId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("VehicleModelId");
+
+                    b.ToTable("VehiclesDetails");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.VehicleInspection", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("DateTimeInspection")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("VehicleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VehicleId");
+
+                    b.ToTable("VehiclesInspections");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.VehicleModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("VehicleBodyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VehicleBrandId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VehicleBodyId");
+
+                    b.HasIndex("VehicleBrandId");
+
+                    b.ToTable("VehiclesModels");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.VehicleType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("VehiclesTypes");
                 });
 
             modelBuilder.Entity("DaoModels.DAO.Models.Video", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("VideoBase64");
+                    b.Property<DateTime>("DateTimeUpload")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("path");
+                    b.Property<double>("Height")
+                        .HasColumnType("float");
+
+                    b.Property<string>("VideoBase64")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VideoPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("VideoTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("VideoUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Width")
+                        .HasColumnType("float");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("VideoTypeId");
 
                     b.ToTable("Videos");
                 });
 
-            modelBuilder.Entity("DaoModels.DAO.Models.AskForUserDelyveryM", b =>
+            modelBuilder.Entity("DaoModels.DAO.Models.VideoAnswer", b =>
                 {
-                    b.HasOne("DaoModels.DAO.Models.Photo", "App_will_ask_for_signature_of_the_client_signature")
-                        .WithMany()
-                        .HasForeignKey("App_will_ask_for_signature_of_the_client_signatureId");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.HasOne("DaoModels.DAO.Models.Photo", "PhotoPay")
-                        .WithMany()
-                        .HasForeignKey("PhotoPayId");
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("int");
 
-                    b.HasOne("DaoModels.DAO.Models.Video", "VideoRecord")
-                        .WithMany()
-                        .HasForeignKey("VideoRecordId");
+                    b.Property<int?>("UserQuestionnaireId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VideoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuestionId");
+
+                    b.HasIndex("UserQuestionnaireId");
+
+                    b.HasIndex("VideoId");
+
+                    b.ToTable("VideosAnswers");
                 });
 
-            modelBuilder.Entity("DaoModels.DAO.Models.AskFromUser", b =>
+            modelBuilder.Entity("DaoModels.DAO.Models.VideoType", b =>
                 {
-                    b.HasOne("DaoModels.DAO.Models.Photo", "App_will_ask_for_signature_of_the_client_signature")
-                        .WithMany()
-                        .HasForeignKey("App_will_ask_for_signature_of_the_client_signatureId");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.HasOne("DaoModels.DAO.Models.Photo", "PhotoPay")
-                        .WithMany()
-                        .HasForeignKey("PhotoPayId");
+                    b.Property<string>("Type")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasOne("DaoModels.DAO.Models.Video", "VideoRecord")
+                    b.HasKey("Id");
+
+                    b.ToTable("VideoTypes");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
+                    b.Property<string>("NormalizedName")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.AddressInformation", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.PhoneNumber", "PhoneNumber")
                         .WithMany()
-                        .HasForeignKey("VideoRecordId");
+                        .HasForeignKey("PhoneNumberId");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.AdminAnswer", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.UserMailQuestion", "UserMailQuestion")
+                        .WithMany("AdminAnswers")
+                        .HasForeignKey("UserMailQuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.AnswerOption", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.Question", "Question")
+                        .WithMany("AnswerOptions")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.Company", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.PhoneNumber", "PhoneNumber")
+                        .WithMany()
+                        .HasForeignKey("PhoneNumberId");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.CompanyUser", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.Company", "Company")
+                        .WithMany("CompanyUsers")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DaoModels.DAO.Models.User", "User")
+                        .WithMany("CompanyUsers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.Contact", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DaoModels.DAO.Models.PhoneNumber", "PhoneNumber")
+                        .WithMany()
+                        .HasForeignKey("PhoneNumberId");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.CustomerST", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.Company", "Company")
+                        .WithMany("CustomerSTs")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("DaoModels.DAO.Models.Damage", b =>
                 {
-                    b.HasOne("DaoModels.DAO.Models.PhotoInspection")
+                    b.HasOne("DaoModels.DAO.Models.PhotoVehicleInspection", "PhotoVehicleInspection")
                         .WithMany("Damages")
-                        .HasForeignKey("PhotoInspectionId");
+                        .HasForeignKey("PhotoVehicleInspectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("DaoModels.DAO.Models.DamageForUser", b =>
                 {
-                    b.HasOne("DaoModels.DAO.Models.Shipping")
-                        .WithMany("DamageForUsers")
-                        .HasForeignKey("ShippingId");
+                    b.HasOne("DaoModels.DAO.Models.Order", "Order")
+                        .WithMany("DamagesForUser")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.Dispatcher", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DaoModels.DAO.Models.DispatcherType", "DispatcherType")
+                        .WithMany("Dispatchers")
+                        .HasForeignKey("DispatcherTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.DocumentCompany", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.Company", "Company")
+                        .WithMany("Documents")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.DocumentDriver", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.Driver", "Driver")
+                        .WithMany("Documents")
+                        .HasForeignKey("DriverId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.DocumentTrailer", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.Trailer", "Trailer")
+                        .WithMany("Documents")
+                        .HasForeignKey("TrailerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.DocumentTruck", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.Truck", "Truck")
+                        .WithMany("Documents")
+                        .HasForeignKey("TruckId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("DaoModels.DAO.Models.Driver", b =>
                 {
-                    b.HasOne("DaoModels.DAO.Models.Geolocations", "geolocations")
+                    b.HasOne("DaoModels.DAO.Models.Company", "Company")
+                        .WithMany("Drivers")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DaoModels.DAO.Models.DriverControl", "DriverControl")
                         .WithMany()
-                        .HasForeignKey("geolocationsID");
+                        .HasForeignKey("DriverControlId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DaoModels.DAO.Models.DriverReport", "DriverReport")
+                        .WithOne("Driver")
+                        .HasForeignKey("DaoModels.DAO.Models.Driver", "DriverReportId");
+
+                    b.HasOne("DaoModels.DAO.Models.Geolocation", "Geolocation")
+                        .WithMany()
+                        .HasForeignKey("GeolocationId");
+
+                    b.HasOne("DaoModels.DAO.Models.PhoneNumber", "PhoneNumber")
+                        .WithMany()
+                        .HasForeignKey("PhoneNumberId");
                 });
 
-            modelBuilder.Entity("DaoModels.DAO.Models.InspectionDriver", b =>
+            modelBuilder.Entity("DaoModels.DAO.Models.DriverInspection", b =>
                 {
-                    b.HasOne("DaoModels.DAO.Models.Driver")
-                        .WithMany("InspectionDrivers")
+                    b.HasOne("DaoModels.DAO.Models.Driver", "Driver")
+                        .WithMany("Inspections")
                         .HasForeignKey("DriverId");
+
+                    b.HasOne("DaoModels.DAO.Models.Trailer", "Trailer")
+                        .WithMany()
+                        .HasForeignKey("TrailerId");
+
+                    b.HasOne("DaoModels.DAO.Models.Truck", "Truck")
+                        .WithMany()
+                        .HasForeignKey("TruckId");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.HistoryOrderAction", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.Order", null)
+                        .WithMany("HistoryOrderActions")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.Order", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.Company", "Company")
+                        .WithMany("Orders")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DaoModels.DAO.Models.CurrentStatus", "CurrentStatus")
+                        .WithMany()
+                        .HasForeignKey("CurrentStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DaoModels.DAO.Models.AddressInformation", "Delivery")
+                        .WithMany()
+                        .HasForeignKey("DeliveryId");
+
+                    b.HasOne("DaoModels.DAO.Models.Driver", "Driver")
+                        .WithMany("Orders")
+                        .HasForeignKey("DriverId");
+
+                    b.HasOne("DaoModels.DAO.Models.PhoneNumber", "PhoneNumber")
+                        .WithMany()
+                        .HasForeignKey("PhoneNumberId");
+
+                    b.HasOne("DaoModels.DAO.Models.AddressInformation", "PickedUp")
+                        .WithMany()
+                        .HasForeignKey("PickedUpId");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.PasswordRecovery", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.RecoveryType", "RecoveryType")
+                        .WithMany("PasswordRecoveries")
+                        .HasForeignKey("RecoveryTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.PaymentMethod", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.Company", "Company")
+                        .WithMany("PaymentMethods")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("DaoModels.DAO.Models.Photo", b =>
                 {
-                    b.HasOne("DaoModels.DAO.Models.Ask1")
-                        .WithMany("App_will_force_driver_to_take_pictures_of_each_strap")
-                        .HasForeignKey("Ask1Id");
-
-                    b.HasOne("DaoModels.DAO.Models.Ask1")
-                        .WithMany("Photo_after_loading_in_the_truck")
-                        .HasForeignKey("Ask1Id1");
-
-                    b.HasOne("DaoModels.DAO.Models.Ask2")
-                        .WithMany("Any_additional_documentation_been_given_after_loading")
-                        .HasForeignKey("Ask2Id");
-
-                    b.HasOne("DaoModels.DAO.Models.Ask2")
-                        .WithMany("Any_additional_parts_been_given_to_you")
-                        .HasForeignKey("Ask2Id1");
-
-                    b.HasOne("DaoModels.DAO.Models.AskDelyvery")
-                        .WithMany("Please_take_a_picture_Id_of_the_person_taking_the_delivery")
-                        .HasForeignKey("AskDelyveryID");
-
-                    b.HasOne("DaoModels.DAO.Models.AskForUserDelyveryM")
-                        .WithMany("Have_you_inspected_the_vehicle_For_any_additional_imperfections_other_than_listed_at_the_pick_up_photo")
-                        .HasForeignKey("AskForUserDelyveryMID");
-
-                    b.HasOne("DaoModels.DAO.Models.Ask")
-                        .WithMany("Any_personal_or_additional_items_with_or_in_vehicle")
-                        .HasForeignKey("AskID");
-
-                    b.HasOne("DaoModels.DAO.Models.PhotoInspection")
+                    b.HasOne("DaoModels.DAO.Models.PhotoType", "PhotoType")
                         .WithMany("Photos")
-                        .HasForeignKey("PhotoInspectionId");
+                        .HasForeignKey("PhotoTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("DaoModels.DAO.Models.PhotoDriver", b =>
+            modelBuilder.Entity("DaoModels.DAO.Models.PhotoAnswer", b =>
                 {
-                    b.HasOne("DaoModels.DAO.Models.InspectionDriver")
-                        .WithMany("PhotosTruck")
-                        .HasForeignKey("InspectionDriverId");
+                    b.HasOne("DaoModels.DAO.Models.Photo", "Photo")
+                        .WithMany("PhotosAnswers")
+                        .HasForeignKey("PhotoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DaoModels.DAO.Models.Question", "Question")
+                        .WithMany("PhotoAnswers")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DaoModels.DAO.Models.UserQuestionnaire", "UserQuestionnaire")
+                        .WithMany()
+                        .HasForeignKey("UserQuestionnaireId");
                 });
 
-            modelBuilder.Entity("DaoModels.DAO.Models.PhotoInspection", b =>
+            modelBuilder.Entity("DaoModels.DAO.Models.PhotoDriverInspection", b =>
                 {
-                    b.HasOne("DaoModels.DAO.Models.VehiclwInformation")
-                        .WithMany("PhotoInspections")
-                        .HasForeignKey("VehiclwInformationId");
+                    b.HasOne("DaoModels.DAO.Models.DriverInspection", "DriverInspection")
+                        .WithMany("PhotosDriverInspection")
+                        .HasForeignKey("DriverInspectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DaoModels.DAO.Models.Photo", "Photo")
+                        .WithMany("PhotosDriversInspections")
+                        .HasForeignKey("PhotoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.PhotoVehicleInspection", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.Photo", "Photo")
+                        .WithMany("PhotosVehiclesInspections")
+                        .HasForeignKey("PhotoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DaoModels.DAO.Models.VehicleInspection", "VehicleInspection")
+                        .WithMany("PhotosVehicleInspection")
+                        .HasForeignKey("VehicleInspectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.Question", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.Questionnaire", "Questionnaire")
+                        .WithMany("Questions")
+                        .HasForeignKey("QuestionnaireId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("DaoModels.DAO.Models.Settings.Layouts", b =>
                 {
-                    b.HasOne("DaoModels.DAO.Models.Settings.TransportVehicle")
+                    b.HasOne("DaoModels.DAO.Models.Settings.TransportVehicle", null)
                         .WithMany("Layouts")
                         .HasForeignKey("TransportVehicleId");
                 });
 
-            modelBuilder.Entity("DaoModels.DAO.Models.Settings.ProfileSetting", b =>
+            modelBuilder.Entity("DaoModels.DAO.Models.Settings.ProfileSettings", b =>
                 {
                     b.HasOne("DaoModels.DAO.Models.Settings.TransportVehicle", "TransportVehicle")
                         .WithMany()
                         .HasForeignKey("TransportVehicleId");
                 });
 
-            modelBuilder.Entity("DaoModels.DAO.Models.Shipping", b =>
+            modelBuilder.Entity("DaoModels.DAO.Models.SubscribeST", b =>
                 {
-                    b.HasOne("DaoModels.DAO.Models.Ask2", "Ask2")
-                        .WithMany()
-                        .HasForeignKey("Ask2Id");
-
-                    b.HasOne("DaoModels.DAO.Models.AskFromUser", "AskFromUser")
-                        .WithMany()
-                        .HasForeignKey("AskFromUserid");
-
-                    b.HasOne("DaoModels.DAO.Models.AskForUserDelyveryM", "askForUserDelyveryM")
-                        .WithMany()
-                        .HasForeignKey("askForUserDelyveryMID");
+                    b.HasOne("DaoModels.DAO.Models.CustomerST", "CustomerST")
+                        .WithMany("Subscribes")
+                        .HasForeignKey("CustomerSTId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("DaoModels.DAO.Models.TaskLoad", b =>
+            modelBuilder.Entity("DaoModels.DAO.Models.Trailer", b =>
                 {
-                    b.HasOne("DaoModels.DAO.Models.LogTask")
-                        .WithMany("TaskLoads")
-                        .HasForeignKey("LogTaskId");
+                    b.HasOne("DaoModels.DAO.Models.Company", "Company")
+                        .WithMany("Trailers")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DaoModels.DAO.Models.VehicleModel", null)
+                        .WithMany("Trailers")
+                        .HasForeignKey("VehicleModelId");
                 });
 
-            modelBuilder.Entity("DaoModels.DAO.Models.VehiclwInformation", b =>
+            modelBuilder.Entity("DaoModels.DAO.Models.Truck", b =>
                 {
-                    b.HasOne("DaoModels.DAO.Models.Ask1", "Ask1")
-                        .WithMany()
-                        .HasForeignKey("Ask1Id");
+                    b.HasOne("DaoModels.DAO.Models.Company", "Company")
+                        .WithMany("Trucks")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("DaoModels.DAO.Models.AskDelyvery", "AskDelyvery")
-                        .WithMany()
-                        .HasForeignKey("AskDelyveryID");
+                    b.HasOne("DaoModels.DAO.Models.VehicleModel", null)
+                        .WithMany("Trucks")
+                        .HasForeignKey("VehicleModelId");
+                });
 
-                    b.HasOne("DaoModels.DAO.Models.Ask", "Ask")
-                        .WithMany()
-                        .HasForeignKey("AskID");
+            modelBuilder.Entity("DaoModels.DAO.Models.UserAnswer", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.Question", "Question")
+                        .WithMany("UserAnswers")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("DaoModels.DAO.Models.Photo", "Scan")
+                    b.HasOne("DaoModels.DAO.Models.UserQuestionnaire", "UserQuestionnaire")
                         .WithMany()
-                        .HasForeignKey("ScanId");
+                        .HasForeignKey("UserQuestionnaireId");
+                });
 
-                    b.HasOne("DaoModels.DAO.Models.Shipping")
-                        .WithMany("VehiclwInformations")
-                        .HasForeignKey("ShippingId");
+            modelBuilder.Entity("DaoModels.DAO.Models.UserMailQuestion", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.PhoneNumber", "PhoneNumber")
+                        .WithMany()
+                        .HasForeignKey("PhoneNumberId");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.UserQuestionnaire", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.Questionnaire", "Questionnaire")
+                        .WithMany()
+                        .HasForeignKey("QuestionnaireId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DaoModels.DAO.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.VehicleBrand", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.VehicleType", "VehicleType")
+                        .WithMany("VehicleBrands")
+                        .HasForeignKey("VehicleTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.VehicleDetails", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.Order", "Order")
+                        .WithMany("Vehicles")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DaoModels.DAO.Models.VehicleModel", "VehicleModel")
+                        .WithMany("Vehicles")
+                        .HasForeignKey("VehicleModelId");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.VehicleInspection", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.VehicleDetails", "Vehicle")
+                        .WithMany()
+                        .HasForeignKey("VehicleId");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.VehicleModel", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.VehicleBody", "VehicleBody")
+                        .WithMany("VehicleModels")
+                        .HasForeignKey("VehicleBodyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DaoModels.DAO.Models.VehicleBrand", "VehicleBrand")
+                        .WithMany("VehicleModels")
+                        .HasForeignKey("VehicleBrandId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.Video", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.VideoType", "VideoType")
+                        .WithMany("Videos")
+                        .HasForeignKey("VideoTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.VideoAnswer", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.Question", "Question")
+                        .WithMany("VideoAnswers")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DaoModels.DAO.Models.UserQuestionnaire", "UserQuestionnaire")
+                        .WithMany()
+                        .HasForeignKey("UserQuestionnaireId");
+
+                    b.HasOne("DaoModels.DAO.Models.Video", "Video")
+                        .WithMany()
+                        .HasForeignKey("VideoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DaoModels.DAO.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

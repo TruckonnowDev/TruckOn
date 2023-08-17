@@ -2,7 +2,7 @@
 @using WebDispacher.Constants;
 
 @inject IViewLocalizer Localizer
-
+@model List<WebDispacher.ViewModels.Order.ShortOrderViewModel>
 @{
     ViewData["Title"] = "Dashboard | Delivered";
 }
@@ -52,23 +52,23 @@
                         <div class="tab" onclick="window.location.href='@Url.Action("Deleted", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">@Localizer["Deleted"]</div>
                     </div>
                     <div class="tabContent">
-                        @for (int i = 0; i < ViewBag.Orders.Count; i++)
+                        @for (int i = 0; i < Model.Count; i++)
                         {
                             <div class="one-line">
                                 <div class="top-line">
                                     <div class="left">
-                                        <button class="btn3" onClick='window.location.href="@Url.Action( "FullInfoOrder", new { id = ViewBag.Orders[i].Id, status = "NewLoad" } )"'>@Localizer["LoadId"]: @ViewBag.Orders[i].idOrder</button>
-                                        <div class="text"><img src="~/img/dolar.svg" alt=""> @ViewBag.Orders[i].PriceListed</div>
-                                        <div class="text"><img src="~/img/clock.svg" alt=""> @ViewBag.Orders[i].TotalPaymentToCarrier</div>
-                                        @if (ViewBag.Orders[i].CurrentStatus == "Delivered,Paid")
+                                        <button class="btn3" onClick='window.location.href="@Url.Action( "FullInfoOrder", new { id = Model[i].Id, status = "NewLoad" } )"'>@Localizer["LoadId"]: @Model[i].OrderId</button>
+                                        <div class="text"><img src="~/img/dolar.svg" alt=""> @Model[i].Price</div>
+                                        <div class="text"><img src="~/img/clock.svg" alt=""> @Model[i].PaymentMethod</div>
+                                        @if (Model[i].CurrentStatus.StatusName == "Delivered,Paid")
                                         {
                                             <div class="text" style="color: #007bff">@Localizer["ShippingPaid"]</div>
                                         }
                                     </div>
                                     <div class="right">
-                                        <a class="btn3" href="@Url.Action("EditOrder", new { id = ViewBag.Orders[i].Id, status = "Delivered" } )">@Localizer["Edit"]</a>
-                                        <a class="btn3 open-ConfirmDelete" data-toggle="modal" data-id="@ViewBag.Orders[i].Id" href="#confirmDeleteEntryModal">@Localizer["Delete"]</a>
-                                        @if (ViewBag.Orders[i].CurrentStatus == "Delivered,Billed")
+                                        <a class="btn3" href="@Url.Action("EditOrder", new { id = Model[i].Id, status = "Delivered" } )">@Localizer["Edit"]</a>
+                                        <a class="btn3 open-ConfirmDelete" data-toggle="modal" data-id="@Model[i].Id" href="#confirmDeleteEntryModal">@Localizer["Delete"]</a>
+                                        @if (Model[i].CurrentStatus.StatusName == "Delivered,Billed")
                                         {
                                             <a class="btn3" @*href="DeletedOrder?id=@ViewBag.Orders[i].Id&status=Delivered"*@>@Localizer["PayShipping"]</a>
                                         }
@@ -77,34 +77,52 @@
                                 <div class="info-line">
                                     <div class="info-block">
                                         <h3>@Localizer["Origin"]</h3>
-                                        <p> @ViewBag.Orders[i].AddresP, @ViewBag.Orders[i].CityP,  @ViewBag.Orders[i].StateP, @ViewBag.Orders[i].ZipP</p>
-                                        <p>@Localizer["Phone"]: @ViewBag.Orders[i].PhoneP</p>
+                                        <p> @Model[i].PickedUp.Address, @Model[i].PickedUp.City,  @Model[i].PickedUp.State, @Model[i].PickedUp.ZipCode</p>
+                                        @{
+                                            var phonePickedUp = string.Empty;
+                                            if (Model[i]?.PickedUp?.PhoneNumber.DialCode != 0 && !string.IsNullOrEmpty(Model[i]?.PickedUp?.PhoneNumber.Number))
+                                            {
+                                                phonePickedUp = $"+{Model[i].PickedUp.PhoneNumber.DialCode} {Model[i].PickedUp.PhoneNumber.Number}";
+                                            }
+                                        }
+                                        <p>@Localizer["Phone"]: @phonePickedUp</p>
                                     </div>
                                     <div class="info-block">
                                         <h3>@Localizer["Destination"]</h3>
-                                        <p> @ViewBag.Orders[i].AddresD, @ViewBag.Orders[i].CityD,  @ViewBag.Orders[i].StateD, @ViewBag.Orders[i].ZipD</p>
-                                        <p>@Localizer["Phone"]: @ViewBag.Orders[i].PhoneD</p>
-                                        <p>@Localizer["DeliveryEstimated"]: @ViewBag.Orders[i].DeliveryEstimated</p>
-                                        <p>@Localizer["Phone"]: @ViewBag.Orders[i].PhoneD</p>
+                                        <p> @Model[i].Delivery.Address, @Model[i].Delivery.City,  @Model[i].Delivery.State, @Model[i].Delivery.ZipCode</p>
+                                        @{
+                                            var phoneDelivery = string.Empty;
+                                            if (Model[i]?.Delivery?.PhoneNumber.DialCode != 0 && !string.IsNullOrEmpty(Model[i]?.Delivery?.PhoneNumber.Number))
+                                            {
+                                                phoneDelivery = $"+{Model[i].Delivery.PhoneNumber.DialCode} {Model[i].Delivery.PhoneNumber.Number}";
+                                            }
+                                        }
+                                        <p>@Localizer["Phone"]: @phoneDelivery</p>
+                                        <p>@Localizer["DeliveryEstimated"]: @Model[i].DateTimeDelivery.ToString(DateTimeFormats.BaseCalendarDate)</p>
                                     </div>
                                     <div class="info-block">
-                                        @if (ViewBag.Orders[i].CurrentStatus == "Delivered,Paid")
+                                        @if (Model[i].CurrentStatus.StatusName == "Delivered,Paid")
                                         {
-                                            <p class="stPData">@Localizer["AssignedTo"] @ViewBag.Orders[i].NameDriver</p>
-                                            <p class="stPData">@Localizer["Phone"]: @ViewBag.Orders[i].PhoneDriver</p>
-                                        }
-                                        else if (ViewBag.Orders[i].CurrentStatus == "Delivered,Billed")
-                                        {
-                                            <p>@Localizer["AssignedTo"] @ViewBag.Orders[i].NameDriver</p>
-                                            <p>@Localizer["Phone"]: @ViewBag.Orders[i].PhoneDriver</p>
-
-                                            @if (ViewBag.Orders[i].DataPaid != null && DateTime.ParseExact(ViewBag.Orders[i].DataPaid, DateTimeFormats.FullDateTimeInfo, null) >= DateTime.Now)
+                                            if (Model[i].DriverId != null)
                                             {
-                                                <p>@Localizer["CustomerMustPayShippingTo"] @ViewBag.Orders[i].DataPaid</p>
+                                                <p class="stPData">@Localizer["AssignedTo"] @Model[i].Driver.FirstName @Model[i].Driver.LastName</p>
+                                                <p class="stPData">@Localizer["Phone"]: @Model[i].Driver.PhoneNumber</p>
+                                            }
+                                        }
+                                        else if (Model[i].CurrentStatus.StatusName == "Delivered,Billed")
+                                        {
+                                            if (Model[i].DriverId != null)
+                                            {
+                                                <p>@Localizer["AssignedTo"] @Model[i].Driver.FirstName @Model[i].Driver.LastName</p>
+                                                <p>@Localizer["Phone"]:  @Model[i].Driver.PhoneNumber</p>
+                                            }
+                                            @if (Model[i].DateTimePaid != null && Model[i].DateTimePaid.Value >= DateTime.Now)
+                                            {
+                                                <p>@Localizer["CustomerMustPayShippingTo"] @Model[i].DateTimePaid.Value.ToString(DateTimeFormats.FullDateTimeInfoUS)</p>
                                             }
                                             else
                                             {
-                                                <p style="color:red;" class="stPData">@Localizer["CustomerMustPayShippingTo"] @ViewBag.Orders[i].DataPaid</p>
+                                                <p style="color:red;" class="stPData">@Localizer["CustomerMustPayShippingTo"] @Model[i].DateTimePaid.Value.ToString(DateTimeFormats.FullDateTimeInfoUS)</p>
                                             }
 
                                     }
@@ -118,7 +136,7 @@
             </div>
         </div>
     </div>
-    @await Html.PartialAsync("~/Views/PartView/Modals/ConfirmDelete.cshtml");
+    @await Html.PartialAsync("~/Views/PartView/Modals/ConfirmDelete.cshtml", new ViewDataDictionary(ViewData) { {"ModalId", "confirmDeleteEntryModal"} });
     <script src="~/js/orders.js"></script>
 </div>
 

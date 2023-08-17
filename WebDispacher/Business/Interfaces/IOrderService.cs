@@ -2,17 +2,24 @@
 using System.Threading.Tasks;
 using DaoModels.DAO.Models;
 using WebDispacher.ViewModels;
+using WebDispacher.ViewModels.Order;
+using WebDispacher.ViewModels.Vehicles;
 
 namespace WebDispacher.Business.Interfaces
 {
     public interface IOrderService
     {
-        Task DeleteOrder(string id);
-        Task ArchiveOrder(string id);
-        Task<Shipping> AddNewOrder(string urlPage, Dispatcher dispatcher);
+        Task<OrderWithHistoryViewModel> GetOrderWithHistory(string companyId, int id);
+        Task DeleteOrder(int id, string localDate);
+        Task ArchiveOrder(int id, string localDate);
+        Task<List<VehicleDetails>> GetVehicleDetailsByOrderId(int orderId);
+        Task<int> GetOrderIdByVehicleId(int id);
+        //Task<Shipping> AddNewOrder(string urlPage, Dispatcher dispatcher);
 
-        Task SaveVechi(string idVech, string vin, string year, string make, string model, string type, string color,
-            string lotNumber);
+        CurrentStatus GetCurrentStatusByName(string name);
+        int GetCurrentStatusIdByName(string name);
+
+        Task SaveVechicle(int idVech, string vin, string year, string make, string model, string type, string body, string color, string lotNumber, string localDate);
 
         Task AddHistory(string key, string idCompany, string idOrder, string idVech, string idDriver, string action, string localDate);
 
@@ -21,28 +28,33 @@ namespace WebDispacher.Business.Interfaces
 
         string CreateFiltersString(string loadId, string name, string address, string phone, string email,
             string price);
-        
-        Task RemoveVechi(string idVech);
-        Task<VehiclwInformation> AddVechi(string idOrder);
-        Task<Shipping> CreateShipping();
-        Shipping GetShippingCurrentVehiclwIn(string id);
-        Task Assign(string idOrder, string idDriver);
-        Task Unassign(string idOrder);
+
+        Task RemoveVechicle(int vechicleId);
+        Task<Order> GetOrder(string companyId, int id);
+        Task<List<string>> GetVehicleTypes(string searchName);
+        Task<List<string>> GetVehicleBrands(string searchName, string vehicleType);
+        Task<List<string>> GetVehicleModels(string searchName, string vehicleBrand);
+
+        Task<VehicleDetails> AddVechicle(int id, string localDate);
+        Task<Order> CreateOrder(string companyId, string localDate);
+        //Order GetShippingCurrentVehiclwIn(string id);
+        Task Assign(int orderId, string driverId);
+        Task Unassign(int orderId);
         void Solved(string idOrder);
-        Task<int> GetCountPage(string status, string loadId, string name, string address, string phone, string email, string price);
+        Task<int> GetCountPage(string companyId, string status, string loadId, string name, string address, string phone, string email, decimal price);
         int GetCountPage(int countPage);
 
-        Task<List<Shipping>> GetOrders(string status, int page, string loadId, string name, string address, string phone, string email,
-            string price);
+        Task<List<Order>> GetOrders(string companyId, string status, int page, string loadId, string name, string address, string phone, string email,
+            decimal price);
 
-        ShippingViewModel GetOrder(string id);
+        Task<Order> GetCompanyOrderById(string companyId, int id);
+        Task<EditOrderViewModel> GetEditCompanyOrderById(string companyId, int id);
 
-        Task<ShippingViewModel> UpdateOrder(ShippingViewModel shipping);
+        Task<EditOrderViewModel> UpdateOrder(EditOrderViewModel model, string localDate);
 
         void SavePath(string id, string path);
         Task<string> GetDocument(string id);
-        void RemoveDoc(string idDock);
-        bool SendRemindInspection(int idDriver);
-        List<HistoryOrder> GetHistoryOrder(string idOrder);
+        bool SendRemindInspection(int driverId);
+        List<HistoryOrderAction> GetHistoryOrder(int orderId);
     }
 }

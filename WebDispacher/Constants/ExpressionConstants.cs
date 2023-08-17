@@ -3,6 +3,7 @@
     public static class ExpressionConstants
     {
         public const string OnlyDigits = "/\\d/g";
+        public const string OnlyLetters = "/\\D/g";
         public const string WithoutDashes = "/\\-/";
     }
 }

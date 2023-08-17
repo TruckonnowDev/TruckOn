@@ -4,9 +4,10 @@
 
 @inject IViewLocalizer Localizer
 
+@model WebDispacher.Models.Driver.FullInformationInspection
+
 @{
     ViewData["Title"] = "All Inspection Truck";
-    DateTime dateTimeInspectionFormat = DateTime.MinValue;
 }
 
 <body>
@@ -22,7 +23,7 @@
                             <h1 class="text-info-header-1">@Localizer["TruckAndTrailerInspection"]</h1>
                         </div>
                     </div>
-                    <select class="width-auto" onchange="window.location.href = 'InspactionTrucks?IdDriver=@ViewBag.IdDriver&idTruck=@ViewBag.IdTruck&idTrailer=@ViewBag.IdTrailer&date=' + this.options[this.selectedIndex].value;">
+                    <select class="width-auto" onchange="window.location.href = 'InspactionTrucks?driverId=@ViewBag.IdDriver&idTruck=@ViewBag.IdTruck&idTrailer=@ViewBag.IdTrailer&date=' + this.options[this.selectedIndex].value;">
                         <option selected value="0">@Localizer["AllTime"]</option>
                         @for (DateTime i = DateTime.Now; i >= new DateTime(2019, 8, 1); i = i.AddMonths(-1))
                         {
@@ -36,45 +37,45 @@
                             }
                         }
                     </select>
-                    <select class="inpContentInspection width-auto" onchange="window.location.href = 'InspactionTrucks?IdDriver=' + this.options[this.selectedIndex].value  + '&idTruck=@ViewBag.IdTruck&idTrailer=@ViewBag.IdTrailer&date=@ViewBag.SelectData'">
+                    <select class="inpContentInspection width-auto" onchange="window.location.href = 'InspactionTrucks?driverId=' + this.options[this.selectedIndex].value  + '&idTruck=@ViewBag.IdTruck&idTrailer=@ViewBag.IdTrailer&date=@ViewBag.SelectData'">
                         <option selected value="0">@Localizer["AllDrivers"]</option>
-                        @for (int i = 0; i < ViewBag.Drivers.Count; i++)
+                        @for (int i = 0; i < Model.Drivers.Count; i++)
                         {
-                            @if (ViewBag.IdDriver.ToString() == ViewBag.Drivers[i].Id.ToString())
+                            @if (ViewBag.IdDriver.ToString() == Model.Drivers[i].Id.ToString())
                             {
-                                <option selected value="@ViewBag.Drivers[i].Id">@ViewBag.Drivers[i].FullName</option>
+                                <option selected value="@Model.Drivers[i].Id">@Model.Drivers[i].FirstName @Model.Drivers[i].LastName</option>
                             }
                             else
                             {
-                                <option value="@ViewBag.Drivers[i].Id">@ViewBag.Drivers[i].FullName</option>
+                                <option value="@Model.Drivers[i].Id">@Model.Drivers[i].FirstName @Model.Drivers[i].LastName</option>
                             }
                         }
                     </select>
-                    <select class="inpContentInspection width-auto" onchange="window.location.href = 'InspactionTrucks?IdDriver=@ViewBag.IdDriver&idTruck=' + this.options[this.selectedIndex].value + '&idTrailer=@ViewBag.IdTrailer&date=@ViewBag.SelectData'">
+                    <select class="inpContentInspection width-auto" onchange="window.location.href = 'InspactionTrucks?driverId=@ViewBag.IdDriver&idTruck=' + this.options[this.selectedIndex].value + '&idTrailer=@ViewBag.IdTrailer&date=@ViewBag.SelectData'">
                         <option selected value="0">@Localizer["AllTruck"]</option>
-                        @for (int i = 0; i < ViewBag.Trucks.Count; i++)
+                        @for (int i = 0; i < Model.Trucks.Count; i++)
                         {
-                            @if (ViewBag.IdTruck.ToString() == ViewBag.Trucks[i].Id.ToString())
+                            @if (ViewBag.IdTruck.ToString() == Model.Trucks[i].Id.ToString())
                             {
-                                <option selected value="@ViewBag.Trucks[i].Id">@ViewBag.Trucks[i].Make @ViewBag.Trucks[i].Model</option>
+                                <option selected value="@Model.Trucks[i].Id">@Model.Trucks[i].Brand @Model.Trucks[i].Model</option>
                             }
                             else
                             {
-                                <option value="@ViewBag.Trucks[i].Id">@ViewBag.Trucks[i].Make @ViewBag.Trucks[i].Model</option>
+                                <option value="@Model.Trucks[i].Id">@Model.Trucks[i].Brand @Model.Trucks[i].Model</option>
                             }
                         }
                     </select>
-                    <select class="inpContentInspection width-auto" onchange="window.location.href = 'InspactionTrucks?IdDriver=@ViewBag.IdDriver&idTruck=@ViewBag.IdTruck&idTrailer='+ this.options[this.selectedIndex].value +'&date=@ViewBag.SelectData'">
+                    <select class="inpContentInspection width-auto" onchange="window.location.href = 'InspactionTrucks?driverId=@ViewBag.IdDriver&idTruck=@ViewBag.IdTruck&idTrailer='+ this.options[this.selectedIndex].value +'&date=@ViewBag.SelectData'">
                         <option selected value="0">@Localizer["AllTrailer"]</option>
-                        @for (int i = 0; i < ViewBag.Trailers.Count; i++)
+                        @for (int i = 0; i < Model.Trailers.Count; i++)
                         {
-                            @if (ViewBag.IdTrailer.ToString() == ViewBag.Trailers[i].Id.ToString())
+                            @if (ViewBag.IdTrailer.ToString() == Model.Trailers[i].Id.ToString())
                             {
-                                <option selected value="@ViewBag.Trailers[i].Id">@ViewBag.Trailers[i].Make</option>
+                                <option selected value="@Model.Trailers[i].Id">@Model.Trailers[i].Brand</option>
                             }
                             else
                             {
-                                <option value="@ViewBag.Trailers[i].Id">@ViewBag.Trailers[i].Make</option>
+                                <option value="@Model.Trailers[i].Id">@Model.Trailers[i].Brand</option>
                             }
                         }
                     </select>
@@ -82,54 +83,32 @@
             </div>
             <div class="row pt-4">
                 <div class="col-md-12">
-                    @for (int i = 0; i < ViewBag.InspectionTruck.Count; i++)
+                    @for (int i = 0; i < Model.Inspection.Count; i++)
                     {
-                        var dateTimeString = ViewBag.InspectionTruck[i].Date;
-
-                        try
-                        {
-                            dateTimeInspectionFormat = DateTime.ParseExact(dateTimeString, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
-                        }
-                        catch
-                        {
-
-                        }
                         <div class="one-line">
                             <div class="top-line">
                                 <div class="left">
                                     <div class="contact">
                                         <p>
-                                            <strong>@ViewBag.InspectionTruck[i].NameDriver</strong>
+                                            <strong>@Model.Inspection[i].NameDriver</strong>
                                         </p>
                                         <p>
-                                            <a>@Localizer["Truck"]: </a>@ViewBag.InspectionTruck[i].Truck
+                                            <a>@Localizer["Truck"]: </a>@Model.Inspection[i].TruckInformation
                                         </p>
                                         <p>
-                                            <a>@Localizer["Trailer"]: </a>@ViewBag.InspectionTruck[i].Trailer
+                                            <a>@Localizer["Trailer"]: </a>@Model.Inspection[i].TrailerInformation
                                         </p>
-                                        @if (dateTimeInspectionFormat.Year == 1)
-                                        {
-                                            <p>
-                                                <a>@Localizer["Inspection"]: </a>@ViewBag.InspectionTruck[i].Date
-                                            </p>
-                                        }
-                                        else
-                                        {
-                                            <p>
-                                                <a>@Localizer["Inspection"]: </a>@dateTimeInspectionFormat.ToString(DateTimeFormats.FullDateTimeInfoUS)
-                                            </p>
-                                        }
-                                        
+
+                                        <p>
+                                            <a>@Localizer["Inspection"]: </a>@Model.Inspection[i].DateTimeInspection.ToString(DateTimeFormats.FullDateTimeInfoUS)
+                                        </p>
                                     </div>
                                 </div>
                                 <div class="right">
-                                    <button class="btn3" onclick="window.location.href='InspactionTruck?idInspection=@ViewBag.InspectionTruck[i].Id&idDriver=@ViewBag.IdDriver&date=@ViewBag.SelectData'">@Localizer["OpenBOL"]</button>
+                                    <button class="btn3" onclick="window.location.href='InspactionTruck?idInspection=@Model.Inspection[i].Id&driverId=@ViewBag.IdDriver&date=@ViewBag.SelectData'">@Localizer["OpenBOL"]</button>
                                 </div>
                             </div>
                         </div>
-                        {
-                            dateTimeInspectionFormat = DateTime.MinValue;
-                        }
                     }
                 </div>
             </div>

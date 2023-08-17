@@ -5,6 +5,7 @@ using DaoModels.DAO.Enum;
 using DaoModels.DAO.Models;
 using Microsoft.AspNetCore.Http;
 using Stripe;
+using WebDispacher.Constants;
 using WebDispacher.Models;
 using WebDispacher.Models.Subscription;
 using WebDispacher.ViewModels.Company;
@@ -17,55 +18,72 @@ namespace WebDispacher.Business.Interfaces
 {
     public interface ICompanyService
     {
+        Task<UserMailQuestion> GetUserQuestionWithAnswers(int id);
+        Task<List<UserMailQuestion>> GetUserQuestions();
+        Task<List<UserMailQuestion>> GetUserQuestionsWithoutAnswers(int page);
+        Task<List<UserMailQuestion>> GetUserQuestionsWithAnswers(int page);
+        Task<List<UserMailQuestion>> GetAllUserQuestions(int page);
+        Task<int> GetCountNewUserQuestionsPages();
+        Task<int> GetCountAnsweredUserQuestionsPages();
+        Task<int> GetCountAllUserQuestionsPages();
+        Task SendUserAnswer(AdminAnswerViewModel model, string companyId, string localDate);
+        Task<bool> CreateUserQuestions(UserMailQuestion userMailQuestion, string localDate);
+        Task<Company> GetActiveUserCompanyByCompanyTypeUserId(string userId, CompanyType companyType);
+        Task<Company> CreateCompany(FewMoreDetailsViewModel model, CompanyType companyType = CompanyType.Carrier);
+        Task AddUserToCompany(User user, Company company);
+        void InitStripeForCompany(string nameCompany, string emailCompany, int companyId);
+        Task<List<Contact>> GetContactsByCompanyId(int page, string companyId);
+        Task UpdateCompanyStatus(int companyId, CompanyStatus companyStatus);
+
         Task<bool> ActivateCompany(string companyId);
-        Task<bool> UploadCompanyRequiredDoc(IFormFile certificateOfInsurance, IFormFile mcLetter, string idCompany);
+        Task<bool> UploadCompanyRequiredDoc(IFormFile certificateOfInsurance, IFormFile mcLetter, string companyId);
         Task<bool> CheckCompanyRequiredDoc(string idCompany);
         Task<List<ContactViewModel>> GetContactsViewModels(int page, string idCompany);
-        Task <Users> GetUserByCompanyId(string companyId);
+        Task <User> GetUserByCompanyId(string companyId);
         Task<bool> SendEmailToUserByCompanyId(string companyId, string subject, string message);
-        Task<List<CompanyViewModel>> GetCompaniesViewModels(int page);
+        //Task<List<CompanyViewModel>> GetCompaniesViewModels(int page);
+        Task<List<Company>> GetCompaniesWithUsers(int page);
         Dispatcher CheckKeyDispatcher(string key);
         List<Dispatcher> GetDispatchers(int idCompany);
-        List<Commpany> GetCompanies();
+        List<Company> GetCompanies();
         Task<CompanyViewModel> GetCompanyById(int id);
-        Task<List<CompanyDTO>> GetCompaniesDTO(int page);
         Task<int> GetCountCompaniesPages();
         ContactViewModel GetContact(int id);
-        Task EditCompany(CompanyViewModel company);
+        Task EditCompany(CompanyViewModel model, string localDate);
         string RefreshTokenDispatch(string idDispatch);
         void CreateDispatch(DispatcherViewModel dispatcher, int idCompany);
-        void EditContact(ContactViewModel contact);
+        Task EditContact(ContactViewModel model, string localDate);
         void EditDispatch(DispatcherViewModel dispatcher);
         Task DeleteContactById(int id);
         DispatcherViewModel GetDispatcherById(int idDispatch);
         void RemoveDispatchById(int idDispatch);
         ResponseStripe AddPaymentCard(string idCompany, CardViewModel card);
         void DeletePaymentMethod(string idPayment, string idCompany);
-        Subscribe_ST GetSubscriptionIdCompany(string idCompany, ActiveType activeType = ActiveType.Active);
+        Task<SubscribeST> GetSubscriptionIdCompany(string idCompany, ActiveType activeType = ActiveType.Active);
         ResponseStripe SelectDefaultPaymentMethod(string idPayment, string idCompany = null,
-            Customer_ST customer_ST = null);
+            CustomerST customer_ST = null);
 
-        List<PaymentMethod> GetPaymentMethod(string idCompany);
-        List<PaymentMethod_ST> GetPaymentMethodsST(string idCompany);
-        void RemoveDocCompany(string idDock);
-        Task<List<DucumentCompany>> GetCompanyDoc(string id);
-        void CreateContact(ContactViewModel contact, string idCompany);
+        List<Stripe.PaymentMethod> GetPaymentMethod(string idCompany);
+        List<DaoModels.DAO.Models.PaymentMethod> GetPaymentMethodsST(string idCompany);
+        Task RemoveDocCompany(int docId);
+        Task<List<DocumentCompany>> GetCompanyDoc(string id);
+        Task CreateContact(ContactViewModel model, string companyId, string localDate);
 
-        Task AddShortCompany(FewMoreDetailsViewModel model);
+        //Task AddShortCompany(FewMoreDetailsViewModel model);
 
-        Task AddCompany(CreateCompanyViewModel model, IFormFile MCNumberConfirmation, IFormFile IFTA,
-            IFormFile KYU, IFormFile logbookPapers, IFormFile COI, IFormFile permits, string dateTimeLocal);
+        Task<Company> CreateCompanyByAdminWithDocs(CreateCompanyViewModel model,
+            IFormFile MCNumberConfirmation, IFormFile IFTA, IFormFile KYU, IFormFile logbookPapers,
+            IFormFile COI, IFormFile permits, string dateTimeLocal);
         bool CheckCompanyName(string companyName);
-        Task<List<Contact>> GetContacts(int page, string idCompany);
         Task<int> GetCountContactsPages(string idCompany);
-        string GetTypeNavBar(string key, string idCompany, string typeNav = "Work");
+        string GetTypeNavBar(string companyId, string typeNav = NavConstants.Work);
         List<Models.Subscription.Subscription> GetSubscriptions();
-        string SelectSub(string idPrice, string idCompany, string priodDays);
-        void CancelSubscriptionsNext(string idCompany);
-        SubscriptionCompanyDTO GetSubscription(string idCompany);
+        Task<string> SelectSub(string priceId, string companyId, string priodDays);
+        Task CancelSubscriptionsNext(string companyId);
+        Task<SubscriptionCompanyDTO> GetSubscription(string companyId);
         bool GetCancelSubscribe(string idCompany);
         List<UserDTO> GetUsers(int idCompanySelect);
-        Customer_ST GetCustomer_STByIdCompany(string idCompany);
-        Task SaveDocCompany(IFormFile uploadedFile, string nameDoc, string id);
+        CustomerST GetCustomer_STByIdCompany(string companyId);
+        Task SaveDocCompany(IFormFile uploadedFile, string nameDoc, int companyId, string localDate);
     }
 }

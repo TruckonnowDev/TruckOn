@@ -141,4 +141,7 @@
   <data name="Exit" xml:space="preserve">
     <value>Exit</value>
   </data>
+  <data name="MailControl" xml:space="preserve">
+    <value>Mail Control</value>
+  </data>
 </root>

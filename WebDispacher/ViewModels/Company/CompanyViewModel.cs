@@ -1,4 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DaoModels.DAO.Enum;
+using DaoModels.DAO.Models;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using WebDispacher.ViewModels.Order;
 
 namespace WebDispacher.ViewModels.Company
 {
@@ -6,26 +11,26 @@ namespace WebDispacher.ViewModels.Company
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "NameRequired")]
         [Display(Name = "Name")]
+        [Required(ErrorMessage = "NameRequired")]
         public string Name { get;set; }
 
-        [Required(ErrorMessage = "PhoneRequired")]
-        [Display(Name = "Phone")]
-        public string Phone { get; set; }
+        public int? PhoneNumberId { get; set; }
+        public PhoneNumber PhoneNumber { get; set; }
 
-        [Required(ErrorMessage = "EmailRequired")]
         [Display(Name = "Email")]
+        [Required(ErrorMessage = "EmailRequired")]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "PasswordRequired")]
         [Display(Name = "Password")]
+        //[Required(ErrorMessage = "PasswordRequired")]
         public string Password { get; set; }
 
         [Display(Name = "Type")]
-        public string CompanyType { get; set; }
+        [Required(ErrorMessage = "CompanyTypeRequired")]
+        public CompanyType CompanyType { get; set; }
 
-        public string DateRegistration { get; set; }
-        public int UserId { get; set; }
+        public DateTime DateTimeRegistration { get; set; }
+        public DateTime DateTimeLastUpdate { get; set; }
     }
 }

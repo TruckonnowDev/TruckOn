@@ -239,4 +239,7 @@
 	<data name="ServerError" xml:space="preserve">
 		<value>Server error, try again later</value>
 	</data>
+	<data name="LastUpdate" xml:space="preserve">
+		<value>Last Update</value>
+	</data>
 </root>

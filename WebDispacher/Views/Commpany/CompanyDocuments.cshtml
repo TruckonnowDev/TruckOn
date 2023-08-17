@@ -2,6 +2,8 @@
 
 @inject IViewLocalizer Localizer
 
+@model List<DaoModels.DAO.Models.DocumentCompany>;
+
 @{
     ViewData["Title"] = "Company Documents";
 }
@@ -16,22 +18,22 @@
                         <button class="btn1" data-toggle="modal" data-target="#addNewDocFormModal">@Localizer["AddDocument"]</button>
                     </div>
                 </div>
-                @for (int i = 0; i < ViewBag.CompanyDoc.Count; i++)
+                @for (var i = 0; i < Model.Count; i++)
                 {
-                    string pref = ViewBag.CompanyDoc[i].DocPath.Remove(0, ViewBag.CompanyDoc[i].DocPath.LastIndexOf('.') + 1);
+                    var pref = Model[i].DocPath.Remove(0, Model[i].DocPath.LastIndexOf('.') + 1);
                     <div class="col-md-12">
-                        <p>@ViewBag.CompanyDoc[i].NameDoc <a href="#" onclick="RemoveDoc(@ViewBag.CompanyDoc[i].Id, @ViewBag.CompanyId)">@Localizer["Delete"]</a></p>
+                        <p>@Model[i].Name <a href="#" onclick="RemoveDoc(@Model[i].Id, @ViewBag.CompanyId)">@Localizer["Delete"]</a></p>
                     </div>
                     if (pref == "pdf")
                     {
                         <div class="col-md-12">
-                            <embed src="@ViewBag.BaseUrl/Driver/GetDockPDF?docPath=@ViewBag.CompanyDoc[i].DocPath" width="900" height="1200" />
+                            <embed src="@ViewBag.BaseUrl/Driver/GetDockPDF?docPath=@Model[i].DocPath" width="900" height="1200" />
                         </div>
                     }
                     else
                     {
                         <div class="col-md-12" style="width: 900px">
-                            <img src="@ViewBag.BaseUrl/Driver/GetDock?docPath=@ViewBag.CompanyDoc[i].DocPath&type=image/@pref" alt="" width="900">
+                            <img src="@ViewBag.BaseUrl/Driver/GetDock?docPath=@Model[i].DocPath&type=image/@pref" alt="" width="900">
                         </div>
                     }
                     <hr />
@@ -79,6 +81,7 @@
                                 </div>
                                 <p class="file-limit-exceeded text-danger"></p>
                             </div>
+                            <input type="hidden" value="" name="localDate" />
                             <div class="form-group full-label">
                                 <button class="button-custom submit-add">@Localizer["ButtonAddDoc"]</button>
                             </div>
@@ -93,18 +96,21 @@
     </div>
 </body>
 <script>
+    const dateInput = document.querySelector("[name='localDate']");
+
     $("#fi1").change(function () {
         CheckValid('fl1', 'fi1');
     });
 
     $(".submit-add").on('click', function () {
         CheckValid('fl1', 'fi1');
+        dateInput.value = GetDateTimeInFormat(new Date());
     })
 
-    function RemoveDoc(idDock, id) {
+    function RemoveDoc(docId, id) {
         $.ajax({
             type: "get",
-            url: `/Company/RemoveDoc/?idDock=${idDock}&id=${id}`,
+            url: `/Company/RemoveDoc/?docId=${docId}&id=${id}`,
             success: function () {
                 window.location.reload();
             },

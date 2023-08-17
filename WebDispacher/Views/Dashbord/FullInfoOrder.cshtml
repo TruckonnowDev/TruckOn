@@ -1,14 +1,17 @@
-﻿@using Microsoft.AspNetCore.Mvc.Localization
+﻿@using DaoModels.DAO.Models;
+@using Microsoft.AspNetCore.Mvc.Localization
 @using System.Globalization;
 @using WebDispacher.Constants;
+@using WebDispacher.ViewModels;
+@using WebDispacher.ViewModels.Order;
 
-@model WebDispacher.ViewModels.ShippingViewModel
+@model OrderWithHistoryViewModel;
 
 @inject IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = "Dashboard | Order Information";
-    DateTime dateTimeActionFormat = DateTime.MinValue;
+    var vehicles = Model.Order.Vehicles.ToList();
 }
 
 <body xmlns="http://www.w3.org/1999/html">
@@ -23,17 +26,14 @@
 
                         <h1 class="text-info-header-1">@Localizer["InformationHeader"]</h1>
                     </div>
-                    <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["LoadId"]:</b> <span>@Model.IdOrder</span></p>
+                    <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["LoadId"]:</b> <span>@Model.Order.OrderId</span></p>
                     <p class="text-info-p-1 text-info-padding-5">
                         <b>@Localizer["Price"]:</b> 
                         <span>
-                            @if (@Model.PriceListed != null)
-                        {
                             <i class="bi bi-currency-dollar"></i>
-                        }
-                        @Model.PriceListed</span>
+                                @Model.Order.Price</span>
 </p>
-                    <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["Status"]:</b> <span>@Model.CurrentStatus</span></p>
+                    <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["Status"]:</b> <span>@Model.Order.CurrentStatus.StatusName</span></p>
                     <div class="text-r">
                         <p class="text-info-header-3 text-info-padding-5"><b>@Localizer["Veh"]</b></p>
                     </div>
@@ -48,19 +48,24 @@
                             <td>@Localizer["Color"]</td>
                             <td>@Localizer["LotNumber"]</td>
                         </tr>
-                        @if (Model.VehiclwInformations != null)
+                        @if (vehicles != null)
                         {
-                            @for (int i = 0; i < Model.VehiclwInformations.Count; i++)
+                            @for (int i = 0; i < vehicles.Count; i++)
                             {
                                 <tr>
                                     <td>@i</td>
-                                    <td>@Model.VehiclwInformations[i].VIN</td>
-                                    <td>@Model.VehiclwInformations[i].Year</td>
-                                    <td>@Model.VehiclwInformations[i].Make</td>
-                                    <td>@Model.VehiclwInformations[i].Model</td>
-                                    <td>@Model.VehiclwInformations[i].Type</td>
-                                    <td>@Model.VehiclwInformations[i].Color</td>
-                                    <td>@Model.VehiclwInformations[i].Lot</td>
+                                    <td>@vehicles[i].VIN</td>
+                                    @{
+                                        string yearString = Convert.ToInt32(@vehicles[i]?.VehicleModel?.Year) != 0
+                                        ? @vehicles[i]?.VehicleModel?.Year.ToString()
+                                        : string.Empty;
+                                    }
+                                    <td>@yearString</td>
+                                    <td>@vehicles[i]?.VehicleModel?.VehicleBrand.Name</td>
+                                    <td>@vehicles[i]?.VehicleModel?.Name</td>
+                                    <td>@vehicles[i]?.VehicleModel?.VehicleBody.Name</td>
+                                    <td>@vehicles[i].Color</td>
+                                    <td>@vehicles[i].Lot</td>
                                 </tr>
                             }
                         }
@@ -70,10 +75,10 @@
                             <div class="text-r">
                                 <h3 class="text-info-header-3 text-info-padding-5">@Localizer["Origin"]</h3>
                                 <p class="text-info-p">
-                                    @Model.AddresP, @Model.CityP, @Model.StateP, @Model.ZipP <br>
-                                    <b>@Localizer["Contact"]: </b>@Model.ContactNameP <br>
-                                    <b>@Localizer["Phone"]:</b> @Model.PhoneP <br>
-                                    <b>@Localizer["PickupDate"]: </b> @Model.PickupExactly
+                                    @Model.Order.PickedUp.Address, @Model.Order.PickedUp.City, @Model.Order.PickedUp.State, @Model.Order.PickedUp.ZipCode <br>
+                                    <b>@Localizer["Contact"]: </b>@Model.Order.PickedUp.ContactName <br>
+                                    <b>@Localizer["Phone"]:</b> @Model.Order.PickedUp.PhoneNumber <br>
+                                    <b>@Localizer["PickupDate"]: </b> @Model.Order.DateTimePickedUp
                                 </p>
                             </div>
                         </div>
@@ -81,10 +86,10 @@
                             <div class="text-r">
                                 <h3 class="text-info-header-3">@Localizer["Destination"]</h3>
                                 <p class="text-info-p">
-                                    @Model.AddresD, @Model.CityD, @Model.StateD, @Model.ZipD <br>
-                                    <b>@Localizer["Contact"]:</b> @Model.ContactNameD<br>
-                                    <b>@Localizer["Phone"]:</b> @Model.PhoneD<br>
-                                    <b>@Localizer["DeliveryDate"]:</b> @Model.DeliveryEstimated
+                                    @Model.Order.Delivery.Address, @Model.Order.Delivery.City, @Model.Order.Delivery.State, @Model.Order.Delivery.ZipCode <br>
+                                    <b>@Localizer["Contact"]:</b> @Model.Order.Delivery.ContactName<br>
+                                    <b>@Localizer["Phone"]:</b> @Model.Order.Delivery.PhoneNumber<br>
+                                    <b>@Localizer["DeliveryDate"]:</b> @Model.Order.DateTimeDelivery
                                 </p>
                             </div>
                         </div>
@@ -92,10 +97,10 @@
                             <div class="text-r">
                                 <h3 class="text-info-header-3">@Localizer["Customer"]</h3>
                                 <p class="text-info-p">
-                                    <b>@Localizer["Contact"]:</b> @Model.ContactC<br>
-                                    <b>@Localizer["Phone"]:</b> @Model.PhoneC<br>
-                                    <b>@Localizer["Fax"]:</b> @Model.FaxC<br>
-                                    <b>@Localizer["McNumber"]:</b> @Model.IccmcC
+                                    <b>@Localizer["Contact"]:</b> @Model.Order.Contact<br>
+                                    <b>@Localizer["Phone"]:</b> @Model.Order.PhoneNumber<br>
+                                    <b>@Localizer["Fax"]:</b> @Model.Order.Fax<br>
+                                    <b>@Localizer["McNumber"]:</b> @Model.Order.McNumber
                                 </p>
                             </div>
                         </div>
@@ -103,26 +108,30 @@
                             <div class="text-r">
                                 <h3 class="text-info-header-3">@Localizer["PaymentInfo"]</h3>
                                 <p class="text-info-p">
-                                    <b>@Localizer["Price"]:</b> @Model.PriceListed<br>
-                                    <b>@Localizer["PaymentMethod"]:</b> @Model.TotalPaymentToCarrier<br>
-                                    <b>@Localizer["OnDeliveryToCarrier"]: </b> @Model.OnDeliveryToCarrier
+                                    <b>@Localizer["Price"]:</b> @Model.Order.Price<br>
+                                    <b>@Localizer["PaymentMethod"]:</b> @Model.Order.PaymentMethod<br>
+                                    <b>@Localizer["OnDeliveryToCarrier"]: </b> 
                                 </p>
                             </div>
                         </div>
                         <div class="col-md-8">
                             <div class="text-r">
                                 <h3 class="text-info-header-3">@Localizer["Instructions"]</h3>
-                                <p class="text-info-p">@Model.Titl1DI</p>
+                                <p class="text-info-p">@Model.Order.Instructions</p>
                             </div>
                         </div>
                         <div class="col-md-12">
                             <div class="text-r">
                                 <h3 class="text-info-header-3">BOL</h3>
-                                @if (Model.VehiclwInformations != null)
+                                @if (vehicles != null)
                                 {
-                                    @foreach (var t in Model.VehiclwInformations)
+                                    @foreach (var t in vehicles)
                                     {
-                                        @:<a href="@ViewBag.BaseUrl/Photo/BOL/@t.Id">@t.Make @t.Model @t.Year</a><br>
+                                        string yearString = Convert.ToInt32(@t?.VehicleModel?.Year) != 0
+                                        ? @t?.VehicleModel?.Year.ToString()
+                                        : string.Empty;
+                                        
+                                        <a href="@ViewBag.BaseUrl/Photo/BOL/@t.Id">@t?.VehicleModel?.VehicleBrand?.Name @t?.VehicleModel?.Name @yearString</a><br>
                                     }
                                 }
                             </div>
@@ -150,42 +159,18 @@
                         </div>
                         <div class="content">
                             <div class="row">
-                                @for (var i = 0; i < ViewBag.Historys.Count; i++)
+                               @for (var i = 0; i < Model.Actions.Count; i++)
                                 {
-                                    {
-                                        var dateTimeString = ViewBag.Historys[i].DateAction;
-
-                                        try
-                                        {
-                                            dateTimeActionFormat = DateTime.ParseExact(dateTimeString, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
-                                        }
-                                        catch
-                                        {
-
-                                        }
-                                    }
-                                    <div class="col-md-3 mb-4">
+                                    <div class="col-md-3 mb-4" data-toggle="modal" data-target="#myModal_@i">
                                         <div class="one text-info-p">
-                                            @if (dateTimeActionFormat.Year == 1)
-                                            {
-                                                <p><b>@Localizer["DateAction"]:</b> @ViewBag.Historys[i].DateAction</p>
-                                            }
-                                            else
-                                            {
-                                                    <p>
-                                                        <b>@Localizer["DateAction"]:</b> @dateTimeActionFormat.ToString(DateTimeFormats.FullDateTimeInfoUS)
-                                                        </p>
-                                            }
-                                            @*<p>
-                                                <b>User: </b> @ViewBag.Historys[i].User</p>*@
                                             <p>
-                                                <b>Action: </b> @ViewBag.Historys[i].Action</p>
+                                                <b>@Localizer["DateAction"]:</b> @Model.Actions[i].GroupAction.ToString(DateTimeFormats.DateTimeInfoUS)
+                                            </p>
+                                            <p>
+                                                <b>Count Actions: </b> @Model.Actions[i].Groups.Count</p>
                                         </div>
                                     </div>
-                                    {
-                                        dateTimeActionFormat = DateTime.MinValue;
-                                    }
-                                }
+                               }
                             </div>
                         </div>
                     </div>
@@ -193,6 +178,62 @@
             </div>
         </div>
     </div>
+
+    @for (var i = 0; i < Model.Actions.Count; i++)
+    {
+        <div class="modal fade" id="myModal_@i" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <content class="ng-modal-wrapper">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header modal-title">
+                            <h1 class="modal-h1 modal-header-2" id="DeleteDriverLabel">History for @Model.Actions[i].GroupAction.ToString(DateTimeFormats.DateTimeInfoUS) ( @Model.Actions[i].Groups.Count )</h1>
+                        </div>
+                        <div class="modal-body">
+                            <div class="tabContent mt-0">
+                                <div style="padding:3px 0px 4px;">
+                                    @foreach (var action in Model.Actions[i].Groups)
+                                    {
+                                        <div class="one text-info-p">
+                                            <p>
+                                                <b>Action Type:</b> @action.ActionType
+                                            </p>
+                                            @if (action.VehicleId.HasValue)
+                                            {
+                                                {
+                                                    var modelName = action?.VehicleDetails?.VehicleModel?.Name != null ? action.VehicleDetails.VehicleModel.Name : "";
+
+                                                    <p>
+                                                    <b>Vehicle:</b> @action.VehicleId.Value @modelName
+                                                </p>
+                                                }
+                                            }
+                                            <p>
+                                                <b>Field Action:</b> @action.FieldAction
+                                            </p>
+                                            <p>
+                                                <b>Content From:</b> @action.ContentFrom
+                                            </p>
+                                            <p>
+                                                <b>Content To:</b> @action.ContentTo
+                                            </p>
+                                            <p>
+                                                <b>Time Action:</b> @action.DateTimeAction.ToString(DateTimeFormats.TimeInfoUS)
+                                            </p>
+                                        </div>
+                                        <br/>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="tabContent mt-0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </content>
+        </div>
+    }
 </body>
 
 <script>
@@ -267,5 +308,97 @@
 
     .Billing table td{
         width: 350px;
+    }
+</style>
+
+<style>
+    .modal-dialog {
+        position: absolute;
+        left: 0;
+        right: 0;
+        margin-left: auto;
+        margin-right: auto;
+        top: 100px;
+        width: 520px !important;
+        text-align: left;
+        background-color: #fff;
+        -moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
+        -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
+        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
+        transition: height 0.25s linear;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        border-radius: 30px;
+    }
+
+    .modal-content {
+        border: 0px;
+        border-radius: 30px;
+    }
+
+    .ng-modal-wrapper {
+        display: inline-block;
+        vertical-align: middle;
+        padding: 50px 0;
+        width: 100%;
+        position: relative;
+    }
+
+    .modal-dialog label {
+        position: relative;
+        display: inline-block;
+        vertical-align: middle;
+        cursor: pointer;
+        padding: 3px 10px 4px 0px;
+        -moz-border-radius: 3px;
+        -webkit-border-radius: 3px;
+        margin-top: 2px;
+        background: none;
+        font-size: 16px;
+        line-height: 19px;
+        letter-spacing: -.016em;
+        -moz-transition-property: all;
+        -o-transition-property: all;
+        -webkit-transition-property: all;
+        transition-property: all;
+        -moz-transition-duration: 300ms;
+        -o-transition-duration: 300ms;
+        -webkit-transition-duration: 300ms;
+        transition-duration: 300ms;
+        border-radius: 30px;
+    }
+
+    .modal-buttons .right-buttons {
+        float: right;
+    }
+
+    .modal-inp-text {
+        width: 100%;
+        height: 77px;
+        background: #fff;
+        border: 1px solid #c4c9d5;
+        border-radius: 10px;
+        padding: 25px 15px;
+        font-family: Montserrat;
+        font-style: normal;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 1.2;
+        color: #686f7c;
+        margin-top: 6px
+    }
+
+    .modal-title h1 {
+        font-size: 26px;
+    }
+
+    .modal-header {
+        justify-content: center;
+        padding: 1rem;
+    }
+
+    .modal-footer {
+        justify-content: center;
+        padding: 1rem;
     }
 </style>

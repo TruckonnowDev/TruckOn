@@ -1,11 +1,14 @@
-﻿namespace DaoModels.DAO.Models
+﻿using System;
+
+namespace DaoModels.DAO.Models
 {
     public class PasswordRecovery
     {
         public int Id { get; set; }
-        public int IdDriver { get; set; }
-        public int IdUser { get; set; }
-        public string Date { get; set; }
+        public int EntityRecoveryId { get; set; }
+        public DateTime DateTimeAction { get; set; }
         public string Token { get; set; }
+        public int RecoveryTypeId { get; set; }
+        public RecoveryType RecoveryType { get; set; }
     }
 }

@@ -60,14 +60,14 @@ namespace DaoModels.DAO.DTO
         /////////////////////////DISPATCH INSTRUCTIONS
 
         public string Titl1DI { get; set; }
-        public List<VehiclwInformation> VehiclwInformations { get; set; }
+        //public List<VehiclwInformation> VehiclwInformations { get; set; }
 
         ////////////////////////////////////////////////
 
 
-        public AskFromUser AskFromUser { get; set; }
-        public Ask2 Ask2 { get; set; }
-        public AskForUserDelyveryM askForUserDelyveryM { get; set; }
+        //public AskFromUser AskFromUser { get; set; }
+        //public Ask2 Ask2 { get; set; }
+        //public AskForUserDelyveryM askForUserDelyveryM { get; set; }
         public List<DamageForUser> DamageForUsers { get; set; }
 
         ///////////////////////////////////////////////

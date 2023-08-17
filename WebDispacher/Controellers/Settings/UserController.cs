@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using DaoModels.DAO.DTO;
-using DaoModels.DAO.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebDispacher.Business.Interfaces;
 using WebDispacher.Constants;
+using WebDispacher.Constants.Identity;
 using WebDispacher.Service;
 using WebDispacher.ViewModels.Settings;
 
@@ -24,34 +22,27 @@ namespace WebDispacher.Controellers.Settings
         }
 
         [Route("Users")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         public IActionResult GetUsers()
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.SettingsUser, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewData[NavConstants.TypeNavBar] = 
-                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
-                    
-                    /*ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewBag.Users = companyService.GetUsers(Convert.ToInt32(idCompany));*/
-                    
-                    return Redirect(Config.BaseReqvesteUrl);
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                    
+                ViewData[NavConstants.TypeNavBar] = 
+                    companyService.GetTypeNavBar(CompanyId, NavConstants.TypeNavSettings);
+                    
+                /*ViewBag.NameCompany = GetCookieCompanyName();
+                ViewBag.Users = companyService.GetUsers(Convert.ToInt32(idCompany));*/
+                    
+                return Redirect(Config.BaseReqvesteUrl);
             }
             catch (Exception e)
             {
@@ -63,6 +54,7 @@ namespace WebDispacher.Controellers.Settings
 
         [HttpGet]
         [Route("CreateUser")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         [ResponseCache(Location = ResponseCacheLocation.None, Duration = 300)]
         public IActionResult CreateUsers()
         {
@@ -70,27 +62,19 @@ namespace WebDispacher.Controellers.Settings
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.SettingsUser, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewData[NavConstants.TypeNavBar] = 
-                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
-                    
-                    /*ViewBag.NameCompany = GetCookieCompanyName();*/
-                    
-                    return Redirect(Config.BaseReqvesteUrl);
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                    
+                ViewData[NavConstants.TypeNavBar] = 
+                    companyService.GetTypeNavBar(CompanyId, NavConstants.TypeNavSettings);
+                    
+                /*ViewBag.NameCompany = GetCookieCompanyName();*/
+                    
+                return Redirect(Config.BaseReqvesteUrl);
             }
             catch (Exception e)
             {
@@ -102,6 +86,7 @@ namespace WebDispacher.Controellers.Settings
 
         [HttpPost]
         [Route("CreateUser")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         [ResponseCache(Location = ResponseCacheLocation.None, Duration = 300)]
         public IActionResult CreateUsers(SettingsUserViewModel user)
         {
@@ -111,21 +96,13 @@ namespace WebDispacher.Controellers.Settings
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-                    if (CheckPermissionsByCookies(RouteConstants.SettingsUser, out var key, out var idCompany))
-                    {
-                        ViewData[NavConstants.TypeNavBar] =
-                            companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+                    ViewData[NavConstants.TypeNavBar] =
+                        companyService.GetTypeNavBar(CompanyId, NavConstants.TypeNavSettings);
 
-                        /*ViewBag.NameCompany = GetCookieCompanyName();
-                        userService.AddUser(idCompany, user);
-*/
-                        return Redirect(Config.BaseReqvesteUrl);
-                    }
+                    /*ViewBag.NameCompany = GetCookieCompanyName();
+                    userService.AddUser(idCompany, user);*/
 
-                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                    {
-                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                    }
+                    return Redirect(Config.BaseReqvesteUrl);
                 }
                 catch (Exception e)
                 {
@@ -142,24 +119,17 @@ namespace WebDispacher.Controellers.Settings
 
         [HttpGet]
         [Route("Remove")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         public IActionResult CreateUsers(string idUser)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.SettingsUser, out var key, out var idCompany))
-                {
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
-                    /*ViewBag.NameCompany = GetCookieCompanyName();
-                    userService.RemoveUserById(idUser);
-                    */
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId, NavConstants.TypeNavSettings);
+                /*ViewBag.NameCompany = GetCookieCompanyName();*/
+                userService.RemoveUserById(idUser);
+                
             }
             catch (Exception e)
             {
@@ -171,25 +141,18 @@ namespace WebDispacher.Controellers.Settings
         
         [HttpGet]
         [Route("Edit")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         public IActionResult EditUser(int id)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.SettingsUser, out var key, out var idCompany))
-                {
-                    ViewData[NavConstants.TypeNavBar] =
-                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+                ViewData[NavConstants.TypeNavBar] =
+                    companyService.GetTypeNavBar(CompanyId, NavConstants.TypeNavSettings);
                     
-                    /*ViewBag.NameCompany = GetCookieCompanyName();
-                    var user = userService.GetUserById(id);*/
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                /*ViewBag.NameCompany = GetCookieCompanyName();
+                var user = userService.GetUserById(id);*/
             }
             catch (Exception)
             {
@@ -201,6 +164,7 @@ namespace WebDispacher.Controellers.Settings
         
         [HttpPost]
         [Route("Edit")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         public IActionResult EditUser(SettingsUserViewModel user)
         {
             if (ModelState.IsValid)
@@ -209,20 +173,12 @@ namespace WebDispacher.Controellers.Settings
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-                    if (CheckPermissionsByCookies(RouteConstants.SettingsUser, out var key, out var idCompany))
-                    {
-                        ViewData[NavConstants.TypeNavBar] =
-                            companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
-                       /* ViewBag.NameCompany = GetCookieCompanyName();
-                        userService.EditUser(user);
+                    ViewData[NavConstants.TypeNavBar] =
+                        companyService.GetTypeNavBar(CompanyId, NavConstants.TypeNavSettings);
+                    /* ViewBag.NameCompany = GetCookieCompanyName();*/
+                    userService.EditUser(user);
 
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/User/Users");*/
-                    }
-
-                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                    {
-                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                    }
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/User/Users");
                 }
                 catch (Exception e)
                 {

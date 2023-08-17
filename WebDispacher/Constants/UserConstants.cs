@@ -7,6 +7,7 @@
         public const string PasswordResetFailed = "Password reset attempt failed";
         public const string PasswordChanged = "Password changed successfully";
         public const string PasswordRecoverySubject = "Your password reset link";
+        public const string AdminMessageSubject = "Admin Message";
         public const string ThankRegistrationSubject = "Thank you for registering with Truckonnow";
         public const string NotLogin = "notlogin";
         public const string Admin = "Admin";

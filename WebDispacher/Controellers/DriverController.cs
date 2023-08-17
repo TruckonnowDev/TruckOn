@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using AutoMapper;
 using DaoModels.DAO.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using NodaTime;
 using WebDispacher.Business.Interfaces;
 using WebDispacher.Constants;
+using WebDispacher.Constants.Identity;
 using WebDispacher.Models;
 using WebDispacher.Models.Driver;
 using WebDispacher.Service;
@@ -37,76 +39,68 @@ namespace WebDispacher.Controellers
             this.truckAndTrailerService = truckAndTrailerService;
         }
 
+        [HttpGet]
         [Route("Driver/Drivers")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         public async Task<IActionResult> Drivers(int page = 1)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Driver, out var key, out var idCompany))
-                {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
                     
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    ViewBag.Drivers = await driverService.GetDrivers(page, idCompany);
-
-                    var countPages = await driverService.GetCountDriversPages(idCompany);
-
-                    ViewBag.CountPages = countPages;
-
-                    ViewBag.SelectedPage = page;
-
-                    return View("FullAllDrivers");
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                if (isCancelSubscribe)
                 {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
+                    
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+
+                var drivers = await driverService.GetDriversByCompanyId(page, CompanyId);
+
+                var countPages = await driverService.GetCountDriversPages(CompanyId);
+
+                ViewBag.CountPages = countPages;
+
+                ViewBag.SelectedPage = page;
+
+                return View("FullAllDrivers", drivers);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                Console.WriteLine(ex.Message);
             }
             
             return Redirect(Config.BaseReqvesteUrl);
         }
 
         [Route("Driver/Check")]
-        public IActionResult CheckDriver(string nameDriver, string driversLicense, string comment)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> CheckDriver(string nameDriver, string driversLicense, string comment)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Driver, out var key, out var idCompany))
-                {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    ViewBag.DriversLicense = driversLicense;
-                    ViewBag.NameDriver = nameDriver;
-                    ViewBag.DriverReports = driverService.GetDriversReport(nameDriver, driversLicense);
-                    
-                    return View("DriverCheck");
-                }
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                if (isCancelSubscribe)
                 {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
+                    
+                //ViewBag.NameCompany = GetCookieCompanyName();
+
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+
+                ViewBag.DriversLicense = driversLicense;
+                ViewBag.NameDriver = nameDriver;
+
+                var drivers = await driverService.GetDriversReport(nameDriver, driversLicense, CompanyId);
+                    
+                return View("DriverCheck", drivers);
             }
             catch (Exception)
             {
@@ -119,7 +113,7 @@ namespace WebDispacher.Controellers
         [HttpGet]
         [Route("Welcome/Driver/Check")]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
-        public IActionResult WelcomeDriverCheckReport(string nameDriver, string driversLicense, string countDriverReports)
+        public async Task<IActionResult> WelcomeDriverCheckReport(string nameDriver, string driversLicense, string countDriverReports)
         {
             ViewData[NavConstants.TypeNavBar] = NavConstants.BaseAllUsers;
             try
@@ -129,7 +123,7 @@ namespace WebDispacher.Controellers
                 ViewBag.DriversLicense = driversLicense;
                 ViewBag.NameDriver = nameDriver;
                 ViewBag.CountDriverReports = countDriverReports;
-                ViewBag.DriverReports = driverService.GetDriversReport(nameDriver, driversLicense);
+                ViewBag.DriverReports = await driverService.GetDriversReport(nameDriver, driversLicense, CompanyId);
             }
             catch (Exception)
             {
@@ -164,31 +158,25 @@ namespace WebDispacher.Controellers
 
         [HttpGet]
         [Route("Driver/AddReport")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         public IActionResult AddReport()
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Driver, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    
-                    return View("ReportDriver", new DriverReportViewModel());
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
+                    
+                //ViewBag.NameCompany = GetCookieCompanyName();
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+                    
+                return View("ReportDriver", new DriverReportViewModel());
             }
             catch (Exception)
             {
@@ -200,57 +188,51 @@ namespace WebDispacher.Controellers
 
         [HttpPost]
         [Route("Driver/AddReport")]
-        public IActionResult AddReportPost(DriverReportViewModel driverReport)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> AddReportPost(DriverReportViewModel driverReport, string localDate)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-                if (CheckPermissionsByCookies(RouteConstants.Driver, out var key, out var idCompany))
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+
+                if (ModelState.IsValid)
                 {
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-
-                    if (ModelState.IsValid)
+                    if (driverReport.Terminated == DriverConstants.Undefined)
                     {
-                        if (driverReport.Terminated == DriverConstants.Undefined)
-                        {
-                            driverReport.Terminated = DriverConstants.Yes;
-                        }
-
-                        if (driverReport.Experience == DriverConstants.Undefined)
-                        {
-                            driverReport.Experience = string.Empty;
-                        }
-
-                        if (!string.IsNullOrEmpty(driverReport.Experience)
-                            && driverReport.Experience != DriverConstants.Undefined
-                            && driverReport.Experience.LastIndexOf(',') == driverReport.Experience.Length - 2)
-                        {
-                            driverReport.Experience =
-                                driverReport.Experience.Remove(driverReport.Experience.Length - 2);
-                        }
-
-                        driverReport.English = GetLevel(driverReport.English);
-                        driverReport.ReturnedEquipmen = GetLevel(driverReport.ReturnedEquipmen);
-                        driverReport.WorkingEfficiency = GetLevel(driverReport.WorkingEfficiency);
-                        driverReport.EldKnowledge = GetLevel(driverReport.EldKnowledge);
-                        driverReport.DrivingSkills = GetLevel(driverReport.DrivingSkills);
-                        driverReport.PaymentHandling = GetLevel(driverReport.PaymentHandling);
-                        driverReport.AlcoholTendency = GetLevel(driverReport.AlcoholTendency);
-                        driverReport.DrugTendency = GetLevel(driverReport.DrugTendency);
-
-                        driverService.AddNewReportDriver(driverReport);
-                        return Redirect(Config.BaseReqvesteUrl);
+                        driverReport.Terminated = DriverConstants.Yes;
                     }
-                    else
+
+                    if (driverReport.Experience == DriverConstants.Undefined)
                     {
-                        return View("ReportDriver", driverReport);
+                        driverReport.Experience = string.Empty;
                     }
+
+                    if (!string.IsNullOrEmpty(driverReport.Experience)
+                        && driverReport.Experience != DriverConstants.Undefined
+                        && driverReport.Experience.LastIndexOf(',') == driverReport.Experience.Length - 2)
+                    {
+                        driverReport.Experience =
+                            driverReport.Experience.Remove(driverReport.Experience.Length - 2);
+                    }
+
+                    driverReport.English = GetLevel(driverReport.English);
+                    driverReport.ReturnedEquipmen = GetLevel(driverReport.ReturnedEquipmen);
+                    driverReport.WorkingEfficiency = GetLevel(driverReport.WorkingEfficiency);
+                    driverReport.EldKnowledge = GetLevel(driverReport.EldKnowledge);
+                    driverReport.DrivingSkills = GetLevel(driverReport.DrivingSkills);
+                    driverReport.PaymentHandling = GetLevel(driverReport.PaymentHandling);
+                    driverReport.AlcoholTendency = GetLevel(driverReport.AlcoholTendency);
+                    driverReport.DrugTendency = GetLevel(driverReport.DrugTendency);
+
+                    await driverService.AddNewReportDriver(driverReport, localDate);
+
+                    return Redirect(Config.BaseReqvesteUrl);
                 }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                else
                 {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                    return View("ReportDriver", driverReport);
                 }
             }
             catch (Exception)
@@ -282,7 +264,8 @@ namespace WebDispacher.Controellers
 
         [HttpPost]
         [Route("Welcome/AddReport")]
-        public IActionResult WelcomeAddReport(DriverReportViewModel driverReport)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> WelcomeAddReport(DriverReportViewModel driverReport, string localDate)
         {
             ViewData[NavConstants.TypeNavBar] = NavConstants.BaseAllUsers;
             try
@@ -306,7 +289,7 @@ namespace WebDispacher.Controellers
                     driverReport.Experience = driverReport.Experience.Remove(driverReport.Experience.Length - 2);
                 }
                 
-                driverService.AddNewReportDriver(driverReport);
+                await driverService.AddNewReportDriver(driverReport, localDate);
             }
             catch (Exception)
             {
@@ -318,6 +301,7 @@ namespace WebDispacher.Controellers
 
         [HttpGet]
         [Route("Driver/Drivers/CreateDriver")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public IActionResult CreateDriver()
         {
@@ -325,25 +309,17 @@ namespace WebDispacher.Controellers
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Driver, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    
-                    return View("CreateDriver");
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                    
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+                    
+                return View("CreateDriver");
             }
             catch (Exception)
             {
@@ -355,32 +331,35 @@ namespace WebDispacher.Controellers
 
         [HttpPost]
         [Route("Driver/Drivers/CreateDriver")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
-        public IActionResult CreateDriver(DriverViewModel driver,
+        public async Task<IActionResult> CreateDriver(CreateDriverViewModel model,
             IFormFile dLDoc, IFormFile medicalCardDoc, IFormFile sSNDoc, IFormFile proofOfWorkAuthorizationOrGCDoc,
             IFormFile dQLDoc, IFormFile contractDoc, IFormFile drugTestResultsDoc, string dateTimeLocal)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                
-                if (CheckPermissionsByCookies(RouteConstants.Driver, out var key, out var idCompany))
-                {
-                    if (string.IsNullOrEmpty(driver.FullName) || string.IsNullOrEmpty(driver.EmailAddress) ||
-                        string.IsNullOrEmpty(driver.Password)) return View("CreateDriver");
-                    
-                    driver.CompanyId = Convert.ToInt32(idCompany);
-                        
-                    driverService.CreateDriver(driver,
-                        dLDoc, medicalCardDoc, sSNDoc, proofOfWorkAuthorizationOrGCDoc, dQLDoc, contractDoc, drugTestResultsDoc, dateTimeLocal);
-                        
-                    return Redirect($"{Config.BaseReqvesteUrl}/Driver/Drivers");
-                }
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                if (ModelState.IsValid)
                 {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                    if (string.IsNullOrEmpty(model.FirstName) || string.IsNullOrEmpty(model.LastName) || string.IsNullOrEmpty(model.Email) ||
+                    string.IsNullOrEmpty(model.DriverControl.Password)) return View("CreateDriver");
+
+                    model.CompanyId = Convert.ToInt32(CompanyId);
+
+                    await driverService.CreateDriver(model,
+                        dLDoc, medicalCardDoc, sSNDoc, proofOfWorkAuthorizationOrGCDoc, dQLDoc, contractDoc, drugTestResultsDoc, dateTimeLocal);
+
                 }
+                else
+                {
+                    return View("CreateDriver", model);
+                }
+                        
+                        
+                return Redirect($"{Config.BaseReqvesteUrl}/Driver/Drivers");
             }
             catch (Exception)
             {
@@ -392,8 +371,9 @@ namespace WebDispacher.Controellers
 
         [HttpGet]
         [Route("Driver/Drivers/Remove")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
-        public IActionResult RemoveDriver(DriverReportModel model, string localDate)
+        public async Task<IActionResult> RemoveDriver(DriverReportModel model, string localDate)
         {
             if (ModelState.IsValid)
             {
@@ -401,34 +381,26 @@ namespace WebDispacher.Controellers
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-                    if (CheckPermissionsByCookies(RouteConstants.Driver, out var key, out var idCompany))
+                    if (model.Terminated == DriverConstants.Undefined)
                     {
-                        if (model.Terminated == DriverConstants.Undefined)
-                        {
-                            model.Terminated = DriverConstants.Yes;
-                        }
-
-                        if (model.Experience == DriverConstants.Undefined)
-                        {
-                            model.Experience = string.Empty;
-                        }
-
-                        if (!string.IsNullOrEmpty(model.Experience) && model.Experience != DriverConstants.Undefined
-                            && model.Experience.LastIndexOf(',') ==
-                            model.Experience.Length - 2)
-                        {
-                            model.Experience = model.Experience.Remove(model.Experience.Length - 2);
-                        }
-
-                        driverService.RemoveDrive(idCompany, model, localDate);
-
-                        return Redirect($"{Config.BaseReqvesteUrl}/Driver/Drivers");
+                        model.Terminated = DriverConstants.Yes;
                     }
 
-                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                    if (model.Experience == DriverConstants.Undefined)
                     {
-                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                        model.Experience = string.Empty;
                     }
+
+                    if (!string.IsNullOrEmpty(model.Experience) && model.Experience != DriverConstants.Undefined
+                        && model.Experience.LastIndexOf(',') ==
+                        model.Experience.Length - 2)
+                    {
+                        model.Experience = model.Experience.Remove(model.Experience.Length - 2);
+                    }
+
+                    await driverService.RemoveDriver(CompanyId, model, localDate);
+
+                    return Redirect($"{Config.BaseReqvesteUrl}/Driver/Drivers");
                 }
                 catch (Exception)
                 {
@@ -445,37 +417,27 @@ namespace WebDispacher.Controellers
 
         [HttpGet]
         [Route("Driver/Drivers/Edit")]
-        [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
-        public IActionResult EditeDriver(int id)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> EditDriver(int id)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Driver, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    var driver = driverService.GetDriverByIdViewModel(id);
-                    
-                    if (driver != null)
-                    {
-                        return View("EditDriver", driver);
-                    }
-
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+
+                var driver = await driverService.GetEditCompanyDriverById(CompanyId, id);
+                
+               return View(driver);
+
             }
             catch (Exception)
             {
@@ -487,28 +449,21 @@ namespace WebDispacher.Controellers
 
         [HttpPost]
         [Route("Driver/Drivers/Edit")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
-        public IActionResult EditDriver(DriverViewModel driver)
+        public async Task<IActionResult> EditDriver(EditDriverViewModel model, string localDate)
         {
-            ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
-            
+            ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+
             if (ModelState.IsValid)
             {
                 try
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                     
-                    if (CheckPermissionsByCookies(RouteConstants.Driver, out var key, out var idCompany))
-                    {
-                        driverService.EditDriver(driver);
+                    await driverService.EditDriver(model, localDate);
                         
-                        return Redirect($"{Config.BaseReqvesteUrl}/Driver/Drivers");
-                    }
-
-                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                    {
-                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                    }
+                    return Redirect($"{Config.BaseReqvesteUrl}/Driver/Drivers");
                 }
                 catch (Exception)
                 {
@@ -517,7 +472,7 @@ namespace WebDispacher.Controellers
             }
             else
             {
-                return Redirect($"{Config.BaseReqvesteUrl}/Driver/Drivers");
+                return View("EditDriver", model);
             }
             
             return Redirect(Config.BaseReqvesteUrl);
@@ -525,62 +480,57 @@ namespace WebDispacher.Controellers
 
         [HttpGet]
         [Route("Driver/InspactionTrucks")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
-        public async Task<IActionResult> ViewAllInspactionDate(string idDriver, string idTruck, string idTrailer, string date)
+        public async Task<IActionResult> ViewAllInspactionDate(string driverId, string idTruck, string idTrailer, string date)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Driver, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
+                }
                     
-                    if (isCancelSubscribe)
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+                var drivers = await driverService.GetDriversByCompanyId(CompanyId);
+                var trucks = await truckAndTrailerService.GetTrucks(0, CompanyId);
+                var trailers = await truckAndTrailerService.GetTrailers(0, CompanyId);
+                    
+                var inspectionTruck = truckAndTrailerService.GetInspectionTrucks(driverId, idTruck, idTrailer, date)
+                    .Select(x => new InspectinView()
                     {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    var drivers = await driverService.GetDrivers(idCompany);
-                    var trucks = await truckAndTrailerService.GetTrucks(0, idCompany);
-                    var trailers = await truckAndTrailerService.GetTrailers(0, idCompany);
-                    
-                    var inspectionTruck = truckAndTrailerService.GetInspectionTrucks(idDriver, idTruck, idTrailer, date)
-                        .Select(x => new InspectinView()
-                        {
-                            Id = x.Id,
-                            Date = x.Date,
-                            Trailer = trailers.FirstOrDefault(t => t.Id == x.IdITrailer) != null ? $"{trailers.FirstOrDefault(t => t.Id == x.IdITrailer).Make}, Plate: {trailers.FirstOrDefault(t => t.Id == x.IdITrailer).Plate}" : "---------------",
-                            Truck = trucks.FirstOrDefault(t => t.Id == x.IdITruck) != null ? $"{trucks.FirstOrDefault(t => t.Id == x.IdITruck).Make} {trucks.FirstOrDefault(t => t.Id == x.IdITruck).Model}, Plate: {trucks.FirstOrDefault(t => t.Id == x.IdITruck).PlateTruk}" : "---------------",
-                            NameDriver = drivers.FirstOrDefault(d => d.InspectionDrivers.FirstOrDefault(i => i.Id == x.Id) != null) == null ? "N/D" : drivers.FirstOrDefault(d => d.InspectionDrivers.FirstOrDefault(i => i.Id == x.Id) != null).FullName,
-                        })
-                        .ToList();
-                    try
-                    {
-                        ViewBag.InspectionTruck = inspectionTruck.OrderBy(x => Convert.ToDateTime(x.Date)).ToList();
-                    }
-                    catch
-                    {
-                        ViewBag.InspectionTruck = inspectionTruck;
-                    }
-
-                    ViewBag.Drivers = drivers;
-                    ViewBag.Trucks = trucks;
-                    ViewBag.Trailers = trailers;
-                    ViewBag.IdDriver = idDriver;
-                    ViewBag.IdTruck = idTruck;
-                    ViewBag.IdTrailer = idTrailer;
-                    ViewBag.SelectData = date;
-                    
-                    return View("AllInspactionTruckData");
+                        Id = x.Id,
+                        DateTimeInspection = x.DateTimeInspection,
+                        TrailerInformation = trailers.FirstOrDefault(t => t.Id == x.TrailerId) != null ? $"{trailers.FirstOrDefault(t => t.Id == x.TrailerId).Brand}, Plate: {trailers.FirstOrDefault(t => t.Id == x.TrailerId).Plate}" : "---------------",
+                        TruckInformation = trucks.FirstOrDefault(t => t.Id == x.TruckId) != null ? $"{trucks.FirstOrDefault(t => t.Id == x.TruckId).Brand} {trucks.FirstOrDefault(t => t.Id == x.TruckId).Model}, Plate: {trucks.FirstOrDefault(t => t.Id == x.TruckId).Plate}" : "---------------",
+                        NameDriver = drivers.FirstOrDefault(d => d.Inspections.FirstOrDefault(i => i.Id == x.Id) != null) == null ? "N/D" : drivers.FirstOrDefault(d => d.Inspections.FirstOrDefault(i => i.Id == x.Id) != null).FirstName,
+                    })
+                    .ToList();
+                try
+                {
+                    ViewBag.InspectionTruck = inspectionTruck.OrderBy(x => x.DateTimeInspection).ToList();
+                }
+                catch
+                {
+                    ViewBag.InspectionTruck = inspectionTruck;
                 }
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                ViewBag.IdDriver = driverId;
+                ViewBag.IdTruck = idTruck;
+                ViewBag.IdTrailer = idTrailer;
+                ViewBag.SelectData = date;
+
+                return View("AllInspactionTruckData", new FullInformationInspection
                 {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                    Drivers = drivers,
+                    Trucks = trucks,
+                    Trailers = trailers,
+                    Inspection = inspectionTruck
+                });
             }
             catch (Exception e)
             {
@@ -592,6 +542,7 @@ namespace WebDispacher.Controellers
 
         [HttpGet]
         [Route("Driver/InspactionTruck")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public async Task<IActionResult> ViewInspaction(string idInspection, string idDriver, string date)
         {
@@ -599,36 +550,27 @@ namespace WebDispacher.Controellers
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Driver, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    
-                    var trucks = await truckAndTrailerService.GetTrucks(0, idCompany);
-                    var trailers = await truckAndTrailerService.GetTrailers(0, idCompany);
-                    var inspectionDriver = driverService.GetInspectionTruck(idInspection);
-                    var drivers = driverService.GetDriver(inspectionDriver.Id.ToString());
-                    
-                    ViewBag.InspectionTruck = inspectionDriver;
-                    ViewBag.Drivers = drivers;
-                    ViewBag.Trailer = trailers.FirstOrDefault(t => t.Id == inspectionDriver.IdITrailer) != null ? $"{trailers.FirstOrDefault(t => t.Id == inspectionDriver.IdITrailer).Make}, Plate: {trailers.FirstOrDefault(t => t.Id == inspectionDriver.IdITrailer).Plate}" : "---------------";
-                    ViewBag.Truck = trucks.FirstOrDefault(t => t.Id == inspectionDriver.IdITruck) != null ? $"{trucks.FirstOrDefault(t => t.Id == inspectionDriver.IdITruck).Make} {trucks.FirstOrDefault(t => t.Id == inspectionDriver.IdITruck).Model}, Plate: {trucks.FirstOrDefault(t => t.Id == inspectionDriver.IdITruck).PlateTruk}" : "---------------";
-                    ViewBag.SelectData = date;
-                    
-                    return View("OneInspektion");
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+                    
+                var trucks = await truckAndTrailerService.GetTrucks(0, CompanyId);
+                var trailers = await truckAndTrailerService.GetTrailers(0, CompanyId);
+                var inspectionDriver = driverService.GetInspectionTruck(idInspection);
+                var drivers = driverService.GetDriver(inspectionDriver.Id.ToString());
+                    
+                ViewBag.InspectionTruck = inspectionDriver;
+                ViewBag.Drivers = drivers;
+                //ViewBag.Trailer = trailers.FirstOrDefault(t => t.Id == inspectionDriver.IdITrailer) != null ? $"{trailers.FirstOrDefault(t => t.Id == inspectionDriver.IdITrailer).Make}, Plate: {trailers.FirstOrDefault(t => t.Id == inspectionDriver.IdITrailer).Plate}" : "---------------";
+                //ViewBag.Truck = trucks.FirstOrDefault(t => t.Id == inspectionDriver.IdITruck) != null ? $"{trucks.FirstOrDefault(t => t.Id == inspectionDriver.IdITruck).Make} {trucks.FirstOrDefault(t => t.Id == inspectionDriver.IdITruck).Model}, Plate: {trucks.FirstOrDefault(t => t.Id == inspectionDriver.IdITruck).PlateTruk}" : "---------------";
+                ViewBag.SelectData = date;
+                    
+                return View("OneInspektion");
             }
             catch (Exception)
             {
@@ -640,60 +582,47 @@ namespace WebDispacher.Controellers
 
         [HttpPost]
         [Route("Driver/Remind/Inspection")]
-        public string SendRemindInspection(int idDriver)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public string SendRemindInspection(int driverId)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-                if (CheckPermissionsByCookies(RouteConstants.Driver, out var key, out var idCompany))
-                {
-                    var isInspectionDriverToDay = orderService.SendRemindInspection(idDriver);
-                    return isInspectionDriverToDay ? DocAndFileConstants.False : DocAndFileConstants.True;
-                }
+                var isInspectionDriverToDay = orderService.SendRemindInspection(driverId);
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                return isInspectionDriverToDay ? DocAndFileConstants.False : DocAndFileConstants.True;
             }
             catch (Exception)
             {
                 return NavConstants.Error;
             }
-            
-            return UserConstants.NotLogin;
         }
 
         [Route("Driver/Doc")]
-        public async Task<IActionResult> GoToViewCompanykDoc(string id)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> GoToViewCompanykDoc(int id)
         {
             ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Driver, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    ViewBag.DriverDoc = await driverService.GetDriverDoc(id);
-                    ViewBag.DriverId = id;
-                    
-                    return View($"DriverDocument");
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
+                    
+                //ViewBag.NameCompany = GetCookieCompanyName();
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+
+                var driverDocs = await driverService.GetDriverDoc(id);
+                ViewBag.DriverId = id;
+                    
+                return View($"DriverDocument", driverDocs);
             }
             catch (Exception e)
             {
@@ -704,25 +633,18 @@ namespace WebDispacher.Controellers
         }
 
         [Route("Driver/SaveDoc")]
-        public IActionResult SaveDoc(IFormFile uploadedFile, string nameDoc, string id)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> SaveDoc(IFormFile uploadedFile, string nameDoc, int id, string localDate)
         {
-            if (!string.IsNullOrEmpty(nameDoc) && !string.IsNullOrEmpty(id) && uploadedFile != null)
+            if (!string.IsNullOrEmpty(nameDoc) &&  uploadedFile != null)
             {
                 try
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-                    if (CheckPermissionsByCookies(RouteConstants.Driver, out var key, out var idCompany))
-                    {
-                        driverService.SaveDocDriver(uploadedFile, nameDoc, id);
+                    await driverService.SaveDocDriver(uploadedFile, nameDoc, id, localDate);
 
-                        return Redirect($"{Config.BaseReqvesteUrl}/Driver/Doc?id={id}");
-                    }
-
-                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                    {
-                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                    }
+                    return Redirect($"{Config.BaseReqvesteUrl}/Driver/Doc?id={id}");
                 }
                 catch (Exception e)
                 {
@@ -738,24 +660,17 @@ namespace WebDispacher.Controellers
         }
 
         [Route("Driver/RemoveDoc")]
-        public IActionResult RemoveDoc(string idDock, string id)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> RemoveDoc(int docId, string id)
         {
             ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Driver, out var key, out var idCompany))
-                {
-                    driverService.RemoveDocDriver(idDock);
+                await driverService.RemoveDocDriver(docId);
                     
-                    return Redirect($"{Config.BaseReqvesteUrl}/Driver/Doc?id={id}");
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                return Redirect($"{Config.BaseReqvesteUrl}/Driver/Doc?id={id}");
             }
             catch (Exception e)
             {

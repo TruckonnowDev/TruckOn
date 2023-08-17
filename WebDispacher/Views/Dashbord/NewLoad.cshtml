@@ -1,7 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using WebDispacher.Constants;
 
 @inject IViewLocalizer Localizer
 
+@model List<WebDispacher.ViewModels.Order.ShortOrderViewModel>
 @{
     ViewData["Title"] = "Dashboard | New Load";
 }
@@ -51,41 +53,54 @@
                         <div class="tab" onclick="window.location.href='@Url.Action("Deleted", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">@Localizer["Deleted"]</div>
                     </div>
                     <div class="tabContent">
-                        @for (int i = 0; i < ViewBag.Orders.Count; i++)
+                        @for (int i = 0; i < Model.Count; i++)
                         {
                             <div class="one-line">
                                 <div class="top-line">
                                     <div class="left">
-                                        <a href="@Url.Action( "FullInfoOrder", new { id = ViewBag.Orders[i].Id, status = "NewLoad" } )">
-                                            <button class="btn3">@Localizer["LoadId"]: @ViewBag.Orders[i].idOrder</button>
+                                        <a href="@Url.Action( "FullInfoOrder", new { id = Model[i].Id, status = "NewLoad" } )">
+                                            <button class="btn3">@Localizer["LoadId"]: @Model[i].OrderId</button>
                                         </a>
-                                        <div class="text"><img src="~/img/dolar.svg" alt=""> @ViewBag.Orders[i].PriceListed</div>
-                                        <div class="text"><img src="~/img/clock.svg" alt=""> @ViewBag.Orders[i].TotalPaymentToCarrier</div>
+                                        <div class="text"><img src="~/img/dolar.svg" alt=""> @Model[i].Price</div>
+                                        <div class="text"><img src="~/img/clock.svg" alt=""> @Model[i].PaymentMethod</div>
                                     </div>
                                     <div class="right">
-                                        <a class="btn3" href=@Url.Action("EditOrder", new { id = ViewBag.Orders[i].Id, status = "NewLoad" } )>@Localizer["Edit"]</a>
+                                        <a class="btn3" href=@Url.Action("EditOrder", new { id = Model[i].Id, status = "NewLoad" } )>@Localizer["Edit"]</a>
                                         <select onchange="SelectAssining(this.options[this.selectedIndex].value, '@ViewBag.BaseUrl')" class="btn3">
                                             <option value="">@Localizer["Assign"]</option>
                                             @for (int j = 0; j < ViewBag.Drivers.Count; j++)
                                             {
-                                                <option class="btn3" value="@ViewBag.Orders[i].Id,@ViewBag.Drivers[j].Id">@ViewBag.Drivers[j].FullName</option>
+                                                <option class="btn3" value="@Model[i].Id,@ViewBag.Drivers[j].Id">@ViewBag.Drivers[j].FirstName @ViewBag.Drivers[j].LastName</option>
                                             }
                                         </select>
-                                        <a class="btn3 open-ConfirmDelete" data-toggle="modal" data-id="@ViewBag.Orders[i].Id" href="#confirmDeleteEntryModal">@Localizer["Delete"]</a>
+                                        <a class="btn3 open-ConfirmDelete" data-toggle="modal" data-id="@Model[i].Id" href="#confirmDeleteEntryModal">@Localizer["Delete"]</a>
                                     </div>
                                 </div>
                                 <div class="info-line">
                                     <div class="info-block">
                                         <h3>@Localizer["Origin"]</h3>
-                                        <p> @ViewBag.Orders[i].AddresP, @ViewBag.Orders[i].CityP,  @ViewBag.Orders[i].StateP, @ViewBag.Orders[i].ZipP</p>
-                                        <p>@Localizer["Phone"]: @ViewBag.Orders[i].PhoneP</p>
+                                        <p> @Model[i].PickedUp.Address, @Model[i].PickedUp.City,  @Model[i].PickedUp.State, @Model[i].PickedUp.ZipCode</p>
+                                        @{
+                                            var phonePickedUp = string.Empty;
+                                            if (Model[i]?.PickedUp?.PhoneNumber.DialCode != 0 && !string.IsNullOrEmpty(Model[i]?.PickedUp?.PhoneNumber.Number))
+                                            {
+                                                phonePickedUp = $"+{Model[i].PickedUp.PhoneNumber.DialCode} {Model[i].PickedUp.PhoneNumber.Number}";
+                                            }
+                                        }
+                                        <p>@Localizer["Phone"]: @phonePickedUp</p>
                                     </div>
                                     <div class="info-block">
                                         <h3>@Localizer["Destination"]</h3>
-                                        <p> @ViewBag.Orders[i].AddresD, @ViewBag.Orders[i].CityD,  @ViewBag.Orders[i].StateD, @ViewBag.Orders[i].ZipD</p>
-                                        <p>@Localizer["Phone"]: @ViewBag.Orders[i].PhoneD</p>
-                                        <p>@Localizer["DeliveryEstimated"]: @ViewBag.Orders[i].DeliveryEstimated</p>
-                                        <p>@Localizer["Phone"]: @ViewBag.Orders[i].PhoneD</p>
+                                        <p>@Model[i].Delivery.Address, @Model[i].Delivery.City,  @Model[i].Delivery.State, @Model[i].Delivery.ZipCode</p>
+                                        @{
+                                            var phoneDelivery = string.Empty;
+                                            if (Model[i]?.Delivery?.PhoneNumber.DialCode != 0 && !string.IsNullOrEmpty(Model[i]?.Delivery?.PhoneNumber.Number))
+                                            {
+                                                phoneDelivery = $"+{Model[i].Delivery.PhoneNumber.DialCode} {Model[i].Delivery.PhoneNumber.Number}";
+                                            }
+                                        }
+                                        <p>@Localizer["Phone"]: @phoneDelivery</p>
+                                        <p>@Localizer["DeliveryEstimated"]: @Model[i].DateTimeDelivery.ToString(DateTimeFormats.BaseCalendarDate)</p>
                                     </div>
                                     <div class="info-block">
                                     </div>
@@ -99,11 +114,11 @@
             </div>
         </div>
     </div>
-    @await Html.PartialAsync("~/Views/PartView/Modals/ConfirmDelete.cshtml")
-    @if (ViewBag.CheckedCompany != null && !ViewBag.CheckedCompany)
+    @await Html.PartialAsync("~/Views/PartView/Modals/ConfirmDelete.cshtml", new ViewDataDictionary(ViewData) { {"ModalId", "confirmDeleteEntryModal"} });
+    @*@if (ViewBag.CheckedCompany != null && !ViewBag.CheckedCompany)
     {
         @await Html.PartialAsync("~/Views/PartView/Modals/RequiredDocPopUp.cshtml")
-    }
+    }*@
 </div>
 
 <script>
@@ -112,13 +127,17 @@
     ConfirmRemoveEntry(GetDateTimeInFormat(new Date()), `/Dashbord/Order/ArchivedOrder`, `/Dashbord/Order/NewLoad?${filters}`, '#confirmDeleteEntryModal');
 
     $('#create-order-btn').on('click', function (e) {
-        var body = '?localDate=' + GetDateTimeInFormat(new Date());
+        var body = {
+            localDate: GetDateTimeInFormat(new Date())
+        }
         
         $.ajax({
             type: "post",
             async: true,
-            url: `/Dashbord/Order/Creat${body}`,
+            url: `/Dashbord/Order/Create`,
+            data: body,
             success: function (id) {
+                console.log(id);
                 window.location.href = `/Dashbord/Order/Edit?id=${id}&status=NewLoad`
             },
         });

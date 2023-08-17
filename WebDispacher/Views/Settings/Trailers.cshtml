@@ -1,5 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 
+@model List<DaoModels.DAO.Models.Trailer>
+
 @inject IViewLocalizer Localizer
 
 @{
@@ -30,32 +32,32 @@
                                         <th>@Localizer["Year"]</th>
                                         <th>@Localizer["Make"]</th>
                                         <th>@Localizer["HowLong"]</th>
-                                        <th>@Localizer["Color"]</th>
+                                        <th>Vin #</th>
                                         <th>@Localizer["Plate"]#</th>
                                         <th>@Localizer["PlateExp"]</th>
-                                        <th>Vin #</th>
-                                        <th>@Localizer["Owner"]</th>
+                                        <th>@Localizer["Color"]</th>
                                         <th>@Localizer["AnnualIns"]</th>
+                                        <th>@Localizer["Owner"]</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @for (int i = 0; i < ViewBag.Trailers.Count; i++)
+                                    @for (int i = 0; i < Model.Count; i++)
                                     {
                                         <tr>
-                                            <td>@ViewBag.Trailers[i].Name</td>
-                                            <td>@ViewBag.Trailers[i].Type</td>
-                                            <td>@ViewBag.Trailers[i].Year</td>
-                                            <td>@ViewBag.Trailers[i].Make</td>
-                                            <td>@ViewBag.Trailers[i].HowLong</td>
-                                            <td>@ViewBag.Trailers[i].Color</td>
-                                            <td>@ViewBag.Trailers[i].Plate</td>
-                                            <td>@ViewBag.Trailers[i].Exp</td>
-                                            <td>@ViewBag.Trailers[i].Vin</td>
-                                            <td>@ViewBag.Trailers[i].Owner</td>
-                                            <td>@ViewBag.Trailers[i].AnnualIns</td>
+                                            <td>@Model[i].Name</td>
+                                            <td>@Model[i].Type</td>
+                                            <td>@Model[i].Year</td>
+                                            <td>@Model[i].Brand</td>
+                                            <td>@Model[i].HowLong</td>
+                                            <td>@Model[i].Vin</td>
+                                            <td>@Model[i].Plate</td>
+                                            <td>@Model[i].PlateExpires</td>
+                                            <td>@Model[i].Color</td>
+                                            <td>@Model[i].AnnualIns</td>
+                                            <td>@Model[i].Owner</td>
                                             <td>
-                                                <img src="~/img/setting.svg" alt="" onclick="window.location.href='@ViewBag.BaseUrl/Settings/Get?idTr=@ViewBag.Trailers[i].Id&page=s&idProfile=0&typeTransport=Trailer'">
+                                                <img src="~/img/setting.svg" alt="" onclick="window.location.href='@ViewBag.BaseUrl/Settings/Get?idTr=@Model[i].Id&page=s&idProfile=0&typeTransport=Trailer'">
                                             </td>
                                         </tr>
                                     }

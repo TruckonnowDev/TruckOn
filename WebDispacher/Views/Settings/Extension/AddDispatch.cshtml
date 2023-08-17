@@ -1,4 +1,8 @@
-﻿@using Microsoft.AspNetCore.Mvc.Localization
+﻿@using DaoModels.DAO.Models;
+@using Microsoft.AspNetCore.Mvc.Localization
+@using WebDispacher.ViewModels.Dispatcher;
+
+@model DispatcherViewModel
 
 @inject IViewLocalizer Localizer
 
@@ -19,20 +23,24 @@
                             <h1 class="text-info-header-1">@Localizer["AddNewDispatcher"]</h1>
                         </div>
                         <form action="" method="post" enctype="multipart/form-data">
+                            @Html.ValidationSummary()
                             <label for="">
                                 @Localizer["TypeDispatcher"]
-                                <select name="Type" class="height-input input-select" required>
+                                <select asp-for="Type" class="height-input input-select" required>
                                     <option value="">@Localizer["ChooseDispatcherType"]</option>
                                     <option value="Central Dispatch">@Localizer["CentralDispatch"]</option>
                                 </select>
+                                @Html.ValidationMessageFor(model => model.Type, "", new { @class = "text-danger" })
                             </label>
                             <label for="">
                                 @Localizer["LoginDispatch"]
-                                <input type="text" name="Login">
+                                <input type="text" asp-for="Login">
+                                @Html.ValidationMessageFor(model => model.Login, "", new { @class = "text-danger" })
                             </label>
                             <label for="">
                                 @Localizer["PasswordDispatch"]
-                                <input type="text" name="Password">
+                                <input type="text" asp-for="Password">
+                                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
                             </label>
 
                             <input type="submit" value="@Localizer["SaveInfo"]" class="btn1" />

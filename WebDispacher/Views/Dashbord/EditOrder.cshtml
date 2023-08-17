@@ -1,8 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 @using System.Globalization;
 @using WebDispacher.Constants;
+@using WebDispacher.Service;
 
-@model WebDispacher.ViewModels.ShippingViewModel
+@model WebDispacher.ViewModels.Order.EditOrderViewModel
 
 @inject IViewLocalizer Localizer
 
@@ -17,26 +18,13 @@
             };
 
 
-    string pickupExactlyValue = string.Empty;
-
-    if (!string.IsNullOrEmpty(Model.PickupExactly))
-    {
-        pickupExactlyValue = DateTime.ParseExact(Model.PickupExactly, DateTimeFormats.DateTimeInfoUS, CultureInfo.InvariantCulture).ToString(DateTimeFormats.BaseCalendarDate);
-    }
-
-    string deliveryEstimatedValue = string.Empty;
-
-    if (!string.IsNullOrEmpty(Model.DeliveryEstimated))
-    {
-        deliveryEstimatedValue = DateTime.ParseExact(Model.DeliveryEstimated, DateTimeFormats.DateTimeInfoUS, CultureInfo.InvariantCulture).ToString(DateTimeFormats.BaseCalendarDate);
-    }
-
     if (Model.CurrentStatus != null)
     { 
-        var isState = baseStatuses.TryAdd(Model.CurrentStatus, Model.CurrentStatus);
+        var isState = baseStatuses.TryAdd(Model.CurrentStatus.StatusName, Model.CurrentStatus.StatusName);
     }
 }
-
+<link rel="stylesheet" href="~/libs/intl-tel-input-master/css/intlTelInput.css">
+<script src="~/libs/intl-tel-input-master/js/intlTelInput.js"></script>
 <body>
     <div class="admin Billing">
         <div class="container">
@@ -52,15 +40,15 @@
                 <div class="col-md-12">
                     <div class="tabContente">
                         <form action="SavaOrder" method="post">
-                            <input id="idOrder" type="text" name="Id" style="display:none;" value="@Model.Id" />
+                            <input id="idOrder" type="hidden" name="Id" style="display:none;" value="@Model.Id" />
                             <div class="w1">
                                 <label for="">
                                     @Localizer["LoadId"]
-                                    <input type="text" id="idLoad" name="IdOrder" value="@Model.IdOrder">
+                                    <input type="text" id="idLoad" asp-for="OrderId" value="@Model.OrderId">
                                 </label>
                                 <label for="">
                                     @Localizer["Status"]
-                                    <select name="CurrentStatus" id="statusId">
+                                    <select asp-for="CurrentStatus.StatusName" id="statusId">
                                         @foreach(var item in baseStatuses)
                                         {
                                             <option value=@item.Key>@item.Value</option>
@@ -69,32 +57,37 @@
                                 </label>
                                 <label for="">
                                     @Localizer["Contact"]
-                                    <input type="text" id="contactId" name="ContactC" value="@Model.ContactC">
+                                    <input type="text" id="contactId" asp-for="Contact" value="@Model.Contact">
                                 </label>
                                 <label for="">
                                     @Localizer["Phone"]
-                                    <input type="text" id="phoneC" name="PhoneC" value="@Model.PhoneC" placeholder="(XXX)-XXX-XXXX - @Localizer["PhoneNumber"]">
+                                    <div class="intl-tel-input">
+                                        <input data-default-country="auto" type="text" id="phoneC" asp-for="PhoneNumber.Number" value="@Model.PhoneNumber.Number" pattern="@PatternConstants.PhoneNumberWithoutCountryCode" placeholder="(XXX)-XXX-XXXX - @Localizer["PhoneNumber"]">
+                                        <input type="hidden" id="country-code-dialcode-contact" asp-for="PhoneNumber.DialCode" value="@Model.PhoneNumber.DialCode">
+                                        <input type="hidden" id="country-code-iso2-contact" asp-for="PhoneNumber.Iso2" value="@Model.PhoneNumber.Iso2">
+                                        <input type="hidden" id="country-code-name-contact" asp-for="PhoneNumber.Name" value="@Model.PhoneNumber.Name">
+                                    </div>
                                 </label>
                                 <h3>@Localizer["PichupHeader"]</h3>
                                 <label for="">
                                     @Localizer["Name"]
-                                    <input type="text" id="nameP" value="@Model.NameP" placeholder="@Localizer["Name"]" name="NameP">
+                                    <input type="text" id="nameP" value="@Model.PickedUp.Name" placeholder="@Localizer["Name"]" asp-for="PickedUp.Name">
                                 </label>
                                 <label for="">
                                     @Localizer["Contact"]
-                                    <input type="text" id="contactNameP" name="ContactNameP" value="@Model.ContactNameP" placeholder="@Localizer["ContactName"]">
+                                    <input type="text" id="contactNameP" asp-for="PickedUp.ContactName" value="@Model.PickedUp.ContactName" placeholder="@Localizer["ContactName"]">
                                 </label>
                                 <label for="">
                                     @Localizer["Address"]
-                                    <input type="text" id="addressP" name="AddresP" value="@Model.AddresP" placeholder="@Localizer["Address"]">
+                                    <input type="text" id="addressP" asp-for="PickedUp.Address" value="@Model.PickedUp.Address" placeholder="@Localizer["Address"]">
                                 </label>
                                 <label for="">
                                     @Localizer["City"]
-                                    <input type="text" pattern="@PatternConstants.OnlyLetters" id="cityP" name="CityP" value="@Model.CityP" placeholder="@Localizer["City"]">
+                                    <input type="text" pattern="@PatternConstants.OnlyLetters" id="cityP" asp-for="PickedUp.City" value="@Model.PickedUp.City" placeholder="@Localizer["City"]">
                                 </label>
                                 <label for="">
                                     @Localizer["State"]
-                                    <select id="stateP" name="StateP" value="@Model.StateP">
+                                    <select id="stateP" asp-for="PickedUp.State" value="@Model.PickedUp.State">
                                         <option value="AL">Alabama</option>
                                         <option value="AK">Alaska</option>
                                         <option value="AZ">Arizona</option>
@@ -150,54 +143,57 @@
                                 </label>
                                 <label for="">
                                     @Localizer["Zip"]
-                                    <input type="text" id="zipP" name="ZipP" value="@Model.ZipP" maxlength="5" max="99999" pattern="@PatternConstants.ZipOnlyFiveDigits" placeholder="XXXXX - @Localizer["ZipCode"]">
+                                    <input type="text" id="zipP" asp-for="PickedUp.ZipCode" value="@Model.PickedUp.ZipCode" maxlength="5" max="99999" pattern="@PatternConstants.ZipOnlyFiveDigits" placeholder="XXXXX - @Localizer["ZipCode"]">
                                 </label>
                                 <label for="">
                                     @Localizer["Phone"]
-                                    <input type="text" id="phoneP" name="PhoneP" placeholder="(XXX)-XXX-XXXX - @Localizer["PhoneNumber"]" value="@Model.PhoneP">
+                                    <input data-default-country="auto" type="text" id="phoneP" asp-for="PickedUp.PhoneNumber.Number" placeholder="(XXX)-XXX-XXXX - @Localizer["PhoneNumber"]"  pattern="@PatternConstants.PhoneNumberWithoutCountryCode" value="@Model.PickedUp.PhoneNumber.Number">
+                                    <input type="hidden" id="country-code-dialcode-pickedup" asp-for="PickedUp.PhoneNumber.DialCode" value="@Model.PickedUp.PhoneNumber.DialCode">
+                                    <input type="hidden" id="country-code-iso2-pickedup" asp-for="PickedUp.PhoneNumber.Iso2" value="@Model.PickedUp.PhoneNumber.Iso2">
+                                    <input type="hidden" id="country-code-name-pickedup" asp-for="PickedUp.PhoneNumber.Name" value="@Model.PickedUp.PhoneNumber.Name">
                                 </label>
                                 <label for="">
                                     @Localizer["Email"]
-                                    <input id="emailP" pattern="@PatternConstants.Email" asp-for=EmailP name="EmailP" type="email" value="@Model.EmailP" placeholder="@Localizer["Email"]">
+                                    <input id="emailP" pattern="@PatternConstants.Email" asp-for="PickedUp.Email" type="email" value="@Model.PickedUp.Email" placeholder="@Localizer["Email"]">
                                 </label>
                                 <label for="">
                                     @Localizer["ScheduledPickupDate"]
-                                    <input type="date" id="scheduledPickupDateP" name="PickupExactly" value="@pickupExactlyValue">
+                                    <input type="date" id="scheduledPickupDateP" asp-for="DateTimePickedUp" value="@Model.DateTimePickedUp.ToString(DateTimeFormats.BaseCalendarDate)">
                                 </label>
                             </div>
                             <div class="w1">
                                 <label style="margin-bottom: 7px;" for="">
                                     @Localizer["InstructionsHeader"]
-                                    <textarea type="text" id="instructions" class="textarea-resize-none" name="Titl1DI" style="height:152px;">@Model.Titl1DI</textarea>
+                                    <textarea type="text" id="instructions" class="textarea-resize-none" asp-for="Instructions" style="height:152px;">@Model.Instructions</textarea>
                                 </label>
                                 <label for="">
                                     @Localizer["Fax"]
-                                    <input type="text" id="faxC" name="FaxC" value="@Model.FaxC">
+                                    <input type="text" id="faxC" asp-for="Fax" value="@Model.Fax">
                                 </label>
                                 <label for="">
                                     @Localizer["McNumber"]
-                                    <input type="text" id="iccmcC" name="IccmcC" value="@Model.IccmcC">
+                                    <input type="text" id="iccmcC" asp-for="McNumber" value="@Model.McNumber">
                                 </label>
                                 <h3>@Localizer["DeliveryInfoHeader"]</h3>
                                 <label for="">
                                     @Localizer["Name"]
-                                    <input type="text" id="nameD" name="NameD" value="@Model.NameD" placeholder="@Localizer["Name"]">
+                                    <input type="text" id="nameD" asp-for="Delivery.Name" value="@Model.Delivery.Name" placeholder="@Localizer["Name"]">
                                 </label>
                                 <label for="">
                                     @Localizer["Contact"]
-                                    <input type="text" id="contactD" name="ContactNameD" value="@Model.ContactNameD" placeholder="@Localizer["ContactName"]">
+                                    <input type="text" id="contactD" asp-for="Delivery.ContactName" value="@Model.Delivery.ContactName" placeholder="@Localizer["ContactName"]">
                                 </label>
                                 <label for="">
                                     @Localizer["Address"]
-                                    <input type="text" id="addressD" name="AddresD" value="@Model.AddresD" placeholder="@Localizer["Address"]">
+                                    <input type="text" id="addressD" asp-for="Delivery.Address" value="@Model.Delivery.Address" placeholder="@Localizer["Address"]">
                                 </label>
                                 <label for="">
                                     @Localizer["City"]
-                                    <input type="text" pattern="@PatternConstants.OnlyLetters" id="cityD" name="CityD" value="@Model.CityD" placeholder="@Localizer["City"]">
+                                    <input type="text" pattern="@PatternConstants.OnlyLetters" id="cityD" asp-for="Delivery.City" value="@Model.Delivery.City" placeholder="@Localizer["City"]">
                                 </label>
                                 <label for="">
                                     @Localizer["State"]
-                                    <select id="stateD" name="StateD" value="@Model.StateD">
+                                    <select id="stateD" asp-for="Delivery.State" value="@Model.Delivery.State">
                                         <option value="AL">Alabama</option>
                                         <option value="AK">Alaska</option>
                                         <option value="AZ">Arizona</option>
@@ -253,26 +249,29 @@
                                 </label>
                                 <label for="">
                                     @Localizer["Zip"]
-                                    <input type="text" id="zipD" name="ZipD" value="@Model.ZipD" max="99999" maxlength="5" pattern="@PatternConstants.ZipOnlyFiveDigits" placeholder="XXXXX - @Localizer["ZipCode"]">
+                                    <input type="text" id="zipD" asp-for="Delivery.ZipCode" value="@Model.Delivery.ZipCode" max="99999" maxlength="5" pattern="@PatternConstants.ZipOnlyFiveDigits" placeholder="XXXXX - @Localizer["ZipCode"]">
                                 </label>
                                 <label for="">
                                     @Localizer["Phone"]
-                                    <input type="text" id="phoneD" name="PhoneD" value="@Model.PhoneD" placeholder="(XXX)-XXX-XXXX - @Localizer["PhoneNumber"]">
+                                    <input data-default-country="auto" type="text" id="phoneD" asp-for="Delivery.PhoneNumber.Number" value="@Model.Delivery.PhoneNumber.Number" pattern="@PatternConstants.PhoneNumberWithoutCountryCode" placeholder="(XXX)-XXX-XXXX - @Localizer["PhoneNumber"]">
+                                    <input type="hidden" id="country-code-dialcode-delivery" asp-for="Delivery.PhoneNumber.DialCode" value="@Model.Delivery.PhoneNumber.DialCode">
+                                    <input type="hidden" id="country-code-iso2-delivery" asp-for="Delivery.PhoneNumber.Iso2" value="@Model.Delivery.PhoneNumber.Iso2">
+                                    <input type="hidden" id="country-code-name-delivery" asp-for="Delivery.PhoneNumber.Name" value="@Model.Delivery.PhoneNumber.Name">
                                 </label>
                                 <label for="">
                                     @Localizer["Email"]
-                                    <input name="EmailD" pattern="@PatternConstants.Email" id="emailD" type="email" value="@Model.EmailD" placeholder="@Localizer["Email"]">
+                                    <input asp-for="Delivery.Email" pattern="@PatternConstants.Email" id="emailD" type="email" value="@Model.Delivery.Email" placeholder="@Localizer["Email"]">
                                 </label>
                                 <label for="">
                                     @Localizer["ScheduledDeliveryDate"]
-                                    <input type="date" id="scheduledDeliveryEstimated" name="DeliveryEstimated" value="@deliveryEstimatedValue">
+                                    <input type="date" id="scheduledDeliveryEstimated" asp-for="DateTimeDelivery" value="@Model.DateTimeDelivery.ToString(DateTimeFormats.BaseCalendarDate)">
                                 </label>
                             </div>
                             <div class="w3">
                                 <h3>@Localizer["PaymentInfoHeader"]</h3>
                                 <label for="">
                                     @Localizer["PaymentMethod"]
-                                    <select id="paymentMethod" name="TotalPaymentToCarrier">
+                                    <select id="paymentMethod" asp-for="PaymentMethod" value="@Model.PaymentMethod">
                                         <option value="COP">COP</option>
                                         <option value="COD">COD</option>
                                         <option value="1 days">1 days</option>
@@ -284,15 +283,15 @@
                                 </label>
                                 <label for="">
                                     @Localizer["Price"]
-                                    <input type="number" onchange="(function(el){el.value=parseFloat(el.value).toFixed(2);})(this)" id="price" name="PriceListed" value="@Model.PriceListed" step="0.01" />
+                                    <input type="number" onchange="(function(el){el.value=parseFloat(el.value).toFixed(2);})(this)" id="price" asp-for="Price" value="@Model.Price" step="0.01" />
                                 </label>
                                 <label for="">
                                     @Localizer["BrokenFee"]
-                                    <input type="number" onchange="(function(el){el.value=parseFloat(el.value).toFixed(2);})(this)" id="brokerFee" name="BrokerFee" value="@Model.BrokerFee" step="0.01">
+                                    <input type="number" onchange="(function(el){el.value=parseFloat(el.value).toFixed(2);})(this)" id="brokerFee" asp-for="BrokerFee" value="@Model.BrokerFee" step="0.01">
                                 </label>
-                                <input type="hidden" id="localDateInput" name="localDate" />
+                                <input type="hidden" id="dateTimeLocal" name="dateTimeLocal" />
                                 <input class="btn1" type="submit" value="@Localizer["Save"]" />
-                                <button class="btn3 open-ConfirmDelete">@Localizer["ArchiveOrder"]</button>
+                                <button type="button" class="btn3 open-ConfirmDelete">@Localizer["ArchiveOrder"]</button>
                                 <button type="button" class="btn2 open-ConfirmDelete mt-0" data-toggle="modal" data-id="@Model.Id" href="#confirmDeleteEntryModal">@Localizer["DeleteOrder"]</button>
                             </div>
                         </form>
@@ -301,137 +300,180 @@
                 <div class="col-md-12" style="padding-bottom: 20px">
                     <div class="title">
                         <h1>@Localizer["VehsHeader"]</h1>
-                        <button class="btn1" onclick="AddVech(this)">@Localizer["AddVeh"]</button>
+                        <button class="btn1" onclick="addVeh();">@Localizer["AddVeh"]</button>
                     </div>
                 </div>
                 
             </div>
         </div>
-
-        <table class="tab12">
-                        <thead>
-                            <tr>
-                    <th style="min-width: 35px;">№</th>
-                                <th>VIN</th>
-                                <th>@Localizer["Year"]</th>
-                                <th>@Localizer["Make"]</th>
-                                <th>@Localizer["Model"]</th>
-                                <th>@Localizer["Type"]</th>
-                                <th>@Localizer["Color"]</th>
-                                <th>@Localizer["LotNumber"]</th>
-                                <th style="min-width: 120px;">&nbsp;</th>
-                                <th style="min-width: 35px;">&nbsp;</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                                @if (Model.VehiclwInformations != null)
-                                {
-                                    @for (int i = 0; i < Model.VehiclwInformations.Count; i++)
-                                {
-                                    
-                                        <form action="SavaVech" method="POST" class="tr car-form" id="@Model.VehiclwInformations[i].Id">
-                                           <tr>
-                                                <td aria-label="№" class="header-id-control">@i
-                                                    <input type='hidden' name="id" value="@Model.VehiclwInformations[i].Id" id="car-id" />
-                                                    </td>
-
-                                                <td aria-label="VIN">
-                                                    <input type='text' name="VIN" value="@Model.VehiclwInformations[i].VIN" id="car-vin" /></td>
-                                                <td aria-label="@Localizer["Year"]">
-                                                    <input type='text' name="Year" value="@Model.VehiclwInformations[i].Year" id="car-year"/></td>
-                                                <td aria-label="@Localizer["Make"]">
-                                                    <input type='text' name="Make" value="@Model.VehiclwInformations[i].Make" id="car-make" /></td>
-                                                <td aria-label="@Localizer["Model"]">
-                                                    <input type='text' name="Model" value="@Model.VehiclwInformations[i].Model" id="car-model"/></td>
-                                                <td aria-label="@Localizer["Type"]">
-                                                    <select name="Type" id="car-type">
-                                                        <option>@Model.VehiclwInformations[i].Type</option>
-                                                        <option>Sedan</option>
-                                                        <option>Suv</option>
-                                                        <option>Coupe</option>
-                                                        <option>PickUp</option>
-                                                        <option>Tricycle</option>
-                                                        <option>Sport bike</option>
-                                                        <option>Touring motorcycle</option>
-                                                        <option>Cruise motorcycle</option>
-                                                    </select>
-                                                </td>
-                                                <td aria-label="@Localizer["Color"]">
-                                                    <input type='text' name="Color" value="@Model.VehiclwInformations[i].Color" id="car-color" /></td>
-                                                <td aria-label="@Localizer["LotNumber"]">
-                                                    <input type='text' name="LotNumber" value="@Model.VehiclwInformations[i].Lot" id="car-lot"/></td>
-                                                <td class="button-control">
-                                                    <input type="hidden" id="localDateInputVeh" name="localDate" formnovalidate="car-localDate"/>
-                                                    <button type='submit' class="btn1">@Localizer["Save"]</button></td>
-                                                <td class="button-control">
-                                                    <a class="open-ConfirmDeleteVeh" data-toggle="modal" data-id="@Model.VehiclwInformations[i].Id" href="#confirmDeleteEntryModal">
-                                                        <img src="/img/delete.svg" />
-                                                    </a>
-                                                </td>
-                                                <td style="display: none">
-                                                    <input type="text" name="idVech" style="display:none;" value="@Model.VehiclwInformations[i].Id" /></td>
-                                                <input type="text" name="idOrder" style="display:none;" value="@Model.Id" id="car-idOrder" />
-                                            </tr>
-                                        </form>
-                                    }
-                                }
-                            
-                        </tbody>
-                    </table>
-        @await Html.PartialAsync("~/Views/PartView/Modals/ConfirmDelete.cshtml");
+        <div id="vehiclesTableContainer">
+            @await Html.PartialAsync("~/Views/PartView/Vehicles/_VehiclesTable.cshtml", Model.Vehicles)
+        </div>
+        @await Html.PartialAsync("~/Views/PartView/Modals/ConfirmDelete.cshtml", new ViewDataDictionary(ViewData) { {"ModalId", "confirmDeleteEntryModal"},})
     </div>
 
 </body>
 
+<script src="~/js/auto-complite.js"></script>
+
+<script>
+    $(document).ready(function () {
+        if(!$("#country-code-iso2-pickedup").val()){
+            $("#country-code-iso2-pickedup").val("us")
+            $("#country-code-dialcode-pickedup").val("1")
+            $("#country-code-name-pickedup").val("United States")
+        }
+        
+        if(!$("#country-code-iso2-delivery").val()){
+            $("#country-code-iso2-delivery").val("us")
+            $("#country-code-dialcode-delivery").val("1")
+            $("#country-code-name-delivery").val("United States")
+        }
+        
+        if(!$("#country-code-iso2-contact").val()){
+            $("#country-code-iso2-contact").val("us")
+            $("#country-code-dialcode-contact").val("1")
+            $("#country-code-name-contact").val("United States")
+        }
+        var phoneP = $("#phoneP");
+        phoneP.intlTelInput({
+            initialCountry: $("#country-code-iso2-pickedup").val() ? $("#country-code-iso2-pickedup").val() : "us",
+            separateDialCode: true,
+        });
+
+        phoneP.on("countrychange", function (e, countryData) {
+            $("#country-code-dialcode-pickedup").val(countryData.dialCode);
+            $("#country-code-iso2-pickedup").val(countryData.iso2);
+            $("#country-code-name-pickedup").val(countryData.name);
+        });
+
+        var phoneD = $("#phoneD");
+        phoneD.intlTelInput({
+            initialCountry: $("#country-code-iso2-delivery").val() ? $("#country-code-iso2-delivery").val() : "us",
+            separateDialCode: true,
+        });
+
+        phoneD.on("countrychange", function (e, countryData) {
+            $("#country-code-dialcode-delivery").val(countryData.dialCode);
+            $("#country-code-iso2-delivery").val(countryData.iso2);
+            $("#country-code-name-delivery").val(countryData.name);
+        });
+        
+        var phoneC = $("#phoneC");
+        phoneC.intlTelInput({
+            initialCountry: $("#country-code-iso2-contact").val() ? $("#country-code-iso2-contact").val() : "us",
+            separateDialCode: true,
+        });
+
+        phoneC.on("countrychange", function (e, countryData) {
+            $("#country-code-dialcode-contact").val(countryData.dialCode);
+            $("#country-code-iso2-contact").val(countryData.iso2);
+            $("#country-code-name-contact").val(countryData.name);
+        });
+
+        document.addEventListener("input", function (event) {
+            const inputElement = event.target;
+            const inputId = inputElement.id;
+            const index = inputId.split("_")[1];
+            const apiUrl = "@Config.BaseReqvesteUrl/Dashbord/Order/";
+            if (inputElement.classList.contains("carType")) {
+                autocompleteHandler(inputId, `carTypeList_${index}`, apiUrl + "GetVehiclesTypes");
+            } else if (inputElement.classList.contains("carMaker")) {
+                const dependentInput = document.getElementById(`carType_${index}`);
+                handleAutocompleteWidthDependentInput(inputId, `carMakerList_${index}`, apiUrl + "GetVehicleBrands", "&vehicleType=", dependentInput.value);
+            } else if (inputElement.classList.contains("carModel")) {
+                const dependentInput = document.getElementById(`carMaker_${index}`);
+                handleAutocompleteWidthDependentInput(inputId, `carModelList_${index}`, apiUrl + "GetVehicleModels", "&vehicleBrand=", dependentInput.value);
+            }
+        });
+    });
+</script>
+
+<script src="~/js/input-replacer.js"></script>
+<script>
+    setReplacer(document.querySelector('#contactId'), /\d/g);
+    setReplacer(document.querySelector('#nameP'), /\d/g);
+    setReplacer(document.querySelector('#contactNameP'), /\d/g);
+    setReplacer(document.querySelector('#nameD'), /\d/g);
+    setReplacer(document.querySelector('#contactD'), /\d/g);
+
+    document.addEventListener("click", function (event) {
+    const isAutocompleteItem = event.target.matches(".autocomplete-item");
+    const isAutocompleteInput = event.target.matches("#carType") || event.target.matches("#carMaker") || event.target.matches("#carModel");
+
+    if (!isAutocompleteItem && !isAutocompleteInput) {
+        document.querySelectorAll(".autocomplete-list").forEach(listElement => {
+            listElement.innerHTML = "";
+            listElement.style.border = "none";
+        });
+    }
+});
+</script>
+
+<style>
+    .autocomplete-wrapper {
+        position: relative;
+    }
+
+    .autocomplete-list {
+        list-style: none;
+        padding: 0;
+        background-color: #fff;
+        border-radius: 6px;
+        max-height: 150px;
+        overflow-y: auto;
+        position: absolute;
+        bottom: 70%;
+        left: 4%;
+        width: 90%;
+        z-index: 1000;
+    }
+
+    .autocomplete-item {
+        padding: 5px 10px;
+        cursor: pointer;
+    }
+
+    .autocomplete-item:hover {
+        background-color: #f0f0f0;
+    }
+
+</style>
+
 <script>
     ConfirmRemoveEntry(GetDateTimeInFormat(new Date()), `/Dashbord/Order/ArchivedOrder`, `/Dashbord/Order/NewLoad`, '#confirmDeleteEntryModal');
 
+    $("input[type=submit]").on('click', function (e) {
+        dateInput.value = GetDateTimeInFormat(new Date());
+    })
+    const dateInput = document.querySelector("[name='dateTimeLocal']");
+
+    function deleteVeh(vehId, orderId) {
+        $.ajax({
+            type: 'POST',
+            url: '@ViewBag.BaseUrl/Dashbord/Order/RemoveVech',
+            data: { vehicleId: vehId, orderId: orderId,localDate: GetDateTimeInFormat(new Date()) },
+            success: function (response) {
+                $("#vehiclesTableContainer").html(response);
+                SuccessAlert("@Localizer["VehFormSuccessSendAndRemove"]");
+            },
+            error: function () {
+                alert('Error occurred while removing the vehicle record.');
+            }
+        });
+    }
+
     $(document).on("click", ".open-ConfirmDeleteVeh", function () {
         var vehId = $(this).data('id');
-        $(".submit-add").on("click", function(){
 
-            DeleteVech(vehId);
+        $(".submit-add").on("click", function(){
+            const orderId = document.getElementById('idOrder').value;
+            deleteVeh(vehId, orderId);
 
             $('#confirmDeleteEntryModal').modal('hide');
         });
     });
-
-    $(".car-form").submit(function (el) {
-        el.preventDefault();
-
-        $("#localDateInput").val(GetDateTimeInFormat(new Date()));
-        $("#localDateInputVeh").val(GetDateTimeInFormat(new Date()));
-
-        let formElems = this.elements;
-
-        let body = {
-            idOrder: formElems['car-idOrder'].value,
-            idVech: formElems['idVech'].value,
-            vin: formElems['VIN'].value,
-            year: formElems['Year'].value,
-            make: formElems['Make'].value,
-            model: formElems['Model'].value,
-            type: formElems['Type'].value,
-            color: formElems['Color'].value,
-            lotNumber: formElems['LotNumber'].value,
-            localDate: formElems['localDate'].value,
-        }
-
-        $.ajax({
-            type: "post",
-            data: body,
-            async: true,
-            url: `/Dashbord/Order/SavaVech`,
-            success: function (response) {
-               SuccessAlert("@Localizer["VehFormSuccessSend"]")
-            },
-            error: function (response) {
-                ErrorAlert("@Localizer["VehFormHaveError"]");
-            }
-        });
-        
-    })
-
+    
     $.fn.setCursorPosition = function (pos) {
         if ($(this).get(0).setSelectionRange) {
             $(this).get(0).setSelectionRange(pos, pos);
@@ -453,25 +495,66 @@
         $(this).setCursorPosition(0);
     });
 
+     $("#vehiclesTableContainer").on("submit", ".car-form", function (el) {
+            el.preventDefault();
+
+            $("#localDateInput").val(GetDateTimeInFormat(new Date()));
+            $('input[name="localDate"]').val(GetDateTimeInFormat(new Date()));
+
+            let formElems = this.elements;
+            console.log(formElems);
+            let body = {
+                orderId: formElems['orderIdcar'].value,
+                vehicleId: formElems['vehicleId'].value,
+                vin: formElems['VIN'].value,
+                year: formElems['Year'].value,
+                make: formElems['Make'].value,
+                model: formElems['Model'].value,
+                type: formElems['Type'].value,
+                body: formElems['Body'].value,
+                color: formElems['Color'].value,
+                lotNumber: formElems['LotNumber'].value,
+                localDate: formElems['localDate'].value,
+            }
+
+            $.ajax({
+                type: "post",
+                data: body,
+                async: true,
+                url: `/Dashbord/Order/SavaVech`,
+                success: function (response) {
+                    SuccessAlert("@Localizer["VehFormInfoSuccessSend"]")
+                    console.log("Form submitted!");
+                },
+                error: function (response) {
+                    ErrorAlert("@Localizer["VehFormHaveError"]");
+                }
+            });
+            console.log("Form submitted!");
+        });
+
     $(document).ready(function () {
+        
+
         if ("@Model.CurrentStatus" != null) {
             $('#statusId option[value="@Model.CurrentStatus"]').prop('selected', true);
         }
-        if ("@Model.TotalPaymentToCarrier" != null) {
-            $('#paymentMethod option[value="@Model.TotalPaymentToCarrier"]').prop('selected', true);
+        if ("@Model.PaymentMethod" != null) {
+            $('#paymentMethod option[value="@Model.PaymentMethod"]').prop('selected', true);
         }
 
         $("#phoneD").mask("(999)-999-9999", { placeholder: "(XXX)-XXX-XXXX" });
         $("#phoneP").mask("(999)-999-9999", { placeholder: "(XXX)-XXX-XXXX" });
         $("#phoneC").mask("(999)-999-9999", { placeholder: "(XXX)-XXX-XXXX" });
 
-        $('#stateD').val('@Model.StateD').change();
-        $('#stateP').val('@Model.StateP').change();
+        $('#stateD').val('@Model.Delivery.State').change();
+        $('#stateP').val('@Model.PickedUp.State').change();
 
          $("#zipP").mask("99999", { placeholder: "XXXXX" });
          $("#zipD").mask("99999", { placeholder: "XXXXX" });
-    });
 
+        
+    });
 
     $('#zipD, #zipP, #price, #phoneD, #phoneP, #brokerFee').on('input invalid', function () {
         this.setCustomValidity('')
@@ -499,113 +582,73 @@
         }
     })
 
-    function AddVech(btnE) {
-        const loadId = document.getElementById('idLoad').value;
-        const status = document.getElementById('statusId').value;
-        const nameP = document.getElementById('nameP').value;
-        const contactNameP = document.getElementById('contactNameP').value;
-        const addressP = document.getElementById('addressP').value;
-        const cityP = document.getElementById('cityP').value;
-        const stateP = document.getElementById('stateP').value;
-        const zipP = document.getElementById('zipP').value;
-        const phoneP = document.getElementById('phoneP').value;
-        const emailP = document.getElementById('emailP').value;
-        const scheduledPickupDateP = document.getElementById('scheduledPickupDateP').value;
-        const scheduledDeliveryEstimated = document.getElementById('scheduledDeliveryEstimated').value;
-        const instructions = document.getElementById('instructions').value;
-        const nameD = document.getElementById('nameD').value;
-        const contactD = document.getElementById('contactD').value;
-        const addressD = document.getElementById('addressD').value;
-        const cityD = document.getElementById('cityD').value;
-        const stateD = document.getElementById('stateD').value;
-        const zipD = document.getElementById('zipD').value;
-        const phoneD = document.getElementById('phoneD').value;
-        const emailD = document.getElementById('emailD').value;
-        const paymentMethod = document.getElementById('paymentMethod').value;
-        const price = document.getElementById('price').value;
-        const brokerFee = document.getElementById('brokerFee').value;
-        const faxC = document.getElementById('faxC').value;
-        const iccmcC = document.getElementById('iccmcC').value;
-        const contactC = document.getElementById('contactId').value;
-        const phoneC = document.getElementById('phoneC').value;
+    function addVeh() {
+        const orderId = parseInt(document.getElementById('idOrder').value);
 
-        let idOrder = document.getElementById('idOrder').value;
-        var xhttp = new XMLHttpRequest();
-        let Req = "idOrder=" + idOrder + "&localDate=" + GetDateTimeInFormat(new Date());
-        xhttp.onreadystatechange = function (e) {
-            console.log(this.readyState);
-            if (this.readyState === 4 && this.status === 200) {
-                alert(this.responseText);
-                var url = `@ViewBag.BaseUrl/Dashbord/Order/EditReload?Id=${idOrder}&status=${status}&idOrder=${loadId}&NameP=${nameP}` +
-                    `&ContactNameP=${contactNameP}&Address=${addressP}&CityP=${cityP}&StateP=${stateP}&CurrentStatus=${status}` +
-                    `&ZipP=${zipP}&PhoneP=${phoneP}&EmailP=${emailP}&PickupExactly=${scheduledPickupDateP}&DeliveryEstimated=${scheduledDeliveryEstimated}&Titl1DI=${instructions}` +
-                    `&NameD=${nameD}&ContactNameD=${contactD}&AddressD=${addressD}&CityD=${cityD}&StateD=${stateD}&ZipD=${zipD}&PhoneD=${phoneD}` +
-                    `&EmailD=${emailD}&TotalPaymentToCarrier=${paymentMethod}&PriceListed=${price}&BrokerFee=${brokerFee}&FaxC=${faxC}` +
-                    `&IccmcC=${iccmcC}&ContactC=${contactC}&PhoneC=${phoneC}`;
-                window.location.href = url;
+        
+        $.ajax({
+            type: "POST",
+            async: true,
+            url: `@ViewBag.BaseUrl/Dashbord/Order/AddVech?orderId=${orderId}`,
+            processData: true,
+            success: function (response) {
+                $("#vehiclesTableContainer").html(response);
+                SuccessAlert("@Localizer["VehFormSuccessSend"]");
+                console.log("тут вообще бывает?")
+
+                $(".car-form").submit(function (el) {
+                    console.log("tyk-tyk");
+                    el.preventDefault();
+
+                    $("#localDateInput").val(GetDateTimeInFormat(new Date()));
+                    $('input[name="localDate"]').val(GetDateTimeInFormat(new Date()));
+
+                    let formElems = this.elements;
+                    console.log(formElems);
+                    let body = {
+                        orderId: formElems['orderIdcar'].value,
+                        vehicleId: formElems['vehicleId'].value,
+                        vin: formElems['VIN'].value,
+                        year: formElems['Year'].value,
+                        make: formElems['Make'].value,
+                        model: formElems['Model'].value,
+                        type: formElems['Type'].value,
+                        body: formElems['Body'].value,
+                        color: formElems['Color'].value,
+                        lotNumber: formElems['LotNumber'].value,
+                        localDate: formElems['localDate'].value,
+                    }
+
+                    $.ajax({
+                        type: "post",
+                        data: body,
+                        async: true,
+                        url: `/Dashbord/Order/SavaVech`,
+                        success: function (response) {
+                            SuccessAlert("@Localizer["VehFormInfoSuccessSend"]")
+                            console.log("Form submitted!");
+                        },
+                        error: function (response) {
+                            ErrorAlert("@Localizer["VehFormHaveError"]");
+                        }
+                    });
+                    console.log("Form submitted!");
+                });
+            },
+            error: function (response) {
+                ErrorAlert("@Localizer["VehFormHaveError"]");
             }
-        };
-        xhttp.open("POST", "@ViewBag.BaseUrl/Dashbord/Order/AddVech", true);
-        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhttp.setRequestHeader('Accept-Encoding', 'br');
-        xhttp.send(Req);
-    }
+        });
 
-    function DeleteVech(btnE) {
-        const loadId = document.getElementById('idLoad').value;
-        const status = document.getElementById('statusId').value;
-        const nameP = document.getElementById('nameP').value;
-        const contactNameP = document.getElementById('contactNameP').value;
-        const addressP = document.getElementById('addressP').value;
-        const cityP = document.getElementById('cityP').value;
-        const stateP = document.getElementById('stateP').value;
-        const zipP = document.getElementById('zipP').value;
-        const phoneP = document.getElementById('phoneP').value;
-        const emailP = document.getElementById('emailP').value;
-        const scheduledPickupDateP = document.getElementById('scheduledPickupDateP').value;
-        const scheduledDeliveryEstimated = document.getElementById('scheduledDeliveryEstimated').value;
-        const instructions = document.getElementById('instructions').value;
-        const nameD = document.getElementById('nameD').value;
-        const contactD = document.getElementById('contactD').value;
-        const addressD = document.getElementById('addressD').value;
-        const cityD = document.getElementById('cityD').value;
-        const stateD = document.getElementById('stateD').value;
-        const zipD = document.getElementById('zipD').value;
-        const phoneD = document.getElementById('phoneD').value;
-        const emailD = document.getElementById('emailD').value;
-        const paymentMethod = document.getElementById('paymentMethod').value;
-        const price = document.getElementById('price').value;
-        const brokerFee = document.getElementById('brokerFee').value;
-        const faxC = document.getElementById('faxC').value;
-        const iccmcC = document.getElementById('iccmcC').value;
-        const contactC = document.getElementById('contactId').value;
-        const phoneC = document.getElementById('phoneC').value;
-
-
-        let idOrder = document.getElementById('idOrder').value;
-
-        let Req = "idVech=" + btnE + "&localDate=" + GetDateTimeInFormat(new Date());
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function (e) {
-            if (this.readyState == 4 && this.status == 200) {
-                alert(this.responseText);
-                var url = `@ViewBag.BaseUrl/Dashbord/Order/EditReload?Id=${idOrder}&status=${status}&idOrder=${loadId}&NameP=${nameP}` +
-                    `&ContactNameP=${contactNameP}&Address=${addressP}&CityP=${cityP}&StateP=${stateP}&CurrentStatus=${status}` +
-                    `&ZipP=${zipP}&PhoneP=${phoneP}&EmailP=${emailP}&PickupExactly=${scheduledPickupDateP}&DeliveryEstimated=${scheduledDeliveryEstimated}&Titl1DI=${instructions}` +
-                    `&NameD=${nameD}&ContactNameD=${contactD}&AddressD=${addressD}&CityD=${cityD}&StateD=${stateD}&ZipD=${zipD}&PhoneD=${phoneD}` +
-                    `&EmailD=${emailD}&TotalPaymentToCarrier=${paymentMethod}&PriceListed=${price}&BrokerFee=${brokerFee}&FaxC=${faxC}` +
-                    `&IccmcC=${iccmcC}&ContactC=${contactC}&PhoneC=${phoneC}`;
-                window.location.href = url;
-
-            }
-        };
-        xhttp.open("POST", "@ViewBag.BaseUrl/Dashbord/Order/RemoveVech", true);
-        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhttp.send(Req);
-    }
+    };
 </script>
 
 <style>
+
+    .intl-tel-input {
+        width: 100%;
+    }
+
     .Billing .table .td input, .Billing .table .td select {
         text-align: center;
         width: 95%;

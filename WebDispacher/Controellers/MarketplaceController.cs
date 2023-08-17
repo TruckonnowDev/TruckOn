@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using WebDispacher.Business.Interfaces;
 using WebDispacher.Business.Services;
 using WebDispacher.Constants;
+using WebDispacher.Constants.Identity;
 using WebDispacher.Service;
 
 namespace WebDispacher.Controellers
@@ -20,27 +22,20 @@ namespace WebDispacher.Controellers
 
         [HttpGet]
         [Route("Marketplace")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         public IActionResult Index()
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 ViewData[NavConstants.TypeNavBar] = NavConstants.NormalCompany;
-                if (CheckPermissionsByCookies(RouteConstants.Marketplace, out var key, out var idCompany))
-                {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
 
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    return View();
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                if (isCancelSubscribe)
                 {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
+                return View();
             }
             catch (Exception e)
             {

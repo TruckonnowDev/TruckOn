@@ -84,7 +84,7 @@ namespace WebDispacher.ViewModels
              //DISPATCH INSTRUCTIONS       
 
         public string Titl1DI { get; set; }
-        public List<VehiclwInformation> VehiclwInformations { get; set; }
+        public List<VehicleDetails> VehiclwInformations { get; set; }
         /*
 
 

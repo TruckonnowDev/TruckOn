@@ -5,7 +5,7 @@
 @inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Mail Control";
+    ViewData["Title"] = "Mail Control | Answered";
 }
 
 <body>
@@ -14,16 +14,16 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="title">
-                        <h1>@Localizer["MailControl"] User Messages</h1>
+                        <h1>@Localizer["MailControl"]</h1>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
                     <div id="tabs">
-                        <div class="tab whiteborder">New</div>
-                        <div class="tab">Answered</div>
-                        <div class="tab">All</div>
+                        <div class="tab" onclick="window.location.href='/Company/Questions/New'">@Localizer["New"]</div>
+                        <div class="tab whiteborder">@Localizer["Answered"]</div>
+                        <div class="tab" onclick="window.location.href='/Company/Questions/All'">@Localizer["All"]</div>
                         <div class="tabContent">
                             <table>
                                 <thead>
@@ -32,25 +32,33 @@
                                         <th>@Localizer["SenderEmail"]</th>
                                         <th>@Localizer["SenderPhone"]</th>
                                         <th>@Localizer["SenderName"]</th>
-                                        <th>Message</th>
                                         <th></th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td style="white-space:nowrap;">05.11.2023 11:34 AM</td>
-                                        <td style="white-space:nowrap;">test@gmail.com</td>
-                                        <td style="white-space:nowrap;">+1-444-4444-4444</td>
-                                        <td>John</td>
-                                        <td>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium,
-                                            totam rem aperiam...</td>
+                                    @for (var i = 0; i < Model.Count; i++)
+                                    {
+                                        <tr>
+                                            <td style="white-space:nowrap;">@Model[i].DateTimeReceived</td>
+                                            <td id="email_@i" style="white-space:nowrap;">@Model[i].SenderEmail</td>
+                                            @{
+                                                var phoneUser = string.Empty;
+                                                if (Model[i]?.PhoneNumber.DialCode != 0 && !string.IsNullOrEmpty(Model[i]?.PhoneNumber.Number))
+                                                {
+                                                    phoneUser = $"+{Model[i].PhoneNumber.DialCode} {Model[i].PhoneNumber.Number}";
+                                                }
+                                            }
+                                            <td id="phone_@i" style="white-space:nowrap;">@phoneUser</td>
+                                            <td id="name_@i">@Model[i].SenderName</td>
                                             <td style="padding-bottom: 20px;padding-top: 20px;">
-                                            <button type="button" class="btn1" data-bs-toggle="modal" id="modalClick" data-bs-target="#answerModal">@Localizer["Reply"]</button>
+                                                <button type="button" class="btn1 modalClick" data-bs-toggle="#answerModal" id="modalClick" data-id="@i" data-entry-id="@Model[i].Id" data-bs-target="#answerModal">@Localizer["ViewMessage"]</button>
                                             </td>
-                                    </tr>
+                                        </tr>
+                                    }
                                 </tbody>
                             </table>
+                             <pagination-list actual-pages="functions.GetPages(ViewBag.SelectedPage, ViewBag.CountPages)" selected-page="ViewBag.SelectedPage" />
                         </div>
                     </div>
                 </div>
@@ -61,43 +69,6 @@
             <content class="ng-modal-wrapper">
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
-                        <div class="modal-header modal-title">
-                            <h1 class="modal-h1 modal-header-2" id="DeleteDriverLabel">Answer</h1>
-                        </div>
-                        <div class="modal-body">
-                            <div class="tabContent mt-0">
-                                <div class="mb-3" style="padding:3px 10px 4px">
-                                    <p>Email: <b>test@gmail.com</b></p>
-                                    <p>Phone: <b>+1-444-4444-4444</b></p>
-                                    <p>Name: <b>John</b></p>
-                                    <p style="font-size:10px">
-                                        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium,
-                                        totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
-                                        Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui
-                                        ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit,
-                                        sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam,
-                                        quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?
-                                        Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur,
-                                        vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?
-                                    </p>
-                                </div>
-                                <form id="contactForm" action="">
-                                    <div class="row">
-                                        <div class="col-md-12 without-padding">
-                                            <div class="elem-3">
-                                                <label for="">
-                                                    Answer
-                                                    <textarea type="text" id="user-message" name="message" required></textarea>
-                                                </label>
-                                                <label for="">
-                                                    <button type="submit" class="btn1 btn-modal submit-modal">Submit</button>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </content>
@@ -105,19 +76,37 @@
     </div>
     
 </body>
-
 <script>
-    const myInput = document.getElementById('modalClick');
+    $(document).ready(function () {
+        ShowAlert();
+     });
 
-    myInput.addEventListener('click', () => {
-        $("#answerModal").modal('show');
-    })
+    document.addEventListener('click', function (event) {
+        if (event.target.classList.contains('modalClick')) {
+            const entryId = event.target.getAttribute('data-id');
+            const dataEntryId = event.target.getAttribute('data-entry-id');
+            $('#localDateId').val(GetDateTimeInFormat(new Date()));
+            $.ajax({
+                url: '/Company/Question',
+                type: 'GET',
+                data: { id: dataEntryId },
+                success: function (data) {
+                    $("#answerModal .modal-content").html(data);
+                    $("#answerModal").modal('show');
+                },
+                error: function () {
+                }
+            });
+        }
+    });
+
 </script>
 
 <style>
 
     .tabContent form {
-        margin-bottom: 30px;
+        margin-bottom: 10px;
+        margin-top: 10px;
     }
 
     p {
@@ -128,7 +117,7 @@
         padding: 12px 20px;
         font-size: 14px;
         font-weight: 600;
-        width: 100px!important;
+        width: 150px !important;
     }
 </style>
 
@@ -170,7 +159,7 @@
         display: inline-block;
         vertical-align: middle;
         cursor: pointer;
-        padding: 3px 10px 4px;
+        padding: 3px 10px 4px 0px;
         -moz-border-radius: 3px;
         -webkit-border-radius: 3px;
         margin-top: 2px;
@@ -215,7 +204,11 @@
 
     .modal-header {
         justify-content: center;
-        padding: 2rem;
-        border-bottom: 0;
+        padding: 1rem;
+    }
+
+    .modal-footer {
+        justify-content: center;
+        padding: 1rem;
     }
 </style>

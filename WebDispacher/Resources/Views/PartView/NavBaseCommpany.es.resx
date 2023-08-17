@@ -122,4 +122,7 @@
 	<data name="Exit" xml:space="preserve">
 		<value>Salida</value>
 	</data>
+	<data name="MailControl" xml:space="preserve">
+		<value>Control de Correo</value>
+	</data>
 </root>

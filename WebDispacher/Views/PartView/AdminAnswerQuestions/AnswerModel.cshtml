@@ -1,0 +1,89 @@
+﻿@using DaoModels.DAO.Models;
+@using Microsoft.AspNetCore.Mvc.Localization;
+
+@model UserMailQuestion;
+
+@inject IViewLocalizer Localizer
+
+<div class="modal-content">
+    <div class="modal-header modal-title">
+        <h1 class="modal-h1 modal-header-2" id="DeleteDriverLabel">@Localizer["AnswerHeader"]</h1>
+    </div>
+    <div class="modal-body">
+        <div class="tabContent mt-0">
+            <div style="padding:3px 0px 4px;">
+                <p>@Localizer["Email"]: <b>@Model.SenderEmail</b></p>
+                @{
+                    var phoneUser = string.Empty;
+                    if (Model?.PhoneNumber.DialCode != 0 && !string.IsNullOrEmpty(Model?.PhoneNumber.Number))
+                    {
+                        phoneUser = $"+{Model.PhoneNumber.DialCode} {Model.PhoneNumber.Number}";
+                    }
+                }
+                <p>@Localizer["Phone"]: <b>@phoneUser</b></p>
+                <p>@Localizer["Name"]: <b>@Model.SenderName</b></p>
+                <p>
+                    @Model.Message
+                </p>
+            </div>
+            <div>
+                @if (Model.AdminAnswers.Any())
+                {
+                    <div>
+                        <h3> <b>@Localizer["Answers"]</b>:</h3>
+                            @foreach (var answer in Model.AdminAnswers)
+                            {
+                            <p>
+                                <b>(</b>@answer.DateTimeAnswer<b>)</b> <b>@answer.AdminName</b>
+
+                            </p>
+                            <p><b>@Localizer["Answer"]:</b> @answer.Message</p>
+                            }
+                            <br/>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="tabContent mt-0">
+            <form method="post" id="contactForm" action="Answer">
+                <div class="row">
+                    <div class="col-md-12 without-padding">
+                        <div class="elem-3">
+                            <input type="hidden" name="QuestionId" id="QuestionId" value="@Model.Id" />
+                            <input type="hidden" name="localDate" id="localDateId" />
+                            <label for="">
+                                @Localizer["Answer"]
+                                <textarea type="text" id="user-message" name="message" required></textarea>
+                            </label>
+                            <label for="">
+                                <button type="submit" class="btn1 btn-modal submit-modal">@Localizer["Submit"]</button>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#contactForm").submit(function (event) {
+            event.preventDefault();
+
+            var formData = $(this).serialize();
+
+            $.post("Answer", formData, function (response) {
+                console.log(response);
+                if(response === true){
+                    localStorage.setItem('notification', 'successSendMessage');
+                }
+                window.location.reload();
+            }).fail(function (xhr, textStatus, errorThrown) {
+                console.error(errorThrown);
+            });
+        });
+    });
+</script>

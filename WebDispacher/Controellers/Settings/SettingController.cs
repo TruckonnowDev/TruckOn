@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 using WebDispacher.Business.Interfaces;
 using WebDispacher.Constants;
+using WebDispacher.Constants.Identity;
 using WebDispacher.Service;
 
 namespace WebDispacher.Controellers.Settings
@@ -25,42 +27,36 @@ namespace WebDispacher.Controellers.Settings
             this.truckAndTrailerService = truckAndTrailerService;
         }
 
+        [HttpGet]
         [Route("Get")]
-        public IActionResult Get(int idTr, int idProfile, string typeTransport)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> Get([FromQuery] int idTr, [FromQuery] int idProfile, [FromQuery] string typeTransport)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Settings, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewData[NavConstants.TypeNavBar]  =
-                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewBag.SelectSetingTruck = 
-                        driverService.GetSelectSetingTruck(idCompany, idProfile, idTr, typeTransport);
-                    
-                    ViewBag.SetingsTruck = driverService.GetSetingsTruck(idCompany, idProfile, idTr, typeTransport);
-                    ViewBag.IdProfile = idProfile;
-                    ViewBag.IdTr = idTr;
-                    ViewBag.TypeTransport = typeTransport;
-                    ViewBag.Pattern = typeTransport+"Pattern";
-                    
-                    return View("~/Views/Settings/TrSettings.cshtml");
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                    
+                ViewData[NavConstants.TypeNavBar]  =
+                    companyService.GetTypeNavBar(CompanyId, NavConstants.TypeNavSettings);
+                    
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                ViewBag.SelectSetingTruck = await
+                    driverService.GetSelectSettingTruck(CompanyId, idProfile, idTr, typeTransport);
+                    
+                ViewBag.SetingsTruck = await driverService.GetSettingsTruck(CompanyId, idProfile, idTr, typeTransport);
+                ViewBag.IdProfile = idProfile;
+                ViewBag.IdTr = idTr;
+                ViewBag.TypeTransport = typeTransport;
+                ViewBag.Pattern = typeTransport+"Pattern";
+                    
+                return View("~/Views/Settings/TrSettings.cshtml");
             }
             catch (Exception e)
             {
@@ -72,34 +68,28 @@ namespace WebDispacher.Controellers.Settings
 
         [HttpGet]
         [Route("Trucks")]
-        public async Task<IActionResult> GetTrucks()
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> GetTrucks(int page = 1)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Settings, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewData[NavConstants.TypeNavBar] = 
-                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewBag.Trucks = await truckAndTrailerService.GetTrucks(0, idCompany);
-                    
-                    return View("~/Views/Settings/Trucks.cshtml");
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
+                    
+                ViewData[NavConstants.TypeNavBar] = 
+                    companyService.GetTypeNavBar(CompanyId, NavConstants.TypeNavSettings);
+                    
+                //ViewBag.NameCompany = GetCookieCompanyName();
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                var trucks = await truckAndTrailerService.GetTrucks(page, CompanyId);
+                    
+                return View("~/Views/Settings/Trucks.cshtml", trucks);
             }
             catch (Exception e)
             {
@@ -111,32 +101,25 @@ namespace WebDispacher.Controellers.Settings
 
         [HttpGet]
         [Route("Trailers")]
-        public async Task<IActionResult> GetTrailers()
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> GetTrailers(int page = 1)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.SettingsUser, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewBag.Trailers = await truckAndTrailerService.GetTrailers(0, idCompany);
-                    
-                    return View("~/Views/Settings/Trailers.cshtml");
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                    
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId, NavConstants.TypeNavSettings);
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                var trailers = await truckAndTrailerService.GetTrailers(page, CompanyId);
+                    
+                return View("~/Views/Settings/Trailers.cshtml", trailers);
             }
             catch (Exception e)
             {
@@ -148,27 +131,20 @@ namespace WebDispacher.Controellers.Settings
 
         [HttpGet]
         [Route("AddProfile")]
-        public IActionResult AddProfile(int idTr, string typeTransport)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> AddProfile(int idTr, string typeTransport)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Settings, out var key, out var idCompany))
-                {
-                    ViewData[NavConstants.TypeNavBar] = 
-                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+                ViewData[NavConstants.TypeNavBar] = 
+                    companyService.GetTypeNavBar(CompanyId, NavConstants.TypeNavSettings);
                     
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    var id = truckAndTrailerService.AddProfile(idCompany, idTr, typeTransport);
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                var id = await truckAndTrailerService.AddProfile(CompanyId, idTr, typeTransport);
                     
-                    return Redirect($"{Config.BaseReqvesteUrl}/Settings?idTr={idTr}&page=s&idProfile={id}&typeTransport={typeTransport}");
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                return Redirect($"{Config.BaseReqvesteUrl}/Settings/Get?idTr={idTr}&page=s&idProfile={id}&typeTransport={typeTransport}");
             }
             catch (Exception e)
             {
@@ -180,27 +156,20 @@ namespace WebDispacher.Controellers.Settings
 
         [HttpGet]
         [Route("RemoveProfile")]
-        public IActionResult RemoveProfile(int idProfile, string typeTransport, int idTr)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> RemoveProfile(int idProfile, string typeTransport, int idTr)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Settings, out var key, out var idCompany))
-                {
-                    ViewData[NavConstants.TypeNavBar] = 
-                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+                ViewData[NavConstants.TypeNavBar] = 
+                    companyService.GetTypeNavBar(CompanyId, NavConstants.TypeNavSettings);
                     
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    driverService.RemoveProfile(idCompany, idProfile);
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                await driverService.RemoveProfile(CompanyId, idProfile);
                     
-                    return Redirect($"{Config.BaseReqvesteUrl}/Settings?idTr={idTr}&idProfile={0}&typeTransport={typeTransport}");
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                return Redirect($"{Config.BaseReqvesteUrl}/Settings?idTr={idTr}&idProfile={0}&typeTransport={typeTransport}");
             }
             catch (Exception e)
             {
@@ -212,27 +181,20 @@ namespace WebDispacher.Controellers.Settings
 
         [HttpPost]
         [Route("SelectLayout")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         public string SelectLayout(int idLayout)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Settings, out var key, out var idCompany))
-                {
-                    ViewData[NavConstants.TypeNavBar] = 
-                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+                ViewData[NavConstants.TypeNavBar] = 
+                    companyService.GetTypeNavBar(CompanyId, NavConstants.TypeNavSettings);
                     
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    driverService.SelectLayout(idLayout);
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                driverService.SelectLayout(idLayout);
                     
-                    return string.Empty;
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                return string.Empty;
             }
             catch (Exception e)
             {
@@ -244,27 +206,20 @@ namespace WebDispacher.Controellers.Settings
 
         [HttpPost]
         [Route("SelectProfile")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         public string SelectProfile(int idProfile, string typeTransport, int idTr)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Settings, out var key, out var idCompany))
-                {
-                    ViewData[NavConstants.TypeNavBar] =
-                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+                ViewData[NavConstants.TypeNavBar] =
+                    companyService.GetTypeNavBar(CompanyId, NavConstants.TypeNavSettings);
                     
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    driverService.SelectProfile(idProfile, typeTransport, idTr, idCompany);
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                driverService.SelectProfile(idProfile, typeTransport, idTr, CompanyId);
                     
-                    return string.Empty;
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                return string.Empty;
             }
             catch (Exception e)
             {
@@ -276,25 +231,18 @@ namespace WebDispacher.Controellers.Settings
 
         [HttpPost]
         [Route("UnSelectLayout")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         public string UnSelectLayout(int idLayout)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Settings, out var key, out var idCompany))
-                {
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    driverService.UnSelectLayout(idLayout);
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId, NavConstants.TypeNavSettings);
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                driverService.UnSelectLayout(idLayout);
                     
-                    return string.Empty;
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                return string.Empty;
             }
             catch (Exception e)
             {
@@ -306,27 +254,20 @@ namespace WebDispacher.Controellers.Settings
 
         [HttpPost]
         [Route("LayoutUP")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         public string LayoutUP(int idLayout, int idTransported)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Settings, out var key, out var idCompany))
-                {
-                    ViewData[NavConstants.TypeNavBar] = 
-                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+                ViewData[NavConstants.TypeNavBar] = 
+                    companyService.GetTypeNavBar(CompanyId, NavConstants.TypeNavSettings);
                     
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    driverService.LayoutUp(idLayout, idTransported);
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                driverService.LayoutUp(idLayout, idTransported);
                     
-                    return string.Empty;
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                return string.Empty;
             }
             catch (Exception e)
             {
@@ -338,27 +279,20 @@ namespace WebDispacher.Controellers.Settings
 
         [HttpPost]
         [Route("LayoutDown")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         public string LayoutDown(int idLayout, int idTransported)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Settings, out var key, out var idCompany))
-                {
-                    ViewData[NavConstants.TypeNavBar] = 
-                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+                ViewData[NavConstants.TypeNavBar] = 
+                    companyService.GetTypeNavBar(CompanyId, NavConstants.TypeNavSettings);
                     
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    driverService.LayoutDown(idLayout, idTransported);
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                driverService.LayoutDown(idLayout, idTransported);
                     
-                    return string.Empty;
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                return string.Empty;
             }
             catch (Exception e)
             {

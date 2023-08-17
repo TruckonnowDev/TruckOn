@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -11,7 +12,6 @@ using DaoModels.DAO;
 using DaoModels.DAO.DTO;
 using DaoModels.DAO.Enum;
 using DaoModels.DAO.Models;
-using MDispatch.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Stripe;
@@ -25,6 +25,7 @@ using WebDispacher.Service.TransportationManager;
 using WebDispacher.ViewModels.Company;
 using WebDispacher.ViewModels.Contact;
 using WebDispacher.ViewModels.Dispatcher;
+using WebDispacher.ViewModels.Driver;
 using WebDispacher.ViewModels.Payment;
 using WebDispacher.ViewModels.RA.Carrier.Registration;
 
@@ -49,11 +50,22 @@ namespace WebDispacher.Business.Services
             stripeApi = new StripeApi();
         }
 
+        public async Task<Company> GetActiveUserCompanyByCompanyTypeUserId(string userId, CompanyType companyType)
+        {
+            var userCompany = await db.Companies.Include(c => c.CompanyUsers)
+                .FirstOrDefaultAsync(c => 
+                    c.CompanyUsers
+                        .FirstOrDefault(cu => cu.UserId == userId).CompanyId == c.Id && c.CompanyType == companyType);
+
+            return userCompany;
+        }
+
         public List<UserDTO> GetUsers(int idCompanySelect)
         {
             var companies = GetCompanies();
-            
-            return GetUsers()
+
+            return null;
+            /*return GetUsers()
                 .Where(u => idCompanySelect == 0 || u.CompanyId == idCompanySelect)
                 .Select(z => new UserDTO()
                 {
@@ -65,18 +77,20 @@ namespace WebDispacher.Business.Services
                     CompanyId = z.CompanyId,
                     Date = z.Date
                 })
-                .ToList();
+                .ToList();*/
         }
 
         public async Task<bool> UploadCompanyRequiredDoc(
             IFormFile certificateOfInsurance,
             IFormFile mcLetter,
-            string idCompany)
+            string companyId)
         {
             try
             {
-                await SaveDocCompany(certificateOfInsurance, DocAndFileConstants.CertificateOfInsurance, idCompany);
-                await SaveDocCompany(mcLetter, DocAndFileConstants.McLetter, idCompany);
+                if (!int.TryParse(companyId, out var result)) return false;
+
+                await SaveDocCompany(certificateOfInsurance, DocAndFileConstants.CertificateOfInsurance, result, string.Empty);
+                await SaveDocCompany(mcLetter, DocAndFileConstants.McLetter, result, string.Empty);
             }
             catch (Exception ex)
             {
@@ -95,7 +109,7 @@ namespace WebDispacher.Business.Services
 
         public bool CheckCompanyName(string companyName)
         {
-            return db.Commpanies.FirstOrDefault(u => u.Name == companyName) != null;
+            return db.Companies.FirstOrDefault(u => u.Name == companyName) != null;
         }
 
         public Dispatcher CheckKeyDispatcher(string key)
@@ -108,16 +122,16 @@ namespace WebDispacher.Business.Services
             return GetDispatchersDb(idCompany);
         }
         
-        public List<Commpany> GetCompanies()
+        public List<Company> GetCompanies()
         {
-            return db.Commpanies.ToList();
+            return db.Companies.ToList();
         }
         
         public async Task<CompanyViewModel> GetCompanyById(int id)
         {
-            var company = await GetCompanyByIdDb(id);
+            var companyViewModel = await GetCompanyByIdDb(id);
             
-            return company ?? new CompanyViewModel();
+            return companyViewModel ?? new CompanyViewModel();
         }
 
         public async Task<bool> SendEmailToUserByCompanyId(string companyId, string subject, string message)
@@ -128,7 +142,7 @@ namespace WebDispacher.Business.Services
 
             try
             {
-                await new AuthMessageSender().Execute(user.Login, subject, pattern);
+                await new AuthMessageSender().Execute(user.Email, subject, pattern);
 
                 return true;
             }
@@ -138,63 +152,233 @@ namespace WebDispacher.Business.Services
             }
         }
 
-        public async Task<List<CompanyDTO>> GetCompaniesDTO(int page)
+        public async Task SendUserAnswer(AdminAnswerViewModel model, string companyId, string localDate)
         {
-            var companies = await GetCompaniesDb(page);
+            if (model == null) return;
 
-            var companiesDTO = companies.Select(c => new CompanyDTO()
+            var question = await db.UsersMailsQuestions.FirstOrDefaultAsync(umq => umq.Id == model.QuestionId);
+
+            if (question == null) return;
+
+            try
             {
-                Id = c.Id,
-                Active = c.Active,
-                Name = c.Name,
-                Type = c.Type == TypeCompany.BaseCommpany
-                        ? CompanyConstants.HomeCompany : c.Type == TypeCompany.NormalCompany
-                            ? CompanyConstants.RegularCompany : CompanyConstants.Unknown,
-                DateRegistration = c.DateRegistration
+                var pattern = new PaternSourse().GetPatternSendMessageToUser(model.Message);
 
-            }).ToList();
-
-            return companiesDTO;
-        }
-        
-        public async Task<List<CompanyViewModel>> GetCompaniesViewModels(int page)
-        {
-            var companies = await GetCompaniesDb(page);
-
-            if (companies == null) return null;
-
-            var users = db.User.ToList();
-            var companyWithUsersInfo = new List<CompanyViewModel>();
-
-            
-            foreach (var x in companies)
+                await new AuthMessageSender().Execute(question.SenderEmail, UserConstants.AdminMessageSubject, pattern);
+            }
+            catch (Exception ex)
             {
-                var actualUser = users.FirstOrDefault(u => u.CompanyId == x.Id);
-                if (actualUser == null) continue;
-
-                companyWithUsersInfo.Add(new CompanyViewModel()
-                {
-                    Id = x.Id,
-                    UserId = actualUser.Id,
-                    Name = x.Name,
-                    Email = actualUser.Login,
-                    Password = actualUser.Password,
-                    CompanyType = x.Type == TypeCompany.BaseCommpany
-                        ? CompanyConstants.HomeCompany : x.Type == TypeCompany.NormalCompany
-                            ? CompanyConstants.RegularCompany : x.Type == TypeCompany.DeactivateCompany ? CompanyConstants.DeactivateCompany : CompanyConstants.Unknown,
-                    DateRegistration = x.DateRegistration
-                });
-
+                return;
             }
 
-            return companyWithUsersInfo;
+
+            var company = await GetCompanyById(Convert.ToInt32(companyId));
+            var dateTimeAnswer = string.IsNullOrEmpty(localDate) ? DateTime.Now : DateTime.ParseExact(localDate, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
+
+            var answerToUser = new AdminAnswer()
+            {
+                AdminName = company.Name,
+                Message = model.Message,
+                DateTimeAnswer = dateTimeAnswer,
+                UserMailQuestion = question,
+            };
+
+            question.MailStatus = MailStatus.Answered;
+
+            await db.AdminAnswers.AddAsync(answerToUser);
+
+            await db.SaveChangesAsync();
         }
 
+        public async Task<UserMailQuestion> GetUserQuestionWithAnswers(int id)
+        {
+            var userQuestionWithAnswers = await db.UsersMailsQuestions
+                .Include(umq => umq.AdminAnswers)
+                .Include(umq => umq.PhoneNumber)
+                .FirstOrDefaultAsync(umq => umq.Id == id);
 
-        public async Task<Users> GetUserByCompanyId(string companyId)
+            return userQuestionWithAnswers;
+        }
+        
+        public async Task<List<UserMailQuestion>> GetUserQuestions()
+        {
+            var userQuestions = await db.UsersMailsQuestions.ToListAsync();
+
+            return userQuestions;
+        }
+
+        public async Task<List<UserMailQuestion>> GetUserQuestionsWithoutAnswers(int page)
+        {
+            var userQuestions = db.UsersMailsQuestions
+                .Include(umq => umq.PhoneNumber)
+                .Where(umq => umq.AdminAnswers.Count == 0 && umq.MailStatus == MailStatus.Received)
+                .OrderByDescending(umq => umq.DateTimeReceived)
+                .AsQueryable();
+
+            if (page == UserConstants.AllPagesNumber) return await userQuestions.ToListAsync();
+
+            userQuestions = GetEntriesByPage(userQuestions, page);
+
+            var listUserQuestions = await userQuestions.ToListAsync();
+
+            return listUserQuestions;
+        }
+        
+        public async Task<List<UserMailQuestion>> GetUserQuestionsWithAnswers(int page)
+        {
+            var userQuestions = db.UsersMailsQuestions
+                .Include(umq => umq.PhoneNumber)
+                .Where(umq => umq.AdminAnswers.Count > 0 && umq.MailStatus == MailStatus.Answered)
+                .OrderByDescending(umq => umq.DateTimeReceived)
+                .AsQueryable();
+
+            if (page == UserConstants.AllPagesNumber) return await userQuestions.ToListAsync();
+
+            userQuestions = GetEntriesByPage(userQuestions, page);
+
+            var listUserQuestions = await userQuestions.ToListAsync();
+
+            return listUserQuestions;
+        }
+        
+        public async Task<List<UserMailQuestion>> GetAllUserQuestions(int page)
+        {
+            var userQuestions = db.UsersMailsQuestions
+                .Include(umq => umq.PhoneNumber)
+                .OrderByDescending(umq => umq.DateTimeReceived)
+                .AsQueryable();
+
+            if (page == UserConstants.AllPagesNumber) return await userQuestions.ToListAsync();
+
+            userQuestions = GetEntriesByPage(userQuestions, page);
+
+            var listUserQuestions = await userQuestions.ToListAsync();
+
+            return listUserQuestions;
+        }
+
+        public async Task<int> GetCountNewUserQuestionsPages()
+        {
+            return await GetCountNewUserQuestionsPagesInDb();
+        }
+
+        private async Task<int> GetCountNewUserQuestionsPagesInDb()
+        {
+            var countNewUserQuestions = await db.UsersMailsQuestions.Where(umq => umq.AdminAnswers.Count == 0 && umq.MailStatus == MailStatus.Received).CountAsync();
+
+            var countPages = GetCountPage(countNewUserQuestions, UserConstants.NormalPageCount);
+
+            return countPages;
+        }
+        
+        public async Task<int> GetCountAnsweredUserQuestionsPages()
+        {
+            return await GetCountAnsweredUserQuestionsPagesInDb();
+        }
+
+        private async Task<int> GetCountAnsweredUserQuestionsPagesInDb()
+        {
+            var countNewUserQuestions = await db.UsersMailsQuestions
+                .Where(umq => umq.AdminAnswers.Count > 0 && umq.MailStatus == MailStatus.Answered)
+                .CountAsync();
+
+            var countPages = GetCountPage(countNewUserQuestions, UserConstants.NormalPageCount);
+
+            return countPages;
+        }
+        
+        public async Task<int> GetCountAllUserQuestionsPages()
+        {
+            return await GetCountAllUserQuestionsPagesInDb();
+        }
+
+        private async Task<int> GetCountAllUserQuestionsPagesInDb()
+        {
+            var countNewUserQuestions = await db.UsersMailsQuestions
+                .CountAsync();
+
+            var countPages = GetCountPage(countNewUserQuestions, UserConstants.NormalPageCount);
+
+            return countPages;
+        }
+
+        private IQueryable<T> GetEntriesByPage<T>(IQueryable<T> entry, int page)
+        {
+            try
+            {
+                entry = entry.Skip(UserConstants.NormalPageCount * page - UserConstants.NormalPageCount);
+
+                entry = entry.Take(UserConstants.NormalPageCount);
+            }
+            catch (Exception)
+            {
+                entry = entry.Skip((UserConstants.NormalPageCount * page) - UserConstants.NormalPageCount);
+            }
+
+            return entry;
+        }
+        
+        public async Task<List<UserMailQuestion>> GetUserQuestionsWithAnswers()
+        {
+            var userQuestions = await db.UsersMailsQuestions
+                .Include(umq => umq.PhoneNumber)
+                .Where(umq => umq.AdminAnswers.Count == 0)
+                .ToListAsync();
+
+            return userQuestions;
+        }
+
+        public async Task<bool> CreateUserQuestions(UserMailQuestion userMailQuestion, string localDate)
+        {
+            try
+            {
+                var dateTimeUpdate = string.IsNullOrEmpty(localDate) ? DateTime.Now : DateTime.ParseExact(localDate, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
+
+                var phoneNumber = new PhoneNumber
+                {
+                    DialCode = userMailQuestion.PhoneNumber.DialCode,
+                    Iso2 = userMailQuestion.PhoneNumber.Iso2,
+                    Number = userMailQuestion.PhoneNumber.Number,
+                    Name = userMailQuestion.PhoneNumber.Name,
+                };
+
+                await db.PhonesNumbers.AddAsync(phoneNumber);
+
+                await db.SaveChangesAsync();
+
+                var userQuestion = new UserMailQuestion
+                {
+                    SenderName = userMailQuestion.SenderName,
+                    SenderEmail = userMailQuestion.SenderEmail,
+                    PhoneNumberId = phoneNumber.Id,
+                    Message = userMailQuestion.Message,
+                    DateTimeReceived = dateTimeUpdate,
+                };
+
+                await db.UsersMailsQuestions.AddAsync(userQuestion);
+
+                await db.SaveChangesAsync();
+
+                return true;
+            }
+            catch(Exception ex) 
+            { 
+                return false; 
+            }
+        }
+
+        public async Task<List<Company>> GetCompaniesWithUsers(int page)
+        {
+            return await GetCompaniesWithUsersDb(page);
+        }
+
+        public async Task<User> GetUserByCompanyId(string companyId)
         {
             int companyIndex = Convert.ToInt32(companyId);
-            var userInfo = await db.User.FirstOrDefaultAsync(x => x.CompanyId == companyIndex);
+
+            var userInfo = await db.Users
+                .Include(u => u.CompanyUsers)
+                .FirstOrDefaultAsync(x => x.CompanyUsers.First(cu => cu.CompanyId == companyIndex).UserId == x.Id);
 
             if (userInfo == null) return null;
 
@@ -214,20 +398,33 @@ namespace WebDispacher.Business.Services
             
             return token;
         }
-        
-        public void CreateDispatch(DispatcherViewModel dispatcher, int idCompany)
+
+        public DispatcherType GetDispatcherTypeByName(string name)
         {
-            dispatcher.Key = GetHash();
-            dispatcher.IdCompany = idCompany;
-            
-            db.Dispatchers.Add(mapper.Map<Dispatcher>(dispatcher));
+            var dispatcherType = db.DispatchersTypes.FirstOrDefault(dt => dt.Name == name);
+
+            return dispatcherType;
+        }
+        
+        public void CreateDispatch(DispatcherViewModel model, int idCompany)
+        {
+            var dispatcher = new Dispatcher
+            {
+                CompanyId = idCompany,
+                Key = GetHash(),
+                Login = model.Login,
+                Password = model.Password,
+                DispatcherTypeId = GetDispatcherTypeByName(DispatcherTypesConstants.CentralDispatch).Id,
+            };
+
+            db.Dispatchers.Add(dispatcher);
             
             db.SaveChanges();
         }
         
         public async Task DeleteContactById(int id)
         {
-            var contact = await db.Contacts.FirstOrDefaultAsync(c => c.ID == id);
+            var contact = await db.Contacts.FirstOrDefaultAsync(c => c.Id == id);
 
             if (contact == null) return;
             
@@ -238,9 +435,18 @@ namespace WebDispacher.Business.Services
         
         public DispatcherViewModel GetDispatcherById(int idDispatch)
         {
-            var dispatcher = db.Dispatchers.FirstOrDefault(d => d.Id == idDispatch);
+            var dispatcher = db.Dispatchers.Include(d => d.DispatcherType).FirstOrDefault(d => d.Id == idDispatch);
 
-            return mapper.Map<DispatcherViewModel>(dispatcher);
+
+            return new DispatcherViewModel
+            {
+                Id = dispatcher.Id,
+                IdCompany = dispatcher.CompanyId,
+                Login = dispatcher.Login,
+                Password = dispatcher.Password,
+                Key = dispatcher.Key,
+                Type = dispatcher.DispatcherType.Name
+            };
         }
         
         public void RemoveDispatchById(int idDispatch)
@@ -253,27 +459,46 @@ namespace WebDispacher.Business.Services
             db.SaveChanges();
         }
         
-        public void EditContact(ContactViewModel contact)
+        public async Task EditContact(ContactViewModel model, string localDate)
         {
-            var contactEdit = db.Contacts.FirstOrDefault(c => c.ID == contact.Id);
+            var dateTimeUpdate = DateTime.ParseExact(localDate, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
+
+            var contactEdit = await db.Contacts
+                .Include(c => c.PhoneNumber)
+                .FirstOrDefaultAsync(c => c.Id == model.Id);
+
             if (contactEdit == null) return;
             
-            contactEdit.Email = contact.Email.ToLower();
-            contactEdit.Name = contact.Name;
-            contactEdit.Phone = contact.Phone;
+            contactEdit.Name = model.Name;
+            contactEdit.Position = model.Position;
+            contactEdit.Email = model.Email.ToLower();
+            contactEdit.PhoneNumber.Name = model.PhoneNumber.Name;
+            contactEdit.PhoneNumber.Number = model.PhoneNumber.Number;
+            if (contactEdit.PhoneNumber.DialCode != 0) contactEdit.PhoneNumber.DialCode = model.PhoneNumber.DialCode;
+            contactEdit.PhoneNumber.Iso2 = model.PhoneNumber.Iso2;
+            contactEdit.Ext = model.Ext;
+            contactEdit.DateTimeLastUpdate = dateTimeUpdate;
             
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
         
-        public async Task EditCompany(CompanyViewModel company)
+        public async Task EditCompany(CompanyViewModel model, string localDate)
         {
-            var companyEdit = await db.Commpanies.FirstOrDefaultAsync(c => c.Id == company.Id);
-            var userEdit = await db.User.FirstOrDefaultAsync(u => u.CompanyId == company.Id);
-            if (companyEdit == null || userEdit == null) return;
+            if (model == null) return;
 
-            companyEdit.Name = company.Name;
-            userEdit.Password = company.Password;
-            userEdit.Login = company.Email.ToLower();
+            var dateTimeUpdate = DateTime.ParseExact(localDate, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
+
+            var companyEdit = await db.Companies.Include(d => d.PhoneNumber).FirstOrDefaultAsync(c => c.Id == model.Id);
+
+            if (companyEdit == null) return;
+
+            companyEdit.Name = model.Name;
+            if (companyEdit.PhoneNumber.DialCode != 0) companyEdit.PhoneNumber.DialCode = model.PhoneNumber.DialCode;
+            companyEdit.PhoneNumber.Name = model.PhoneNumber.Name;
+            companyEdit.PhoneNumber.Number = model.PhoneNumber.Number;
+            companyEdit.PhoneNumber.Iso2 = model.PhoneNumber.Iso2;
+            companyEdit.CompanyType = model.CompanyType;
+            companyEdit.DateTimeLastUpdate = dateTimeUpdate;
             
             await db.SaveChangesAsync();
         }
@@ -281,11 +506,12 @@ namespace WebDispacher.Business.Services
         public void EditDispatch(DispatcherViewModel dispatcher)
         {
             var dispatcherEdit = db.Dispatchers.FirstOrDefault(d => d.Id == dispatcher.Id);
+
             if (dispatcherEdit == null) return;
             
             dispatcherEdit.Login = dispatcher.Login;
             dispatcherEdit.Password = dispatcher.Password;
-            dispatcherEdit.Type = dispatcher.Type;
+            //dispatcherEdit.DispatcherTypeId = dispatcher.Type;
             
             db.SaveChanges();
         }
@@ -296,7 +522,7 @@ namespace WebDispacher.Business.Services
 
             if (responseStripe == null || responseStripe.IsError) return responseStripe;
             
-            var paymentMethod = (PaymentMethod)responseStripe.Content;
+            var paymentMethod = (Stripe.PaymentMethod)responseStripe.Content;
             var customerSt = GetCustomer_STByIdCompany(idCompany);
             responseStripe = stripeApi.AttachPayMethod(paymentMethod.Id, customerSt.IdCustomerST);
                 
@@ -308,11 +534,11 @@ namespace WebDispacher.Business.Services
             if (responseStripe == null || responseStripe.IsError) return responseStripe;
             
             var isFirstPaymentMethodInCompany = CheckFirstPaymentMethodInCompany(idCompany);
-            var paymentMethodSt = new PaymentMethod_ST()
+            var paymentMethodSt = new DaoModels.DAO.Models.PaymentMethod()
             {
-                IdCompany = Convert.ToInt32(idCompany),
-                IdCustomerAttachPaymentMethod = customerSt.IdCustomerST,
-                IdPaymentMethod_ST = paymentMethod.Id,
+                CompanyId = Convert.ToInt32(idCompany),
+                CustomerAttachPaymentMethodId = customerSt.IdCustomerST,
+                PaymentMethodSTId = paymentMethod.Id,
                 IsDefault = !isFirstPaymentMethodInCompany
             };
             
@@ -332,12 +558,12 @@ namespace WebDispacher.Business.Services
             }
         }
         
-        public Subscribe_ST GetSubscriptionIdCompany(string idCompany, ActiveType activeType = ActiveType.Active)
+        public async Task<SubscribeST> GetSubscriptionIdCompany(string idCompany, ActiveType activeType = ActiveType.Active)
         {
-            return db.Subscribe_STs.FirstOrDefault(s => s.IdCompany.ToString() == idCompany && s.ActiveType == activeType);
+            return await db.SubscribeST.FirstOrDefaultAsync(s => s.CustomerST.CompanyId.ToString() == idCompany && s.ActiveType == activeType);
         }
         
-        public ResponseStripe SelectDefaultPaymentMethod(string idPayment, string idCompany = null, Customer_ST customer_ST = null)
+        public ResponseStripe SelectDefaultPaymentMethod(string idPayment, string idCompany = null, CustomerST customer_ST = null)
         {
             if (customer_ST == null)
             {
@@ -354,86 +580,137 @@ namespace WebDispacher.Business.Services
             return responseStripe;
         }
 
-        public List<PaymentMethod> GetPaymentMethod(string idCompany)
+        public List<Stripe.PaymentMethod> GetPaymentMethod(string idCompany)
         {
             var customerSt = GetCustomer_STByIdCompany(idCompany);
-            
+
             return stripeApi.GetPaymentMethodsByCustomerST(customerSt.IdCustomerST);
         }
         
-        public List<PaymentMethod_ST> GetPaymentMethodsST(string idCompany)
+        public List<DaoModels.DAO.Models.PaymentMethod> GetPaymentMethodsST(string idCompany)
         {
             return GetPaymentMethod_STsByIdCompany(idCompany);
         }
 
-        public void RemoveDocCompany(string idDock)
+        public async Task RemoveDocCompany(int docId)
         {
-            var documentCompany = db.DucumentCompanies.FirstOrDefault(d => d.Id.ToString() == idDock);
+            var documentCompany = await db.DocumentsCompanies.FirstOrDefaultAsync(d => d.Id == docId);
             
             if (documentCompany == null) return;
             
-            db.DucumentCompanies.Remove(documentCompany);
-            db.SaveChanges();
+            db.DocumentsCompanies.Remove(documentCompany);
+
+            await db.SaveChangesAsync();
         }
         
-        public async Task<List<DucumentCompany>> GetCompanyDoc(string id)
+        public async Task<List<DocumentCompany>> GetCompanyDoc(string id)
         {
-            return await db.DucumentCompanies.Where(d => d.IdCommpany.ToString() == id).ToListAsync();
+            if (!int.TryParse(id, out var companyId)) return new List<DocumentCompany>();
+
+            return await db.DocumentsCompanies.Where(d => d.CompanyId == companyId).ToListAsync();
         }
         
-        public void CreateContact(ContactViewModel contact, string idCompany)
+        public async Task CreateContact(ContactViewModel model, string companyId, string localDate)
         {
-            contact.CompanyId = Convert.ToInt32(idCompany); 
-            contact.Email = contact.Email != null ? contact.Email.ToLower() : contact.Email;
+            if (!int.TryParse(companyId, out var result)) return;
 
-            var addContact = mapper.Map<Contact>(contact);
-            
-            db.Contacts.AddAsync(addContact);
-            
-            db.SaveChangesAsync();
-        }
+            var dateTimeCreate = DateTime.ParseExact(localDate, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
 
-        public async Task AddShortCompany(FewMoreDetailsViewModel model)
-        {
-            var companyModel = mapper.Map<CreateCompanyViewModel>(model);
-
-            var company = new Commpany()
+            var phoneContact = new PhoneNumber
             {
-                Active = true,
-                DateRegistration = DateTime.Now.ToString(),
-                Name = companyModel.Name,
-                Type = TypeCompany.NormalCompany
+                Number = model.PhoneNumber.Number,
+                DialCode = model.PhoneNumber.DialCode,
+                Iso2 = model.PhoneNumber.Iso2,
+                Name = model.PhoneNumber.Name,
             };
 
-            var id = AddCompanyDb(company);
+            await db.PhonesNumbers.AddAsync(phoneContact);
 
-            InitStripeForCompany(companyModel.Name, companyModel.Email, id);
-            userService.CreateUserForCompanyId(id, companyModel.Email, model.PersonalData.Password);
+            await db.SaveChangesAsync();
 
-            var pattern = new PaternSourse().GetPatternRegistrationMail();
+            var contact = new Contact
+            {
+                Name = model.Name,
+                Position = model.Position,
+                Email = model.Email != null ? model.Email.ToLower() : model.Email,
+                Ext = model.Ext,
+                PhoneNumberId = phoneContact.Id,
+                DateTimeCreate = dateTimeCreate,
+                DateTimeLastUpdate = dateTimeCreate,
+                CompanyId = result
+            };
 
-            await new AuthMessageSender().Execute(companyModel.Email, UserConstants.ThankRegistrationSubject, pattern);
+            await db.Contacts.AddAsync(contact);
+            
+            await db.SaveChangesAsync();
+        }
+
+        public async Task AddUserToCompany(User user, Company company)
+        {
+            var companyUser = new CompanyUser
+            {
+                UserId = user.Id,
+                CompanyId = company.Id
+            };
+            
+            await db.CompanyUsers.AddAsync(companyUser);
+            await db.SaveChangesAsync();
+        }
+
+        public async Task<Company> CreateCompany(FewMoreDetailsViewModel model, CompanyType companyType = CompanyType.Carrier)
+        {
+            var phoneCompany = new PhoneNumber
+            {
+                Number = model.PersonalData.Number,
+                DialCode = model.PersonalData.DialCode,
+                Iso2 = model.PersonalData.Iso2,
+                Name = model.PersonalData.Name,
+            };
+
+            await db.PhonesNumbers.AddAsync(phoneCompany);
+
+            await db.SaveChangesAsync();
+
+            var company = new Company()
+            {
+                Name = model.PersonalData.CompanyName,
+                PhoneNumberId = phoneCompany.Id,
+                CompanyType = companyType,
+                USDOT = model.PersonalData.USDOTNumber,
+                CompanyStatus = CompanyStatus.Active,
+                DateTimeRegistration = DateTime.Now,
+                DateTimeLastUpdate = DateTime.Now,
+            };
+
+            await db.Companies.AddAsync(company);
+            await db.SaveChangesAsync();
+
+            InitStripeForCompany(model.PersonalData.CompanyName, model.PersonalData.Email, company.Id);
+
+            return company;
         }
 
         public async Task<bool> ActivateCompany(string companyId)
         {
-            var company = await db.Commpanies.FirstOrDefaultAsync(x => x.Id == Convert.ToInt32(companyId));
+            if (!int.TryParse(companyId, out var result)) return false;
+
+            var company = await db.Companies.FirstOrDefaultAsync(x => x.Id == result);
+
             var companyUser = await GetUserByCompanyId(companyId);
 
             if (company == null || companyUser == null) return false;
 
             try
             {
-                company.Type = TypeCompany.NormalCompany;
-                company.Active = true;
+                company.CompanyStatus = CompanyStatus.Active;
 
                 await db.SaveChangesAsync();
 
-                InitStripeForCompany(company.Name, companyUser.Login, company.Id);
+                InitStripeForCompany(company.Name, companyUser.Email, company.Id);
 
                 var pattern = new PaternSourse().GetPatternSendMessageActivateCompany();
 
-                await new AuthMessageSender().Execute(companyUser.Login, UserConstants.ActivateEmailSubject, pattern);
+                await new AuthMessageSender().Execute(companyUser.Email, UserConstants.ActivateEmailSubject, pattern);
             }
             catch (Exception ex)
             {
@@ -443,56 +720,79 @@ namespace WebDispacher.Business.Services
             return true;
         }
 
-        public async Task AddCompany(CreateCompanyViewModel model,
+        public async Task<Company> CreateCompanyByAdminWithDocs(CreateCompanyViewModel model,
             IFormFile MCNumberConfirmation, IFormFile IFTA, IFormFile KYU, IFormFile logbookPapers,
             IFormFile COI, IFormFile permits, string dateTimeLocal)
         {
-            var company = new Commpany()
+            var phoneCompany = new PhoneNumber
             {
-                Active = true,
-                DateRegistration = dateTimeLocal,
-                Name = model.Name,
-                Type = TypeCompany.NormalCompany
+                Number = model.PhoneNumber.Number,
+                DialCode = model.PhoneNumber.DialCode,
+                Iso2 = model.PhoneNumber.Iso2,
+                Name = model.PhoneNumber.Name,
             };
 
-            var id = AddCompanyDb(company);
-            InitStripeForCompany(model.Name, model.Email, id);
-            userService.CreateUserForCompanyId(id, model.Email, model.Password);
+            await db.PhonesNumbers.AddAsync(phoneCompany);
 
-            if (MCNumberConfirmation != null)
-            {
-                await SaveDocCompany(MCNumberConfirmation, DocAndFileConstants.McNumber, id.ToString());
-            }
+            await db.SaveChangesAsync();
 
-            if (IFTA != null)
-            {
-                await SaveDocCompany(IFTA, DocAndFileConstants.Ifta, id.ToString());
-            }
+            var company = new Company()
+             {
+                 Name = model.Name,
+                PhoneNumberId = phoneCompany.Id,
+                CompanyType = model.CompanyType,
+                 CompanyStatus = CompanyStatus.Active,
+                 DateTimeRegistration = DateTime.Now,
+                 DateTimeLastUpdate = DateTime.Now,
+             };
 
-            if (KYU != null)
-            {
-                await SaveDocCompany(KYU, DocAndFileConstants.Kyu, id.ToString());
-            }
+             await db.Companies.AddAsync(company);
 
-            if (logbookPapers != null)
-            {
-                await SaveDocCompany(logbookPapers, DocAndFileConstants.LogbookPapers, id.ToString());
-            }
+             await db.SaveChangesAsync();
 
-            if (COI != null)
-            {
-                await SaveDocCompany(COI, DocAndFileConstants.Coi, id.ToString());
-            }
+             InitStripeForCompany(model.Name, model.Email, company.Id);
 
-            if (permits != null)
-            {
-                await SaveDocCompany(permits, DocAndFileConstants.Permits, id.ToString());
-            }
+             if (MCNumberConfirmation != null)
+             {
+                 await SaveDocCompany(MCNumberConfirmation, DocAndFileConstants.McNumber, company.Id, dateTimeLocal);
+             }
+
+             if (IFTA != null)
+             {
+                 await SaveDocCompany(IFTA, DocAndFileConstants.Ifta, company.Id, dateTimeLocal);
+             }
+
+             if (KYU != null)
+             {
+                 await SaveDocCompany(KYU, DocAndFileConstants.Kyu, company.Id, dateTimeLocal);
+             }
+
+             if (logbookPapers != null)
+             {
+                 await SaveDocCompany(logbookPapers, DocAndFileConstants.LogbookPapers, company.Id, dateTimeLocal);
+             }
+
+             if (COI != null)
+             {
+                 await SaveDocCompany(COI, DocAndFileConstants.Coi, company.Id, dateTimeLocal);
+             }
+
+             if (permits != null)
+             {
+                 await SaveDocCompany(permits, DocAndFileConstants.Permits, company.Id, dateTimeLocal);
+             }
+
+            return company;
         }
-        
-        public async Task<List<Contact>> GetContacts(int page, string idCompany)
+
+        public async Task<List<Contact>> GetContactsByCompanyId(int page, string companyId)
         {
-            return await GetContactsInDb(page, idCompany);
+            if (int.TryParse(companyId, out var result))
+            {
+                return await GetContactsInDb(page, result);
+            }
+
+            return new List<Contact>();
         }
         
         public async Task<List<ContactViewModel>> GetContactsViewModels(int page, string idCompany)
@@ -500,9 +800,14 @@ namespace WebDispacher.Business.Services
             return await GetContactsViewModelInDb(page, idCompany);
         }
 
-        public async Task<int> GetCountContactsPages(string idCompany)
+        public async Task<int> GetCountContactsPages(string companyId)
         {
-            return await GetCountContactsPagesInDb(idCompany);
+            if (int.TryParse(companyId, out var result))
+            {
+                return await GetCountContactsPagesInDb(result);
+            }
+
+            return 0;
         }
 
         public async Task<int> GetCountCompaniesPages()
@@ -510,43 +815,42 @@ namespace WebDispacher.Business.Services
             return await GetCountCompaniesPagesInDb();
         }
 
-        public string GetTypeNavBar(string key, string idCompany, string typeNav = NavConstants.Work)
+        public string GetTypeNavBar(string companyId, string typeNav = NavConstants.Work)
         {
             var typeNavBar = string.Empty;
-            var users = userService.GetUserByKey(key);
-            var company = userService.GetCompanyById(idCompany);
+            var company = userService.GetCompanyById(companyId);
 
-            if (users == null || company == null) return typeNavBar;
+            if (company == null) return typeNavBar;
             
             switch (typeNav)
             {
                 case NavConstants.TypeNavCancel:
                 {
-                    if (company.Type == TypeCompany.NormalCompany)
+                    if (company.CompanyStatus == CompanyStatus.Active)
                     {
                         typeNavBar = NavConstants.CancelSubscribe;
                     }
 
                     break;
                 }
-                case NavConstants.Work when company.Type == TypeCompany.BaseCommpany:
+                case NavConstants.Work when company.CompanyStatus == CompanyStatus.Admin:
                     typeNavBar = NavConstants.BaseCompany;
                     break;
                 case NavConstants.Work:
                 {
-                    if (company.Type == TypeCompany.NormalCompany)
+                    if (company.CompanyStatus == CompanyStatus.Active)
                     {
                         typeNavBar = NavConstants.NormalCompany;
                     }
 
                     break;
                 }
-                case NavConstants.TypeNavSettings when company.Type == TypeCompany.BaseCommpany:
+                case NavConstants.TypeNavSettings when company.CompanyStatus == CompanyStatus.Admin:
                     typeNavBar = NavConstants.TypeNavBaseCompanySettings;
                     break;
                 case NavConstants.TypeNavSettings:
                 {
-                    if (company.Type == TypeCompany.NormalCompany)
+                    if (company.CompanyStatus == CompanyStatus.Active)
                     {
                         typeNavBar = NavConstants.TypeNavNormalCompanySettings;
                     }
@@ -591,12 +895,12 @@ namespace WebDispacher.Business.Services
             return subscriptions;
         }
         
-        public string SelectSub(string idPrice, string idCompany, string priodDays)
+        public async Task<string> SelectSub(string priceId, string companyId, string priodDays)
         {
             var errorStr = string.Empty;
-            var customerSt = GetCustomer_STByIdCompany(idCompany);
-            var subscribeSt = GetSubscriptionIdCompany(idCompany);
-            var responseStripe = stripeApi.GetSubscriptionSTById(subscribeSt.IdSubscribeST);
+            var customerSt = GetCustomer_STByIdCompany(companyId);
+            var subscribeSt = await GetSubscriptionIdCompany(companyId);
+            var responseStripe = stripeApi.GetSubscriptionSTById(subscribeSt.SubscribeSTId);
             
             if(!responseStripe.IsError)
             {
@@ -604,17 +908,17 @@ namespace WebDispacher.Business.Services
                 
                 if(subscription.Status == DriverConstants.Canceled)
                 {
-                    responseStripe = stripeApi.CreateSupsctibe(idPrice, customerSt);
+                    responseStripe = stripeApi.CreateSupsctibe(priceId, customerSt);
                     
                     if (!responseStripe.IsError)
                     {
-                        UpdateTypeInactiveByIdCompany(idCompany);
-                        subscribeSt = new Subscribe_ST();
+                        UpdateTypeInactiveByIdCompany(companyId);
+                        subscribeSt = new SubscribeST();
                         subscription = responseStripe.Content as Stripe.Subscription;
-                        subscribeSt.IdCustomerST = subscription.CustomerId;
-                        subscribeSt.IdSubscribeST = subscription.Id;
-                        subscribeSt.IdCompany = Convert.ToInt32(idCompany);
-                        subscribeSt.Status = subscription.Status;
+                        subscribeSt.CustomerST.IdCustomerST = subscription.CustomerId;
+                        subscribeSt.SubscribeSTId = subscription.Id;
+                        subscribeSt.CustomerST.CompanyId = Convert.ToInt32(companyId);
+                        //subscribeSt.Status = subscription.Status;
                         subscribeSt.ActiveType = ActiveType.Active;
                         SaveSubscribeSt(subscribeSt);
                     }
@@ -627,20 +931,20 @@ namespace WebDispacher.Business.Services
                 }
                 
                 stripeApi.UpdateSubscribeCancelAtPeriodEnd(subscription.Id, true);
-                var subscribeStNext = GetSubscriptionIdCompany(idCompany, ActiveType.NextActive);
+                var subscribeStNext = await GetSubscriptionIdCompany(companyId, ActiveType.NextActive);
                 
                 if (subscribeStNext != null)
                 {
-                    stripeApi.CanceleSubscribe(subscribeStNext.IdSubscribeST);
+                    stripeApi.CanceleSubscribe(subscribeStNext.SubscribeSTId);
                     UpdateTypeActiveSubById(subscribeStNext.Id, ActiveType.Inactive);
                 }
                 
-                subscribeStNext = new Subscribe_ST();
-                var subscriptionNext = stripeApi.CreateSupsctibeNext(customerSt.IdCustomerST, idPrice, priodDays, subscription.CurrentPeriodEnd);
-                subscribeStNext.IdCustomerST = subscriptionNext.CustomerId;
-                subscribeStNext.IdSubscribeST = subscriptionNext.Id;
-                subscribeStNext.IdCompany = Convert.ToInt32(idCompany);
-                subscribeStNext.Status = subscriptionNext.Status;
+                subscribeStNext = new SubscribeST();
+                var subscriptionNext = stripeApi.CreateSupsctibeNext(customerSt.IdCustomerST, priceId, priodDays, subscription.CurrentPeriodEnd);
+                subscribeStNext.CustomerST.IdCustomerST = subscriptionNext.CustomerId;
+                subscribeStNext.SubscribeSTId = subscriptionNext.Id;
+                subscribeStNext.CustomerST.CompanyId = Convert.ToInt32(companyId);
+                //subscribeStNext.Status = subscriptionNext.Status;
                 subscribeStNext.ActiveType = ActiveType.NextActive;
                 
                 SaveSubscribeSt(subscribeStNext);
@@ -653,24 +957,24 @@ namespace WebDispacher.Business.Services
             return errorStr;
         }
 
-        public void CancelSubscriptionsNext(string idCompany)
+        public async Task CancelSubscriptionsNext(string companyId)
         {
-            var subscribeSt = GetSubscriptionIdCompany(idCompany);
-            stripeApi.UpdateSubscribeCancelAtPeriodEnd(subscribeSt.IdSubscribeST, false);
-            var subscribeStNext = GetSubscriptionIdCompany(idCompany, ActiveType.NextActive);
+            var subscribeSt = await GetSubscriptionIdCompany(companyId);
+            stripeApi.UpdateSubscribeCancelAtPeriodEnd(subscribeSt.SubscribeSTId, false);
+            var subscribeStNext = await GetSubscriptionIdCompany(companyId, ActiveType.NextActive);
 
             if (subscribeStNext == null) return;
             
-            stripeApi.CanceleSubscribe(subscribeStNext.IdSubscribeST);
+            stripeApi.CanceleSubscribe(subscribeStNext.SubscribeSTId);
             UpdateTypeActiveSubById(subscribeStNext.Id, ActiveType.Inactive);
         }
         
-        public SubscriptionCompanyDTO GetSubscription(string idCompany)
+        public async Task<SubscriptionCompanyDTO> GetSubscription(string companyId)
         {
             var subscriptionCompanyDto = new SubscriptionCompanyDTO();
-            var subscribeSt = GetSubscriptionIdCompany(idCompany);
+            var subscribeSt = await GetSubscriptionIdCompany(companyId);
 
-            var response = stripeApi.GetSubscriptionSTById(subscribeSt.IdSubscribeST);
+            var response = stripeApi.GetSubscriptionSTById(subscribeSt.SubscribeSTId);
 
             if (response.IsError) return subscriptionCompanyDto;
             
@@ -687,24 +991,35 @@ namespace WebDispacher.Business.Services
 
             return subscriptionCompanyDto;
         }
-        
-        public bool GetCancelSubscribe(string idCompany)
+        public async Task UpdateCompanyStatus(int companyId, CompanyStatus companyStatus)
         {
-            var company = userService.GetCompanyById(idCompany);
+            var companyEdit = await db.Companies.FirstOrDefaultAsync(c => c.Id == companyId);
+            if (companyEdit == null) return;
+
+            companyEdit.CompanyStatus = companyStatus;
+
+            await db.SaveChangesAsync();
+        }
+
+        public bool GetCancelSubscribe(string companyId)
+        {
+            var company = userService.GetCompanyById(companyId);
             
-            if (company.Type == TypeCompany.BaseCommpany)
+            if (company.CompanyStatus == CompanyStatus.Admin)
             {
                 return false;
             }
             
-            var subscriptionCompanyDto = GetSubscription(idCompany);
+            var subscriptionCompanyDto = GetSubscription(companyId);
             
-            return subscriptionCompanyDto.Status == DriverConstants.Canceled;
+            return subscriptionCompanyDto.Status.ToString() == DriverConstants.Canceled;
         }
 
-        private async Task<int> GetCountContactsPagesInDb(string idCompany)
+        private async Task<int> GetCountContactsPagesInDb(int companyId)
         {
-            var countDrivers = await db.Contacts.Where(c => c.CompanyId.ToString() == idCompany).CountAsync();
+            var countDrivers = await db.Contacts
+                .Where(c => c.CompanyId == companyId)
+                .CountAsync();
 
             var countPages = GetCountPage(countDrivers, UserConstants.NormalPageCount);
 
@@ -720,16 +1035,20 @@ namespace WebDispacher.Business.Services
 
         private async Task<int> GetCountCompaniesPagesInDb()
         {
-            var countCompanies = await db.Commpanies.CountAsync();
+            var countCompanies = await db.Companies.CountAsync();
 
             var countPages = GetCountPage(countCompanies, UserConstants.NormalPageCount);
 
             return countPages;
         }
 
-        private async Task<List<Contact>> GetContactsInDb(int page, string idCompany)
+        private async Task<List<Contact>> GetContactsInDb(int page, int companyId)
         {
-            var contacts = db.Contacts.Where(c => c.CompanyId.ToString() == idCompany).AsQueryable();
+            var contacts = db.Contacts
+                .Include(c => c.PhoneNumber)
+                .Where(c => c.CompanyId == companyId)
+                .OrderByDescending(c => c.Id)
+                .AsQueryable();
 
             if (page == UserConstants.AllPagesNumber) return await contacts.ToListAsync();
 
@@ -749,7 +1068,33 @@ namespace WebDispacher.Business.Services
             return listContacts;
         }
 
-        private bool IsHaveRequredDocs(List<DucumentCompany> docs)
+        private async Task<List<Company>> GetCompaniesWithUsersDb(int page)
+        {
+            var companies = db.Companies
+                .Include(c => c.CompanyUsers)
+                .ThenInclude(c => c.User)
+                .OrderByDescending(c => c.Id)
+                .AsQueryable();
+
+            if (page == UserConstants.AllPagesNumber) return await companies.ToListAsync();
+
+            try
+            {
+                companies = companies.Skip(UserConstants.NormalPageCount * page - UserConstants.NormalPageCount);
+
+                companies = companies.Take(UserConstants.NormalPageCount);
+            }
+            catch (Exception)
+            {
+                companies = companies.Skip((UserConstants.NormalPageCount * page) - UserConstants.NormalPageCount);
+            }
+
+            var listCompanies = await companies.ToListAsync();
+
+            return listCompanies;
+        }
+
+        private bool IsHaveRequredDocs(List<DocumentCompany> docs)
         {
             var requredDocsNames = new List<string> {
                 DocAndFileConstants.CertificateOfInsurance,
@@ -757,7 +1102,7 @@ namespace WebDispacher.Business.Services
 
             foreach (var item in requredDocsNames)
             {
-                if (!docs.Any(x => x.NameDoc == item)) return false;
+                if (!docs.Any(x => x.Name == item)) return false;
             }
 
             return true;
@@ -786,7 +1131,7 @@ namespace WebDispacher.Business.Services
 
         private void UpdateTypeActiveSubById(int idSub, ActiveType activeType)
         {
-            var subscribeSt = db.Subscribe_STs.FirstOrDefault(s => s.Id == idSub);
+            var subscribeSt = db.SubscribeST.FirstOrDefault(s => s.Id == idSub);
             
             if (subscribeSt == null) return;
             
@@ -797,8 +1142,8 @@ namespace WebDispacher.Business.Services
         
         private void UpdateTypeInactiveByIdCompany(string idCompany)
         {
-            var subscribeSTs = db.Subscribe_STs
-                .Where(s => s.IdCompany.ToString() == idCompany && s.ActiveType != ActiveType.Inactive)
+            var subscribeSTs = db.SubscribeST
+                .Where(s => s.CustomerST.CompanyId.ToString() == idCompany && s.ActiveType != ActiveType.Inactive)
                 .ToList();
             
             foreach(var subscribeSt in subscribeSTs)
@@ -827,24 +1172,29 @@ namespace WebDispacher.Business.Services
 
         private async Task<CompanyViewModel> GetCompanyByIdDb(int id)
         {
-            var companyInfo = await db.Commpanies.FirstOrDefaultAsync(x => x.Id == id);
+            var companyUserInfo = await db.CompanyUsers.FirstOrDefaultAsync(cu => cu.CompanyId == id);
+            if (companyUserInfo == null) return null;
 
+            var companyInfo = await db.Companies.Include(c => c.PhoneNumber).FirstOrDefaultAsync(x => x.Id == companyUserInfo.CompanyId);
             if (companyInfo == null) return null;
-
-            var companyViewModel = mapper.Map<CompanyViewModel>(companyInfo);
-
-            var userInfo = await db.User.FirstOrDefaultAsync(x => x.CompanyId == id);
+            var userInfo = await db.Users.FirstOrDefaultAsync(x => x.Id == companyUserInfo.UserId);
             if (userInfo == null) return null;
 
-            companyViewModel.Password = userInfo.Password;
-            companyViewModel.Email = userInfo.Login;
+            var companyViewModel = new CompanyViewModel
+            {
+                Id = companyInfo.Id,
+                Name = companyInfo.Name,
+                PhoneNumber = companyInfo.PhoneNumber,
+                CompanyType = companyInfo.CompanyType,
+                Email = userInfo.Email,
+            };
 
             return companyViewModel;
         }
 
-        private async Task<List<Commpany>> GetCompaniesDb(int page)
+        private async Task<List<Company>> GetCompaniesDb(int page)
         {
-            var companies = db.Commpanies.AsQueryable();
+            var companies = db.Companies.AsQueryable();
 
             if (page == UserConstants.AllPagesNumber) return await companies.ToListAsync();
 
@@ -864,60 +1214,59 @@ namespace WebDispacher.Business.Services
             return listCompanies;
         }
 
-        private void InitStripeForCompany(string nameCompany, string emailCompany, int idCompany)
+        public void InitStripeForCompany(string nameCompany, string emailCompany, int companyId)
         {
-            var customer = stripeApi.CreateCustomer(nameCompany, idCompany, emailCompany.ToLower());
+            var customer = stripeApi.CreateCustomer(nameCompany, companyId, emailCompany.ToLower());
 
-            var customerSt = new Customer_ST()
+            var customerSt = new CustomerST()
             {
                 DateCreated = customer.Created,
-                IdCompany = idCompany,
+                CompanyId = companyId,
                 IdCustomerST = customer.Id,
-                NameCompany = nameCompany,
                 NameCompanyST = customer.Name
             };
 
+            SaveCustomerSt(customerSt);
+
             var subscription = stripeApi.CreateSupsctibe(customer.Id, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month));
 
-            var subscribeSt = new Subscribe_ST()
+            var subscribeSt = new SubscribeST()
             {
-                IdCustomerST = subscription.CustomerId,
-                IdItemSubscribeST = subscription.Items.Data[0].Id,
-                IdSubscribeST = subscription.Id,
-                IdCompany = idCompany,
-                Status = subscription.Status
+                CustomerSTId = customerSt.Id,
+                ItemSubscribeSTId = subscription.Items.Data[0].Id,
+                SubscribeSTId = subscription.Id,
+                //Status = subscription.Status
             };
             
-            SaveCustomerSt(customerSt);
             SaveSubscribeSt(subscribeSt);
         }
         
-        private void SaveCustomerSt(Customer_ST customerSt)
+        private void SaveCustomerSt(CustomerST customerSt)
         {
-            db.Customer_STs.Add(customerSt);
+            db.CustomerST.Add(customerSt);
             db.SaveChanges();
         }
         
-        private void SaveSubscribeSt(Subscribe_ST subscribeSt)
+        private void SaveSubscribeSt(SubscribeST subscribeSt)
         {
-            db.Subscribe_STs.Add(subscribeSt);
+            db.SubscribeST.Add(subscribeSt);
             db.SaveChanges();
         }
         
-        public async Task SaveDocCompany(IFormFile uploadedFile, string nameDoc, string id)
+        public async Task SaveDocCompany(IFormFile uploadedFile, string nameDoc, int companyId, string localDate)
         {
             if (uploadedFile.Length > maxFileLength) return;
 
-            var path = $"../Document/Copmpany/{id}/" + uploadedFile.FileName;
+            var path = $"../Document/Copmpany/{companyId}/" + uploadedFile.FileName;
             
             if (!Directory.Exists("../Document/Copmpany"))
             {
                 Directory.CreateDirectory($"../Document/Copmpany");
             }
             
-            if (!Directory.Exists($"../Document/Copmpany/{id}"))
+            if (!Directory.Exists($"../Document/Copmpany/{companyId}"))
             {
-                Directory.CreateDirectory($"../Document/Copmpany/{id}");
+                Directory.CreateDirectory($"../Document/Copmpany/{companyId}");
             }
             
             using (var fileStream = new FileStream(path, FileMode.Create))
@@ -925,37 +1274,32 @@ namespace WebDispacher.Business.Services
                 uploadedFile.CopyTo(fileStream);
             }
             
-            SaveDocCompanyDb(path, id, nameDoc);
+            await SaveDocCompanyDb(path, companyId, nameDoc, localDate);
         }
         
-        private void SaveDocCompanyDb(string path, string id, string nameDoc)
+        private async Task SaveDocCompanyDb(string path, int companyId, string nameDoc, string localDate)
         {
+            var dateTimeUpload = string.IsNullOrEmpty(localDate) ? DateTime.Now : DateTime.ParseExact(localDate, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
+
             var pref = path.Remove(0, path.LastIndexOf(".") + 1);
             
-            var documentCompany = new DucumentCompany()
+            var documentCompany = new DocumentCompany()
             {
                 DocPath = path,
-                NameDoc = nameDoc,
-                IdCommpany = Convert.ToInt32(id)
+                Name = nameDoc,
+                CompanyId = companyId,
+                DateTimeUpload = dateTimeUpload
             };
+
+            await db.DocumentsCompanies.AddAsync(documentCompany);
             
-            db.DucumentCompanies.Add(documentCompany);
-            
-            db.SaveChanges();
-        }
-        
-        private int AddCompanyDb(Commpany company)
-        {
-            db.Commpanies.Add(company);
-            db.SaveChanges();
-            
-            return company.Id;
+            await db.SaveChangesAsync();
         }
 
         private void SelectPaymentMethod_ST(string idCompany, string idPayment)
         {
-            var paymentMethodSt = db.PaymentMethods
-                .FirstOrDefault(pm => pm.IdCompany.ToString() == idCompany && pm.IdPaymentMethod_ST == idPayment);
+            var paymentMethodSt = db.PaymentsMethods
+                .FirstOrDefault(pm => pm.CompanyId.ToString() == idCompany && pm.PaymentMethodSTId == idPayment);
 
             if (paymentMethodSt == null) return;
             
@@ -965,8 +1309,8 @@ namespace WebDispacher.Business.Services
         
         private void UnSelectPaymentMethod_ST(string idCompany)
         {
-            var paymentMethodSt = db.PaymentMethods
-                .FirstOrDefault(pm => pm.IdCompany.ToString() == idCompany && pm.IsDefault);
+            var paymentMethodSt = db.PaymentsMethods
+                .FirstOrDefault(pm => pm.CompanyId.ToString() == idCompany && pm.IsDefault);
 
             if (paymentMethodSt == null) return;
             
@@ -977,28 +1321,28 @@ namespace WebDispacher.Business.Services
         private string RemovePaymentMethod(string idCompany, string idPayment)
         {
             string idPaymentNewSelect = null;
-            var paymentMethodSt = db.PaymentMethods.FirstOrDefault(pm => pm.IdCompany.ToString() == idCompany && pm.IdPaymentMethod_ST == idPayment);
+            var paymentMethodSt = db.PaymentsMethods.FirstOrDefault(pm => pm.CompanyId.ToString() == idCompany && pm.PaymentMethodSTId == idPayment);
 
             if (paymentMethodSt == null) return null;
             
-            db.PaymentMethods.Remove(paymentMethodSt);
+            db.PaymentsMethods.Remove(paymentMethodSt);
             db.SaveChanges();
             
             if (!paymentMethodSt.IsDefault) return null;
             
-            paymentMethodSt = db.PaymentMethods.FirstOrDefault();
+            paymentMethodSt = db.PaymentsMethods.FirstOrDefault();
             
             if(paymentMethodSt != null)
             {
-                idPaymentNewSelect = paymentMethodSt.IdPaymentMethod_ST;
+                idPaymentNewSelect = paymentMethodSt.PaymentMethodSTId;
             }
 
             return idPaymentNewSelect;
         }
         
-        private void AddPaymentMethodSt(PaymentMethod_ST paymentMethodSt)
+        private void AddPaymentMethodSt(DaoModels.DAO.Models.PaymentMethod paymentMethodSt)
         {
-            db.PaymentMethods.Add(paymentMethodSt);
+            db.PaymentsMethods.Add(paymentMethodSt);
             
             db.SaveChanges();
         }
@@ -1016,14 +1360,16 @@ namespace WebDispacher.Business.Services
             return isFirstPaymentMethodInCompany;
         }
         
-        private List<PaymentMethod_ST> GetPaymentMethod_STsByIdCompany(string idCompany)
+        private List<DaoModels.DAO.Models.PaymentMethod> GetPaymentMethod_STsByIdCompany(string idCompany)
         {
-            return db.PaymentMethods.Where(pm => pm.IdCompany.ToString() == idCompany).ToList();
+            return db.PaymentsMethods.Where(pm => pm.CompanyId.ToString() == idCompany).ToList();
         }
         
-        public Customer_ST GetCustomer_STByIdCompany(string idCompany)
-        { 
-            return db.Customer_STs.FirstOrDefault(c => c.IdCompany.ToString() == idCompany);
+        public CustomerST GetCustomer_STByIdCompany(string companyId)
+        {
+            if (!int.TryParse(companyId, out var result)) return null;
+
+            return db.CustomerST.FirstOrDefault(c => c.CompanyId == result);
         }
 
         private string GetHash()
@@ -1045,32 +1391,35 @@ namespace WebDispacher.Business.Services
             
             if (dispatcher == null) return;
             
-            dispatcher.key = token;
+            dispatcher.Key = token;
             db.SaveChanges();
         }
         
         private ContactViewModel GetContactById(int id)
         {
-            var contact = db.Contacts.FirstOrDefault(c => c.ID == id);
+            var contact = db.Contacts
+                .Include(c => c.PhoneNumber)
+                .FirstOrDefault(c => c.Id == id);
 
             return mapper.Map<ContactViewModel>(contact);
         }
 
-        private List<Dispatcher> GetDispatchersDb(int idCompany)
+        private List<Dispatcher> GetDispatchersDb(int companyId)
         {
             return db.Dispatchers
-                .Where(d => d.IdCompany == idCompany)
+                .Include(d => d.DispatcherType)
+                .Where(d => d.CompanyId == companyId)
                 .ToList();
         }
         
         private Dispatcher GetDispatcherByKeyUsers(string key)
         {
-            return db.Dispatchers.FirstOrDefault(d => d.key != null && d.key == key);
+            return db.Dispatchers.FirstOrDefault(d => d.Key != null && d.Key == key);
         }
         
-        private IEnumerable<Users> GetUsers()
+        private IEnumerable<User> GetUsers()
         {
-            return db.User.ToList();
+            return db.Users.ToList();
         }
     }
 }

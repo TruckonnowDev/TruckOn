@@ -5,10 +5,12 @@ using WebDispacher.ViewModels.Company;
 using WebDispacher.ViewModels.Contact;
 using WebDispacher.ViewModels.Dispatcher;
 using WebDispacher.ViewModels.Driver;
+using WebDispacher.ViewModels.Order;
 using WebDispacher.ViewModels.RA.Carrier.Registration;
 using WebDispacher.ViewModels.Settings;
 using WebDispacher.ViewModels.Trailer;
 using WebDispacher.ViewModels.Truck;
+using WebDispacher.ViewModels.Vehicles;
 
 namespace WebDispacher.ViewModels.Mappings
 {
@@ -16,7 +18,71 @@ namespace WebDispacher.ViewModels.Mappings
     {
         public MappingProfile()
         {
-            CreateMap<DriverReportModel, DriverReport>()
+            CreateMap<EditOrderViewModel, DaoModels.DAO.Models.Order>()
+                .ReverseMap();
+            CreateMap<ShortOrderViewModel, DaoModels.DAO.Models.Order>()
+                .ReverseMap();
+            CreateMap<EditAddressInformationViewModel, AddressInformation>()
+                .ReverseMap();
+            CreateMap<EditPhoneNumberViewModel, PhoneNumber>()
+                .ReverseMap();
+            CreateMap<CreateDriverViewModel, DaoModels.DAO.Models.Driver>()
+                .ReverseMap();
+            CreateMap<ShortDriverControlViewModel, DriverControl>()
+                .ReverseMap();
+            CreateMap<EditDriverViewModel, DaoModels.DAO.Models.Driver>()
+                .ReverseMap();
+            CreateMap<ContactViewModel, DaoModels.DAO.Models.Contact>()
+                .ForMember(c => c.PhoneNumber, opt => opt.MapFrom(cvm => cvm.PhoneNumber))
+                .ReverseMap();
+            CreateMap<VehicleBrandViewModel, VehicleBrand>()
+                .ReverseMap();
+            CreateMap<VehicleModelViewModel, VehicleModel>()
+                .ReverseMap();
+
+            CreateMap<DriverReportViewModel, DriverReport>()
+                .ForMember(x => x.Id, opt => opt.MapFrom(d => d.Id))
+                //.ForMember(x => x.Driver.Id, opt => opt.MapFrom(d => d.DriverId))
+                //.ForMember(x => x.Driver.CompanyId, opt => opt.MapFrom(d => d.CompanyId))
+                //.ForMember(x => x.Driver.FirstName, opt => opt.MapFrom(d => d.FirstName))
+                //.ForMember(x => x.Driver.LastName, opt => opt.MapFrom(d => d.LastName))
+                //.ForMember(x => x.Driver.DriverLicenseNumber, opt => opt.MapFrom(d => d.DriverLicenseNumber))
+                .ForMember(x => x.Comment, opt => opt.MapFrom(d => d.Comment))
+                .ForMember(x => x.English, opt => opt.MapFrom(d => d.English))
+                .ForMember(x => x.Experience, opt => opt.MapFrom(d => d.Experience))
+                .ReverseMap();
+            CreateMap<TruckViewModel, DaoModels.DAO.Models.Truck>()
+               .ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id))
+               .ForMember(x => x.CompanyId, opt => opt.MapFrom(t => t.CompanyId))
+               .ForMember(x => x.Name, opt => opt.MapFrom(t => t.NameTruck))
+               .ForMember(x => x.Year, opt => opt.MapFrom(t => t.Year))
+               .ForMember(x => x.Brand, opt => opt.MapFrom(t => t.Make))
+               .ForMember(x => x.Model, opt => opt.MapFrom(t => t.Model))
+               .ForMember(x => x.State, opt => opt.MapFrom(t => t.State))
+               .ForMember(x => x.PlateExpires, opt => opt.MapFrom(t => t.Exp))
+               .ForMember(x => x.VIN, opt => opt.MapFrom(t => t.Vin))
+               .ForMember(x => x.Owner, opt => opt.MapFrom(t => t.Owner))
+               .ForMember(x => x.Plate, opt => opt.MapFrom(t => t.PlateTruck))
+               .ForMember(x => x.Color, opt => opt.MapFrom(t => t.ColorTruck))
+               .ForMember(x => x.Type, opt => opt.MapFrom(t => t.Type))
+               .ReverseMap();
+            CreateMap<TrailerViewModel, DaoModels.DAO.Models.Trailer>()
+                .ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id))
+                .ForMember(x => x.CompanyId, opt => opt.MapFrom(t => t.CompanyId))
+                .ForMember(x => x.Name, opt => opt.MapFrom(t => t.Name))
+                .ForMember(x => x.Year, opt => opt.MapFrom(t => t.Year))
+                .ForMember(x => x.Brand, opt => opt.MapFrom(t => t.Make))
+                .ForMember(x => x.Model, opt => opt.MapFrom(t => t.Model))
+                .ForMember(x => x.HowLong, opt => opt.MapFrom(t => t.HowLong))
+                .ForMember(x => x.Vin, opt => opt.MapFrom(t => t.Vin))
+                .ForMember(x => x.Owner, opt => opt.MapFrom(t => t.Owner))
+                .ForMember(x => x.Color, opt => opt.MapFrom(t => t.Color))
+                .ForMember(x => x.Plate, opt => opt.MapFrom(t => t.Plate))
+                .ForMember(x => x.PlateExpires, opt => opt.MapFrom(t => t.Exp))
+                .ForMember(x => x.AnnualIns, opt => opt.MapFrom(t => t.AnnualIns))
+                .ForMember(x => x.Type, opt => opt.MapFrom(t => t.Type))
+                .ReverseMap();
+            /*CreateMap<DriverReportModel, DriverReport>()
                 .ForMember(x => x.Id, opt => opt.MapFrom(dr => dr.Id))
                 .ForMember(x => x.Comment, opt => opt.MapFrom(dr => dr.Description))
                 .ForMember(x => x.AlcoholTendency, opt => opt.MapFrom(dr => dr.AlcoholTendency))
@@ -40,15 +106,6 @@ namespace WebDispacher.ViewModels.Mappings
                 .ForMember(x => x.CompanyId, opt => opt.MapFrom(s => s.CompanyId))
                 .ForMember(x => x.KeyAuthorized, opt => opt.MapFrom(s => s.KeyAuthorized))
                 .ReverseMap();
-            CreateMap<DriverReportViewModel, DriverReport>()
-                .ForMember(x => x.Id, opt => opt.MapFrom(d => d.Id))
-                .ForMember(x => x.IdCompany, opt => opt.MapFrom(d => d.IdCompany))
-                .ForMember(x => x.FullName, opt => opt.MapFrom(d => d.FullName))
-                .ForMember(x => x.DriversLicenseNumber, opt => opt.MapFrom(d => d.DriversLicenseNumber))
-                .ForMember(x => x.Comment, opt => opt.MapFrom(d => d.Comment))
-                .ForMember(x => x.English, opt => opt.MapFrom(d => d.English))
-                .ForMember(x => x.Experience, opt => opt.MapFrom(d => d.Experience))
-                .ReverseMap();
             CreateMap<DriverViewModel, DaoModels.DAO.Models.Driver>()
                 .ForMember(x => x.Id, opt => opt.MapFrom(cd => cd.Id))
                 .ForMember(x => x.Password, opt => opt.MapFrom(cd => cd.Password))
@@ -59,36 +116,6 @@ namespace WebDispacher.ViewModels.Mappings
                 .ForMember(x => x.DriversLicenseNumber, opt => opt.MapFrom(cd => cd.DriversLicenseNumber))
                 .ForMember(x => x.DateRegistration, opt => opt.MapFrom(cd => cd.DateRegistration))
                 .ForMember(x => x.CompanyId, opt => opt.MapFrom(cd => cd.CompanyId))
-                .ReverseMap();
-            CreateMap<TrailerViewModel, DaoModels.DAO.Models.Trailer>()
-                .ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id))
-                .ForMember(x => x.CompanyId, opt => opt.MapFrom(t => t.CompanyId))
-                .ForMember(x => x.Name, opt => opt.MapFrom(t => t.Name))
-                .ForMember(x => x.Year, opt => opt.MapFrom(t => t.Year))
-                .ForMember(x => x.Make, opt => opt.MapFrom(t => t.Make))
-                .ForMember(x => x.HowLong, opt => opt.MapFrom(t => t.HowLong))
-                .ForMember(x => x.Vin, opt => opt.MapFrom(t => t.Vin))
-                .ForMember(x => x.Owner, opt => opt.MapFrom(t => t.Owner))
-                .ForMember(x => x.Color, opt => opt.MapFrom(t => t.Color))
-                .ForMember(x => x.Plate, opt => opt.MapFrom(t => t.Plate))
-                .ForMember(x => x.Exp, opt => opt.MapFrom(t => t.Exp))
-                .ForMember(x => x.AnnualIns, opt => opt.MapFrom(t => t.AnnualIns))
-                .ForMember(x => x.Type, opt => opt.MapFrom(t => t.Type))
-                .ReverseMap();
-            CreateMap<TruckViewModel, DaoModels.DAO.Models.Truck>()
-                .ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id))
-                .ForMember(x => x.CompanyId, opt => opt.MapFrom(t => t.CompanyId))
-                .ForMember(x => x.NameTruk, opt => opt.MapFrom(t => t.NameTruck))
-                .ForMember(x => x.Yera, opt => opt.MapFrom(t => t.Year))
-                .ForMember(x => x.Make, opt => opt.MapFrom(t => t.Make))
-                .ForMember(x => x.Model, opt => opt.MapFrom(t => t.Model))
-                .ForMember(x => x.Satet, opt => opt.MapFrom(t => t.State))
-                .ForMember(x => x.Exp, opt => opt.MapFrom(t => t.Exp))
-                .ForMember(x => x.Vin, opt => opt.MapFrom(t => t.Vin))
-                .ForMember(x => x.Owner, opt => opt.MapFrom(t => t.Owner))
-                .ForMember(x => x.PlateTruk, opt => opt.MapFrom(t => t.PlateTruck))
-                .ForMember(x => x.ColorTruk, opt => opt.MapFrom(t => t.ColorTruck))
-                .ForMember(x => x.Type, opt => opt.MapFrom(t => t.Type))
                 .ReverseMap();
             CreateMap<DaoModels.DAO.Models.Contact, ContactViewModel>()
                 .ForMember(x => x.Id, opt => opt.MapFrom(c => c.ID))
@@ -135,7 +162,7 @@ namespace WebDispacher.ViewModels.Mappings
                 //.ForMember(x => x.Email, opt => opt.MapFrom(d => d.Email))
                 //.ForMember(x => x.Phone, opt => opt.MapFrom(d => d.Phone))
                 .ReverseMap();
-
+*/
         }
     }
 }

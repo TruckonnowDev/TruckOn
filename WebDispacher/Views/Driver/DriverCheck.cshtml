@@ -3,11 +3,12 @@
 @using WebDispacher.Constants;
 
 @inject IViewLocalizer Localizer
+ 
+@model List<DaoModels.DAO.Models.DriverReport>
+
 
 @{
     ViewData["Title"] = "Driver Check";
-    DateTime dateTimeRegistrationFormat = DateTime.MinValue;
-    DateTime dateTimeStringFiredFormat = DateTime.MinValue;
 }
 
 <body>
@@ -32,53 +33,21 @@
                         <div class="tab whiteborder" onclick="window.location.href='@Url.Action("Check", "Driver")';">@Localizer["DriverCheck"]</div>
                         <div class="tab" onclick="window.location.href='@Url.Action("AddReport", "Driver")';">@Localizer["ReportDriver"]</div>
                         <div class="tabContent">
-                            @for (int i = 0; i < ViewBag.DriverReports.Count; i++)
+                            @for (int i = 0; i < Model.Count; i++)
                             {
-                                {
-                                    var dateTimeString = ViewBag.DriverReports[i].DateRegistration;
-                                    var dateTimeStringFired = ViewBag.DriverReports[i].DateFired;
-
-                                    try
-                                    {
-                                        dateTimeRegistrationFormat = DateTime.ParseExact(dateTimeString, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
-                                        dateTimeStringFiredFormat = DateTime.ParseExact(dateTimeStringFired, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
-                                    }
-                                    catch
-                                    {
-                                        
-                                    }
-                                }
                                 <div class="one-line">
                                     <div class="top-line">
                                         <div class="left">
                                             <div class="contact">
-                                                <p><strong>@ViewBag.DriverReports[i].FullName</strong></p>
-                                                <p><strong>@Localizer["DriverLicense"]:</strong> @ViewBag.DriverReports[i].DriversLicenseNumber</p>
-                                                @if (dateTimeRegistrationFormat.Year == 1)
-                                                {
-                                                    <p><strong>@Localizer["Registration"]:</strong> @ViewBag.DriverReports[i].DateRegistration</p>
-                                                }
-                                                else
-                                                {
-                                                    <p><strong>@Localizer["Registration"]:</strong> @dateTimeRegistrationFormat.ToString(DateTimeFormats.FullDateTimeInfoUS)</p>
-                                                }
-                                                @if (dateTimeStringFiredFormat.Year == 1)
-                                                {
-                                                    <p><strong>@Localizer["Fired"]:</strong> @ViewBag.DriverReports[i].DateFired</p>
-                                                }
-                                                else
-                                                {
-                                                    <p><strong>@Localizer["Fired"]:</strong> @dateTimeStringFiredFormat.ToString(DateTimeFormats.FullDateTimeInfoUS)</p>
-                                                }
-                                                <p>@ViewBag.DriverReports[i].Comment</p>
+                                                <p><strong>@Model[i].Driver.FirstName @Model[i].Driver.LastName</strong></p>
+                                                <p><strong>@Localizer["DriverLicense"]:</strong> @Model[i].Driver.DriverLicenseNumber</p>
+                                                <p><strong>@Localizer["Registration"]:</strong> @Model[i].Driver.DateRegistration.ToString(DateTimeFormats.FullDateTimeInfoUS)</p>
+                                                <p><strong>@Localizer["Fired"]:</strong> @Model[i].DateFired.ToString(DateTimeFormats.FullDateTimeInfoUS)</p>
+                                                <p>@Model[i].Comment</p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                {
-                                    dateTimeRegistrationFormat = DateTime.MinValue;
-                                    dateTimeStringFiredFormat = DateTime.MinValue;
-                                }
                             }
                         </div>
                     </div>

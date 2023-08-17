@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <ApplicationIcon />
     <OutputType>Exe</OutputType>
     <StartupObject></StartupObject>
@@ -62,16 +62,17 @@
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="0.9.10" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.32" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.32">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.32" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.32" />
     <PackageReference Include="FluentScheduler" Version="5.3.0" />
-    <PackageReference Include="Microsoft.AspNetCore" Version="2.1.7" />
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.3"><PrivateAssets Condition="'%(PackageReference.Version)' == ''">all</PrivateAssets>
-<Publish Condition="'%(PackageReference.Version)' == ''">true</Publish>
-</PackageReference>
-    <PackageReference Include="Microsoft.AspNetCore.ResponseCompression" Version="2.2.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="2.8.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.3" />
-    <PackageReference Include="Microsoft.Extensions.Primitives" Version="3.1.24" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.32" />
+    <PackageReference Include="Microsoft.Extensions.Primitives" Version="3.1.32" />
     <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -85,8 +86,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ApiMobaileServise\ApiMobaileServise.csproj" />
+    <ProjectReference Include="..\BaceModel\BaceModel.csproj" />
     <ProjectReference Include="..\DaoModels\DaoModels.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DaoModels">
+      <HintPath>..\DaoModels\bin\Debug\netstandard2.1\DaoModels.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
@@ -316,6 +323,102 @@
     <EmbeddedResource Update="Resources\Views\Resources\PartViews\ServiceItem.ru.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ServiceItem.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\ViewModels\Driver\CreateDriverViewModel.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CreateDriverViewModel.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\ViewModels\Driver\CreateDriverViewModel.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CreateDriverViewModel.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\ViewModels\Driver\CreateDriverViewModel.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CreateDriverViewModel.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\ViewModels\Driver\EditDriverViewModel.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>EditDriverViewModel.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\ViewModels\Driver\EditDriverViewModel.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>EditDriverViewModel.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\ViewModels\Driver\EditDriverViewModel.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>EditDriverViewModel.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\ViewModels\RA\ResetPasswordViewModel.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ResetPasswordViewModel.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\ViewModels\RA\ResetPasswordViewModel.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ResetPasswordViewModel.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\ViewModels\RA\ResetPasswordViewModel.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ResetPasswordViewModel.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Commpany\UserQuestionsNew.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>UserQuestionsNew.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Commpany\UserQuestionsNew.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>UserQuestionsNew.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Commpany\UserQuestionsNew.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>UserQuestionsNew.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Commpany\UserQuestionsAnswered.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>UserQuestionsNew.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Commpany\UserQuestionsAnswered.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>UserQuestionsNew.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Commpany\UserQuestionsAnswered.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>UserQuestionsNew.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Commpany\UserQuestionsAll.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>UserQuestionsNew.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Commpany\UserQuestionsAll.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>UserQuestionsNew.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Commpany\UserQuestionsAll.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>UserQuestionsNew.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\AdminAnswerQuestions\AnswerModel.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AnswerModel.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\AdminAnswerQuestions\AnswerModel.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AnswerModel.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\AdminAnswerQuestions\AnswerModel.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AnswerModel.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Vehicles\_VehiclesTable.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>_VehiclesTable.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Vehicles\_VehiclesTable.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>_VehiclesTable.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Vehicles\_VehiclesTable.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>_VehiclesTable.ru.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

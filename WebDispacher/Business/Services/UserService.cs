@@ -1,23 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using BaceModel.ModelInspertionDriver;
 using DaoModels.DAO;
-using DaoModels.DAO.DTO;
-using DaoModels.DAO.Enum;
-using DaoModels.DAO.Interface;
 using DaoModels.DAO.Models;
 using DaoModels.DAO.Models.Settings;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Stripe;
 using WebDispacher.Business.Interfaces;
 using WebDispacher.Constants;
-using WebDispacher.Models;
-using WebDispacher.Service;
 using WebDispacher.Service.EmailSmtp;
+using WebDispacher.ViewModels.RA.Carrier.Login;
 using WebDispacher.ViewModels.Settings;
 
 namespace WebDispacher.Business.Services
@@ -26,21 +22,43 @@ namespace WebDispacher.Business.Services
     {
         private readonly Context db;
         private readonly IMapper mapper;
+        private readonly SignInManager<User> signInManager;
+        private readonly UserManager<User> userManager;
 
         public UserService(
             IMapper mapper,
-            Context db)
+            Context db, 
+            UserManager<User> userManager,
+            SignInManager<User> signInManager)
         {
             this.mapper = mapper;
             this.db = db;
+            this.signInManager = signInManager;
+            this.userManager = userManager;
         }
-        
+
         public bool CheckPermissions(string key, string idCompany, string route)
         {
             return IsPermission(key, idCompany, route);
         }
-        
-        public Users GetUserByEmailAndPasswrod(string email, string password)
+
+        public async Task<User> CreateUser(User model)
+        {
+            await db.Users.AddAsync(model);
+
+            await db.SaveChangesAsync();
+
+            return model;
+        }
+
+        public async Task SendEmailSuccessCarrierRegistration(string email)
+        {
+            await new AuthMessageSender().Execute(email,
+                UserConstants.ThankRegistrationSubject,
+                new PaternSourse().GetPatternRegistrationMail());
+        }
+
+        public User GetUserByEmailAndPasswrod(string email, string password)
         {
             var users = GetUserByEmailAndPasswordDb(email, password);
             
@@ -58,38 +76,39 @@ namespace WebDispacher.Business.Services
 
             if (company == null) return false;
 
-            if (company.Type == TypeCompany.DeactivateCompany) return false;
+            /* if (company.Type == TypeCompany.DeactivateCompany) return false;
 
-            return ValidCompanyRoute(company.Type, route) && CheckKey(key);
+             return ValidCompanyRoute(company.Type, route) && CheckKey(key);*/
+            return false;
         }
         
-        public Commpany GetUserByKeyUser(int key)
+       /* public Company GetUserByKeyUser(int key)
         {
-            var users = db.User.FirstOrDefault(u => u.KeyAuthorized == key.ToString());
-            var commpany = db.Commpanies.FirstOrDefault(c => c.Id == users.CompanyId);
+            var users = db.Users.FirstOrDefault(u => u.KeyAuthorized == key.ToString());
+            var commpany = db.Companies.FirstOrDefault(c => c.Id == users.CompanyId);
             
             return commpany;
-        }
+        }*/
 
         public bool CheckEmailDb(string email)
         {
-            return db.User.FirstOrDefault(u => u.Login == email) != null;
+            return db.Users.FirstOrDefault(u => u.Email == email) != null;
         }
 
-        public bool CheckEmail(string email)
+        public async Task<bool> SendRecoveryPasswordToEmail(string email, string url)
         {
-            var isEmail = CheckEmailDb(email);
+            try
+            {
+                var pattern = new PaternSourse().GetPaternRecoveryPassword(url);
 
-            if (isEmail)
-            { 
-                var token = CreateToken(email);
-                var idUser = AddRecoveryPassword(email, token);
-                var pattern = new PaternSourse().GetPaternRecoveryPassword($"{Config.BaseReqvesteUrl}/Recovery/Password?idUser={idUser}&token={token}");
-                
-                Task.Run(async () => await new AuthMessageSender().Execute(email,  UserConstants.PasswordRecoverySubject, pattern));
+                await new AuthMessageSender().Execute(email, UserConstants.PasswordRecoverySubject, pattern);
+
+                return true;
             }
-            
-            return isEmail;
+            catch(Exception ex)
+            {
+                return false;
+            }
         }
         
         public async Task<int> ResetPasswordFoUser(string newPassword, string idUser, string token)
@@ -114,35 +133,84 @@ namespace WebDispacher.Business.Services
         
         public void EditUser(SettingsUserViewModel user)
         {
-            var userEdit = db.User.FirstOrDefault(c => c.Id == user.Id);
+            var userEdit = db.Users.FirstOrDefault(c => c.Id == user.Id.ToString());
             if (userEdit == null) return;
             
-            userEdit.Login = user.Login.ToLower();
-            userEdit.Password = user.Password;
+            userEdit.Email = user.Login.ToLower();
+            //userEdit.Password = user.Password;
 
             db.SaveChanges();
         }
         
-        public Commpany GetCompanyById(string idCompany)
+        public Company GetCompanyById(string companyId)
         {
-            return db.Commpanies.First(c => c.Id.ToString() == idCompany);
+            return db.Companies.First(c => c.Id.ToString() == companyId);
         }
         
-        public SettingsUserViewModel GetUserById(int id)
+        public User GetUserById(string id)
         {
-            var user = db.User.FirstOrDefault(c => c.Id == id);
+            var user = db.Users.FirstOrDefault(c => c.Id == id);
 
-            return mapper.Map<SettingsUserViewModel>(user);
-        }
+            if (user == null) return null;
+
+            return user;
+        } 
         
+        public async Task<User> GetFirstUserByCompanyId(int id)
+        {
+            var companyUser = await db.CompanyUsers.FirstOrDefaultAsync(cu => cu.CompanyId == id);
+
+            if (companyUser == null) return null;
+
+            var user = await db.Users.FirstOrDefaultAsync(c => c.Id == companyUser.UserId);
+
+            if (user == null) return null;
+
+            return user;
+        }
+
+        public async Task<string> GetFirstUserEmailByCompanyId(int id)
+        {
+            var companyUser = await db.CompanyUsers.FirstOrDefaultAsync(cu => cu.CompanyId == id);
+
+            if (companyUser == null) return null;
+
+            var user = await db.Users.FirstOrDefaultAsync(c => c.Id == companyUser.UserId);
+
+            if (user == null) return null;
+
+            return user.Email;
+        }
+
+        public async Task SetLastLoginDateToUser(LoginViewModel model, string localDate)
+        {
+            if (model == null) return;
+
+            var dateTimeLastLogin = !string.IsNullOrEmpty(localDate) ? DateTime.ParseExact(localDate, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture) : DateTime.Now;
+
+            var user = await db.Users.FirstOrDefaultAsync(u => u.Email == model.Email.ToLower());
+
+            if (user != null)
+            {
+                user.DateTimeLastLogin = dateTimeLastLogin;
+                db.Entry(user).State = EntityState.Modified;
+                await db.SaveChangesAsync();
+            }
+        }
+
+        public async Task<List<User>> GetUsers(int page)
+        {
+            return await GetUsersDb(page);
+        }
+
         public void CreateUserForCompanyId(int id, string emailCompany, string password)
         {
-            db.User.Add(new Users()
+            db.Users.Add(new User()
             {
-                CompanyId = id,
+                /*CompanyId = id,
                 Login = emailCompany.ToLower(),
                 Password = password,
-                Date = DateTime.Now.ToString()
+                Date = DateTime.Now.ToString()*/
             });
             
             db.SaveChanges();
@@ -150,15 +218,15 @@ namespace WebDispacher.Business.Services
 
         public void AddUser(string idCompany, SettingsUserViewModel user)
         {
-            var users = new Users()
+            var users = new User()
             {
-                CompanyId = Convert.ToInt32(idCompany),
+               /* CompanyId = Convert.ToInt32(idCompany),
                 Date = user.Date,
                 Login = user.Login,
-                Password = user.Password
+                Password = user.Password*/
             };
             
-            AddUserDb(users);
+            //AddUserDb(users);
         }
 
         public void RemoveUserById(string idUser)
@@ -202,20 +270,21 @@ namespace WebDispacher.Business.Services
         public int CheckTokenFoUser(string idUser, string token)
         {
             var isStateActual = 0;
-            
-            var passwordRecovery = db.PasswordRecoveries.ToList().FirstOrDefault(p => p.IdUser.ToString() == idUser && p.Token == token);
+            /*
+            var passwordRecovery = db.PasswordsRecoveries.ToList().FirstOrDefault(p => p.IdUser.ToString() == idUser && p.Token == token);
             
             if (passwordRecovery != null && Convert.ToDateTime(passwordRecovery.Date) > DateTime.Now.AddHours(-2))
             {
                 isStateActual = 1;
-            }
-            
+            }*/
+
             return isStateActual;
         }
         
         private bool CheckKeyDb(string key)
         {
-            return db.User.FirstOrDefault(u => u.KeyAuthorized == key) != null;
+            return false;
+            //return db.Users.FirstOrDefault(u => u.KeyAuthorized == key) != null;
         }
         
         private void SaveKeyDatabays(string login, string password, int key)
@@ -223,12 +292,12 @@ namespace WebDispacher.Business.Services
             Init();
             try
             {
-                var users = db.User.FirstOrDefault(u => u.Login == login && u.Password == password);
+                /*var users = db.Users.FirstOrDefault(u => u.Login == login && u.Password == password);
                 
                 if (users == null) return;
                 
                 users.KeyAuthorized = key.ToString();
-                
+                */
                 db.SaveChanges();
             }
             catch (Exception)
@@ -239,28 +308,49 @@ namespace WebDispacher.Business.Services
         
         private void Init()
         {
-            db.Shipping.Load();
-            db.VehiclwInformation.Load();
+            db.Orders.Load();
+            db.VehiclesInspections.Load();
             db.Drivers.Load();
         }
-        
+
+        private async Task<List<User>> GetUsersDb(int page)
+        {
+            var users = db.Users.AsQueryable();
+
+            if (page == UserConstants.AllPagesNumber) return await users.ToListAsync();
+
+            try
+            {
+                users = users.Skip(UserConstants.NormalPageCount * page - UserConstants.NormalPageCount);
+
+                users = users.Take(UserConstants.NormalPageCount);
+            }
+            catch (Exception)
+            {
+                users = users.Skip((UserConstants.NormalPageCount * page) - UserConstants.NormalPageCount);
+            }
+
+            var listCompanies = await users.ToListAsync();
+
+            return listCompanies;
+        }
+
         private bool ExistsDataUser(string login, string password)
         {
-            return db.User.FirstOrDefault(u => u.Login == login && u.Password == password) != null;
+            return false;
+            //return db.Users.FirstOrDefault(u => u.Login == login && u.Password == password) != null;
         }
         
         private void RemoveUserByIdDb(string idUser)
         {
-            db.User.Remove(db.User.First(u => u.Id.ToString() == idUser));
+            db.Users.Remove(db.Users.First(u => u.Id.ToString() == idUser));
             
             db.SaveChanges();
         }
         
-        private void AddUserDb(Users user)
+        private void AddUserDb(User user)
         {
-            user.Login = user.Login != null ? user.Login.ToLower() : user.Login;
-
-            db.User.Add(user);
+            db.Users.Add(user);
 
             db.SaveChanges();
         }
@@ -268,11 +358,11 @@ namespace WebDispacher.Business.Services
         private int ResetPasswordFoUserDb(string newPassword, string idUser, string token)
         {
             var isStateActual = 0;
-            var passwordRecovery = db.PasswordRecoveries.ToList().FirstOrDefault(p => p.IdUser.ToString() == idUser && p.Token == token);
+            /*var passwordRecovery = db.PasswordsRecoveries.ToList().FirstOrDefault(p => p.IdUser.ToString() == idUser && p.Token == token);
 
             if (passwordRecovery != null && Convert.ToDateTime(passwordRecovery.Date) > DateTime.Now.AddHours(-2))
             {
-                var users = db.User.FirstOrDefault(d => d.Id.ToString() == idUser);
+                var users = db.Users.FirstOrDefault(d => d.Id.ToString() == idUser);
                 if (users != null)
                 {
                     users.Password = newPassword;
@@ -282,10 +372,10 @@ namespace WebDispacher.Business.Services
             
             if (passwordRecovery != null)
             {
-                db.PasswordRecoveries.Remove(passwordRecovery);
+                db.PasswordsRecoveries.Remove(passwordRecovery);
             }
             
-            db.SaveChanges();
+            db.SaveChanges();*/
             
             return isStateActual;
         }
@@ -293,11 +383,11 @@ namespace WebDispacher.Business.Services
         private string GetEmailUserDb(string idUser)
         {
             var emailDriver = string.Empty;
-            var users = db.User.FirstOrDefault(d => d.Id.ToString() == idUser);
+            var users = db.Users.FirstOrDefault(d => d.Id.ToString() == idUser);
             
             if (users != null)
             {
-                emailDriver = users.Login;
+                emailDriver = users.Email;
             }
             
             return emailDriver;
@@ -305,30 +395,31 @@ namespace WebDispacher.Business.Services
         
         private int AddRecoveryPassword(string email, string token)
         {
-            var users = db.User.FirstOrDefault(u => u.Login == email);
+            var users = db.Users.FirstOrDefault(u => u.Email == email);
             if (users == null) return 0;
-            
-            var passwordRecovery1 = db.PasswordRecoveries.FirstOrDefault(p => p.IdUser == users.Id);
-            
-            if (passwordRecovery1 == null)
-            {
-                var passwordRecovery = new PasswordRecovery()
-                {
-                    Date = DateTime.Now.ToString(),
-                    IdUser = users.Id,
-                    Token = token
-                };
-                db.PasswordRecoveries.Add(passwordRecovery);
-            }
-            else
-            {
-                passwordRecovery1.Token = token;
-                passwordRecovery1.Date = DateTime.Now.ToString();
-            }
-            
+            /*
+             var passwordRecovery1 = db.PasswordsRecoveries.FirstOrDefault(p => p.IdUser == users.Id);
+
+             if (passwordRecovery1 == null)
+             {
+                 var passwordRecovery = new PasswordRecovery()
+                 {
+                     Date = DateTime.Now.ToString(),
+                     IdUser = users.Id,
+                     Token = token
+         };
+                 db.PasswordsRecoveries.Add(passwordRecovery);
+             }
+             else
+             {
+                 passwordRecovery1.Token = token;
+                 passwordRecovery1.Date = DateTime.Now.ToString();
+             }
+             */
             db.SaveChanges();
             
-            return users.Id;
+            return 10;
+            //return users.Id;
         }
         
         private string CreateToken(string email)
@@ -343,12 +434,13 @@ namespace WebDispacher.Business.Services
             return token;
         }
         
-        public Users GetUserByKey(string key)
+        public User GetUserByKey(string key)
         {
-            return db.User.First(c => c.KeyAuthorized == key);
+            return null;
+            //return db.Users.First(c => c.KeyAuthorized == key);
         }
 
-        private bool ValidCompanyRoute(TypeCompany typeCompany, string route)
+        /*private bool ValidCompanyRoute(TypeCompany typeCompany, string route)
         {
             var validCompany = false;
 
@@ -370,11 +462,11 @@ namespace WebDispacher.Business.Services
             if (route == RouteConstants.SettingsUser || route == RouteConstants.SettingsExtension || route == RouteConstants.Settings) validCompany = true;
 
             return validCompany;
-        }
+        }*/
         
-        private void AddUserToDispatch(Users users)
+        private void AddUserToDispatch(User users)
         {
-            var dispatcher = db.Dispatchers.FirstOrDefault(d => d.IdCompany == users.CompanyId);
+            //var dispatcher = db.Dispatchers.FirstOrDefault(d => d.CompanyId == users.CompanyId);
             //if(dispatcher != null)
             //{
             //    if(dispatcher.Users == null)
@@ -386,9 +478,10 @@ namespace WebDispacher.Business.Services
             //}
         }
         
-        private Users GetUserByEmailAndPasswordDb(string email, string password)
+        private User GetUserByEmailAndPasswordDb(string email, string password)
         {
-            return db.User.FirstOrDefault(u => u.Login == email && u.Password == password);
+            return null;
+            //return db.Users.FirstOrDefault(u => u.Login == email && u.Password == password);
         }
     }
 }

@@ -1,23 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using BaceModel.ModelInspertionDriver;
 using DaoModels.DAO;
-using DaoModels.DAO.DTO;
 using DaoModels.DAO.Enum;
 using DaoModels.DAO.Interface;
 using DaoModels.DAO.Models;
 using DaoModels.DAO.Models.Settings;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Stripe;
 using WebDispacher.Business.Interfaces;
 using WebDispacher.Constants;
-using WebDispacher.Models;
-using WebDispacher.Service;
 using WebDispacher.ViewModels.Trailer; 
 using WebDispacher.ViewModels.Truck;
 
@@ -40,12 +37,12 @@ namespace WebDispacher.Business.Services
             this.db = db;
         }
         
-        public int AddProfile(string idCompany, int idTr, string typeTransport)
+        public async Task<int> AddProfile(string idCompany, int idTr, string typeTransport)
         {
-            var tr = GetTr(idTr, typeTransport);
+            var tr = await GetTr(idTr, typeTransport);
             var transportVehicle = HelperTransport.GetTransportVehicle(tr.Type);
-            
-            var profileSetting = new ProfileSetting()
+
+            var profileSetting = new ProfileSettings()
             {
                 TransportVehicle = new TransportVehicle()
                 {
@@ -59,15 +56,15 @@ namespace WebDispacher.Business.Services
                 TypeTransportVehikle = GetTypeTransport(idTr, typeTransport),
                 IdTr = idTr
             };
-            
-            return AddProfileDb(profileSetting);
+
+            return await AddProfileDb(profileSetting);
         }
         
-        private int AddProfileDb(ProfileSetting profileSetting)
+        private async Task<int> AddProfileDb(ProfileSettings profileSetting)
         {
-            db.ProfileSettings.Add(profileSetting);
+            await db.ProfileSettings.AddAsync(profileSetting);
             
-            db.SaveChanges();
+            await db.SaveChangesAsync();
             
             return profileSetting.Id;
         }
@@ -77,10 +74,6 @@ namespace WebDispacher.Business.Services
             return await GetTruckDb(idDriver);
         }
         
-        public async Task<List<DocumentTruckAndTrailers>> GetTruckDoc(string id)
-        {
-            return await GetTruckDocDb(id);
-        }
         public async Task<Dictionary<string, string>> GetBaseTruckDoc(string id)
         {
             return await GetBaseTruckDocDb(id);
@@ -91,14 +84,19 @@ namespace WebDispacher.Business.Services
             return await GetTruckByPlateDb(truckPlate);
         }
         
-        public async Task RemoveTruck(string id)
+        public async Task RemoveTruck(int id)
         {
             await RemoveTruckDb(id);
         }
         
-        public async Task<List<Truck>> GetTrucks(int page, string idCompany)
+        public async Task<List<Truck>> GetTrucks(int page, string companyId)
         {
-            return await GetTrucksDb(page, idCompany);
+            if(int.TryParse(companyId, out var result))
+            {
+                return await GetTrucksDb(page, result);
+            }
+
+            return new List<Truck>();
         }
 
         public async Task<int> GetCountTrucksPages(string idCompany)
@@ -116,9 +114,9 @@ namespace WebDispacher.Business.Services
             return await GetCountTrailersPagesInDb(idCompany);
         }
 
-        public TruckViewModel GetTruckById(int idTruck)
+        public async Task<TruckViewModel> GetTruckById(int truckId)
         {
-            return GetTruckByIdDb(idTruck);
+            return await GetTruckByIdDb(truckId);
         }
 
         public TrailerViewModel GetTrailerById(int idTrailer)
@@ -131,35 +129,30 @@ namespace WebDispacher.Business.Services
             return await GetTrailerDb(idDriver);
         }
         
-        public void EditTrailer(TrailerViewModel model)
-        {
-           EditTrailerDb(model);
-        }
-        
         public async Task<Trailer> GetTrailerByPlate(string trailerPlate)
         {
             return await GetTrailerByPlateDb(trailerPlate);
         }
         
-        public async Task RemoveTrailer(string id)
+        public async Task RemoveTrailer(int id)
         {
             await RemoveTrailerDb(id);
         }
         
-        public async Task SaveDocTrailer(IFormFile uploadedFile, string nameDoc, string id)
+        public async Task SaveDocTrailer(IFormFile uploadedFile, string nameDoc, int trailerId, string dateTimeUpload)
         {
             if (uploadedFile.Length > maxFileLength) return;
 
-            var path = $"../Document/Traile/{id}/" + uploadedFile.FileName;
+            var path = $"../Document/Traile/{trailerId}/" + uploadedFile.FileName;
             
             if (!Directory.Exists("../Document/Traile"))
             {
                 Directory.CreateDirectory($"../Document/Traile");
             }
             
-            if (!Directory.Exists($"../Document/Traile/{id}"))
+            if (!Directory.Exists($"../Document/Traile/{trailerId}"))
             {
-                Directory.CreateDirectory($"../Document/Traile/{id}");
+                Directory.CreateDirectory($"../Document/Traile/{trailerId}");
             }
             
             using (var fileStream = new FileStream(path, FileMode.Create))
@@ -167,7 +160,7 @@ namespace WebDispacher.Business.Services
                 uploadedFile.CopyTo(fileStream);
             }
             
-            SaveDocTrailerDb(path, id, nameDoc);
+            await SaveDocTrailerDb(path, trailerId, nameDoc, dateTimeUpload);
         }
 
         public string GetTypeTransport(int idTr, string typeTransport)
@@ -177,14 +170,14 @@ namespace WebDispacher.Business.Services
             return tr is TruckViewModel ? TypeTransportVehikle.Truck.ToString() : TypeTransportVehikle.Trailer.ToString();
         }
         
-        public ITr GetTr(int idTr, string typeTransport)
+        public async Task<ITr> GetTr(int idTr, string typeTransport)
         {
             ITr tr = null;
             
             switch (typeTransport)
             {
                 case TruckAndTrailerConstants.Truck:
-                    tr = GetTruckById(idTr);
+                    tr = await GetTruckById(idTr);
                     break;
                 case TruckAndTrailerConstants.Trailer:
                     tr = GetTrailerById(idTr);
@@ -193,189 +186,234 @@ namespace WebDispacher.Business.Services
             
             return tr;
         }
-        
-        public async Task<List<DocumentTruckAndTrailers>> GetTrailerDoc(string id)
+
+        public async Task RemoveDocTrailer(int docId)
         {
-            return await db.DocumentTruckAndTrailers
-                .Where(d => d.TypeTr == TruckAndTrailerConstants.Trailer && d.IdTr.ToString() == id)
+            var documentTrailer = await db.DocumentsTrailers.FirstOrDefaultAsync(d => d.Id == docId);
+
+            if (documentTrailer == null) return;
+
+            db.DocumentsTrailers.Remove(documentTrailer);
+
+            await db.SaveChangesAsync();
+        }
+        
+        public async Task RemoveDocTruck(int docId)
+        {
+            var documentTruck = await db.DocumentsTrucks.FirstOrDefaultAsync(d => d.Id == docId);
+
+            if (documentTruck == null) return;
+
+            db.DocumentsTrucks.Remove(documentTruck);
+
+            await db.SaveChangesAsync();
+        }
+
+        public async Task<List<DocumentTruck>> GetTruckDoc(int id)
+        {
+            return await db.DocumentsTrucks
+               .Where(dt => dt.TruckId == id)
+               .ToListAsync();
+        }
+
+        public async Task<List<DocumentTrailer>> GetTrailerDocsById(int id)
+        {
+            return await db.DocumentsTrailers
+                .Where(dt => dt.TrailerId == id)
                 .ToListAsync();
         }
         
-        public List<InspectionDriver> GetInspectionTrucks(string idDriver, string idTruck, string idTrailer, string date)
+        public List<DriverInspection> GetInspectionTrucks(string idDriver, string idTruck, string idTrailer, string date)
         {
             return GetInspectionTrucksDb(idDriver, idTruck, idTrailer, date);
         }
         
         public async Task CreateTrailer(TrailerViewModel trailer, string idCompany, 
-            IFormFile trailerRegistrationDoc, IFormFile trailerAnnualInspectionDoc, IFormFile leaseAgreementDoc)
+            IFormFile trailerRegistrationDoc, IFormFile trailerAnnualInspectionDoc, IFormFile leaseAgreementDoc, string dateTimeLocal)
         {
+            var dateTimeCreate = string.IsNullOrEmpty(dateTimeLocal) ? DateTime.Now : DateTime.ParseExact(dateTimeLocal, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
+
             trailer.CompanyId = Convert.ToInt32(idCompany);
-            var id = CreateTrailerDb(trailer);
+            trailer.DateTimeLastUpdate = dateTimeCreate;
+            trailer.DateTimeRegistration = dateTimeCreate;
+
+            var trailerId = await CreateTrailerDb(trailer);
 
             if (trailerRegistrationDoc != null)
             {
-                await SaveDocTrailer(trailerRegistrationDoc, DocAndFileConstants.TrailerRegistration, id.ToString());
+                await SaveDocTrailer(trailerRegistrationDoc, DocAndFileConstants.TrailerRegistration, trailerId, dateTimeLocal);
             }
 
             if (trailerAnnualInspectionDoc != null)
             {
-                await SaveDocTrailer(trailerAnnualInspectionDoc, DocAndFileConstants.TrailerInspection, id.ToString());
+                await SaveDocTrailer(trailerAnnualInspectionDoc, DocAndFileConstants.TrailerInspection, trailerId, dateTimeLocal);
             }
 
             if (leaseAgreementDoc != null)
             {
-                await SaveDocTrailer(leaseAgreementDoc, DocAndFileConstants.LeaseAgreement, id.ToString());
+                await SaveDocTrailer(leaseAgreementDoc, DocAndFileConstants.LeaseAgreement, trailerId, dateTimeLocal);
             }
         }
         
         public async Task CreateTruck(TruckViewModel truck ,string idCompany, IFormFile truckRegistrationDoc,
             IFormFile truckLeaseAgreementDoc, IFormFile truckAnnualInspection, IFormFile bobTailPhysicalDamage,
-            IFormFile nYHUTDoc)
+            IFormFile nYHUTDoc, string dateTimeLocal)
         {
+            var dateTimeCreate = string.IsNullOrEmpty(dateTimeLocal) ? DateTime.Now : DateTime.ParseExact(dateTimeLocal, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
+
             truck.CompanyId = Convert.ToInt32(idCompany);
-            var id = await CreateTruckDb(truck);
+            truck.DateTimeLastUpload = dateTimeCreate;
+            truck.DateTimeRegistration = dateTimeCreate;
+
+            var truckId = await CreateTruckDb(truck);
             
             if(truckRegistrationDoc != null)
             {
-                await SaveDocTruck(truckRegistrationDoc, DocAndFileConstants.TruckRegistration, id.ToString());
+                await SaveDocTruck(truckRegistrationDoc, DocAndFileConstants.TruckRegistration, truckId, dateTimeLocal);
             }
 
             if (truckLeaseAgreementDoc != null)
             {
-                await SaveDocTruck(truckLeaseAgreementDoc, DocAndFileConstants.TruckAgreement, id.ToString());
+                await SaveDocTruck(truckLeaseAgreementDoc, DocAndFileConstants.TruckAgreement, truckId, dateTimeLocal);
             }
 
             if (truckAnnualInspection != null)
             {
-                await SaveDocTruck(truckAnnualInspection, DocAndFileConstants.TruckInspection, id.ToString());
+                await SaveDocTruck(truckAnnualInspection, DocAndFileConstants.TruckInspection, truckId, dateTimeLocal);
 
             }
             
             if (bobTailPhysicalDamage != null)
             {
-                await SaveDocTruck(bobTailPhysicalDamage, DocAndFileConstants.BobTailPhysicalDamage, id.ToString());
+                await SaveDocTruck(bobTailPhysicalDamage, DocAndFileConstants.BobTailPhysicalDamage, truckId, dateTimeLocal);
             }
             
             if (nYHUTDoc != null)
             {
-                await SaveDocTruck(nYHUTDoc, DocAndFileConstants.NyHit, id.ToString());
+                await SaveDocTruck(nYHUTDoc, DocAndFileConstants.NyHit, truckId, dateTimeLocal);
             }
         }
-        
+        public async Task EditTrailer(TrailerViewModel model, string localDate)
+        {
+            await EditTrailerDb(model, localDate);
+        }
+
         public async Task EditTruck(TruckViewModel model, IFormFile truckRegistrationDoc,
             IFormFile truckLeaseAgreementDoc, IFormFile truckAnnualInspection, IFormFile bobTailPhysicalDamage,
-            IFormFile nYHUTDoc)
+            IFormFile nYHUTDoc, string localDate)
         {
-            var editTruck = db.Trucks.FirstOrDefault(t => t.Id == model.Id);
+            if (model == null) return;
+
+            var dateTimeUpdate = string.IsNullOrEmpty(localDate) ? DateTime.Now : DateTime.ParseExact(localDate, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
+
+            var editTruck = await db.Trucks
+                .FirstOrDefaultAsync(t => t.Id == model.Id);
 
             if (editTruck == null) return;
 
-            editTruck.NameTruk = model.NameTruck;
-            editTruck.Yera = model.Year;
-            editTruck.Make = model.Make;
+            editTruck.Name = model.NameTruck;
+            editTruck.Year = Convert.ToInt32(model.Year);
+            editTruck.Brand = model.Make;
             editTruck.Model = model.Model;
             editTruck.Type = model.Type;
-            editTruck.Satet = model.State;
-            editTruck.Exp = model.Exp;
-            editTruck.Vin = model.Vin;
+            editTruck.State = model.State;
+            editTruck.PlateExpires = model.Exp;
+            editTruck.VIN = model.Vin;
             editTruck.Owner = model.Owner;
-            editTruck.PlateTruk = model.PlateTruck;
-            editTruck.ColorTruk = model.ColorTruck;
+            editTruck.Plate = model.PlateTruck;
+            editTruck.Color = model.ColorTruck;
+            editTruck.DateTimeLastUpdate = dateTimeUpdate;
 
-            db.SaveChanges();
+            await db.SaveChangesAsync();
 
             if (truckRegistrationDoc != null)
             {
-                await SaveDocTruck(truckRegistrationDoc, DocAndFileConstants.TruckRegistration, model.Id.ToString());
+                await SaveDocTruck(truckRegistrationDoc, DocAndFileConstants.TruckRegistration, editTruck.Id, localDate);
             }
 
             if (truckLeaseAgreementDoc != null)
             {
-                await SaveDocTruck(truckLeaseAgreementDoc, DocAndFileConstants.TruckAgreement, model.Id.ToString());
+                await SaveDocTruck(truckLeaseAgreementDoc, DocAndFileConstants.TruckAgreement, editTruck.Id, localDate);
             }
 
             if (truckAnnualInspection != null)
             {
-                await SaveDocTruck(truckAnnualInspection, DocAndFileConstants.TruckInspection, model.Id.ToString());
+                await SaveDocTruck(truckAnnualInspection, DocAndFileConstants.TruckInspection, editTruck.Id, localDate);
 
             }
 
             if (bobTailPhysicalDamage != null)
             {
-                await SaveDocTruck(bobTailPhysicalDamage, DocAndFileConstants.BobTailPhysicalDamage, model.Id.ToString());
+                await SaveDocTruck(bobTailPhysicalDamage, DocAndFileConstants.BobTailPhysicalDamage, editTruck.Id, localDate);
             }
 
             if (nYHUTDoc != null)
             {
-                await SaveDocTruck(nYHUTDoc, DocAndFileConstants.NyHit, model.Id.ToString());
+                await SaveDocTruck(nYHUTDoc, DocAndFileConstants.NyHit, editTruck.Id, localDate);
             }
         }
         
-        private void EditTrailerDb(TrailerViewModel model)
+        private async Task EditTrailerDb(TrailerViewModel model, string localDate)
         {
-            var editTrailer = db.Trailers.FirstOrDefault(t => t.Id == model.Id);
+            if (model == null) return;
+
+            var dateTimeUpdate = string.IsNullOrEmpty(localDate) ? DateTime.Now : DateTime.ParseExact(localDate, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
+
+            var editTrailer = await db.Trailers.FirstOrDefaultAsync(t => t.Id == model.Id);
             
             if (editTrailer == null) return;
             
             editTrailer.Name = model.Name;
             editTrailer.Type = model.Type;
-            editTrailer.Year = model.Year;
-            editTrailer.Make = model.Make;
+            editTrailer.Year = Convert.ToInt32(model.Year);
+            editTrailer.Brand = model.Make;
+            editTrailer.Model = model.Model;
             editTrailer.HowLong = model.HowLong;
             editTrailer.Vin = model.Vin;
             editTrailer.Owner = model.Owner;
             editTrailer.Color = model.Color;
             editTrailer.Plate = model.Plate;
-            editTrailer.Exp = model.Exp;
+            editTrailer.PlateExpires = model.Exp;
             editTrailer.AnnualIns = model.AnnualIns;
+            editTrailer.DateTimeLastUpdate = dateTimeUpdate;
                 
-            db.SaveChanges();
+            await db.SaveChangesAsync();
 
         }
 
-        private void SaveDocTruckDb(string path, string id, string nameDoc)
+        private async Task SaveDocTruckDb(string path, int truckId, string nameDoc, string localDate)
         {
+            var dateTimeUpload = string.IsNullOrEmpty(localDate) ? DateTime.Now : DateTime.ParseExact(localDate, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
+
             var pref = path.Remove(0, path.LastIndexOf(".") + 1);
 
-            var documentInDb = db.DocumentTruckAndTrailers.FirstOrDefault(x => x.NameDoc == nameDoc && x.IdTr == Convert.ToInt32(id));
-
-            if (documentInDb != null)
-            {
-                documentInDb.DocPath = path;
-                documentInDb.TypeDoc = pref;
-
-                db.SaveChanges();
-                return;
-            }
-
-            var documentTruckAndTrailers = new DocumentTruckAndTrailers()
+            var documentTruck = new DocumentTruck()
             {
                 DocPath = path,
-                IdTr = Convert.ToInt32(id),
-                NameDoc = nameDoc,
-                TypeTr = TruckAndTrailerConstants.Truck,
-                TypeDoc = pref
+                Name = nameDoc,
+                TruckId = truckId,
+                DateTimeUpload = dateTimeUpload,
             };
 
-            db.DocumentTruckAndTrailers.Add(documentTruckAndTrailers);
+            await db.DocumentsTrucks.AddAsync(documentTruck);
 
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
         
-        public async Task SaveDocTruck(IFormFile uploadedFile, string nameDoc, string id)
+        public async Task SaveDocTruck(IFormFile uploadedFile, string nameDoc, int truckId, string dateTimeUpload)
         {
             if (uploadedFile.Length > maxFileLength) return;
 
-            var path = $"../Document/Truck/{id}/" + uploadedFile.FileName;
+            var path = $"../Document/Truck/{truckId}/" + uploadedFile.FileName;
             
             if(!Directory.Exists("../Document/Truck"))
             {
                 Directory.CreateDirectory($"../Document/Truck");
             }
             
-            if (!Directory.Exists($"../Document/Truck/{id}"))
+            if (!Directory.Exists($"../Document/Truck/{truckId}"))
             {
-                Directory.CreateDirectory($"../Document/Truck/{id}");
+                Directory.CreateDirectory($"../Document/Truck/{truckId}");
             }
 
             using (var fileStream = new FileStream(path, FileMode.Create))
@@ -383,25 +421,26 @@ namespace WebDispacher.Business.Services
                 uploadedFile.CopyTo(fileStream);
             }
             
-            SaveDocTruckDb(path, id, nameDoc);
+            await SaveDocTruckDb(path, truckId, nameDoc, dateTimeUpload);
         }
         
-        private List<InspectionDriver> GetInspectionTrucksDb(string idDriver, string idTruck, string idTrailer, string date)
+        private List<DriverInspection> GetInspectionTrucksDb(string driverId, string idTruck, string idTrailer, string date)
         {
-            var inspectionDrivers = new List<InspectionDriver>();
-            
+            var inspectionDrivers = new List<DriverInspection>();
+
             db.Drivers
-                .Include(d => d.InspectionDrivers).ToList()
-                .Where(d => idDriver == DocAndFileConstants.ZeroLevel || d.Id.ToString() == idDriver)
+                .Include(d => d.Inspections)
+                .ToList()
+                .Where(d => driverId == DocAndFileConstants.ZeroLevel || d.Id.ToString() == driverId)
                 .ToList()
                 .ForEach((item) =>
                 {
-                    inspectionDrivers.AddRange(item.InspectionDrivers
-                        .Where(iD => (date == DocAndFileConstants.ZeroLevel || 
-                                      (Convert.ToDateTime(iD.Date).Month == Convert.ToDateTime(date).Month 
-                                       && Convert.ToDateTime(iD.Date).Year == Convert.ToDateTime(date).Year))
-                                     && (idTruck == DocAndFileConstants.ZeroLevel || iD.IdITruck.ToString() == idTruck)
-                                     && (idTrailer == DocAndFileConstants.ZeroLevel || iD.IdITrailer.ToString() == idTrailer)));
+                    inspectionDrivers.AddRange(item.Inspections
+                        .Where(iD => (date == DocAndFileConstants.ZeroLevel ||
+                                      (Convert.ToDateTime(iD.DateTimeInspection).Month == Convert.ToDateTime(date).Month
+                                       && Convert.ToDateTime(iD.DateTimeInspection).Year == Convert.ToDateTime(date).Year))
+                                     && (idTruck == DocAndFileConstants.ZeroLevel || iD.TruckId.ToString() == idTruck)
+                                     && (idTrailer == DocAndFileConstants.ZeroLevel || iD.TrailerId.ToString() == idTrailer)));
                 });
 
             return inspectionDrivers;
@@ -409,7 +448,23 @@ namespace WebDispacher.Business.Services
         
         private async Task<int> CreateTrailerDb(TrailerViewModel trailerViewModel)
         {
-            var trailer = mapper.Map<Trailer>(trailerViewModel);
+            var trailer = new Trailer
+            {
+                CompanyId = trailerViewModel.CompanyId,
+                Name = trailerViewModel.Name,
+                Year = Convert.ToInt32(trailerViewModel.Year),
+                Brand = trailerViewModel.Make,
+                Model = trailerViewModel.Model,
+                Type = trailerViewModel.Type,
+                HowLong = trailerViewModel.HowLong,
+                Vin = trailerViewModel.Vin,
+                Plate = trailerViewModel.Plate,
+                PlateExpires = trailerViewModel.Exp,
+                Color = trailerViewModel.Color,
+                AnnualIns = trailerViewModel.AnnualIns,
+                Owner = trailerViewModel.Owner,
+            };
+
             await db.Trailers.AddAsync(trailer);
             
             await db.SaveChangesAsync();
@@ -419,7 +474,24 @@ namespace WebDispacher.Business.Services
         
         private async Task<int> CreateTruckDb(TruckViewModel truckModel)
         {
-            var truck = mapper.Map<Truck>(truckModel);
+            var truck = new Truck
+            {
+                CompanyId = truckModel.CompanyId,
+                Name = truckModel.NameTruck,
+                Year = Convert.ToInt32(truckModel.Year),
+                Brand = truckModel.Make,
+                Model = truckModel.Model,
+                State = truckModel.State,
+                PlateExpires = truckModel.Exp,
+                Plate = truckModel.PlateTruck,
+                VIN = truckModel.Vin,
+                Owner = truckModel.Owner,
+                Color = truckModel.ColorTruck,
+                Type = truckModel.Type,
+                DateTimeCreate = truckModel.DateTimeRegistration,
+                DateTimeLastUpdate = truckModel.DateTimeLastUpload,
+            };
+
             await db.Trucks.AddAsync(truck);
             
             await db.SaveChangesAsync();
@@ -427,27 +499,29 @@ namespace WebDispacher.Business.Services
             return truck.Id;
         }
         
-        private void SaveDocTrailerDb(string path, string id, string nameDoc)
+        private async Task SaveDocTrailerDb(string path, int trailerId, string nameDoc, string localDate)
         {
+            var dateTimeUpload = string.IsNullOrEmpty(localDate) ? DateTime.Now : DateTime.ParseExact(localDate, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
+
             var pref = path.Remove(0, path.LastIndexOf(".") + 1);
-            
-            var documentTruckAndTrailers = new DocumentTruckAndTrailers()
+
+            var documentTruck = new DocumentTrailer()
             {
                 DocPath = path,
-                IdTr = Convert.ToInt32(id),
-                NameDoc = nameDoc,
-                TypeTr = TruckAndTrailerConstants.Trailer,
-                TypeDoc = pref
+                Name = nameDoc,
+                TrailerId = trailerId,
+                DateTimeUpload = dateTimeUpload,
             };
-            
-            db.DocumentTruckAndTrailers.Add(documentTruckAndTrailers);
-            
-            db.SaveChanges();
+
+            await db.DocumentsTrailers.AddAsync(documentTruck);
+
+            await db.SaveChangesAsync();
         }
         
-        private async Task RemoveTrailerDb(string id)
+        private async Task RemoveTrailerDb(int id)
         {
-            var trailer = await db.Trailers.FirstOrDefaultAsync(t => t.Id.ToString() == id);
+            var trailer = await db.Trailers.FirstOrDefaultAsync(t => t.Id == id);
+
             if (trailer == null) return;
             
             db.Trailers.Remove(trailer);
@@ -455,9 +529,9 @@ namespace WebDispacher.Business.Services
             await db.SaveChangesAsync();
         }
         
-        private async Task RemoveTruckDb(string id)
+        private async Task RemoveTruckDb(int id)
         {
-            var truck = await db.Trucks.FirstOrDefaultAsync(t => t.Id.ToString() == id);
+            var truck = await db.Trucks.FirstOrDefaultAsync(t => t.Id == id);
             if (truck == null) return;
             
             db.Trucks.Remove(truck);
@@ -495,16 +569,16 @@ namespace WebDispacher.Business.Services
         private async Task<Trailer> GetTrailerDb(string idDriver)
         {
             var driver = await db.Drivers
-                .Include(d => d.InspectionDrivers)
+                .Include(d => d.Inspections)
                 .FirstOrDefaultAsync(d => d.Id.ToString() == idDriver);
             
-            if (driver == null && driver.InspectionDrivers == null && driver.InspectionDrivers.Count == 0)
+            if (driver == null && driver.Inspections == null && driver.Inspections.Count == 0)
             {
                 return null;
             }
             
-            var inspectionDriver = driver.InspectionDrivers.Last();
-            var trailer = await db.Trailers.FirstOrDefaultAsync(t => t.Id == inspectionDriver.IdITrailer);
+            var inspectionDriver = driver.Inspections.Last();
+            var trailer = await db.Trailers.FirstOrDefaultAsync(t => t.Id == inspectionDriver.TrailerId);
             
             return trailer;
         }
@@ -512,16 +586,16 @@ namespace WebDispacher.Business.Services
         private async Task<Truck> GetTruckDb(string idDriver)
         {
             var driver = await db.Drivers
-                .Include(d => d.InspectionDrivers)
+                .Include(d => d.Inspections)
                 .FirstOrDefaultAsync(d => d.Id.ToString() == idDriver);
             
-            if (driver == null && driver.InspectionDrivers == null && driver.InspectionDrivers.Count == 0)
+            if (driver == null && driver.Inspections == null && driver.Inspections.Count == 0)
             {
                 return null;
             }
             
-            var inspectionDriver = driver.InspectionDrivers.Last();
-            var truck = await db.Trucks.FirstOrDefaultAsync(t => t.Id == inspectionDriver.IdITruck);
+            var inspectionDriver = driver.Inspections.Last();
+            var truck = await db.Trucks.FirstOrDefaultAsync(t => t.Id == inspectionDriver.TruckId);
             
             return truck; 
         }
@@ -533,16 +607,19 @@ namespace WebDispacher.Business.Services
             return mapper.Map<TrailerViewModel>(trailer);
         }
         
-        private TruckViewModel GetTruckByIdDb(int idTr)
+        private async Task<TruckViewModel> GetTruckByIdDb(int idTr)
         {
-            var truck = db.Trucks.FirstOrDefault(t => t.Id == idTr);
+            var truck = await db.Trucks.FirstOrDefaultAsync(t => t.Id == idTr);
 
             return mapper.Map<TruckViewModel>(truck);
         }
         
-        private async Task<List<Truck>> GetTrucksDb(int page, string idCompany)
+        private async Task<List<Truck>> GetTrucksDb(int page, int companyId)
         {
-            var trucks = db.Trucks.Where(t => t.CompanyId.ToString() == idCompany).OrderByDescending(x => x.Id).AsQueryable();
+            var trucks = db.Trucks
+                .Where(t => t.CompanyId == companyId)
+                .OrderByDescending(x => x.Id)
+                .AsQueryable();
 
             if (page == UserConstants.AllPagesNumber) return await trucks.ToListAsync();
 
@@ -591,27 +668,20 @@ namespace WebDispacher.Business.Services
 
         private async Task<Truck> GetTruckByPlateDb(string truckPlate)
         {
-            return await db.Trucks.FirstOrDefaultAsync(t => t.PlateTruk == truckPlate);
-        }
-        
-        private async Task<List<DocumentTruckAndTrailers>> GetTruckDocDb(string id)
-        {
-            return await db.DocumentTruckAndTrailers
-                .Where(d => d.TypeTr == TruckAndTrailerConstants.Truck && d.IdTr.ToString() == id)
-                .ToListAsync();
+            return await db.Trucks.FirstOrDefaultAsync(t => t.Plate == truckPlate);
         }
         
         private async Task<Dictionary<string, string>> GetBaseTruckDocDb(string id)
         {
-            var docs = await db.DocumentTruckAndTrailers
-                .Where(d => d.TypeTr == TruckAndTrailerConstants.Truck && d.IdTr.ToString() == id)
+            var docs = await db.DocumentsTrucks
+                .Where(d => d.Id.ToString() == id)
                 .ToListAsync();
 
             var keyValues = new Dictionary<string, string>();
 
             foreach(var item in docs)
             {
-                keyValues.Add(item.NameDoc, GetFileNameWithPath(item.DocPath));
+                keyValues.Add(item.Name, GetFileNameWithPath(item.DocPath));
             }
 
 

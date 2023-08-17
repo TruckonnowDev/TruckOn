@@ -1,7 +1,7 @@
 function SendRemindInspection(idDriver, url) {
     let urlBase = url+"/Driver/Remind/Inspection";
     let xmlHttp = new XMLHttpRequest();
-    var body = 'idDriver=' + encodeURIComponent(idDriver);
+    var body = 'driverId=' + encodeURIComponent(idDriver);
     xmlHttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             if (this.responseText == "true") {

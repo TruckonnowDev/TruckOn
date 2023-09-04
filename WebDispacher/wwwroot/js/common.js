@@ -21,7 +21,7 @@ $(function() {
                 callback(countryCode);
             });
         },
-        utilsScript: "js/utils.js"
+        utilsScript: "~/libs/intl-tel-input-master/utils.js"
     });
 });
 $(function() {

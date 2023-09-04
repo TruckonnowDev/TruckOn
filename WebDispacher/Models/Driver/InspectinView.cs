@@ -1,11 +1,13 @@
-﻿namespace WebDispacher.Models.Driver
+﻿using System;
+
+namespace WebDispacher.Models.Driver
 {
     public class InspectinView
     {
         public int Id { get; set; }
-        public string Date { get; set; }
-        public string Trailer { get; set; }
-        public string Truck { get; set; }
+        public DateTime DateTimeInspection { get; set; }
+        public string TrailerInformation { get; set; }
+        public string TruckInformation { get; set; }
         public string NameDriver { get; set; }
     }
 }

@@ -1,18 +1,22 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebDispacher.ViewModels.Driver
 {
     public class DriverReportViewModel
     {
         public int Id { get; set; }
-        public int IdDriver { get; set; }
-        public int IdCompany { get; set; }
+        public int DriverId { get; set; }
+        public int CompanyId { get; set; }
         
         [Required(ErrorMessage = "CommentRequired")]
         public string Comment { get; set; }
         
-        [Required(ErrorMessage = "FullNameRequired")]
-        public string FullName { get; set; }
+        [Required(ErrorMessage = "FirstNameRequired")]
+        public string FirstName { get; set; }
+
+        [Required(ErrorMessage = "LastNameRequired")]
+        public string LastName { get; set; }
         
         [Required(ErrorMessage = "EnglishRequired")]
         public string English { get; set; }
@@ -49,9 +53,12 @@ namespace WebDispacher.ViewModels.Driver
         
         public string Experience { get; set; }
         
-        [Required(ErrorMessage = "DriversLicenseNumberRequired")]
-        public string DriversLicenseNumber { get; set; }
-        public string DateRegistration { get; set; }
-        public string DateFired { get; set; }
+        [Required(ErrorMessage = "DriverLicenseNumberRequired")]
+        public string DriverLicenseNumber { get; set; }
+
+        public DateTime DateRegistration { get; set; }
+        public DateTime DateFired { get; set; }
+        [Required(ErrorMessage = "DriverLicenseNumberRequired")]
+        public DateTime DateOfBirth { get; set; }
     }
 }

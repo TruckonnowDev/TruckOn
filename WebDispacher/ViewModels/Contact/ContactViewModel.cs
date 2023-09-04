@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using WebDispacher.ViewModels.Order;
 
 namespace WebDispacher.ViewModels.Contact
 {
@@ -7,23 +8,22 @@ namespace WebDispacher.ViewModels.Contact
         public int Id { get; set; }
         public int CompanyId { get; set; }
         
-        [Required(ErrorMessage = "EmailRequired")]
         [Display(Name = "Email")]
+        [Required(ErrorMessage = "EmailRequired")]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "PhoneRequired")]
-        [Display(Name = "Phone")]
-        public string Phone { get; set; }
+        public int? PhoneNumberId { get; set; }
+        public EditPhoneNumberViewModel PhoneNumber { get; set; }
 
         [Display(Name = "Position")]
         public string Position { get; set; }
 
-        [Required(ErrorMessage = "ExtRequired")]
         [Display(Name = "Ext")]
+        [Required(ErrorMessage = "ExtRequired")]
         public string Ext { get; set; }
 
-        [Required(ErrorMessage = "NameRequired")]
         [Display(Name = "Name")]
+        [Required(ErrorMessage = "NameRequired")]
         public string Name { get; set; }
     }
 }

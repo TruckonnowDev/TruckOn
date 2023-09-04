@@ -1,10 +1,11 @@
 ﻿using DaoModels.DAO.Models;
-using iTextSharp.text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using WebDispacher.Business.Interfaces;
 using WebDispacher.Constants;
+using WebDispacher.Constants.Identity;
 using WebDispacher.Service;
 using WebDispacher.ViewModels.Dispatcher;
 
@@ -23,35 +24,27 @@ namespace WebDispacher.Controellers.Settings
         }
 
         [Route("Dispatchs")]
-        public IActionResult GetUsers()
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public IActionResult Dispatchs()
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.SettingsExtension, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-
-                    ViewData[NavConstants.TypeNavBar] = 
-                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    var dispatchers = companyService.GetDispatchers(Convert.ToInt32(idCompany));
-                    ViewBag.Dispatchers = dispatchers;
-                    
-                    return View("~/Views/Settings/Extension/AllDispatch.cshtml");
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                ViewData[NavConstants.TypeNavBar] = 
+                    companyService.GetTypeNavBar(CompanyId, NavConstants.TypeNavSettings);
+                    
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                var dispatchers = companyService.GetDispatchers(Convert.ToInt32(CompanyId));
+                    
+                return View("~/Views/Settings/Extension/AllDispatch.cshtml", dispatchers);
             }
             catch (Exception e)
             {
@@ -63,33 +56,26 @@ namespace WebDispacher.Controellers.Settings
 
         [HttpGet]
         [Route("CreateDispatch")]
-        public IActionResult AddDicpatch()
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public IActionResult AddDispatch()
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.SettingsExtension, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-
-                    ViewData[NavConstants.TypeNavBar] = 
-                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    
-                    return View("~/Views/Settings/Extension/AddDispatch.cshtml");
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                ViewData[NavConstants.TypeNavBar] = 
+                    companyService.GetTypeNavBar(CompanyId, NavConstants.TypeNavSettings);
+                    
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                    
+                return View("~/Views/Settings/Extension/AddDispatch.cshtml");
             }
             catch (Exception e)
             {
@@ -101,26 +87,19 @@ namespace WebDispacher.Controellers.Settings
 
         [HttpPost]
         [Route("RefreshToken")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         public string RefreshTokenDispatch(string idDispatch)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.SettingsExtension, out var key, out var idCompany))
-                {
-                    ViewData[NavConstants.TypeNavBar] = 
-                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+                ViewData[NavConstants.TypeNavBar] = 
+                    companyService.GetTypeNavBar(CompanyId, NavConstants.TypeNavSettings);
                     
-                    ViewBag.NameCompany = GetCookieCompanyName();
+                //ViewBag.NameCompany = GetCookieCompanyName();
                     
-                    return companyService.RefreshTokenDispatch(idDispatch);
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                return companyService.RefreshTokenDispatch(idDispatch);
             }
             catch (Exception e)
             {
@@ -132,26 +111,26 @@ namespace WebDispacher.Controellers.Settings
 
         [HttpPost]
         [Route("CreateDispatch")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         public IActionResult AddDispatch(DispatcherViewModel dispatcher)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                
-                if (CheckPermissionsByCookies(RouteConstants.SettingsExtension, out var key, out var idCompany))
+                if (ModelState.IsValid)
                 {
-                    ViewData[NavConstants.TypeNavBar] = 
-                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    companyService.CreateDispatch(dispatcher, Convert.ToInt32(idCompany));
-                    
+                    ViewData[NavConstants.TypeNavBar] =
+                        companyService.GetTypeNavBar(CompanyId, NavConstants.TypeNavSettings);
+
+                    //ViewBag.NameCompany = GetCookieCompanyName();
+
+                    companyService.CreateDispatch(dispatcher, Convert.ToInt32(CompanyId));
+
                     return Redirect($"{Config.BaseReqvesteUrl}/Settings/Extension/Dispatchs");
                 }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                else
                 {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                    return View("~/Views/Settings/Extension/AddDispatch.cshtml", dispatcher);
                 }
             }
             catch (Exception e)
@@ -163,35 +142,28 @@ namespace WebDispacher.Controellers.Settings
 
         [HttpGet]
         [Route("EditDispatch")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         public IActionResult EditDispatch(int idDispatch)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.SettingsExtension, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-
-                    ViewData[NavConstants.TypeNavBar] = 
-                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    
-                    var dispatcher = companyService.GetDispatcherById(idDispatch);
-
-                    return View("~/Views/Settings/Extension/EditDispatch.cshtml", dispatcher);
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                ViewData[NavConstants.TypeNavBar] = 
+                    companyService.GetTypeNavBar(CompanyId, NavConstants.TypeNavSettings);
+                    
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                    
+                var dispatcher = companyService.GetDispatcherById(idDispatch);
+
+                return View("~/Views/Settings/Extension/EditDispatch.cshtml", dispatcher);
             }
             catch (Exception e)
             {
@@ -202,26 +174,26 @@ namespace WebDispacher.Controellers.Settings
 
         [HttpPost]
         [Route("EditDispatch")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         public IActionResult EditDispatch(DispatcherViewModel dispatcher)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-                if (CheckPermissionsByCookies(RouteConstants.SettingsExtension, out var key, out var idCompany))
+                if (ModelState.IsValid)
                 {
                     ViewData[NavConstants.TypeNavBar] = 
-                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+                        companyService.GetTypeNavBar(CompanyId, NavConstants.TypeNavSettings);
                     
-                    ViewBag.NameCompany = GetCookieCompanyName();
+                    //ViewBag.NameCompany = GetCookieCompanyName();
                     companyService.EditDispatch(dispatcher);
                     
                     return Redirect($"{Config.BaseReqvesteUrl}/Settings/Extension/Dispatchs");
                 }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                else
                 {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                    return View("~/Views/Settings/Extension/EditDispatch.cshtml", dispatcher);
                 }
             }
             catch (Exception e)
@@ -233,27 +205,20 @@ namespace WebDispacher.Controellers.Settings
 
         [HttpGet]
         [Route("RemoveDispatch")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         public IActionResult RemoveDispatch(int idDispatch)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.SettingsExtension, out var key, out var idCompany))
-                {
-                    ViewData[NavConstants.TypeNavBar] = 
-                        companyService.GetTypeNavBar(key, idCompany, NavConstants.TypeNavSettings);
+                ViewData[NavConstants.TypeNavBar] = 
+                    companyService.GetTypeNavBar(CompanyId, NavConstants.TypeNavSettings);
                     
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    companyService.RemoveDispatchById(idDispatch);
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                companyService.RemoveDispatchById(idDispatch);
                     
-                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Extension/Dispatchs");
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                return Redirect($"{Config.BaseReqvesteUrl}/Settings/Extension/Dispatchs");
             }
             catch (Exception e)
             {

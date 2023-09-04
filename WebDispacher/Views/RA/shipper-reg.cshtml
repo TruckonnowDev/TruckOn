@@ -25,12 +25,12 @@
                         <div class="validation" asp-validation-summary="ModelOnly"></div>
                         <label for="" class="w50">
                             @Localizer["FormFirstName"]*
-                            <input type="text" name="FirstName" asp-for=FirstName  required>
+                            <input type="text" id="firstName" name="FirstName" asp-for=FirstName  required>
                             @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
                         </label>
                         <label for="" class="w50">
                             @Localizer["FormLastName"]*
-                            <input type="text" asp-for=LastName name="LastName" required>
+                            <input type="text" id="lastName" asp-for=LastName name="LastName" required>
                             @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
                         </label>
                         <label for="">
@@ -45,7 +45,7 @@
                         </label>
                         <label for="">
                             @Localizer["PhoneNumber"]*
-                            <input type="tel" id="phone" asp-for=PhoneNumber name="PhoneNumber" pattern="@PatternConstants.PhoneNumber" required />
+                            <input type="text" id="phone" asp-for=PhoneNumber name="PhoneNumber" placeholder="(XXX)-XXX-XXXX" pattern="@PatternConstants.PhoneNumberWithoutCountryCode" required />
                             @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
                         </label>
                         <label for="">@Localizer["HowManyCars"]?*
@@ -79,7 +79,11 @@
     </div>
 </div>
 
+<script src="~/js/input-replacer.js"></script>
 <script>
+    setReplacer(document.querySelector('#firstName'), /\d/g);
+    setReplacer(document.querySelector('#lastName'), /\d/g);
+
     $('#email').on('input invalid', function () {
         this.setCustomValidity('')
         if (this.validity.valueMissing) {
@@ -88,8 +92,9 @@
         if (this.validity.typeMismatch) {
             this.setCustomValidity("@Localizer["EmailValidMessage"]")
         }
-        if (this.validity.patternMismatch) {
-            this.setCustomValidity('@Localizer["EmailValidMessage"]')
-        }
-    })
+    });
+
+    $(document).ready(function () {
+         $("#phone").mask("(999)-999-9999", { placeholder: "(XXX)-XXX-XXXX" });
+    });
 </script>

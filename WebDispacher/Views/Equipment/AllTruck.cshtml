@@ -1,5 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 
+@model List<DaoModels.DAO.Models.Truck>
+
 @inject IViewLocalizer Localizer
 
 @{
@@ -46,25 +48,30 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for (int i = 0; i < ViewBag.Trucks.Count; i++)
+                    @for (int i = 0; i < Model.Count; i++)
                     {
                         <tr>
                             <td aria-label="@Localizer["Name"]">
-                                    <div class="value-td">@ViewBag.Trucks[i].NameTruk</div>
+                                    <div class="value-td">@Model[i].Name</div>
                                 </td>
                             <td aria-label="@Localizer["Year"]">
-                                    <div class="value-td"> @ViewBag.Trucks[i].Yera</div>
+                                    @{
+                                        string yearString = Model[i].Year != 0
+                                        ? Model[i].Year.ToString()
+                                        : string.Empty;
+                                    }
+                                    <div class="value-td">@yearString</div>
                                     </td>
                             <td aria-label="@Localizer["Make"]">
-                                    <div class="value-td">@ViewBag.Trucks[i].Make</div>
+                                    <div class="value-td">@Model[i].Brand</div>
                                 </td>
                             <td aria-label="@Localizer["Model"]">
-                                    <div class="value-td">@ViewBag.Trucks[i].Model</div>
+                                    <div class="value-td">@Model[i].Model</div>
                                 </td>
                             <td aria-label="@Localizer["Type"]">
                                     @{
-                                        var typeValue = ViewBag.Trucks[i].Type;
-                                        switch (ViewBag.Trucks[i].Type)
+                                        var typeValue = Model[i].Type;
+                                        switch (Model[i].Type)
                                         {
                                             case "2DrPickupwithSingleWheel":
                                                 typeValue = "2Dr Pickup with Single Wheel";
@@ -96,46 +103,51 @@
                                     
                                 </td>
                             <td aria-label="@Localizer["Vin"] #">
-                                    <div class="value-td">@ViewBag.Trucks[i].Vin</div>
+                                    <div class="value-td">@Model[i].VIN</div>
                                 </td>
                             <td aria-label="@Localizer["Plate"]#">
-                                    <div class="value-td">@ViewBag.Trucks[i].PlateTruk</div>
+                                    <div class="value-td">@Model[i].Plate</div>
                                 </td>
                             <td aria-label="@Localizer["PlateExp"]">
-                                    <div class="value-td">@ViewBag.Trucks[i].Exp</div>
+                                @{
+                                        string plateExpiresString = Model[i].PlateExpires.HasValue
+                                        ? Model[i].PlateExpires.Value.ToString("MM/yy")
+                                        : "N/A";
+                                }
+                                <div class="value-td">@plateExpiresString</div>
                                 </td>
                             <td aria-label="@Localizer["State"]">
-                                    <div class="value-td">@ViewBag.Trucks[i].Satet</div>
+                                    <div class="value-td">@Model[i].State</div>
                                 </td>
                             <td aria-label="@Localizer["Color"]">
-                                    <div class="value-td">@ViewBag.Trucks[i].ColorTruk</div>
+                                    <div class="value-td">@Model[i].Color</div>
                                     </td>
                             <td aria-label="@Localizer["Owner"]">
-                                    <div class="value-td">@ViewBag.Trucks[i].Owner</div>
+                                    <div class="value-td">@Model[i].Owner</div>
                                 </td>
                             <td class="input-img mt-3 mb-3">
                                 <div class="td-click-img-margin">
 
-                                        <div data-title="@Localizer["ViewNotificataion"]" class="ico-doc ico-doc-view" onclick="document.location.href = '@ViewBag.BaseUrl/Driver/InspactionTrucks?idDriver=0&idTruck='+@ViewBag.Trucks[i].Id+'&idTrailer=0&date=0';">
+                                        <div data-title="@Localizer["ViewNotificataion"]" class="ico-doc ico-doc-view" onclick="document.location.href = '@ViewBag.BaseUrl/Driver/InspactionTrucks?idDriver=0&idTruck='+@Model[i].Id+'&idTrailer=0&date=0';">
                                             <i class="bi bi-cursor-fill" style="color: #4caf50; font-size:20px"></i>
                                         </div>
                                     @*<img src="~/img/arrow.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Driver/InspactionTrucks?idDriver=0&idTruck='+@ViewBag.Trucks[i].Id+'&idTrailer=0&date=0';" />*@
 
-                                        <div data-title="@Localizer["EditTruckNotificataion"]" class="ico-doc ico-doc-edit" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/EditTruck?idTruck='+@ViewBag.Trucks[i].Id;">
+                                        <div data-title="@Localizer["EditTruckNotificataion"]" class="ico-doc ico-doc-edit" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/EditTruck?truckId='+@Model[i].Id">
                                             <i class="bi bi-pencil-square" style="color: #ff9800; font-size:20px"></i>
                                         </div>
                                     @*<img src="~/img/pen.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/EditTruck?idTruck='+@ViewBag.Trucks[i].Id;">*@
 
-                                        <div data-title="@Localizer["CustomizeNotificataion"]" class="ico-doc ico-doc-settings" onclick="document.location.href = '@ViewBag.BaseUrl/Settings?idTr=@ViewBag.Trucks[i].Id&page=s&idProfile=0&typeTransport=Truck'">
+                                        <div data-title="@Localizer["CustomizeNotificataion"]" class="ico-doc ico-doc-settings" onclick="document.location.href = '@ViewBag.BaseUrl/Settings/Get?idTr=@Model[i].Id&page=s&idProfile=0&typeTransport=Truck'">
                                             <i class="bi bi-gear-fill" style="color: #a3644d; font-size:20px"></i>
                                         </div>
                                     @*<img src="~/img/setting.svg" alt="" onclick="window.location.href='@ViewBag.BaseUrl/Settings?idTr=@ViewBag.Trucks[i].Id&page=s&idProfile=0&typeTransport=Truck'">*@
-                                        <div data-title="@Localizer["DocNotificataion"]" class="ico-doc ico-doc-documents" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/Truck/Doc?id='+@ViewBag.Trucks[i].Id;">
+                                        <div data-title="@Localizer["DocNotificataion"]" class="ico-doc ico-doc-documents" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/Truck/Doc?id='+@Model[i].Id;">
                                             <i class="bi bi-file-earmark-medical-fill" style="color: #3f51b5; font-size:20px"></i>
                                         </div>
                                         
                                     @*<img src="~/img/doc.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/Truck/Doc?id='+@ViewBag.Trucks[i].Id;">*@
-                                        <div data-title="@Localizer["DeleteNotificataion"]" class="ico-doc ico-doc-delete open-ConfirmDelete" data-toggle="modal" data-id="@ViewBag.Trucks[i].Id" href="#confirmDeleteEntryModal">
+                                        <div data-title="@Localizer["DeleteNotificataion"]" class="ico-doc ico-doc-delete open-ConfirmDelete" data-toggle="modal" data-id="@Model[i].Id" href="#confirmDeleteEntryModal">
                                             <i class="bi bi-x-lg" style="color: #f44336; font-size:20px"></i>
                                         </div>
                                     @*<img src="~/img/delet.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/Truck/Remove?id='+@ViewBag.Trucks[i].Id;">*@

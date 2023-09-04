@@ -17,8 +17,6 @@ namespace WebDispacher.ViewModels.Shipping
         public string Email { get; set; }
 
         [Required(ErrorMessage = "PhoneNumberRequired")]
-        [MinLength(4, ErrorMessage = "MinLengthPhoneNumber")]
-        [MaxLength(12, ErrorMessage = "MaxLengthPhoneNumber")]
         public string PhoneNumber { get; set; }
 
         [Required(ErrorMessage = "CarsPerMonthRequired")]

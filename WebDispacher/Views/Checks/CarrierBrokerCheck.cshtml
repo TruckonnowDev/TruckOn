@@ -1,0 +1,22 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using System.Globalization;
+@using WebDispacher.Constants;
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Carrier Check";
+}
+
+<body>
+    <div class="admin">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    @await Html.PartialAsync("~/Views/Error/Notready.cshtml")
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>

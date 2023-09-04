@@ -1,13 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using WebDispacher.Business.Interfaces;
 using WebDispacher.Business.Services;
 using WebDispacher.Constants;
+using WebDispacher.Constants.Identity;
 
 namespace WebDispacher.Controellers
 {
     public class BaseController : Controller
     {
         internal readonly IUserService userService;
+        internal string CompanyId => User.FindFirstValue(ClaimsIdentityConstants.CompanyId);
 
         public BaseController(IUserService userService)
         {

@@ -21,8 +21,11 @@
     <script src="~/js/scripts.min.js"></script>
     <script src="~/libs/bootstrap/css/bootstrap.min.css"></script>
     <script src="~/libs/jquery/dist/jquery.maskedinput.js"></script>
+    
     <script src="~/libs/bootstrap/js/bootstrap.min.js"></script>
     <script src="~/libs/bootstrap/js/bootstrap-datepicker.js"></script>
+    <script src="~/libs/intl-tel-input-master/js/intlTelInput.js"></script>
+    <script src="~/libs/intl-tel-input-master/js/utils.js"></script>
     <script src="~/js/orders.js"></script>
     <script src="~/js/driver.js"></script>
     <script src="~/js/equipment.js"></script>
@@ -58,6 +61,11 @@ else if (ViewData[NavConstants.TypeNavBar] == NavConstants.BaseCompany)
 else if (ViewData[NavConstants.TypeNavBar] == NavConstants.NormalCompany)
 {
     @await Html.PartialAsync("~/Views/PartView/NavNormalCompany.cshtml")
+    ;
+}
+else if (ViewData[NavConstants.TypeNavBar] == NavConstants.BrokerCompany)
+{
+    @await Html.PartialAsync("~/Views/PartView/NavBrokerCompany.cshtml")
     ;
 }
 else if (ViewData[NavConstants.TypeNavBar] == NavConstants.TypeNavBaseCompanySettings)

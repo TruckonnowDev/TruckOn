@@ -41,25 +41,25 @@
                         <div class="img">
                             <img src="img/ownerOperator.svg" alt="">
                         </div>
-                        <p>@Localizer["DispatcherFirstBlock"]</p>
+                        <h3>@Localizer["DispatcherFirstBlock"]</h3>
                     </div>
                     <div class="one">
                         <div class="img">
                             <img src="img/driver.svg" alt="">
                         </div>
-                        <p>@Localizer["DriverFirstBlock"]</p>
+                        <h3>@Localizer["DriverFirstBlock"]</h3>
                     </div>
                     <div class="one">
                         <div class="img">
                             <img src="img/mediumFleet.svg" alt="">
                         </div>
-                        <p>@Localizer["MediumFleetFirstBlock"]</p>
+                        <h3>@Localizer["MediumFleetFirstBlock"]</h3>
                     </div>
                     <div class="one">
                         <div class="img">
                             <img src="img/largeFleet.svg" alt="">
                         </div>
-                        <p>@Localizer["LargeFleetFirstBlock"]</p>
+                        <h3>@Localizer["LargeFleetFirstBlock"]</h3>
                     </div>
                 </div>
             </div>
@@ -69,10 +69,10 @@
 <div class="bl-3">
     <div class="container-fluid">
         <div class="row align-items-center" style="justify-content: start;">
-            <div class="col-md-6" style="padding-left:0;">
+            <div class="col-md-7" style="padding-left:0;">
                 <img src="img/mobilScreen.svg" alt="">
             </div>
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <div class="text">
                     <h1>@Localizer["HeaderSecondBlock"]</h1>
                     <p>@Localizer["BodySecondBlock"]</p>
@@ -185,7 +185,7 @@
         <div class="container">
             <div class="row">
                 <div class="">
-                    <h1 style="font-size: 36px;">@Localizer["HeaderSeventhBlock"]</h1>
+                    <h1 style="font-size: 28px;">@Localizer["HeaderSeventhBlock"]</h1>
                 </div>
                 <div class="col-md-10 mt-5">
                     <div class="features" style="display: flex; flex-flow: row wrap; justify-content: center;">
@@ -327,7 +327,12 @@
                                         <div class="elem-2">
                                             <label for="">
                                                 @Localizer["ModalFormPhone"]
-                                                <input type="text" id="phone" name="PhoneNumber" required>
+                                                <div class="intl-tel-input">
+                                                    <input type="text" placeholder="(XXX)-XXX-XXXX" id="phone" name="Number" pattern="@PatternConstants.PhoneNumberWithoutCountryCode" required>
+                                                    <input type="hidden" id="country-code-dialcode" name="PhoneNumber.DialCode">
+                                                    <input type="hidden" id="country-code-iso2" name="PhoneNumber.Iso2">
+                                                    <input type="hidden" id="country-code-name" name="PhoneNumber.Name">
+                                                </div>
                                             </label>
                                         </div>
                                     </div>
@@ -390,7 +395,7 @@
                 </p>
                 </div>*@
             <div class="d-flex justify-content-end">
-                <div class="col-md-12 p-4">
+                <div class="col-md-12">
                     <button class="btn1" style="width: 150px;padding: 16px 20px;" data-toggle="modal" data-target="#addNewDocFormModal">@Localizer["ContactUs"]</button>
                 </div>
             </div>
@@ -398,7 +403,29 @@
         </div>
     </div>
 </footer>
+
+<link rel="stylesheet" href="~/libs/intl-tel-input-master/css/intlTelInput.css">
+<script src="~/libs/intl-tel-input-master/js/intlTelInput.js"></script>
 <script>
+    $.fn.setCursorPosition = function (pos) {
+        if ($(this).get(0).setSelectionRange) {
+            $(this).get(0).setSelectionRange(pos, pos);
+        }
+        else if ($(this).get(0).createTextRange) {
+            var range = $(this).get(0).createTextRange();
+            range.collapse(true);
+            range.moveEnd('character', pos);
+            range.moveStart('character', pos);
+            range.select();
+        }
+    };
+
+    $('input[name="Number"]').on('click', function () {
+        $(this).setCursorPosition(1);
+    });
+
+    $("#phone").mask("(999)-999-9999", { placeholder: "(XXX)-XXX-XXXX" });
+
     $(document).ready(function(){
         if ("@TempData["Alert"]" === "SuccessSendEmail") {
             SuccessAlert("@Localizer["SuccessSendEmail"]");
@@ -407,14 +434,44 @@
 
     $("#phone").mask("(999)-999-9999", { placeholder: "(XXX)-XXX-XXXX" });
 
+    $(document).ready(function() {
+        if(!$("#country-code-iso2").val()){
+            $("#country-code-iso2").val("us");
+            $("#country-code-dialcode").val("1");
+            $("#country-code-name").val("United States");
+        }
+
+        var phoneNumber = $("#phone-number");
+        phoneNumber.intlTelInput({
+            initialCountry: $("#country-code-iso2").val() ? $("#country-code-iso2").val() : "us",
+            separateDialCode: true,
+        });
+
+        input.on("countrychange", function(e, countryData) {
+            $("#country-code-dialcode").val(countryData.dialCode);
+            $("#country-code-iso2").val(countryData.iso2);
+            $("#country-code-name").val(countryData.name);
+        });
+      });
+
     $('.submit-modal').on('click', function (event) {
         let form = document.getElementById('contactForm');
         if(form.checkValidity() == true){
             event.preventDefault();
-            let body = "username=" + $('#user-name').val()
-                + "&email=" + $('#user-email').val()
-                + "&phone=" + $('#phone').val()
-                + "&message=" + $('#user-message').val();
+
+            let body = {
+                SenderName: $('#user-name').val(),
+                SenderEmail: $('#user-email').val(),
+                PhoneNumber: {
+                    Number : $('#phone').val(),
+                    Iso2: $("#country-code-iso2").val(),
+                    DialCode: $("#country-code-dialcode").val(),
+                    Name: $("#country-code-name").val(),
+                },
+                Message: $('#user-message').val(),
+            };
+
+            console.log(body);
             $.ajax({
                 type: "post",
                 data: body,
@@ -425,8 +482,11 @@
                         SuccessAlert("@Localizer["ContactFormSuccessSend"]")
                         $('#user-name').val("");
                         $('#user-email').val("");
-                        $('#phone').val("");
-                        $('#user-message').val("")
+                        $('#phone-number').val("");
+                        $('#user-message').val("");
+                        $("#country-code-iso2").val("us");
+                        $("#country-code-dialcode").val("1");
+                        $("#country-code-name").val("United States");
                     }else{
                         WarningAlert("@Localizer["ContactFormNotSend"]")
                     }
@@ -582,13 +642,9 @@
         color: #686f7c
     }
 
-    .bl-3 .text a {
-        width: 30%;
-        display: inline-block
-    }
-
     .bl-3 .text a img {
         width: 96%;
+        margin-top: 1.25rem;
     }
 
     .row {

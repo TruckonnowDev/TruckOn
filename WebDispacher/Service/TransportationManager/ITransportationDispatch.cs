@@ -5,6 +5,6 @@ namespace WebDispacher.Service.TransportationManager
 {
     public interface ITransportationDispatch
     {
-        Task<Shipping> GetShipping(string urlPage, Dispatcher dispatcher);
+        Task<Order> GetShipping(string urlPage, Dispatcher dispatcher);
     }
 }

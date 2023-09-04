@@ -11,6 +11,11 @@ using WebDispacher.Constants;
 using WebDispacher.Service;
 using WebDispacher.ViewModels.Company;
 using WebDispacher.ViewModels.Contact;
+using Microsoft.AspNetCore.Authorization;
+using WebDispacher.Constants.Identity;
+using Microsoft.AspNetCore.Identity;
+using DaoModels.DAO.Enum;
+using System.Security.Claims;
 
 namespace WebDispacher.Controellers
 {
@@ -19,51 +24,51 @@ namespace WebDispacher.Controellers
     {
         private readonly ICompanyService companyService;
         private readonly IDriverService driverService;
+        private readonly SignInManager<User> signInManager;
+        private readonly UserManager<User> userManager;
 
         public CommpanyController(
             IUserService userService,
             IDriverService driverService,
-            ICompanyService companyService) : base(userService)
+            ICompanyService companyService,
+            UserManager<User> userManager,
+            SignInManager<User> signInManager) : base(userService)
         {
             this.driverService = driverService;
             this.companyService = companyService;
+            this.signInManager = signInManager;
+            this.userManager = userManager;
         }
 
         [HttpGet]
         [Route("Companies")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierAdminCompany)]
         public async Task<IActionResult> GetCompanies(int page = 1)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                
-                if (CheckPermissionsByCookies(RouteConstants.Company, out var key, out var idCompany))
-                {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
                     
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-
-                    ViewBag.Companies = await companyService.GetCompaniesViewModels(page);
-
-                    var countPages = await companyService.GetCountCompaniesPages();
-
-                    ViewBag.CountPages = countPages;
-
-                    ViewBag.SelectedPage = page;
-
-                    return View("Companies");
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                if (isCancelSubscribe)
                 {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
+                    
+                //ViewBag.NameCompany = GetCookieCompanyName();
+
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+
+                var companies = await companyService.GetCompaniesWithUsers(page);
+
+                var countPages = await companyService.GetCountCompaniesPages();
+
+                ViewBag.CountPages = countPages;
+
+                ViewBag.SelectedPage = page;
+
+                return View("Companies", companies);
             }
             catch (Exception e)
             {
@@ -75,26 +80,20 @@ namespace WebDispacher.Controellers
 
         [HttpPost]
         [Route("SendEmail")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierAdminCompany)]
         public async Task<bool> SendEmail(string companyId, string subject, string message, string localDate)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-                if (CheckPermissionsByCookies(RouteConstants.Company, out var key, out var idCompany))
-                {
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
+                //ViewBag.NameCompany = GetCookieCompanyName();
+                
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
 
-                    var result = await companyService.SendEmailToUserByCompanyId(companyId, subject, message);
+                var result = await companyService.SendEmailToUserByCompanyId(companyId, subject, message);
 
-                    return result;
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                return result;
             }
             catch (Exception e)
             {
@@ -106,6 +105,7 @@ namespace WebDispacher.Controellers
 
         [HttpGet]
         [Route("CreateCompany")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierAdminCompany)]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public IActionResult CreateCompany()
         {
@@ -113,26 +113,20 @@ namespace WebDispacher.Controellers
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Company, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    //ViewBag.Subscriptions = companyService.GetSubscriptions();
-                    
-                    return View("CreateCommpany");
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
+                    
+                //ViewBag.NameCompany = GetCookieCompanyName();
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+
+                //ViewBag.Subscriptions = companyService.GetSubscriptions();
+                    
+                return View("CreateCommpany");
             }
             catch (Exception e)
             {
@@ -144,29 +138,45 @@ namespace WebDispacher.Controellers
 
         [HttpPost]
         [Route("CreateCompany")]
-        public async Task<IActionResult> CreateCompany(CreateCompanyViewModel company, List<IFormFile> MCNumberConfirmation, IFormFile IFTA, IFormFile KYU,
+        [Authorize(Policy = PolicyIdentityConstants.CarrierAdminCompany)]
+        public async Task<IActionResult> CreateCompany(CreateCompanyViewModel model, List<IFormFile> MCNumberConfirmation, IFormFile IFTA, IFormFile KYU,
             IFormFile logbookPapers, IFormFile COI, IFormFile permits, string dateTimeLocal)
         {
             ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
-            
+            ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-
-                    if (CheckPermissionsByCookies(RouteConstants.Company, out var key, out var idCompany))
+                    var user = new User
                     {
-                        await companyService.AddCompany(company, MCNumberConfirmation.Count != 0 ? MCNumberConfirmation[0] : null, IFTA, KYU, logbookPapers, COI,
-                            permits, dateTimeLocal);
+                        Email = model.Email,
+                        UserName = model.Email,
+                        DateTimeRegistration = DateTime.UtcNow,
+                        DateTimeLastUpdate = DateTime.UtcNow,
+                    };
 
-                        return Redirect($"{Config.BaseReqvesteUrl}/Company/Companies");
+                    var result = await userManager.CreateAsync(user, model.Password);
+
+                    if (result.Succeeded)
+                    {
+                        await userManager.AddToRoleAsync(user, RolesIdentityConstants.UserRole);
+
+                        var company = await companyService.CreateCompanyByAdminWithDocs(model, 
+                            MCNumberConfirmation.Count != 0 ? MCNumberConfirmation[0] : null, IFTA, KYU, logbookPapers, COI,
+                                permits, dateTimeLocal);
+
+                        if (company.Id != 0 && user.Id != null)
+                        {
+                            await companyService.AddUserToCompany(user, company);
+
+                            return Redirect($"{Config.BaseReqvesteUrl}/Company/Companies");
+                        }
+
                     }
 
-                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                    {
-                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                    }
+                    foreach (var error in result.Errors) ModelState.AddModelError(string.Empty, error.Description);
                 }
                 catch (Exception e)
                 {
@@ -183,35 +193,51 @@ namespace WebDispacher.Controellers
 
         [HttpPost]
         [Route("LoginUser")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierAdminCompany)]
         public async Task<IActionResult> LoginUser(string companyId)
         {
+            await signInManager.SignOutAsync();
+
             var userInfo = await companyService.GetUserByCompanyId(companyId);
 
             if (userInfo == null) return null;
 
             try
             {
-                if (CheckPermissionsByCookies(RouteConstants.Company, out var _, out var _))
+                var user = await userManager.FindByNameAsync(userInfo.Email);
+
+                if (user != null)
                 {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                    Response.Cookies.Delete(CookiesKeysConstants.CompanyIdKey);
-                    Response.Cookies.Delete(CookiesKeysConstants.CompanyNameKey);
+                    var existingClaims = await userManager.GetClaimsAsync(user);
 
-                    var key = userService.CreateKey(userInfo.Login, userInfo.Password);
-                    var company = userService.GetUserByKeyUser(key);
+                    var userCompanyActive = await companyService.GetActiveUserCompanyByCompanyTypeUserId(user.Id, CompanyType.Carrier);
 
-                    Response.Cookies.Append(CookiesKeysConstants.CarKey, key.ToString());
-                    Response.Cookies.Append(CookiesKeysConstants.CompanyIdKey, company.Id.ToString());
-                    Response.Cookies.Append(CookiesKeysConstants.CompanyNameKey, company.Name);
+                    await userManager.RemoveClaimsAsync(user, existingClaims);
 
-                    var companyType = companyService.GetTypeNavBar(key.ToString(), company.Id.ToString());
+                    var customClaims = new List<Claim>();
+
+                    if (await userManager.IsInRoleAsync(user, RolesIdentityConstants.AdminRole))
+                    {
+                        customClaims.Add(new Claim(ClaimsIdentityConstants.CompanyType, ClaimsIdentityConstants.CompanyCarrierAdminValue));
+                    }
+                    else
+                    {
+                        customClaims.Add(new Claim(ClaimsIdentityConstants.CompanyType, ClaimsIdentityConstants.CompanyCarrierValue));
+                    }
+
+                    if (userCompanyActive != null)
+                    {
+                        customClaims.Add(new Claim(ClaimsIdentityConstants.CompanyId, userCompanyActive.Id.ToString()));
+                    }
+
+
+                    await userManager.AddClaimsAsync(user, customClaims);
+
+                    await signInManager.SignInAsync(user, isPersistent: false);
+
+                    var b = User.Identity.IsAuthenticated;
 
                     return Redirect(Config.BaseReqvesteUrl);
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch(Exception e)
@@ -224,38 +250,31 @@ namespace WebDispacher.Controellers
 
         [HttpGet]
         [Route("EditCompany")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierAdminCompany)]
         public async Task<IActionResult> EditCompany(int id)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-                if (CheckPermissionsByCookies(RouteConstants.Company, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-
-                    ViewBag.NameCompany = GetCookieCompanyName();
-
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-
-                    var companyViewModel = await companyService.GetCompanyById(id);
-
-                    return View(companyViewModel);
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                //ViewBag.NameCompany = GetCookieCompanyName();
+
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+
+                var companyViewModel = await companyService.GetCompanyById(id);
+
+                return View(companyViewModel);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                Console.WriteLine(ex.Message);
             }
 
             return Redirect(Config.BaseReqvesteUrl);
@@ -263,28 +282,39 @@ namespace WebDispacher.Controellers
 
         [HttpPost]
         [Route("EditCompany")]
-        public async Task<IActionResult> EditCompany(CompanyViewModel company)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierAdminCompany)]
+        public async Task<IActionResult> EditCompany(CompanyViewModel model, string dateTimeLocal)
         {
+            ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+            ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
             if (ModelState.IsValid)
             {
                 try
                 {
-                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                    var user = await userService.GetFirstUserByCompanyId(model.Id);
 
-                    if (CheckPermissionsByCookies(RouteConstants.Company, out var key, out var idCompany))
+                    user.Email = model.Email.ToLower();
+                    user.UserName = model.Email.ToLower();
+
+                    var result = await userManager.UpdateAsync(user);
+
+                    if(!result.Succeeded)
+                        foreach (var error in result.Errors) ModelState.AddModelError(string.Empty, error.Description);
+                       
+                    
+                    if (!string.IsNullOrEmpty(model.Password))
                     {
-                        ViewBag.NameCompany = GetCookieCompanyName();
-                        ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-
-                        await companyService.EditCompany(company);
-
-                        return Redirect($"{Config.BaseReqvesteUrl}/Company/Companies");
+                        await userManager.RemovePasswordAsync(user);
+                        await userManager.AddPasswordAsync(user, model.Password);
                     }
 
-                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                    {
-                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                    }
+                    //ViewBag.NameCompany = GetCookieCompanyName();
+
+
+                    await companyService.EditCompany(model, dateTimeLocal);
+
+                    return Redirect($"{Config.BaseReqvesteUrl}/Company/Companies");
                 }
                 catch (Exception)
                 {
@@ -293,31 +323,34 @@ namespace WebDispacher.Controellers
             }
             else
             {
-                return View(company);
+                return View(model);
             }
 
             return Redirect(Config.BaseReqvesteUrl);
         }
 
+        [HttpGet]
         [Route("Remove")]
-        public IActionResult RemoveCompany(string id)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierAdminCompany)]
+        public async Task<IActionResult> RemoveCompany(string id)
         {
             ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Company, out var _, out var _))
+                var result = await driverService.RemoveCompany(id);
+
+                if (result)
                 {
-                    driverService.RemoveCompany(id);
-                    
-                    return Redirect($"{Config.BaseReqvesteUrl}/Company/Companies");
+                    var userEmail = await userService.GetFirstUserEmailByCompanyId(Convert.ToInt32(id));
+
+                    var user = await userManager.FindByEmailAsync(userEmail);
+
+                    await userManager.SetLockoutEndDateAsync(user, DateTime.Today.AddYears(100));
                 }
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                return Redirect($"{Config.BaseReqvesteUrl}/Company/Companies");
             }
             catch (Exception)
             {
@@ -326,26 +359,35 @@ namespace WebDispacher.Controellers
             
             return Redirect(Config.BaseReqvesteUrl);
         }
-        
+
+        [HttpPost]
         [Route("Activate")]
-        public async Task<IActionResult> ActivateCompany(string companyId)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierAdminCompany)]
+        public async Task<IActionResult> ActivateCompany(string companyId, string localDate)
         {
             ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Company, out var _, out var _))
-                {
-                    await companyService.ActivateCompany(companyId);
-                    
-                    return Redirect($"{Config.BaseReqvesteUrl}/Company/Companies");
-                }
+                var result = await companyService.ActivateCompany(companyId);
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
+                if (result)
                 {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
+                    var userEmail = await userService.GetFirstUserEmailByCompanyId(Convert.ToInt32(companyId));
+
+                    var user = await userManager.FindByEmailAsync(userEmail);
+
+                    var companyActive = userService.GetCompanyById(companyId);
+
+                    await userManager.SetLockoutEndDateAsync(user, null);
+
+                    if(companyActive != null && await userManager.IsInRoleAsync(user, RolesIdentityConstants.AdminRole)) {
+                        await companyService.UpdateCompanyStatus(companyActive.Id, CompanyStatus.Admin);
+                    }
                 }
+                    
+                return Redirect($"{Config.BaseReqvesteUrl}/Company/Companies");
             }
             catch (Exception)
             {
@@ -357,23 +399,25 @@ namespace WebDispacher.Controellers
 
         [HttpPost]
         [Route("Remove")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierAdminCompany)]
         public async Task<bool> DeleteCompany(string id)
         {
             ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                
-                if (CheckPermissionsByCookies(RouteConstants.Company, out var _, out var _))
-                {
-                    await driverService.RemoveCompany(id);
 
+                var result = await driverService.RemoveCompany(id);
+
+                if (result)
+                {
+                    var userEmail = await userService.GetFirstUserEmailByCompanyId(Convert.ToInt32(id));
+
+                    var user = await userManager.FindByEmailAsync(userEmail);
+
+                    await userManager.SetLockoutEndDateAsync(user, DateTime.Today.AddYears(100));
+                    
                     return true;
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
                 }
             }
             catch (Exception)
@@ -385,6 +429,7 @@ namespace WebDispacher.Controellers
         }
 
         [Route("Doc")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierAdminCompany)]
         public async Task<IActionResult> GoToViewCompanykDoc(string id)
         {
             ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
@@ -392,27 +437,22 @@ namespace WebDispacher.Controellers
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Company, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewBag.NameCompany = GetCookieCompanyName();
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    ViewBag.CompanyDoc = await companyService.GetCompanyDoc(id);
-                    ViewBag.CompanyId = id;
-                    
-                    return View("CompanyDocuments");
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
+                    
+                //ViewBag.NameCompany = GetCookieCompanyName();
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+
+                var companyDocs = await companyService.GetCompanyDoc(id);
+
+                ViewBag.CompanyId = id;
+                    
+                return View("CompanyDocuments", companyDocs);
             }
             catch (Exception e)
             {
@@ -423,7 +463,8 @@ namespace WebDispacher.Controellers
         }
 
         [Route("SaveDoc")]
-        public IActionResult SaveDoc(IFormFile uploadedFile, string nameDoc, string id)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierAdminCompany)]
+        public async Task<IActionResult> SaveDoc(IFormFile uploadedFile, string nameDoc, string id, string localDate)
         {
             if (!string.IsNullOrEmpty(nameDoc) && !string.IsNullOrEmpty(id) && uploadedFile != null)
             {
@@ -431,17 +472,9 @@ namespace WebDispacher.Controellers
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-                    if (CheckPermissionsByCookies(RouteConstants.Company, out var _, out var _))
-                    {
-                        companyService.SaveDocCompany(uploadedFile, nameDoc, id);
+                    await companyService.SaveDocCompany(uploadedFile, nameDoc, Convert.ToInt32(id), localDate);
 
-                        return Redirect($"{Config.BaseReqvesteUrl}/Company/Doc?id={id}");
-                    }
-
-                    if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                    {
-                        Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                    }
+                    return Redirect($"{Config.BaseReqvesteUrl}/Company/Doc?id={id}");
                 }
                 catch (Exception e)
                 {
@@ -457,24 +490,17 @@ namespace WebDispacher.Controellers
         }
 
         [Route("RemoveDoc")]
-        public IActionResult RemoveDoc(string idDock, string id)
+        [Authorize(Policy = PolicyIdentityConstants.CarrierAdminCompany)]
+        public async Task<IActionResult> RemoveDoc(int docId, string id)
         {
             ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Company, out var _, out var _))
-                {
-                    companyService.RemoveDocCompany(idDock);
+                await companyService.RemoveDocCompany(docId);
                     
-                    return Redirect($"{Config.BaseReqvesteUrl}/Company/Doc?id={id}");
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                return Redirect($"{Config.BaseReqvesteUrl}/Company/Doc?id={id}");
             }
             catch (Exception e)
             {
@@ -495,6 +521,7 @@ namespace WebDispacher.Controellers
 
         [HttpGet]
         [Route("Users")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierAdminCompany)]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public async Task<IActionResult> GetUsers(int idCompanySelect)
         {
@@ -502,27 +529,19 @@ namespace WebDispacher.Controellers
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                if (CheckPermissionsByCookies(RouteConstants.Company, out var key, out var idCompany))
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                    
+                if (isCancelSubscribe)
                 {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
-                    ViewBag.Users = companyService.GetUsers(idCompanySelect);
-                    ViewBag.Companies = await companyService.GetCompaniesDTO(0);
-                    ViewBag.IdCompanySelect = idCompanySelect;
-                    
-                    return View("AllUsers");
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                    
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+                //ViewBag.Users = companyService.GetUsers(idCompanySelect);
+                ViewBag.Companies = companyService.GetCompanies();
+                ViewBag.IdCompanySelect = idCompanySelect;
+                    
+                return View("AllUsers");
             }
             catch (Exception e)
             {
@@ -533,29 +552,46 @@ namespace WebDispacher.Controellers
         }
         
         [HttpGet]
-        [Route("Questions")]
-        public async Task<IActionResult> GetQuestions()
+        [Route("Question")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierAdminCompany)]
+        public async Task<IActionResult> GetQuestionWithAnswer(int id)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                
-                if (CheckPermissionsByCookies(RouteConstants.Company, out var _, out var idCompany))
-                {
-                    var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
-                    ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
-                    if (isCancelSubscribe)
-                    {
-                        return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                    }
-                    
-                    return View("UserQuestions");
-                }
 
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
+
+                var userQuestionWithAnswers = await companyService.GetUserQuestionWithAnswers(id);
+
+                return PartialView("~/Views/PartView/AdminAnswerQuestions/AnswerModel.cshtml", userQuestionWithAnswers);
+            }
+            catch (Exception e)
+            {
+                return Redirect(Config.BaseReqvesteUrl);
+            }
+        }
+        
+        [HttpGet]
+        [Route("Questions/New")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierAdminCompany)]
+        public async Task<IActionResult> GetNewQuestions(int page = 1)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+                ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
+
+                var userQuestions = await companyService.GetUserQuestionsWithoutAnswers(page);
+
+                var countPages = await companyService.GetCountNewUserQuestionsPages();
+
+                ViewBag.CountPages = countPages;
+
+                ViewBag.SelectedPage = page;
+
+                return View("UserQuestionsNew", userQuestions);
             }
             catch (Exception e)
             {
@@ -565,27 +601,103 @@ namespace WebDispacher.Controellers
             return Redirect(Config.BaseReqvesteUrl);
         }
 
+
+        
+        [HttpGet]
+        [Route("Questions/Answered")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierAdminCompany)]
+        public async Task<IActionResult> GetAnsweredQuestions(int page = 1)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+                ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
+
+                var userQuestions = await companyService.GetUserQuestionsWithAnswers(page);
+
+                var countPages = await companyService.GetCountAnsweredUserQuestionsPages();
+
+                ViewBag.CountPages = countPages;
+
+                ViewBag.SelectedPage = page;
+
+                return View("UserQuestionsAnswered", userQuestions);
+            }
+            catch (Exception e)
+            {
+
+            }
+            
+            return Redirect(Config.BaseReqvesteUrl);
+        }
+        
+        [HttpGet]
+        [Route("Questions/All")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierAdminCompany)]
+        public async Task<IActionResult> GetAllQuestions(int page = 1)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+                ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
+
+                var userQuestions = await companyService.GetAllUserQuestions(page);
+
+                var countPages = await companyService.GetCountAllUserQuestionsPages();
+
+                ViewBag.CountPages = countPages;
+
+                ViewBag.SelectedPage = page;
+
+                return View("UserQuestionsAll", userQuestions);
+            }
+            catch (Exception e)
+            {
+
+            }
+            
+            return Redirect(Config.BaseReqvesteUrl);
+        }
+        
+        [HttpPost]
+        [Route("Questions/Answer")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierAdminCompany)]
+        public async Task<bool> AnswerQuestion(AdminAnswerViewModel model, string localDate)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+                if (ModelState.IsValid)
+                {
+                    await companyService.SendUserAnswer(model, CompanyId, localDate);
+
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+
         [HttpGet]
         [Route("Company")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierAdminCompany)]
         public async Task<IActionResult> CompanyInfo(int id)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-                if (CheckPermissionsByCookies(RouteConstants.Company, out var key, out var idCompany))
-                {
-                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
 
-                    var companyInfo = await companyService.GetCompanyById(id);
+                var companyInfo = await companyService.GetCompanyById(id);
 
-                    return View(companyInfo);
-                }
-
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
+                return View(companyInfo);
             }
             catch (Exception)
             {

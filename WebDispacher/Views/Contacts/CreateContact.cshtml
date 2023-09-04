@@ -8,7 +8,8 @@
 @{
     ViewData["Title"] = "Create Contact";
 }
-
+<link rel="stylesheet" href="~/libs/intl-tel-input-master/css/intlTelInput.css">
+<script src="~/libs/intl-tel-input-master/js/intlTelInput.js"></script>
 <body>
     <div class="admin">
         <div class="container">
@@ -20,7 +21,7 @@
                             <div class="validation" asp-validation-summary="ModelOnly"></div>
                             <label for="">
                                 <label class="mb-0" asp-for="Name"></label>
-                                <input type="text" name="Name" required>
+                                <input type="text" id="name" name="Name" required>
                                 @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
                             </label>
                             <label for="">
@@ -36,9 +37,12 @@
                             <div style="width:500px">
                                 <div style="display:flex;justify-content:space-between;">
                                     <div class="elem" style="width: 75%">
-                                        <label class="mb-0" asp-for="Phone" style="width:100%;"></label>
+                                        <label class="mb-0" asp-for="PhoneNumber.Number" style="width:100%;"></label>
                                         <label for="" style="width:100%">
-                                            <input type="text" id="phone" name="Phone" placeholder="(XXX)-XXX-XXXX" required>
+                                            <input type="text" id="phoneC" asp-for="PhoneNumber.Number" pattern="@PatternConstants.PhoneNumberWithoutCountryCode" placeholder="(XXX)-XXX-XXXX" required>
+                                            <input type="hidden" id="country-code-dialcode" asp-for="PhoneNumber.DialCode">
+                                            <input type="hidden" id="country-code-iso2" asp-for="PhoneNumber.Iso2">
+                                            <input type="hidden" id="country-code-name" asp-for="PhoneNumber.Name">
                                         </label>
                                     </div>
                                     <div class="elem" style="width: 20%">
@@ -49,9 +53,9 @@
                                         
                                     </div>
                                 </div>
-                                @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+                                @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
                             </div> 
-                            
+                            <input type="hidden" value="" name="localDate" />
                             <input class="btn1" type="submit" value="@Localizer["Save"]" />
                         </form>
                     </div>
@@ -67,7 +71,11 @@
     }
 </style>
 
+
+<script src="~/js/input-replacer.js"></script>
 <script>
+
+    setReplacer(document.querySelector('#name'), @ExpressionConstants.OnlyLetters
     $.fn.setCursorPosition = function (pos) {
         if ($(this).get(0).setSelectionRange) {
             $(this).get(0).setSelectionRange(pos, pos);
@@ -81,9 +89,10 @@
         }
     };
 
-    $('input[name="Phone"]').on('click', function () {
+    $('input[name="PhoneNumber.Number"]').on('click', function () {
         $(this).setCursorPosition(1);
     });
+
     $('#phone').on('input invalid', function () {
         this.setCustomValidity('')
         if (this.validity.valueMissing) {
@@ -110,7 +119,31 @@
         }
     })
 
+    const dateInput = document.querySelector("[name='localDate']");
+
+    $("input[type=submit]").on('click', function (e) {
+        dateInput.value = GetDateTimeInFormat(new Date());
+    })
+
     $(document).ready(function () {
-        $("#phone").mask("(999)-999-9999", { placeholder: "(XXX)-XXX-XXXX" });
+        $("#phoneC").mask("(999)-999-9999", { placeholder: "(XXX)-XXX-XXXX" });
+
+        if(!$("#country-code-iso2").val()){
+            $("#country-code-iso2").val("us");
+            $("#country-code-dialcode").val("1");
+            $("#country-code-name").val("United States");
+        };
+
+        var phone = $("#phoneC");
+        phone.intlTelInput({
+            initialCountry: $("#country-code-iso2").val() ? $("#country-code-iso2").val() : "us",
+            separateDialCode: true,
+        });
+
+        phone.on("countrychange", function (e, countryData) {
+            $("#country-code-dialcode").val(countryData.dialCode);
+            $("#country-code-iso2").val(countryData.iso2);
+            $("#country-code-name").val(countryData.name);
+        });
     });
 </script>

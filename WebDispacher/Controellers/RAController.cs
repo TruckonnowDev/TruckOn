@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using DaoModels.DAO.Enum;
 using DaoModels.DAO.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using WebDispacher.Business.Interfaces;
-using WebDispacher.Business.Services;
 using WebDispacher.Constants;
+using WebDispacher.Constants.Identity;
 using WebDispacher.Service;
-using WebDispacher.ViewModels.Contact;
+using WebDispacher.ViewModels.RA.Carrier;
+using WebDispacher.ViewModels.RA.Carrier.Login;
 using WebDispacher.ViewModels.RA.Carrier.Registration;
 using WebDispacher.ViewModels.Shipping;
 
@@ -22,14 +24,20 @@ namespace WebDispacher.Controellers
     {
         private readonly ICompanyService companyService;
         private readonly IDriverService driverService;
+        private readonly SignInManager<User> signInManager;
+        private readonly UserManager<User> userManager;
 
         public RAController(
             IUserService userService,
             ICompanyService companyService, 
-            IDriverService driverService) : base(userService)
+            IDriverService driverService,
+            UserManager<User> userManager,
+            SignInManager<User> signInManager) : base(userService)
         {
             this.driverService = driverService;
             this.companyService = companyService;
+            this.signInManager = signInManager;
+            this.userManager = userManager;
         }
 
         public IActionResult Index(string alert)
@@ -38,9 +46,9 @@ namespace WebDispacher.Controellers
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
             TempData["Alert"] = alert;
 
-            if (Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key))
+            if (User.Identity.IsAuthenticated)
             {
-                return BaseRedirect(key);
+                return BaseRedirect();
             }
 
             ViewData[NavConstants.TypeNavBar] = NavConstants.AllUsers;
@@ -75,9 +83,9 @@ namespace WebDispacher.Controellers
             ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
             
-            if (Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key))
+            if (User.Identity.IsAuthenticated)
             {
-                return BaseRedirect(key);
+                return BaseRedirect();
             }
 
             ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
@@ -92,24 +100,45 @@ namespace WebDispacher.Controellers
             ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-            if (Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key))
-            {
-                return BaseRedirect(key);
-            }
-
             ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
             ViewData[NavConstants.TextError] = error;
             ViewData[NavConstants.Reg] = NavConstants.CarrierReg;
             ViewData["UserEmail"] = email;
+
             return View("carrier-login");
+        }
+        
+        [HttpGet]
+        [Route("broker-login")]
+        public IActionResult BrokerLogin(string error, string email)
+        {
+            ViewData[NavConstants.TextError] = string.Empty;
+            ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+            if (User.Identity.IsAuthenticated)
+            {
+                return BaseRedirect();
+            }
+
+            ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
+            ViewData["UserEmail"] = email;
+
+            return View("broker-login");
         }
 
         [HttpPost]
-        public bool ContactForm(string username, string email, string phone, string message)
+        public async Task<bool> ContactForm(UserMailQuestion userMailQuestion, string localDate)
         {
-            // etc
+            try
+            {
+                var createdForm = await companyService.CreateUserQuestions(userMailQuestion, localDate);
 
-            return true;
+                return true;
+            }
+            catch(Exception ex)
+            {
+                return false;
+            }
         }
 
         [HttpGet]
@@ -119,9 +148,9 @@ namespace WebDispacher.Controellers
             ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-            if (Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key))
+            if (User.Identity.IsAuthenticated)
             {
-                return BaseRedirect(key);
+                return BaseRedirect();
             }
 
             ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
@@ -138,9 +167,9 @@ namespace WebDispacher.Controellers
             ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-            if (Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key))
+            if (User.Identity.IsAuthenticated)
             {
-                return BaseRedirect(key);
+                return BaseRedirect();
             }
 
             ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
@@ -156,9 +185,9 @@ namespace WebDispacher.Controellers
             ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-            if (Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key))
+            if (User.Identity.IsAuthenticated)
             {
-                return BaseRedirect(key);
+                return BaseRedirect();
             }
 
             ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
@@ -173,16 +202,6 @@ namespace WebDispacher.Controellers
         {
             ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-
-            if (!string.IsNullOrEmpty(model.Email))
-            {
-                var email = userService.CheckEmailDb(model.Email);
-
-                if(email)
-                {
-                    ModelState.AddModelError(nameof(model.Email).ToString(), "Email already exists");
-                }
-            }
             
             if (!string.IsNullOrEmpty(model.CompanyName))
             {
@@ -236,7 +255,7 @@ namespace WebDispacher.Controellers
         
         [HttpPost]
         [Route("carrier-reg-second-step")]
-        public IActionResult CarrierRegSecondStep(FewMoreDetailsViewModel model)
+        public async Task<IActionResult> CarrierRegSecondStep(FewMoreDetailsViewModel model)
         {
             ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
@@ -245,9 +264,31 @@ namespace WebDispacher.Controellers
             {
                 try
                 {
-                    var company = companyService.AddShortCompany(model);
+                    var user = new User
+                    {
+                        Email = model.PersonalData.Email,
+                        UserName = model.PersonalData.Email,
+                        FirstName = model.PersonalData.FirstName,
+                        LastName = model.PersonalData.LastName,
+                        DateTimeRegistration = DateTime.UtcNow,
+                    };
 
-                    return View("carrier-reg-congratulation");
+                    var result = await userManager.CreateAsync(user, model.PersonalData.Password);
+                    
+                    if (result.Succeeded)
+                    {
+                        await userManager.AddToRoleAsync(user, RolesIdentityConstants.UserRole);
+                        var company = await companyService.CreateCompany(model);
+
+                        if (company.Id != 0 && user.Id != null)
+                        {
+                            await companyService.AddUserToCompany(user, company);
+
+                            return View("carrier-reg-congratulation");
+                        }
+                        
+                    }
+                    foreach (var error in result.Errors) ModelState.AddModelError(string.Empty, error.Description);
                 }
                 catch
                 {
@@ -281,9 +322,9 @@ namespace WebDispacher.Controellers
             ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-            if (Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key))
+            if (User.Identity.IsAuthenticated)
             {
-                return BaseRedirect(key);
+                return BaseRedirect();
             }
 
             ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
@@ -330,9 +371,9 @@ namespace WebDispacher.Controellers
             ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-            if (Request.Cookies.TryGetValue(CookiesKeysConstants.CarKey, out var key))
+            if (User.Identity.IsAuthenticated)
             {
-                return BaseRedirect(key);
+                return BaseRedirect();
             }
 
             ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
@@ -343,60 +384,83 @@ namespace WebDispacher.Controellers
 
         [HttpPost]
         [Route("recovery-password-send-mail")]
-        public IActionResult RecoveryPasswordCheckkMail(string email)
+        public async Task<IActionResult> RecoveryPasswordCheckkMail(string email, string localDate)
         {
             ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-            
-            var isEmail = userService.CheckEmail(email);
 
-            return Redirect(isEmail ? Config.BaseReqvesteUrl +"?alert=SuccessSendEmail"  : $"/recovery-password-send-mail?error=No user found with this Email");
+            var user = await userManager.FindByEmailAsync(email);
+            if (user == null) return Redirect($"/recovery-password-send-mail?error=No user found with this Email");
+
+            var code = await userManager.GeneratePasswordResetTokenAsync(user);
+            var callbackUrl = Url.Action("ResetPassword", "RA", new { userId = user.Id, code }, protocol: HttpContext.Request.Scheme);
+
+            await userService.SendRecoveryPasswordToEmail(user.Email, callbackUrl);
+
+            await userService.CreatePasswordResets(user, code, localDate);
+
+            return Redirect(Config.BaseReqvesteUrl +"?alert=SuccessSendEmail");
         }
 
         [HttpPost]
-        public IActionResult Avthorization(string Email, string Password, string accept)
+        public async Task<IActionResult> CarrierLogin(LoginViewModel model, string localDate)
         {
-            IActionResult actionResult = null;
             ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
             try
             {
-                if (Email == null || Password == null)
-                    throw new Exception();
-                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                if (userService.Authorization(Email, Password))
+                if (ModelState.IsValid)
                 {
-                    ViewData[NavConstants.Hidden] = string.Empty;
-
-                    var key = userService.CreateKey(Email, Password);
-                    var Commpany = userService.GetUserByKeyUser(key);
-
-                    if (Commpany == null) BaseRedirect(key.ToString());
-
-                    switch (Commpany.Type)
-                    {
-                        case TypeCompany.NormalCompany:
-                            Response.Cookies.Append(CookiesKeysConstants.CarKey, key.ToString());
-                            Response.Cookies.Append(CookiesKeysConstants.CompanyIdKey, Commpany.Id.ToString());
-                            Response.Cookies.Append(CookiesKeysConstants.CompanyNameKey, Commpany.Name);
-                            break;
-                        case TypeCompany.BaseCommpany:
-                            Response.Cookies.Append(CookiesKeysConstants.CarKey, key.ToString());
-                            Response.Cookies.Append(CookiesKeysConstants.CompanyIdKey, Commpany.Id.ToString());
-                            Response.Cookies.Append(CookiesKeysConstants.CompanyNameKey, Commpany.Name);
-                            break;
-
-                        case TypeCompany.DeactivateCompany:
-                            return Redirect($"/carrier-login?error={UserConstants.CompanyDeactivateMessage}&email={Email}");
-                    }
-                
+                    var user = await userManager.FindByNameAsync(model.Email);
                     
-                    return BaseRedirect(key.ToString());
+                    if (user != null && await userManager
+                            .CheckPasswordAsync(user, model.Password))
+                    {
+                        var isBlocked = await userManager.IsLockedOutAsync(user);
+                        if (isBlocked)
+                        {
+                            ModelState.AddModelError("", "Your account is blocked, contact the administrator if an error has occurred.");
+                            return View("carrier-login", model);
+                        }
+                        var existingClaims = await userManager.GetClaimsAsync(user);
+
+                        var userCompanyActive = await companyService.GetActiveUserCompanyByCompanyTypeUserId(user.Id, CompanyType.Carrier);
+
+                        await userManager.RemoveClaimsAsync(user, existingClaims);
+
+                        var customClaims = new List<Claim>();
+
+                        if(await userManager.IsInRoleAsync(user, RolesIdentityConstants.AdminRole))
+                        {
+                            customClaims.Add(new Claim(ClaimsIdentityConstants.CompanyType, ClaimsIdentityConstants.CompanyCarrierAdminValue));
+                        }
+                        else
+                        {
+                            customClaims.Add(new Claim(ClaimsIdentityConstants.CompanyType, ClaimsIdentityConstants.CompanyCarrierValue));
+                        }
+
+                        if (userCompanyActive != null)
+                        {
+                            customClaims.Add(new Claim(ClaimsIdentityConstants.CompanyId, userCompanyActive.Id.ToString()));
+                        }
+                            
+
+                        await userManager.AddClaimsAsync(user, customClaims);
+
+                        await signInManager.SignInAsync(user, isPersistent: false);
+
+                        await SetLastLoginDateToUser(model, localDate);
+
+                        return Redirect(Config.BaseReqvesteUrl);
+                    }
+                        
+                    ModelState.AddModelError("", UserConstants.PasswordEmailIncorrectly);
+
+                    return View("carrier-login", model);
                 }
-
-                ViewData[NavConstants.Hidden] = NavConstants.Hidden;
-                ViewData[NavConstants.TextError] = UserConstants.PasswordEmailIncorrectly;
-
-                actionResult = Redirect($"/carrier-login?error={UserConstants.PasswordEmailIncorrectly}&email={Email}");
+                else
+                {
+                    return View("carrier-login", model);
+                }
             }
             catch (Exception e)
             {
@@ -405,18 +469,84 @@ namespace WebDispacher.Controellers
                 
                 return Redirect($"/carrier-login?error={error}");
             }
-            
-            return actionResult;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> BrokerLogin(LoginViewModel model, string localDate)
+        {
+            ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var user = await userManager.FindByNameAsync(model.Email);
+
+                    if (user != null && await userManager
+                            .CheckPasswordAsync(user, model.Password))
+                    {
+                        var isBlocked = await userManager.IsLockedOutAsync(user);
+                        if (isBlocked)
+                        {
+                            ModelState.AddModelError("", "Your account is blocked, contact the administrator if an error has occurred.");
+                            return View("broker-login", model);
+                        }
+                        var existingClaims = await userManager.GetClaimsAsync(user);
+
+                        var userCompanyActive = await companyService.GetActiveUserCompanyByCompanyTypeUserId(user.Id, CompanyType.Broker);
+
+                        if (userCompanyActive == null)
+                        {
+                            ModelState.AddModelError("", UserConstants.PasswordEmailIncorrectly);
+
+                            return View("broker-login", model);
+                        }
+
+                        await userManager.RemoveClaimsAsync(user, existingClaims);
+
+                        var customClaims = new List<Claim>();
+
+                        customClaims.Add(new Claim(ClaimsIdentityConstants.CompanyType, ClaimsIdentityConstants.CompanyBrokerValue));
+
+                        if (userCompanyActive != null)
+                        {
+                            customClaims.Add(new Claim(ClaimsIdentityConstants.CompanyId, userCompanyActive.Id.ToString()));
+                        }
+
+
+                        await userManager.AddClaimsAsync(user, customClaims);
+
+                        await signInManager.SignInAsync(user, isPersistent: false);
+
+                        await SetLastLoginDateToUser(model, localDate);
+
+                        return Redirect(Config.BaseReqvesteUrl);
+                    }
+
+                    ModelState.AddModelError("", UserConstants.PasswordEmailIncorrectly);
+
+                    return View("broker-login", model);
+                }
+                else
+                {
+                    return View("broker-login", model);
+                }
+            }
+            catch (Exception e)
+            {
+                ViewData[NavConstants.Hidden] = NavConstants.Hidden;
+                var error = UserConstants.PasswordEmailIncorrectly;
+
+                return Redirect($"/broker-login?error={error}");
+            }
         }
 
         [HttpGet]
         [Route("Exsit")]
-        public IActionResult Exisit()
+        [Authorize]
+        public async Task<IActionResult> Exisit()
         {
-            Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-            Response.Cookies.Delete(CookiesKeysConstants.CompanyIdKey);
-            Response.Cookies.Delete(CookiesKeysConstants.CompanyNameKey);
-            
+            await signInManager.SignOutAsync();
+
             return Redirect(Config.BaseReqvesteUrl);
         }
 
@@ -432,10 +562,10 @@ namespace WebDispacher.Controellers
                 if (userService.Authorization(Email, Password))
                 {
                     var users = userService.GetUserByEmailAndPasswrod(Email, Password);
-                    if(users?.KeyAuthorized != null && users.KeyAuthorized != string.Empty)
+                    /*if(users?.KeyAuthorized != null && users.KeyAuthorized != string.Empty)
                     {
                         return users.KeyAuthorized;
-                    }
+                    }*/
                 }
             }
             catch (Exception e)
@@ -469,6 +599,77 @@ namespace WebDispacher.Controellers
             
             return null;
         }
+        
+        [HttpGet]
+        public IActionResult ResetPassword(string userId, string code)
+        {
+            ViewData[NavConstants.TypeNavBar] = NavConstants.AllUsers;
+            ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+            
+            return View(new ResetPasswordViewModel { UserId = userId, Code = code });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            ViewData[NavConstants.TypeNavBar] = NavConstants.AllUsers;
+            ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await userManager.FindByIdAsync(model.UserId);
+            if (user == null)
+            {
+                return RedirectToAction("ResetPasswordConfirmation");
+            }
+
+            var result = await userManager.ResetPasswordAsync(user, model.Code, model.Password);
+
+            if (result.Succeeded)
+            {
+                return RedirectToAction("ResetPasswordConfirmation", new { userId = model.UserId, code = model.Code });
+            }
+            else
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                return View(model);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ResetPasswordConfirmation(string userId, string code)
+        {
+            ViewData[NavConstants.TypeNavBar] = NavConstants.AllUsers;
+            ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+            if (userId == null || code == null)
+            {
+                return View("ResetPasswordError");
+            }
+
+            var user = await userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                return View("ResetPasswordError");
+            }
+
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult ResetPasswordError()
+        {
+            ViewData[NavConstants.TypeNavBar] = NavConstants.AllUsers;
+            ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+            return View();
+        }
 
         [HttpPost]
         [Route("Restore/Password")]
@@ -492,14 +693,24 @@ namespace WebDispacher.Controellers
             return null;
         }
 
-        private IActionResult BaseRedirect(string key)
+        [HttpPost]
+        private async Task SetLastLoginDateToUser(LoginViewModel model, string localDate)
         {
-            Request.Cookies.TryGetValue(CookiesKeysConstants.CompanyIdKey, out var idCompany);
+            await userService.SetLastLoginDateToUser(model, localDate);
+        }
 
-            if (companyService.GetTypeNavBar(key, idCompany) == NavConstants.BaseCompany)
+        private IActionResult BaseRedirect()
+        {
+            if (companyService.GetTypeNavBar(CompanyId) == NavConstants.BaseCompany)
                 return Redirect("/Company/Companies");
 
-            return Redirect("/Dashbord/Order/NewLoad");
+            if (companyService.GetTypeNavBar(CompanyId) == NavConstants.BrokerCompany)
+                return Redirect("/Checks/CarrierBrokerCheck");
+
+            if (companyService.GetTypeNavBar(CompanyId) == NavConstants.NormalCompany)
+                return Redirect("/Dashbord/Order/NewLoad");
+
+            return Redirect("/error?code=404");
         }
     }
 }

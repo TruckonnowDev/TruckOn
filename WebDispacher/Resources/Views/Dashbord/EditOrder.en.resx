@@ -258,4 +258,10 @@
   <data name="VehFormHaveError" xml:space="preserve">
     <value>The vehicle was not added to the order</value>
   </data>
+  <data name="VehFormSuccessSendAndRemove" xml:space="preserve">
+    <value>Vehicle was removed to an order</value>
+  </data>
+  <data name="VehFormInfoSuccessSend" xml:space="preserve">
+    <value>The vehicle was successfully save to the order</value>
+  </data>
 </root>

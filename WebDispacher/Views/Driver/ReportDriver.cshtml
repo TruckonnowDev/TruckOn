@@ -26,26 +26,31 @@
                         <div class="tab whiteborder" onclick="window.location.href='@Url.Action("AddReport", "Driver")';">@Localizer["ReportDriver"]</div>
                         <div class="tabContent">
                             <form action="" method="post">
+                                @Html.ValidationSummary()
                                 <input style="display:none;" name="Experience" id="experienceInp" /><br />
                                 <label class="big-label" for="">
                                     @Localizer["FirstName"]
-                                    <input class="height-input" name="FullName" type="text" id="firstName" value="@Model.FullName" required>
-                                    @Html.ValidationMessageFor(model => model.FullName, "", new { @class = "text-danger" })
+                                    <input class="height-input" asp-for="FirstName" type="text" id="firstName" value="@Model.FirstName" maxlength="25" required>
+                                    @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
                                 </label>
                                 <label class="big-label" for="">
                                     @Localizer["LastName"]
-                                    <input class="height-input" name="LastName" id="lastName" type="text" required>
+                                    <input class="height-input" asp-for="LastName" id="lastName" value="@Model.LastName" type="text" maxlength="25" required>
+                                    @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
                                 </label>
                                 <label class="big-label" id="dateOfBirthLabel" for="">
                                     @Localizer["DateOfBirth"]
-                                    <input class="height-input" name="DateOfBirth" id="dateOfBirth" type="text">
+                                    @{
+                                        var date = Model.DateOfBirth == DateTime.MinValue ? DateTime.Today : Model.DateOfBirth;
+                                    }
+                                    <input class="height-input" asp-for="DateOfBirth" id="dateOfBirth" value="@date.ToString(DateTimeFormats.DateOfBirth)" type="text">
                                     <p class="dob-not-current-format text-danger"></p>
                                 </label>
                                 <label class="big-label" for="">
                                     @Localizer["DriverLicenseNumber"]
-                                    <input class="height-input" name="DriversLicenseNumber" value="@Model.DriversLicenseNumber" id="driverNumber" maxlength="30" type="text" required>
+                                    <input class="height-input" asp-for="DriverLicenseNumber" value="@Model.DriverLicenseNumber" id="driverNumber" maxlength="30" type="text" required>
                                     <span class="info-gray-message">@Localizer["DriverLicenseNumberInfoLabel"]</span>
-                                    @Html.ValidationMessageFor(model => model.DriversLicenseNumber, "", new { @class = "text-danger" })
+                                    @Html.ValidationMessageFor(model => model.DriverLicenseNumber, "", new { @class = "text-danger" })
                                 </label>
                                 <label class="big-label" for="">
                                     @Localizer["NumberOfAccidents"]
@@ -143,6 +148,7 @@
                                     <textarea name="Comment" cols="5" rows="10" required>@Model.Comment</textarea>
                                     @Html.ValidationMessageFor(model => model.Comment, "", new { @class = "text-danger" })
                                 </label>
+                                <input type="hidden" value="" name="localDate" />
                                 <input type="submit" value="@Localizer["AddReportDriver"]" class="btn1 big-label">
                             </form>
                         </div>
@@ -155,8 +161,8 @@
 
 <script src="~/js/input-replacer.js"></script>
 <script>
-    setReplacer(document.querySelector('#firstName'), @ExpressionConstants.OnlyDigits);
-    setReplacer(document.querySelector('#lastName'), @ExpressionConstants.OnlyDigits);
+    setReplacer(document.querySelector('#firstName'), /[\W\d]+/g);
+    setReplacer(document.querySelector('#lastName'), @ExpressionConstants.OnlyLetters);
     setReplacer(document.querySelector('#driverNumber'), @ExpressionConstants.WithoutDashes);
 
 $.fn.setCursorPosition = function (pos) {
@@ -172,6 +178,8 @@ $.fn.setCursorPosition = function (pos) {
         }
     };
 
+    const dateInput = document.querySelector("[name='localDate']");
+
     $('input[name="DateOfBirth"]').on('click', function () {
         $(this).setCursorPosition(0);
     });
@@ -180,7 +188,7 @@ $.fn.setCursorPosition = function (pos) {
         $('input[name="Terminated"]').val($("#terminatedYes").is(":checked"));
 
         CheckValidDoB(e, "dateOfBirth", "dob-not-current-format", "dateOfBirthLabel");
-        
+        dateInput.value = GetDateTimeInFormat(new Date());
     });
 
     $("#dateOfBirth").mask("99/99/9999", { placeholder: "MM/DD/YYYY" });  

@@ -40,6 +40,7 @@ namespace BaceModel.ModelInspertionDriver
                 case "BumperPool2CarTrailer": transportVehicle = new BumperPool2CarTrailer(); break;
 
                 case "Deffalt": transportVehicle = new DeffalteTransport(); break;
+                default: transportVehicle = new PickUpDually4TiresInTheBackMustHave4Door(); break;
             }
             return transportVehicle;
         }

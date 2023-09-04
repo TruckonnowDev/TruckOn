@@ -1,5 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 
+@model List<DaoModels.DAO.Models.Contact>
+
 @inject IViewLocalizer Localizer
 
 @{
@@ -19,21 +21,31 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    @for (int i = 0; i < ViewBag.Contacts.Count; i++)
+                    @for (var i = 0; i < Model.Count; i++)
                     {
                         <div class="one-line">
                             <div class="top-line">
                                 <div class="left">
                                     <div class="contact">
-                                        <p class="text-p"><strong>@ViewBag.Contacts[i].Name</strong></p>
-                                        <p class="text-p"><b>@Localizer["Email"]: </b><a class="font-weight-medium" href="@ViewBag.Contacts[i].Email"> @ViewBag.Contacts[i].Email</a></p>
-                                        <p class="text-p"><b>@Localizer["Position"]: </b><a class="font-weight-medium" href="@ViewBag.Contacts[i].Position"> @ViewBag.Contacts[i].Position</a></p>
-                                        <p class="text-p"><b>@Localizer["Phone"]:  </b><a class="font-weight-medium" href="tel:@ViewBag.Contacts[i].Phone">@ViewBag.Contacts[i].Phone</a><b class="ml-1">@Localizer["Ext"].  </b>  <a class="font-weight-medium " href="tel:@ViewBag.Contacts[i].Ext">@ViewBag.Contacts[i].Ext</a></p>
+                                        <p class="text-p"><strong>@Model[i].Name</strong></p>
+                                        <p class="text-p"><b>@Localizer["Email"]: </b><a class="font-weight-medium" href="@Model[i].Email"> @Model[i].Email</a></p>
+                                        <p class="text-p"><b>@Localizer["Position"]: </b><a class="font-weight-medium" href="@Model[i].Position"> @Model[i].Position</a></p>
+                                        @{
+                                            var phone = string.Empty;
+                                            if (Model[i]?.PhoneNumber.DialCode != 0 && !string.IsNullOrEmpty(Model[i]?.PhoneNumber.Number))
+                                            {
+                                                phone = $"+{Model[i].PhoneNumber.DialCode} {Model[i].PhoneNumber.Number}";
+                                            }
+                                        }
+                                        <p class="text-p">
+                                            <b>@Localizer["Phone"]:  </b><a class="font-weight-medium" href="tel:@phone">@phone</a>
+                                            <b class="ml-1">@Localizer["Ext"].  </b>  <a class="font-weight-medium " href="tel:@Model[i].Ext">@Model[i].Ext</a>
+                                        </p>
                                     </div>
                                 </div>
                                 <div class="right">
-                                    <a class="btn3" href="@ViewBag.BaseUrl/Contact/Edit?id=@ViewBag.Contacts[i].Id">@Localizer["Edit"]</a>
-                                    <a class="btn3 open-ConfirmDelete" data-toggle="modal" data-id="@ViewBag.Contacts[i].Id" href="#confirmDeleteEntryModal">@Localizer["Delete"]</a>
+                                    <a class="btn3" href="@ViewBag.BaseUrl/Contact/Edit?id=@Model[i].Id">@Localizer["Edit"]</a>
+                                    <a class="btn3 open-ConfirmDelete" data-toggle="modal" data-id="@Model[i].Id" href="#confirmDeleteEntryModal">@Localizer["Delete"]</a>
                                 </div>
                             </div>
                         </div>
@@ -43,7 +55,7 @@
             </div>
         </div>
     </div>
-    @await Html.PartialAsync("~/Views/PartView/Modals/ConfirmDelete.cshtml");
+    @await Html.PartialAsync("~/Views/PartView/Modals/ConfirmDelete.cshtml",  new ViewDataDictionary(ViewData) { {"ModalId", "confirmDeleteEntryModal"},});
 </body>
 
 <script>

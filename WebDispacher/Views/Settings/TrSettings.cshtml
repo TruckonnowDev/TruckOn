@@ -39,7 +39,7 @@
                                         </div>
                                     }
                                 }
-                        <img class="tab-add-elem" src="img/addCross.svg" onclick="window.location.href='@Url.Action("AddProfile", "Settings")?idTr=@ViewBag.IdTr&typeTransport=@ViewBag.TypeTransport'" />
+                        <img class="tab-add-elem" src="~/img/addCross.svg" onclick="window.location.href='@Url.Action("AddProfile", "Settings")?idTr=@ViewBag.IdTr&typeTransport=@ViewBag.TypeTransport'" />
                         <div class="tabContent">
                             <div class="row">
                                 @foreach (var layout in ViewBag.SelectSetingTruck.TransportVehicle.Layouts)

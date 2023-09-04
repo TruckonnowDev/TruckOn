@@ -105,9 +105,12 @@
 		<value>TMS del transportista</value>
 	</data>
 	<data name="ShipperTMS" xml:space="preserve">
-		<value>Shipper TMS</value>
+		<value>TMS del expedidor</value>
 	</data>
 	<data name="TryForFree" xml:space="preserve">
 		<value>Pruébalo gratis</value>
+	</data>
+	<data name="BrokerTMS" xml:space="preserve">
+		<value>TMS de corredor</value>
 	</data>
 </root>

@@ -1,12 +1,14 @@
-﻿@model WebDispacher.ViewModels.Driver.DriverViewModel
-@using Microsoft.AspNetCore.Mvc.Localization
+﻿@using Microsoft.AspNetCore.Mvc.Localization;
+@using WebDispacher.Constants;
+@using WebDispacher.Service;
+
+@model WebDispacher.ViewModels.Driver.EditDriverViewModel
 
 @inject IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = "Edit Driver";
 }
-
 <body>
     <div class="admin">
         <div class="container">
@@ -20,35 +22,47 @@
                             <h1 class="text-info-header-1">@Localizer["InfoAboutDriver"]</h1>
                         </div>
                         <form action="" method="post">
+                            @Html.ValidationSummary()
                             <label class="big-label" for="">
                                 @Localizer["FirstName"]
-                                <input class="height-input" type="text" name="FirstName" value="@Model.FullName" required>
+                                <input id="firstName" class="height-input" type="text" asp-for="FirstName" value="@Model.FirstName" required>
+                                @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["LastName"]
-                                <input class="height-input" type="text" name="LastName" value="" required>
+                                <input id="lastName" class="height-input" type="text" asp-for="LastName" value="@Model.LastName" required>
+                                @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["Email"]
-                                <input class="height-input" type="email" name="EmailAddress" value="@Model.EmailAddress" required>
+                                <input class="height-input" type="email" asp-for="Email" value="@Model.Email" required>
+                                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["Password"]
-                                <input class="height-input" type="text" name="Password" value="@Model.Password" required>
+                                <input class="height-input" type="text" asp-for="DriverControl.Password" value="@Model.DriverControl.Password" required>
+                                @Html.ValidationMessageFor(model => model.DriverControl.Password, "", new { @class = "text-danger" })
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["PhoneNumber"]
-                                <input class="height-input" type="text" name="PhoneNumber" placeholder="XXXXXXXXXX" pattern="[0-9]{4,12}" value="@Model.PhoneNumber" required>
+                                <input class="height-input" type="text" asp-for="PhoneNumber.Number" placeholder="(XXX)-XXX-XXXX" id="phoneD" pattern="@PatternConstants.PhoneNumberWithoutCountryCode" value="@Model.PhoneNumber.Number" required>
+                                <input type="hidden" id="country-code-dialcode" asp-for="PhoneNumber.DialCode" value="@Model.PhoneNumber.DialCode">
+                                <input type="hidden" id="country-code-iso2" asp-for="PhoneNumber.Iso2" value="@Model.PhoneNumber.Iso2">
+                                <input type="hidden" id="country-code-name" asp-for="PhoneNumber.Name" value="@Model.PhoneNumber.Name">
+                                @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["TrailerCapacity"]
-                                <input class="height-input" type="text" name="TrailerCapacity" value="@Model.TrailerCapacity" required>
+                                <input class="height-input" type="text" asp-for="DriverControl.TrailerCapacity" value="@Model.DriverControl.TrailerCapacity" required>
+                                @Html.ValidationMessageFor(model => model.DriverControl.TrailerCapacity, "", new { @class = "text-danger" })
                             </label>
                             <label class="big-label pb-3" for="">
                                 @Localizer["DriverLicenseNumber"]
-                                <input class="height-input" type="text" name="DriversLicenseNumber" value="@Model.DriversLicenseNumber" required>
+                                <input id="driverNumber" class="height-input" type="text" asp-for="DriverLicenseNumber" value="@Model.DriverLicenseNumber" required>
+                                @Html.ValidationMessageFor(model => model.DriverLicenseNumber, "", new { @class = "text-danger" })
                             </label>
                             <input name="id" value="@Model.Id" style="display:none" />
+                            <input type="hidden" value="" name="localDate" />
                             <input class="btn1 height-input big-font-size big-label" type="submit" value="@Localizer["SaveInfo"]" />
                         </form>
                     </div>
@@ -57,3 +71,62 @@
         </div>
     </div>
 </body>
+<script src="~/js/input-replacer.js"></script>
+<script>
+    setReplacer(document.querySelector('#firstName'), /\d/g);
+    setReplacer(document.querySelector('#lastName'), /\d/g);
+    setReplacer(document.querySelector('#driverNumber'), /\-/);
+
+    $.fn.setCursorPosition = function (pos) {
+        if ($(this).get(0).setSelectionRange) {
+            $(this).get(0).setSelectionRange(pos, pos);
+        }
+        else if ($(this).get(0).createTextRange) {
+            var range = $(this).get(0).createTextRange();
+            range.collapse(true);
+            range.moveEnd('character', pos);
+            range.moveStart('character', pos);
+            range.select();
+        }
+    };
+    const dateInput = document.querySelector("[name='localDate']");
+
+    $('input[name="PhoneD"]').on('click', function () {
+        $(this).setCursorPosition(1);
+    });
+
+    $("input[type=submit]").on('click', function (e) {
+        dateInput.value = GetDateTimeInFormat(new Date());
+    });
+    
+
+    $(document).ready(function () {
+        $("#phoneD").mask("(999)-999-9999", { placeholder: "(XXX)-XXX-XXXX" });
+
+        if (!$("#country-code-iso2").val()) {
+            $("#country-code-iso2").val("us")
+            $("#country-code-dialcode").val("1")
+            $("#country-code-name").val("United States")
+        }
+
+        var phoneC = $("#phoneD");
+        phoneC.intlTelInput({
+            initialCountry: $("#country-code-iso2").val() ? $("#country-code-iso2").val() : "us",
+            separateDialCode: true,
+        });
+
+        phoneC.on("countrychange", function (e, countryData) {
+            $("#country-code-dialcode").val(countryData.dialCode);
+            $("#country-code-iso2").val(countryData.iso2);
+            $("#country-code-name").val(countryData.name);
+        });
+    });
+    
+</script>
+
+
+<style>
+    .intl-tel-input {
+        width: 100%;
+    }
+</style>

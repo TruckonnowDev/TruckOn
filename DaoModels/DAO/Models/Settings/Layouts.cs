@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace DaoModels.DAO.Models.Settings
+﻿namespace DaoModels.DAO.Models.Settings
 {
     public class Layouts
     {

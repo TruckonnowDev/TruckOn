@@ -28,7 +28,14 @@
                                @Model.Name
                         </span>
                     </p>
-                    <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["Phone"]:</b> <span>@Model.Phone</span></p>
+                    @{
+                        var phoneCompany = string.Empty;
+                        if (Model?.PhoneNumber.DialCode != 0 && !string.IsNullOrEmpty(Model?.PhoneNumber.Number))
+                        {
+                            phoneCompany = $"+{Model.PhoneNumber.DialCode} {Model.PhoneNumber.Number}";
+                        }
+                    }
+                    <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["Phone"]:</b> <span>@phoneCompany</span></p>
                     <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["Email"]:</b> <span>@Model.Email</span></p>
                     <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["Password"]:</b> <span>@Model.Password</span></p>
                     <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["CompanyType"]:</b> <span>@Model.CompanyType</span></p>

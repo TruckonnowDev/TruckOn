@@ -1,9 +1,10 @@
-﻿
-namespace DaoModels.DAO.Models
+﻿namespace DaoModels.DAO.Models
 {
     public class Damage
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
+        public int PhotoVehicleInspectionId { get; set; }
+        public PhotoVehicleInspection PhotoVehicleInspection { get; set; }
         public string IndexImageVech { get; set; }
         public string TypePrefDamage { get; set; }
         public string TypeDamage { get; set; }

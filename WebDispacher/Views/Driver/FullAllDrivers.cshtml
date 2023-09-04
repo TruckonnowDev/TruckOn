@@ -2,11 +2,12 @@
 @using System.Globalization;
 @using WebDispacher.Constants;
 
+@model List<DaoModels.DAO.Models.Driver>
+
 @inject IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = "All Drivers";
-    DateTime dateTimeRegistrationFormat = DateTime.MinValue;
 }
 
 <body>
@@ -28,68 +29,53 @@
                         <div class="tab" onclick="window.location.href='@Url.Action("AddReport", "Driver")';">@Localizer["ReportDriver"]</div>
                         <div class="tabContent">
                             
-                            @for (int i = 0; i < ViewBag.Drivers.Count; i++)
+                            @for (int i = 0; i < Model.Count; i++)
                             {
-                                {
-                                    var dateTimeString = ViewBag.Drivers[i].DateRegistration;
-
-                                    try
-                                    {
-                                        dateTimeRegistrationFormat = DateTime.ParseExact(dateTimeString, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
-                                    }
-                                    catch
-                                    {
-                                        
-                                    }
-                                }
                                 <div class="one-line">
                                     <div class="top-line">
                                         <div class="left">
                                             <div class="contact">
                                                 <p>
-                                                    <strong>@ViewBag.Drivers[i].FullName</strong>
+                                                    <strong>@Model[i].FirstName @Model[i].LastName</strong>
                                                 </p>
-                                                <p class="text-p">@Localizer["TrailerCapacity"]: @ViewBag.Drivers[i].TrailerCapacity</p>
-                                                <p class="text-p">@Localizer["LastIns"]: @ViewBag.Drivers[i].LastDateInspaction</p>
+                                                <p class="text-p">@Localizer["TrailerCapacity"]: @Model[i].DriverControl.TrailerCapacity</p>
+                                                <p class="text-p">@Localizer["LastIns"]: @Model[i].DriverControl.LastDateInspaction</p>
                                             </div>
                                         </div>
                                         <div class="right">
-                                            <a href="@ViewBag.BaseUrl/Driver/Drivers/Edit?id=@ViewBag.Drivers[i].Id" class="btn3">@Localizer["Edit"]</a>
-                                            <input class="btn3" type="button" value="@Localizer["Delete"]" onclick="ShowAlert(@ViewBag.Drivers[i].Id)" data-toggle="modal" data-target="#dismissFormModal" />
+                                            <a href="@ViewBag.BaseUrl/Driver/Drivers/Edit?id=@Model[i].Id" class="btn3">@Localizer["Edit"]</a>
+                                            <input class="btn3" type="button" value="@Localizer["Delete"]" onclick="ShowAlert(@Model[i].Id)" data-toggle="modal" data-target="#dismissFormModal" />
                                         </div>
                                     </div>
                                     <div class="top-line">
                                         <div class="left">
                                             <div class="contact">
-                                                <p class="text-p">@Localizer["Email"]: <a href="@ViewBag.Drivers[i].EmailAddress">@ViewBag.Drivers[i].EmailAddress</a></p>
-                                                <p class="text-p">@Localizer["Phone"]: <a href="tel:@ViewBag.Drivers[i].PhoneNumber">@ViewBag.Drivers[i].PhoneNumber</a></p>
+                                                <p class="text-p">@Localizer["Email"]: <a href="@Model[i].Email">@Model[i].Email</a></p>
+                                                @{
+                                                    var phoneDriver = string.Empty;
+                                                    if (Model[i]?.PhoneNumber != null && Model[i]?.PhoneNumber.DialCode != 0 && !string.IsNullOrEmpty(Model[i]?.PhoneNumber.Number))
+                                                    {
+                                                        phoneDriver = $"+{Model[i].PhoneNumber.DialCode} {Model[i].PhoneNumber.Number}";
+                                                    }
+                                                }
+                                                <p class="text-p">@Localizer["Phone"]: <a href="tel:@Model[i].PhoneNumber">@phoneDriver</a></p>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="top-line">
                                         <div class="left">
                                             <div class="contact">
-                                                @if(dateTimeRegistrationFormat.Year == 1)
-                                                {
-                                                    <p class="text-p">@Localizer["Registration"]: @ViewBag.Drivers[i].DateRegistration</p>
-                                                }
-                                                else
-                                                {
-                                                    <p class="text-p">@Localizer["Registration"]: @dateTimeRegistrationFormat.ToString(DateTimeFormats.FullDateTimeInfoUS)</p>
-                                                }
+                                                <p class="text-p">@Localizer["Registration"]: @Model[i].DateRegistration.ToString(DateTimeFormats.FullDateTimeInfoUS)</p>
+                                                <p class="text-p">@Localizer["LastUpdate"]: @Model[i].DateLastUpdate.ToString(DateTimeFormats.FullDateTimeInfoUS)</p>
                                             </div>
                                         </div>
                                         <div class="right">
-                                            <a class="btn3" href="~/Driver/InspactionTrucks?idDriver=@ViewBag.Drivers[i].Id&idTruck=0&idTrailer=0&date=0">@Localizer["Inspection"]</a>
-                                            <input class="btn3" value="@Localizer["RemindIns"]" type="button" onclick="SendRemindInspection(@ViewBag.Drivers[i].Id, '@ViewBag.BaseUrl')" />
-                                            <input class="btn3" value="@Localizer["Documents"]" type="button" onclick="window.location.href='Doc?id=@ViewBag.Drivers[i].Id'" />
+                                            <a class="btn3" href="~/Driver/InspactionTrucks?driverId=@Model[i].Id&idTruck=0&idTrailer=0&date=0">@Localizer["Inspection"]</a>
+                                            <input class="btn3" value="@Localizer["RemindIns"]" type="button" onclick="SendRemindInspection(@Model[i].Id, '@ViewBag.BaseUrl')" />
+                                            <input class="btn3" value="@Localizer["Documents"]" type="button" onclick="window.location.href='Doc?id=@Model[i].Id'" />
                                         </div>
                                     </div>
                                 </div>
-
-                                {
-                                    dateTimeRegistrationFormat = DateTime.MinValue;
-                                }
                             }
                             <pagination-list actual-pages="functions.GetPages(ViewBag.SelectedPage, ViewBag.CountPages)" selected-page="ViewBag.SelectedPage" />
                         </div>
@@ -408,7 +394,7 @@
 function SendRemindInspection(idDriver, url) {
     let urlBase = url+"/Driver/Remind/Inspection";
     let xmlHttp = new XMLHttpRequest();
-    var body = 'idDriver=' + encodeURIComponent(idDriver);
+    var body = 'driverId=' + encodeURIComponent(idDriver);
     xmlHttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             if (this.responseText == "true") {

@@ -33,7 +33,10 @@
                             @Html.HiddenFor(x => x.PersonalData.CompanyName)
                             @Html.HiddenFor(x => x.PersonalData.USDOTNumber)
                             @Html.HiddenFor(x => x.PersonalData.Password)
-                            @Html.HiddenFor(x => x.PersonalData.PhoneNumber)
+                            @Html.HiddenFor(x => x.PersonalData.Number)
+                            @Html.HiddenFor(x => x.PersonalData.DialCode)
+                            @Html.HiddenFor(x => x.PersonalData.Iso2)
+                            @Html.HiddenFor(x => x.PersonalData.Name)
                             <div class="validation" asp-validation-summary="ModelOnly"></div>
                             <h3>@Localizer["Step2of3"]</h3>
                             <ul class="steps">

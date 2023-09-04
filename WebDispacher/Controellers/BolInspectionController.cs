@@ -1,4 +1,5 @@
 ﻿using DaoModels.DAO.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebDispacher.Business.Interfaces;
 using WebDispacher.Constants;
+using WebDispacher.Constants.Identity;
 using WebDispacher.Service;
 
 namespace WebDispacher.Controellers
@@ -30,25 +32,24 @@ namespace WebDispacher.Controellers
         }
 
         [Route("Photo/BOL/{idVech}")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public IActionResult GetPhotoInspection(int idVech)
         {
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
             
-            if (CheckPermissionsByCookies(RouteConstants.Bol, out var key, out var idCompany))
-            {
-                var isCancelSubscribe = companyService.GetCancelSubscribe(idCompany);
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
                 
                 if (isCancelSubscribe)
                 {
                     return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
                 
-                var shipping = orderService.GetShippingCurrentVehiclwIn(idVech.ToString());
+                //var shipping = orderService.GetShippingCurrentVehiclwIn(idVech.ToString());
                 
-                var vehiclwInformation = shipping.VehiclwInformations.FirstOrDefault(v => v.Id == idVech);
+                //var vehiclwInformation = shipping.VehiclwInformations.FirstOrDefault(v => v.Id == idVech);
                 
-                if (shipping != null)
+                /*if (shipping != null)
                 {
                     ViewBag.NameCompany = GetCookieCompanyName();
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(key, idCompany);
@@ -57,16 +58,8 @@ namespace WebDispacher.Controellers
                     ViewBag.Vehiclw = vehiclwInformation;
                     
                     return View("InspectionVech");
-                }
-            }
-            else
-            {
-                if (Request.Cookies.ContainsKey(CookiesKeysConstants.CarKey))
-                {
-                    Response.Cookies.Delete(CookiesKeysConstants.CarKey);
-                }
-            }
-            
+                }*/
+
             return Redirect(Config.BaseReqvesteUrl);
         }
 
@@ -76,7 +69,7 @@ namespace WebDispacher.Controellers
         {
             ViewData[NavConstants.TypeNavBar] = NavConstants.BaseAllUsers;
             
-            var shipping = orderService.GetShippingCurrentVehiclwIn(idVech.ToString());
+            /*var shipping = orderService.GetShippingCurrentVehiclwIn(idVech.ToString());
             var vehiclwInformation = shipping.VehiclwInformations.FirstOrDefault(v => v.Id == idVech);
             
             if (shipping != null)
@@ -86,7 +79,7 @@ namespace WebDispacher.Controellers
                 ViewBag.Vehiclw = vehiclwInformation;
                 
                 return View("WelcomeInspectionVech");
-            }
+            }*/
             
             return null;
         }
@@ -99,17 +92,17 @@ namespace WebDispacher.Controellers
 
             var truck = await truckAndTrailerService.GetTruck(idDriver);
             ViewBag.Truck = truck;
-            ViewBag.TruckDoc = await truckAndTrailerService.GetTruckDoc((truck?.Id ?? 0).ToString());
+            ViewBag.TruckDoc = await truckAndTrailerService.GetTruckDoc(truck?.Id ?? 0);
 
             var trailer = await truckAndTrailerService.GetTrailer(idDriver);
             ViewBag.Trailer = trailer;
-            ViewBag.TrailerDoc = await truckAndTrailerService.GetTrailerDoc((trailer?.Id ?? 0).ToString());
+            ViewBag.TrailerDoc = await truckAndTrailerService.GetTrailerDocsById(trailer?.Id ?? 0);
 
             return View($"DocDriver");
         }
 
-        [Route("Doc")]
         [HttpGet]
+        [Route("Doc")]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public async Task<IActionResult> GoToViewTruckDoc(string truckPlate, string trailerPlate)
         {
@@ -117,11 +110,11 @@ namespace WebDispacher.Controellers
 
             var truck = await truckAndTrailerService.GetTruckByPlate(truckPlate);
             ViewBag.Truck = truck;
-            ViewBag.TruckDoc = await truckAndTrailerService.GetTruckDoc((truck?.Id ?? 0).ToString());
+            ViewBag.TruckDoc = await truckAndTrailerService.GetTruckDoc(truck?.Id ?? 0);
 
             var trailer = await truckAndTrailerService.GetTrailerByPlate(trailerPlate);
             ViewBag.Trailer = trailer;
-            ViewBag.TrailerDoc = await truckAndTrailerService.GetTrailerDoc((trailer?.Id ?? 0).ToString());
+            ViewBag.TrailerDoc = await truckAndTrailerService.GetTrailerDocsById(trailer?.Id ?? 0);
             
             return View($"DocDriver");
         }

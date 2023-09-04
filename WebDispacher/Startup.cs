@@ -1,34 +1,41 @@
-﻿using Microsoft.AspNetCore.Builder;         
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.Extensions.DependencyInjection;
-using Stripe;
-using System.Collections.Generic;
-using System.IO.Compression;
+﻿using Stripe;
 using DaoModels.DAO;
-using Microsoft.EntityFrameworkCore;
 using WebDispacher.Business.Interfaces;
 using WebDispacher.Business.Services;
 using WebDispacher.ViewModels.Mappings;
 
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.FileProviders;
+using WebDispacher.Middleware;
+
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using DaoModels.DAO.Models;
+using Microsoft.AspNetCore.Http.Features;
+using WebDispacher.Constants.Identity;
+using System;
 
 namespace WebDispacher
 {
     public class Startup
     {
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddLocalization(options => options.ResourcesPath = "Resources");
-            services.AddDbContext<Context>();
+            services.AddDbContext<Context>(ServiceLifetime.Transient);
                 services.AddMvc()
                         .AddDataAnnotationsLocalization()
                         .AddViewLocalization();
@@ -50,10 +57,11 @@ namespace WebDispacher
             services.AddAutoMapper(typeof(MappingProfile));
 
             services.AddScoped<ITruckAndTrailerService, TruckAndTrailerService>();
-            services.AddScoped<IDriverService, DriverService>();
+            services.AddTransient<IDriverService, DriverService>();
             services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IOrderService, Business.Services.OrderService>();
+            services.AddScoped<ISeedDatabaseService, SeedDatabaseService>();
 
             services.AddSingleton<Functions.Functions>();
 
@@ -64,6 +72,7 @@ namespace WebDispacher
                 options.ValueCountLimit = 200; // 200 items max
                 options.ValueLengthLimit = 1024 * 1024 * 500; // 100MB max len form data
             });
+
             System.Net.ServicePointManager.DefaultConnectionLimit = 50;
 
             
@@ -75,7 +84,57 @@ namespace WebDispacher
             {
                 options.ForwardClientCertificate = false;
             });
-            
+
+            services.AddIdentity<User, IdentityRole>(options =>
+            {
+                options.User.RequireUniqueEmail = false;
+            })
+                .AddEntityFrameworkStores<Context>()
+                .AddDefaultTokenProviders();
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 3;
+                options.Password.RequiredUniqueChars = 0;
+            });
+
+            services.AddAuthorization(options =>
+            {
+            options.AddPolicy(PolicyIdentityConstants.CarrierCompany, policy =>
+                policy.RequireRole(RolesIdentityConstants.UserRole)
+                    .RequireClaim(ClaimsIdentityConstants.CompanyType, ClaimsIdentityConstants.CompanyCarrierValue)
+                    .RequireClaim(ClaimsIdentityConstants.CompanyId));
+
+            options.AddPolicy(PolicyIdentityConstants.CarrierAdminCompany, policy =>
+                policy.RequireRole(RolesIdentityConstants.AdminRole)
+                .RequireClaim(ClaimsIdentityConstants.CompanyType, ClaimsIdentityConstants.CompanyCarrierAdminValue)
+                .RequireClaim(ClaimsIdentityConstants.CompanyId));
+
+            options.AddPolicy(PolicyIdentityConstants.ShipperCompany, policy =>
+                policy.RequireRole(RolesIdentityConstants.UserRole)
+                .RequireClaim(ClaimsIdentityConstants.CompanyType, ClaimsIdentityConstants.CompanyShipperValue));
+
+            options.AddPolicy(PolicyIdentityConstants.BrokerCompany, policy =>
+                policy.RequireRole(RolesIdentityConstants.UserRole)
+                .RequireClaim(ClaimsIdentityConstants.CompanyType, ClaimsIdentityConstants.CompanyBrokerValue)
+                .RequireClaim(ClaimsIdentityConstants.CompanyId));
+            });
+
+            services.ConfigureApplicationCookie(o =>
+            {
+                o.LoginPath = "/carrier-login";
+                o.AccessDeniedPath = "/AccessDanied";
+            });
+
+            services.Configure<DataProtectionTokenProviderOptions>(options =>
+            {
+                options.TokenLifespan = TimeSpan.FromMinutes(25);
+            });
+
             //services.AddResponseCompression(options => 
             //{
             //    IEnumerable<string> MimeTypes = new[]
@@ -108,18 +167,23 @@ namespace WebDispacher
 
         }
         
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseRequestLocalization();
             app.UseStatusCodePagesWithReExecute("/error", "?code={0}");
 
             // app.UseResponseCompression();
-            app.UseMvc(routes =>
+
+            app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+            app.UseCheckUserActive();
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller=RA}/{action=Index}/{id?}");
-                
+                    pattern: "{controller=RA}/{action=Index}/{id?}");
             });
             app.UseStaticFiles();
             //app.UseStatusCodePagesWithRedirects("/error?code={0}"); 

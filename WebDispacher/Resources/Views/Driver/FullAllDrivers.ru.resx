@@ -239,4 +239,7 @@
 	<data name="ServerError" xml:space="preserve">
 		<value>Ошибка сервера, повторите попытку позже</value>
 	</data>
+	<data name="LastUpdate" xml:space="preserve">
+		<value>Последнее обновление</value>
+	</data>
 </root>

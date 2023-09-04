@@ -258,4 +258,10 @@
   <data name="VehFormSuccessSend" xml:space="preserve">
     <value>Información del conductor  correctamente</value>
   </data>
+  <data name="VehFormSuccessSendAndRemove" xml:space="preserve">
+    <value>El vehículo fue retirado a una orden</value>
+  </data>
+  <data name="VehFormInfoSuccessSend" xml:space="preserve">
+    <value>El vehículo se guardó correctamente en el pedido</value>
+  </data>
 </root>

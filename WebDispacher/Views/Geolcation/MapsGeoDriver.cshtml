@@ -1,19 +1,22 @@
-﻿@{
+﻿@using DaoModels.DAO.Models;
+@{
     ViewData["Title"] = "Drivers Map";
 }
+
+@model List<Driver>
 
 <body>
     <span class="metadata-marker" style="display: none;" data-region_tag="html-body"></span>
     <div id="map" style="overflow: visible; height: 92Vh; width: 100%;"></div>
     <div id="dataDriverGPS" style="display:none">
-        @foreach (var driver in ViewBag.Drivers)
+        @foreach (var driver in Model)
         {
-            @if (driver.geolocations != null)
+            @if (driver.Geolocation != null)
             {
                 <div>
-                    <input type="text" value=@driver.geolocations.Longitude />
-                    <input type="text" value=@driver.geolocations.Latitude />
-                    <input type="text" value="@driver.FullName" />
+                    <input type="text" value=@driver.Geolocation.Longitude />
+                    <input type="text" value=@driver.Geolocation.Latitude />
+                    <input type="text" value="@driver.FirstName @driver.LastName" />
                 </div>
             }
         }

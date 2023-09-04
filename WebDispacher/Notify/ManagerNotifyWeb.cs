@@ -30,14 +30,14 @@ namespace WebDispacher.Notify
             tRequest.ContentType = "application/json";
         }
 
-        public void SendNotyfyAssign(string idShip, string tokenShope, List<VehiclwInformation> vehiclwInformations)
+        public void SendNotyfyAssign(int orderId, string tokenShope, List<VehicleDetails> vehiclwInformations)
         {
             string body = null;
             if (tokenShope != null && tokenShope != "")
             {
                 foreach (var vech in vehiclwInformations)
                 {
-                    body += $"{vech.Year} {vech.Make} {vech.Model}\n";
+                    body += $"{vech.VehicleModel.Year} {vech.VehicleModel.VehicleBrand.Name} {vech.VehicleModel.Name}\n";
                 }
                 var payload = new
                 {
@@ -47,7 +47,7 @@ namespace WebDispacher.Notify
                     {
                         click_action = "Oreder",
                         body = $"{body}",
-                        title = $"New Load Order Id: {idShip} Assign",
+                        title = $"New Load Order Id: {orderId} Assign",
                         sound = "default",
                         badge = 1,
                     },
@@ -73,14 +73,14 @@ namespace WebDispacher.Notify
             }
         }
 
-        public void SendNotyfyUnassign(string idShip, string tokenShope, List<VehiclwInformation> vehiclwInformations)
+        public void SendNotyfyUnassign(int orderId, string tokenShope, List<VehicleDetails> vehiclwInformations)
         {
             string body = null;
             if (tokenShope != null && tokenShope != "")
             {
                 foreach (var vech in vehiclwInformations)
                 {
-                    body += $"{vech.Year} {vech.Make} {vech.Model}\n";
+                    body += $"{vech.VehicleModel.Year} {vech.VehicleModel.VehicleBrand.Name} {vech.VehicleModel.Name}\n";
                 }
                 var payload = new
                 {
@@ -90,7 +90,7 @@ namespace WebDispacher.Notify
                     {
                         click_action = "Oreder",
                         body = $"{body}",
-                        title = $"Unassign Load Order Id: {idShip}",
+                        title = $"Unassign Load Order Id: {orderId}",
                         sound = "default",
                         badge = 1,
                     },

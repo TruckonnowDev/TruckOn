@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using DaoModels.DAO.Interface;
 
 namespace WebDispacher.ViewModels.Trailer
@@ -20,6 +21,10 @@ namespace WebDispacher.ViewModels.Trailer
         [Display(Name = "Make")]
         [MaxLength(15)]
         public string Make { get; set; }
+        
+        [Display(Name = "Model")]
+        [MaxLength(20)]
+        public string Model { get; set; }
 
         [Display(Name = "HowLong")]
         [MaxLength(5)]
@@ -40,7 +45,9 @@ namespace WebDispacher.ViewModels.Trailer
         [Display(Name = "Plate")]
         [MaxLength(10)]
         public string Plate { get; set; }
-        public string Exp { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:MM/yy}", ApplyFormatInEditMode = true)]
+        public DateTime? Exp { get; set; }
 
         [Display(Name = "AnnualIns")]
         [MaxLength(12)]
@@ -49,5 +56,8 @@ namespace WebDispacher.ViewModels.Trailer
         //[Required(ErrorMessage = "TypeRequired")]
         [Display(Name = "Type")]
         public string Type { get; set; }
+
+        public DateTime DateTimeRegistration { get; set; }
+        public DateTime DateTimeLastUpdate { get; set; }
     }
 }

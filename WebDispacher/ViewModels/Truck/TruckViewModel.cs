@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using DaoModels.DAO.Interface;
 
 namespace WebDispacher.ViewModels.Truck
@@ -9,8 +10,8 @@ namespace WebDispacher.ViewModels.Truck
         public int CompanyId { get; set; }
         
         //[Required(ErrorMessage = "NameRequired")]
-        [Display(Name = "Name")]
         [MaxLength(25)]
+        [Display(Name = "Name")]
         public string NameTruck { get; set; }
 
         [MaxLength(4)]
@@ -27,26 +28,31 @@ namespace WebDispacher.ViewModels.Truck
 
         [Display(Name = "State")]
         public string State { get; set; }
-        public string Exp { get; set; }
+
+        [Display(Name = "Exp")]
+        public DateTime? Exp { get; set; }
 
         [MaxLength(17)]
         public string Vin { get; set; }
 
-        [Display(Name = "Owner")]
         [MaxLength(25)]
+        [Display(Name = "Owner")]
         public string Owner { get; set; }
         
         //[Required(ErrorMessage = "PlateRequired")]
-        [Display(Name = "Plate")]
         [MaxLength(10)]
+        [Display(Name = "Plate")]
         public string PlateTruck { get; set; }
 
-        [Display(Name = "Color")]
         [MaxLength(15)]
+        [Display(Name = "Color")]
         public string ColorTruck { get; set; }
         
         //[Required(ErrorMessage = "TypeRequired")]
         [Display(Name = "Type")]
         public string Type { get; set; }
+
+        public DateTime DateTimeRegistration { get; set; }
+        public DateTime DateTimeLastUpload { get; set; }
     }
 }

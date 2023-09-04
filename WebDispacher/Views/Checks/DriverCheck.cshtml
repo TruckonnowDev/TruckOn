@@ -2,14 +2,12 @@
 @using System.Globalization;
 @using WebDispacher.Constants;
 
-@model WebDispacher.ViewModels.Driver.DriverSearchViewModel;
+@model WebDispacher.ViewModels.Driver.CheckDriverViewModel;
 
 @inject IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = "Driver Check";
-    DateTime dateTimeRegistrationFormat = DateTime.MinValue;
-    DateTime dateTimeStringFiredFormat = DateTime.MinValue;
 }
 
 <body>
@@ -19,27 +17,26 @@
                 <div class="col-md-12">
                     <div class="title">
                         <h1>@Localizer["DriverCheck"]</h1>
-                    </div><form method="get">
+                    </div>
+                    <form method="get">
                     <div class="card border card-body" style="display: flex;flex-direction: row;">
-                        
                         <div class="item-search">                            
                             <label>
                                 @Localizer["FirstName"]
-                                    <input class="type-button" id="search-first-name-driver" placeholder="@Localizer["FirstNameLabel"]" asp-for="FirstName" type="text" maxlength="20" required>
-                                
+                                    <input class="type-button" id="search-first-name-driver" placeholder="@Localizer["FirstNameLabel"]" asp-for="Search.FirstName" type="text" maxlength="20" required>
                             </label>
                         </div>
                         <div class="item-search">
                             <label>
                                 @Localizer["LastName"]
-                                <input class="type-button" id="search-last-name-driver" placeholder="@Localizer["LastNameLabel"]" asp-for="LastName" type="text" maxlength="20" required>
+                                <input class="type-button" id="search-last-name-driver" placeholder="@Localizer["LastNameLabel"]" asp-for="Search.LastName" type="text" maxlength="20" required>
                               
                             </label>
                         </div>
                         <div class="item-search big-item ">
                             <label>
                                 @Localizer["DriverLicenseSearch"]
-                                <input class="type-button" id="search-driver-license-number" placeholder="@Localizer["DriverLicenseSearch"]" asp-for="LicenseNumber" maxlength="30" type="text" required>
+                                <input class="type-button" id="search-driver-license-number" placeholder="@Localizer["DriverLicenseSearch"]" asp-for="Search.LicenseNumber" maxlength="30" type="text" required>
                                 
                                 <span class="info-gray-message">@Localizer["DriverLicenseNumberInfoLabel"]</span>
                             </label>
@@ -47,7 +44,7 @@
                         <div class="item-search small-item">
                             <label id="dateOfBirthLabel">
                                 @Localizer["DateOfBirth"]
-                                    <input class="type-button" id="search-date-of-birth-driver" placeholder="MM/DD/YYYY" name="dateOfBirth" type="text" required>
+                                    <input class="type-button" id="search-date-of-birth-driver" placeholder="MM/DD/YYYY" asp-for="Search.DateOfBirth" type="text" required>
                                 <p class="dob-not-current-format text-danger"></p>
                             </label>
                         </div>
@@ -66,54 +63,21 @@
                         <div class="tab" onclick="window.location.href='@Url.Action("CarrierCheck", "Checks")';">@Localizer["CarrierCheck"]</div>
                         <div class="tab" onclick="window.location.href='@Url.Action("BrokerCheck", "Checks")';">@Localizer["BrokerCheck"]</div>
                         <div class="tabContent">
-                            @for (int i = 0; i < ViewBag.Drivers.Count; i++)
+                            @for (var i = 0; i < Model.DriverReports.Count; i++)
                             {
-                                {
-                                    var dateTimeString = ViewBag.Drivers[i].DateRegistration;
-                                    var dateTimeStringFired = ViewBag.Drivers[i].DateFired;
-
-                                    try
-                                    {
-                                        dateTimeRegistrationFormat = DateTime.ParseExact(dateTimeString, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
-                                        dateTimeStringFiredFormat = DateTime.ParseExact(dateTimeStringFired, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
-                                    }
-                                    catch
-                                    {
-
-                                    }
-                                }
                                 <div class="one-line">
                                     <div class="top-line">
                                         <div class="left">
                                             <div class="contact">
-                                                <p><strong>@ViewBag.Drivers[i].FullName</strong></p>
-                                                <p><strong>NaN(Surname)</strong></p>
-                                                <p><strong>@ViewBag.Drivers[i].DriversLicenseNumber</strong></p>
-                                                @if (dateTimeRegistrationFormat.Year == 1)
-                                                {
-                                                    <p><strong>@Localizer["Registration"]:</strong> @ViewBag.Drivers[i].DateRegistration</p>
-                                                }
-                                                else
-                                                {
-                                                    <p><strong>@Localizer["Registration"]:</strong> @dateTimeRegistrationFormat.ToString(DateTimeFormats.FullDateTimeInfoUS)</p>
-                                                }
-                                                @if (dateTimeStringFiredFormat.Year == 1)
-                                                {
-                                                    <p><strong>@Localizer["Fired"]:</strong> @ViewBag.Drivers[i].DateFired</p>
-                                                }
-                                                else
-                                                {
-                                                    <p><strong>@Localizer["Fired"]:</strong> @dateTimeStringFiredFormat.ToString(DateTimeFormats.FullDateTimeInfoUS)</p>
-                                                }
-                                                <p>@ViewBag.Drivers[i].Comment</p>
+                                                <p><strong>@Model.DriverReports[i].FirstName @Model.DriverReports[i].LastName </strong></p>
+                                                <p><strong>@Model.DriverReports[i].DriverLicenseNumber</strong></p>
+                                                <p><strong>@Localizer["Registration"]:</strong> @Model.DriverReports[i].DateRegistration.ToString(DateTimeFormats.FullDateTimeInfoUS)</p>
+                                                <p><strong>@Localizer["Fired"]:</strong> @Model.DriverReports[i].DateFired.ToString(DateTimeFormats.FullDateTimeInfoUS)</p>
+                                                <p>@Model.DriverReports[i].Comment</p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                {
-                                    dateTimeRegistrationFormat = DateTime.MinValue;
-                                    dateTimeStringFiredFormat = DateTime.MinValue;
-                                }
                             }
                         </div>
                      </div>
@@ -126,8 +90,8 @@
 
 <script src="~/js/input-replacer.js"></script>
 <script>
-    setReplacer(document.querySelector('#search-first-name-driver'), @ExpressionConstants.OnlyDigits);
-    setReplacer(document.querySelector('#search-last-name-driver'), @ExpressionConstants.OnlyDigits);
+    setReplacer(document.querySelector('#search-first-name-driver'), @ExpressionConstants.OnlyLetters);
+    setReplacer(document.querySelector('#search-last-name-driver'), @ExpressionConstants.OnlyLetters);
     setReplacer(document.querySelector('#search-driver-license-number'), @ExpressionConstants.WithoutDashes);
     
     $.fn.setCursorPosition = function (pos) {
@@ -143,11 +107,11 @@
         }
     };
 
-    $('input[name="DateOfBirth"]').on('click', function () {
+    $('input[name="Search.DateOfBirth"]').on('click', function () {
         $(this).setCursorPosition(0);
     });
 
-    $("input[type=submit]").on('click', function (e) {
+    $("button[type=submit]").on('click', function (e) {
         CheckValidDoB(e, "search-date-of-birth-driver", "dob-not-current-format", "dateOfBirthLabel");
         
     });

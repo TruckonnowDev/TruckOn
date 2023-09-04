@@ -13,7 +13,7 @@
             <div class="col-md-auto">
                 <ul class="menu top-nav_menu">
                     <li><a href="/Company/Companies" id="Company">@Localizer["Organization"]</a></li>
-                    <li><a href="/Company/Questions" id="mailcontrol">Mail Control</a></li>
+                    <li><a href="/Company/Questions/New" id="Questions">@Localizer["MailControl"]</a></li>
                     <li><a href="/Settings/User/Users" id="Settings">@Localizer["Settings"]</a></li>
                     <li><a href="/Exsit">@Localizer["Exit"]</a></li>
                 </ul>
@@ -30,7 +30,7 @@
 </header>
 
 <script>
-    const NavItems = ['Dashbord', 'Geolcation', 'Contact', 'Driver', 'Equipment', 'Company', 'Settings']
+    const NavItems = ['Questions', 'Company', 'Settings']
     $(document).ready(function () {
         var str = location.pathname
         for (let i = 0; i < NavItems.length; i++) {

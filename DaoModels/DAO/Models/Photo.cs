@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.IO;
 
@@ -8,9 +9,16 @@ namespace DaoModels.DAO.Models
     public class Photo
     {
         public int Id { get; set; }
-        public string path { get; set; }
-        public double Width { get; set; }
+        public int PhotoTypeId { get; set; }
+        public PhotoType PhotoType { get; set; }
+        public string PhotoPath { get; set; }
+        public string PhotoUrl { get; set; }
         public double Height { get; set; }
+        public double Width { get; set; }
+        public DateTime DateTimeUpload { get; set; }
+        public ICollection<PhotoDriverInspection> PhotosDriversInspections { get; set; }
+        public ICollection<PhotoAnswer> PhotosAnswers { get; set; }
+        public ICollection<PhotoVehicleInspection> PhotosVehiclesInspections { get; set; }
         [NotMapped]
         public string Base64
         {
@@ -19,42 +27,41 @@ namespace DaoModels.DAO.Models
                 try
                 {
                     byte[] photoInArrayByte = Convert.FromBase64String(value);
-                    if (!Directory.Exists(path))
+                    if (!Directory.Exists(PhotoPath))
                     {
-                        string pathTmp = path.Remove(path.LastIndexOf("/"));
+                        string pathTmp = PhotoPath.Remove(PhotoPath.LastIndexOf("/"));
                         Directory.CreateDirectory(pathTmp);
                     }
-                    using (var imageFile = new FileStream(path, FileMode.Create))
+                    using (var imageFile = new FileStream(PhotoPath, FileMode.Create))
                     {
                         imageFile.Write(photoInArrayByte, 0, photoInArrayByte.Length);
                         imageFile.Flush();
                     }
                 }
-                catch(Exception)
+                catch (Exception)
                 {
 
                 }
             }
             get
             {
-                //if (path != null)
-                //{
-                //    try
-                //    {
-                //        string tmpJson = JsonConvert.SerializeObject(File.ReadAllBytes(path));
-                //        tmpJson = tmpJson.Replace("\"", "");
-                //        return tmpJson;
-                //    }
-                //    catch(Exception)
-                //    {
-                //        return "";
-                //    }
-                //}
-                //else
-                //{
-                //    return "";
-                //}
-                return "";
+                if (PhotoPath != null)
+                {
+                    try
+                    {
+                        string tmpJson = JsonConvert.SerializeObject(File.ReadAllBytes(PhotoPath));
+                        tmpJson = tmpJson.Replace("\"", "");
+                        return tmpJson;
+                    }
+                    catch(Exception)
+                    {
+                        return string.Empty;
+                    }
+                }
+                else
+                {
+                    return string.Empty;
+                }
             }
         }
     }

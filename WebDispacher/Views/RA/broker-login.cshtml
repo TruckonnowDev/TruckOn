@@ -1,0 +1,124 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using WebDispacher.Constants;
+@using WebDispacher.ViewModels.RA.Carrier.Login;
+@inject IViewLocalizer Localizer
+
+@model LoginViewModel
+
+@{
+    ViewData["Title"] = "Broker Login";
+}
+
+<link href="~/css/Auth/login.css" rel="stylesheet" type="text/css" />
+<div id="carrier-login">
+    <div class="page-login">
+        <div class="login-wrap">
+            <div class="login-img">
+                <picture>
+                    <img src="/img/loginCarrier.svg" alt="login broker">
+                </picture>
+            </div>
+            <div class="login-body">
+                <div class="login-form">
+                    <div class="form-property">
+                        <div class="content">
+                            <div class="title">
+                                <h1>@Localizer["BrokerTMSHeader"]</h1>
+                            </div>
+                            <div class="body-form-login">
+                            <p style="color: red; text-align: center; font-size: 15px">
+                                @ViewData["TextError"]
+                                @Html.ValidationSummary()
+                            </p>
+                                <form action="~/RA/BrokerLogin" method="post" class="form-login">
+                            <div class="input-login-item">
+                                <label for="">
+                                    @Localizer["Email"]
+                                        <input type="email" id="email" pattern="@PatternConstants.Email" asp-for="Email" placeholder="company@gmail.com" required />
+                                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                                    </label>
+                                    </div>
+                                <div class="input-login-item">
+                                    <label for="" class="password">
+                                        @Localizer["Password"]
+                                            <div class="d-flex align-items-center">
+                                                <input type="password" id="password-input" asp-for="Password" placeholder="@Localizer["Password"]" required>
+                                                <a href="#" class="password-control" onclick="return show_hide_password(this, 'password-input');"></a>
+                                                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                                        </div>
+                                    </label>
+                                </div>
+                                    <input type="hidden" value="" name="localDate" />
+                                <div class="input-login-item">
+                                    <input type="submit" value="@Localizer["SignIn"]" class="btn-big">
+                                </div>
+                                </form>
+                                <div class="input-login-item">
+                                    <div class="small-text">
+                                        <a href="/recovery-password-send-mail">@Localizer["ForgotPassword"]?</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="login-message">
+                        <div class="terms">
+                            <p>
+                                @Localizer["FirstPartAgreements"] <a href="">@Localizer["SecondPartAgreements"]</a> @Localizer["And"] <a href="">@Localizer["ThirdPartAgreements"]</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#email').on('input invalid', function () {
+        this.setCustomValidity('')
+            if (this.validity.valueMissing) {
+            this.setCustomValidity("@Localizer["EmailValidMessage"]")
+            }
+            if (this.validity.typeMismatch) {
+                this.setCustomValidity("@Localizer["EmailValidMessage"]")
+            }
+            if (this.validity.patternMismatch) {
+                this.setCustomValidity("@Localizer["EmailValidMessage"]")
+            }
+    })
+
+    $('#password-input').on('input invalid', function () {
+        this.setCustomValidity('')
+        if (this.validity.valueMissing) {
+            this.setCustomValidity("@Localizer["PasswordValidMessage"]")
+        }
+        if (this.validity.typeMismatch) {
+            this.setCustomValidity("@Localizer["PasswordValidMessage"]")
+        }
+        if (this.validity.patternMismatch) {
+            this.setCustomValidity("@Localizer["PasswordValidMessage"]")
+        }
+    })
+
+    const dateInput = document.querySelector("[name='localDate']");
+
+    $("input[type=submit]").on('click', function (e) 
+    {
+        dateInput.value = GetDateTimeInFormat(new Date());
+    })
+</script>
+
+<style>
+    body {
+        background-color: #f0f4fa;
+    }
+
+    input {
+        border: 1px solid #C4C9D4;
+    }
+
+    header {
+        position: unset;
+    }
+</style>

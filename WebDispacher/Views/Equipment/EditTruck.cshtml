@@ -1,6 +1,7 @@
-﻿@model WebDispacher.ViewModels.Truck.TruckViewModel
-@using Microsoft.AspNetCore.Mvc.Localization
+﻿@using Microsoft.AspNetCore.Mvc.Localization
 @using WebDispacher.Constants;
+
+@model WebDispacher.ViewModels.Truck.TruckViewModel
 
 @inject IViewLocalizer Localizer
 
@@ -32,27 +33,37 @@
                         <div class="title">
                             <h1 class="text-info-header-1">@Localizer["EditTruck"]</h1>
                         </div>
-                        <form action="" method="post" enctype="multipart/form-data">
+                        <form onsubmit="formatBeforeSubmit();" action="" method="post" enctype="multipart/form-data">
+                            @Html.ValidationSummary()
                             <input type="text" name="Id" required value="@Model.Id" style="display:none;" />
                             <label class="big-label" for="">
                                 @Localizer["NameTruck"]
-                                <input class="height-input" type="text" name="NameTruck" value="@Model.NameTruck" maxlength="25">
+                                <input class="height-input" id="name" type="text" asp-for="NameTruck" value="@Model.NameTruck" maxlength="25">
+                                @Html.ValidationMessageFor(model => model.NameTruck, "", new { @class = "text-danger" })
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["Year"]
-                                <input class="height-input" type="text" name="Year" value="@Model.Year" maxlength="4" />
+                                @{
+                                    string yearString = Convert.ToInt32(Model.Year) != 0
+                                    ? Model.Year
+                                    : string.Empty;
+                                }
+                                <input class="height-input" type="text" asp-for="Year" value="@yearString" maxlength="4" />
+                                @Html.ValidationMessageFor(model => model.Year, "", new { @class = "text-danger" })
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["Make"]
-                                <input class="height-input" type="text" name="Make" value="@Model.Make" maxlength="15"/>
+                                <input class="height-input" id="make" type="text" asp-for="Make" value="@Model.Make" maxlength="15"/>
+                                @Html.ValidationMessageFor(model => model.Make, "", new { @class = "text-danger" })
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["Model"]
-                                <input class="height-input" type="text" name="Model" value="@Model.Model" maxlength="20" />
+                                <input class="height-input" id="model" type="text" asp-for="Model" value="@Model.Model" maxlength="20" />
+                                @Html.ValidationMessageFor(model => model.Model, "", new { @class = "text-danger" })
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["TypeTruck"] <br />
-                                <select class="height-input input-select" name="Type" id="typeId" onchange="SelectTruck(this.options[this.selectedIndex].value)" value="@Model.Type">
+                                <select class="height-input input-select" asp-for="Type" id="typeId" onchange="SelectTruck(this.options[this.selectedIndex].value)" value="@Model.Type">
                                     <option value="2DrPickupwithSingleWheel">2Dr Pickup with Single Wheel</option>
                                     <option value="2DrPickupwithDuallyWheels">2Dr Pickup with Dually Wheels</option>
                                     <option value="4DrCrewCabPickupwithSingleWheel">4Dr Crew Cab Pickup with Single Wheel</option>
@@ -76,19 +87,27 @@
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["Vin"]#
-                                <input class="height-input" type="text" name="Vin" value="@Model.Vin" maxlength="17" />
+                                <input class="height-input" type="text" asp-for="Vin" value="@Model.Vin" maxlength="17" />
+                                @Html.ValidationMessageFor(model => model.Vin, "", new { @class = "text-danger" })
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["PlateTruck"]
-                                <input class="height-input" type="text" name="PlateTruck" value="@Model.PlateTruck"  maxlength="10"/>
+                                <input class="height-input" type="text" asp-for="PlateTruck" value="@Model.PlateTruck"  maxlength="10"/>
+                                @Html.ValidationMessageFor(model => model.PlateTruck, "", new { @class = "text-danger" })
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["PlateExp"]
-                                <input class="height-input" type="text" name="Exp" id="plateExp" value="@Model.Exp" />
+                                @{
+                                    string plateExpiresString = Model.Exp.HasValue
+                                    ? Model.Exp.Value.ToString("MM/yy")
+                                    : string.Empty;
+                                }
+                                <input class="height-input" type="text" asp-for="Exp" id="plateExp" value="@plateExpiresString" />
+                                @Html.ValidationMessageFor(model => model.Exp, "", new { @class = "text-danger" })
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["State"]
-                                <select class="height-input input-select" id="stateP" name="State" value="@Model.State">
+                                <select class="height-input input-select" id="stateP" asp-for="State" value="@Model.State">
                                     <option value="AL">Alabama</option>
                                     <option value="AK">Alaska</option>
                                     <option value="AZ">Arizona</option>
@@ -144,11 +163,13 @@
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["Color"]
-                                <input class="height-input" type="text" name="ColorTruck" value="@Model.ColorTruck" maxlength="15">
+                                <input class="height-input" id="color" type="text" asp-for="ColorTruck" value="@Model.ColorTruck" maxlength="15">
+                                @Html.ValidationMessageFor(model => model.ColorTruck, "", new { @class = "text-danger" })
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["Owner"]
-                                <input class="height-input" type="text" name="Owner" value="@Model.Owner" maxlength="25" />
+                                <input class="height-input" id="owner" type="text" asp-for="Owner" value="@Model.Owner" maxlength="25" />
+                                @Html.ValidationMessageFor(model => model.Owner, "", new { @class = "text-danger" })
                             </label>
                             <div class="big-label">
                                 <div class="full-label">
@@ -268,6 +289,7 @@
                                     <p class="file-limit-exceeded text-danger"></p>
                                 </div>
                             </div>
+                            <input type="hidden" value="" name="localDate" />
                             <button class="btn1 big-label height-input big-font-size">@Localizer["SaveInfo"]</button>
                         </form>
                     </div>
@@ -358,6 +380,24 @@
 </body>
 
 <script>
+    function formatBeforeSubmit() {
+        const input = document.getElementById('plateExp');
+        const parts = input.value.split('/');
+        if (parts.length === 2) {
+            input.value = '01.' + parts[0] + '.20' + parts[1];
+        }
+    }
+</script>
+<script src="~/js/input-replacer.js"></script>
+<script>
+
+    setReplacer(document.querySelector('#name'), @ExpressionConstants.OnlyLetters);
+    setReplacer(document.querySelector('#make'), @ExpressionConstants.OnlyLetters);
+    setReplacer(document.querySelector('#model'), @ExpressionConstants.OnlyLetters);
+    setReplacer(document.querySelector('#color'), @ExpressionConstants.OnlyLetters);
+    setReplacer(document.querySelector('#owner'), @ExpressionConstants.OnlyLetters);
+    const dateInput = document.querySelector("[name='localDate']");
+
     $("#fi1").change(function () {
         CheckValid('fl1', 'fi1');
     });
@@ -384,6 +424,8 @@
         CheckValid('fl3', 'fi3');
         CheckValid('fl4', 'fi4');
         CheckValid('fl5', 'fi5');
+
+        dateInput.value = GetDateTimeInFormat(new Date());
     });
 
     $(function () {

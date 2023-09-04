@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DaoModels.DAO.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebDispacher.ViewModels.RA.Carrier.Registration
 {
@@ -22,16 +23,15 @@ namespace WebDispacher.ViewModels.RA.Carrier.Registration
 
         [Required(ErrorMessage = "USDOTNumberRequired")]
         [Display(Name = "USDOTNumber")]
-        public string USDOTNumber { get; set; }
+        public int USDOTNumber { get; set; }
 
         [Required(ErrorMessage = "CompanyNameRequired")]
         [Display(Name = "CompanyName")]
         public string CompanyName { get; set; }
 
-        [Required(ErrorMessage = "PhoneNumberRequired")]
-        [MinLength(4, ErrorMessage = "MinLengthPhoneNumber")]
-        [MaxLength(12, ErrorMessage = "MaxLengthPhoneNumber")]
-        [Display(Name = "PhoneNumber")]
-        public string PhoneNumber { get; set; }
+        public string Iso2 { get; set; }
+        public int DialCode { get; set; }
+        public string Name { get; set; }
+        public string Number { get; set; }
     }
 }

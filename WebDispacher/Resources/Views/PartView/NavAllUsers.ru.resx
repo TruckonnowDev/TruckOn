@@ -110,4 +110,7 @@
 	<data name="Login" xml:space="preserve">
 		<value>Войти</value>
 	</data>
+	<data name="BrokerTMS" xml:space="preserve">
+		<value>Брокер TMS</value>
+	</data>
 </root>

@@ -10,6 +10,7 @@
         public const string TypeNavCancel = "Cancel";
         public const string CancelSubscribe = "CancelSubscribe";
         public const string NormalCompany = "NormaCommpany";
+        public const string BrokerCompany = "BrokerCompany";
         public const string Work = "Work";
         public const string TextErrorSub = "TextErrorSub";
         public const string BaseCompany = "BaseCommpany";

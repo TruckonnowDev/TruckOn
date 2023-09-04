@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace DaoModels.DAO.Models
@@ -7,7 +8,13 @@ namespace DaoModels.DAO.Models
     public class Video
     {
         public int Id { get; set; }
-        public string path { get; set; }
+        public int VideoTypeId { get; set; }
+        public VideoType VideoType { get; set; }
+        public string VideoPath { get; set; }
+        public string VideoUrl { get; set; }
+        public double Height { get; set; }
+        public double Width { get; set; }
+        public DateTime DateTimeUpload { get; set; }
         public string VideoBase64
         {
             set
@@ -15,12 +22,12 @@ namespace DaoModels.DAO.Models
                 try
                 {
                     byte[] photoInArrayByte = Convert.FromBase64String(value);
-                    if (!Directory.Exists(path))
+                    if (!Directory.Exists(VideoPath))
                     {
-                        string pathTmp = path.Remove(path.LastIndexOf("/"));
+                        string pathTmp = VideoPath.Remove(VideoPath.LastIndexOf("/"));
                         Directory.CreateDirectory(pathTmp);
                     }
-                    using (var imageFile = new FileStream(path, FileMode.Create))
+                    using (var imageFile = new FileStream(VideoPath, FileMode.Create))
                     {
                         imageFile.Write(photoInArrayByte, 0, photoInArrayByte.Length);
                         imageFile.Flush();
@@ -33,25 +40,24 @@ namespace DaoModels.DAO.Models
             }
             get
             {
-                if (path != null)
+                if (VideoPath != null)
                 {
                     try
                     {
-                        string tmpJson = JsonConvert.SerializeObject(File.ReadAllBytes(path));
-                        tmpJson = tmpJson.Replace("\"", "");
+                        string tmpJson = JsonConvert.SerializeObject(File.ReadAllBytes(VideoPath));
+                        tmpJson = tmpJson.Replace("\"", string.Empty);
                         return tmpJson;
                     }
                     catch (Exception)
                     {
-                        return "";
+                        return string.Empty;
                     }
                 }
                 else
                 {
-                    return "";
+                    return string.Empty;
                 }
             }
         }
-
     }
 }

@@ -234,8 +234,8 @@
 
 <script src="~/js/input-replacer.js"></script>
 <script>
-    setReplacer(document.querySelector('#firstName'), @ExpressionConstants.OnlyDigits);
-    setReplacer(document.querySelector('#lastName'), @ExpressionConstants.OnlyDigits);
+    setReplacer(document.querySelector('#firstName'), @ExpressionConstants.OnlyLetters);
+    setReplacer(document.querySelector('#lastName'), @ExpressionConstants.OnlyLetters);
     setReplacer(document.querySelector('#driverNumber'), /\-/);
 
     $.fn.setCursorPosition = function (pos) {

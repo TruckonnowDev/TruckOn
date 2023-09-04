@@ -110,4 +110,7 @@
 	<data name="TryForFree" xml:space="preserve">
 		<value>Try for Free</value>
 	</data>
+	<data name="BrokerTMS" xml:space="preserve">
+		<value>Broker TMS</value>
+	</data>
 </root>

@@ -107,6 +107,24 @@ namespace WebDispacher.Controellers
 
             return View("carrier-login");
         }
+        
+        [HttpGet]
+        [Route("broker-login")]
+        public IActionResult BrokerLogin(string error, string email)
+        {
+            ViewData[NavConstants.TextError] = string.Empty;
+            ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+            if (User.Identity.IsAuthenticated)
+            {
+                return BaseRedirect();
+            }
+
+            ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
+            ViewData["UserEmail"] = email;
+
+            return View("broker-login");
+        }
 
         [HttpPost]
         public async Task<bool> ContactForm(UserMailQuestion userMailQuestion, string localDate)
@@ -366,7 +384,7 @@ namespace WebDispacher.Controellers
 
         [HttpPost]
         [Route("recovery-password-send-mail")]
-        public async Task<IActionResult> RecoveryPasswordCheckkMail(string email)
+        public async Task<IActionResult> RecoveryPasswordCheckkMail(string email, string localDate)
         {
             ViewData[NavConstants.TextError] = string.Empty;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
@@ -378,6 +396,8 @@ namespace WebDispacher.Controellers
             var callbackUrl = Url.Action("ResetPassword", "RA", new { userId = user.Id, code }, protocol: HttpContext.Request.Scheme);
 
             await userService.SendRecoveryPasswordToEmail(user.Email, callbackUrl);
+
+            await userService.CreatePasswordResets(user, code, localDate);
 
             return Redirect(Config.BaseReqvesteUrl +"?alert=SuccessSendEmail");
         }
@@ -448,6 +468,75 @@ namespace WebDispacher.Controellers
                 var error = UserConstants.PasswordEmailIncorrectly;
                 
                 return Redirect($"/carrier-login?error={error}");
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> BrokerLogin(LoginViewModel model, string localDate)
+        {
+            ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var user = await userManager.FindByNameAsync(model.Email);
+
+                    if (user != null && await userManager
+                            .CheckPasswordAsync(user, model.Password))
+                    {
+                        var isBlocked = await userManager.IsLockedOutAsync(user);
+                        if (isBlocked)
+                        {
+                            ModelState.AddModelError("", "Your account is blocked, contact the administrator if an error has occurred.");
+                            return View("broker-login", model);
+                        }
+                        var existingClaims = await userManager.GetClaimsAsync(user);
+
+                        var userCompanyActive = await companyService.GetActiveUserCompanyByCompanyTypeUserId(user.Id, CompanyType.Broker);
+
+                        if (userCompanyActive == null)
+                        {
+                            ModelState.AddModelError("", UserConstants.PasswordEmailIncorrectly);
+
+                            return View("broker-login", model);
+                        }
+
+                        await userManager.RemoveClaimsAsync(user, existingClaims);
+
+                        var customClaims = new List<Claim>();
+
+                        customClaims.Add(new Claim(ClaimsIdentityConstants.CompanyType, ClaimsIdentityConstants.CompanyBrokerValue));
+
+                        if (userCompanyActive != null)
+                        {
+                            customClaims.Add(new Claim(ClaimsIdentityConstants.CompanyId, userCompanyActive.Id.ToString()));
+                        }
+
+
+                        await userManager.AddClaimsAsync(user, customClaims);
+
+                        await signInManager.SignInAsync(user, isPersistent: false);
+
+                        await SetLastLoginDateToUser(model, localDate);
+
+                        return Redirect(Config.BaseReqvesteUrl);
+                    }
+
+                    ModelState.AddModelError("", UserConstants.PasswordEmailIncorrectly);
+
+                    return View("broker-login", model);
+                }
+                else
+                {
+                    return View("broker-login", model);
+                }
+            }
+            catch (Exception e)
+            {
+                ViewData[NavConstants.Hidden] = NavConstants.Hidden;
+                var error = UserConstants.PasswordEmailIncorrectly;
+
+                return Redirect($"/broker-login?error={error}");
             }
         }
 
@@ -615,7 +704,13 @@ namespace WebDispacher.Controellers
             if (companyService.GetTypeNavBar(CompanyId) == NavConstants.BaseCompany)
                 return Redirect("/Company/Companies");
 
-            return Redirect("/Dashbord/Order/NewLoad");
+            if (companyService.GetTypeNavBar(CompanyId) == NavConstants.BrokerCompany)
+                return Redirect("/Checks/CarrierBrokerCheck");
+
+            if (companyService.GetTypeNavBar(CompanyId) == NavConstants.NormalCompany)
+                return Redirect("/Dashbord/Order/NewLoad");
+
+            return Redirect("/error?code=404");
         }
     }
 }

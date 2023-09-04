@@ -102,15 +102,43 @@ namespace WebDispacher.Business.Services
                 var pattern = new PaternSourse().GetPaternRecoveryPassword(url);
 
                 await new AuthMessageSender().Execute(email, UserConstants.PasswordRecoverySubject, pattern);
-
+                
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return false;
             }
         }
-        
+
+        public async Task<bool> CreatePasswordResets(User user, string code,string localDate)
+        {
+            try
+            {
+                var entityTypeId = await GetEntityTypeIdResetPassword(UserConstants.UserEntityTypeResetPassword);
+
+                var dateTimeAction= !string.IsNullOrEmpty(localDate) ? DateTime.ParseExact(localDate, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture) : DateTime.Now;
+
+                var pr = new PasswordRecovery
+                {
+                    EntityRecoveryId = user.Id,
+                    DateTimeAction = dateTimeAction,
+                    Token = code,
+                    RecoveryTypeId = entityTypeId
+                };
+
+                await db.PasswordsRecoveries.AddAsync(pr);
+
+                await db.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public async Task<int> ResetPasswordFoUser(string newPassword, string idUser, string token)
         {
             var isStateActual = ResetPasswordFoUserDb(newPassword, idUser, token);
@@ -144,7 +172,7 @@ namespace WebDispacher.Business.Services
         
         public Company GetCompanyById(string companyId)
         {
-            return db.Companies.First(c => c.Id.ToString() == companyId);
+            return db.Companies.FirstOrDefault(c => c.Id.ToString() == companyId);
         }
         
         public User GetUserById(string id)
@@ -311,6 +339,13 @@ namespace WebDispacher.Business.Services
             db.Orders.Load();
             db.VehiclesInspections.Load();
             db.Drivers.Load();
+        }
+
+        private async Task<int> GetEntityTypeIdResetPassword(string name)
+        {
+            var entityType = await db.RecoveriesTypes.FirstOrDefaultAsync(rt => rt.Name == name);
+
+            return entityType.Id;
         }
 
         private async Task<List<User>> GetUsersDb(int page)

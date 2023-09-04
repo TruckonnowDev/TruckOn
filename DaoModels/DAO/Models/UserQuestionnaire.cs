@@ -2,11 +2,11 @@
 
 namespace DaoModels.DAO.Models
 {
-    public class UserQuestionnaire
+    public class DriverQuestionnaire
     {
         public int Id { get; set; }
-        public string UserId { get; set; }
-        public User User { get; set; }
+        public int DriverId { get; set; }
+        public Driver Driver { get; set; }
         public int QuestionnaireId { get; set; }
         public Questionnaire Questionnaire { get; set; }
         public bool IsCompleted { get; set; }

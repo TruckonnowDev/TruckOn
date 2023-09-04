@@ -607,6 +607,34 @@ namespace DaoModels.Migrations
                     b.ToTable("DriversInspections");
                 });
 
+            modelBuilder.Entity("DaoModels.DAO.Models.DriverQuestionnaire", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime?>("DateTimeCompleted")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DriverId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("QuestionnaireId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DriverId");
+
+                    b.HasIndex("QuestionnaireId");
+
+                    b.ToTable("DriversQuestionnaires");
+                });
+
             modelBuilder.Entity("DaoModels.DAO.Models.DriverReport", b =>
                 {
                     b.Property<int>("Id")
@@ -811,8 +839,8 @@ namespace DaoModels.Migrations
                     b.Property<DateTime>("DateTimeAction")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("EntityRecoveryId")
-                        .HasColumnType("int");
+                    b.Property<string>("EntityRecoveryId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("RecoveryTypeId")
                         .HasColumnType("int");
@@ -916,22 +944,22 @@ namespace DaoModels.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("DriverQuestionnaireId")
+                        .HasColumnType("int");
+
                     b.Property<int>("PhotoId")
                         .HasColumnType("int");
 
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserQuestionnaireId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("DriverQuestionnaireId");
 
                     b.HasIndex("PhotoId");
 
                     b.HasIndex("QuestionId");
-
-                    b.HasIndex("UserQuestionnaireId");
 
                     b.ToTable("PhotosAnswers");
                 });
@@ -1389,20 +1417,20 @@ namespace DaoModels.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("DriverQuestionnaireId")
+                        .HasColumnType("int");
+
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
 
                     b.Property<string>("TextAnswer")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserQuestionnaireId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("QuestionId");
+                    b.HasIndex("DriverQuestionnaireId");
 
-                    b.HasIndex("UserQuestionnaireId");
+                    b.HasIndex("QuestionId");
 
                     b.ToTable("UsersAnswers");
                 });
@@ -1432,42 +1460,11 @@ namespace DaoModels.Migrations
                     b.Property<string>("SenderName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SenderPhoneCountryCode")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("PhoneNumberId");
 
                     b.ToTable("UsersMailsQuestions");
-                });
-
-            modelBuilder.Entity("DaoModels.DAO.Models.UserQuestionnaire", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime?>("DateTimeCompleted")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsCompleted")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("QuestionnaireId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuestionnaireId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UsersQuestionnaires");
                 });
 
             modelBuilder.Entity("DaoModels.DAO.Models.VehicleBody", b =>
@@ -1647,10 +1644,10 @@ namespace DaoModels.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("QuestionId")
+                    b.Property<int?>("DriverQuestionnaireId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserQuestionnaireId")
+                    b.Property<int>("QuestionId")
                         .HasColumnType("int");
 
                     b.Property<int>("VideoId")
@@ -1658,9 +1655,9 @@ namespace DaoModels.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("QuestionId");
+                    b.HasIndex("DriverQuestionnaireId");
 
-                    b.HasIndex("UserQuestionnaireId");
+                    b.HasIndex("QuestionId");
 
                     b.HasIndex("VideoId");
 
@@ -1993,6 +1990,21 @@ namespace DaoModels.Migrations
                         .HasForeignKey("TruckId");
                 });
 
+            modelBuilder.Entity("DaoModels.DAO.Models.DriverQuestionnaire", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.Driver", "Driver")
+                        .WithMany()
+                        .HasForeignKey("DriverId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DaoModels.DAO.Models.Questionnaire", "Questionnaire")
+                        .WithMany()
+                        .HasForeignKey("QuestionnaireId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("DaoModels.DAO.Models.HistoryOrderAction", b =>
                 {
                     b.HasOne("DaoModels.DAO.Models.Order", null)
@@ -2062,6 +2074,10 @@ namespace DaoModels.Migrations
 
             modelBuilder.Entity("DaoModels.DAO.Models.PhotoAnswer", b =>
                 {
+                    b.HasOne("DaoModels.DAO.Models.DriverQuestionnaire", "DriverQuestionnaire")
+                        .WithMany()
+                        .HasForeignKey("DriverQuestionnaireId");
+
                     b.HasOne("DaoModels.DAO.Models.Photo", "Photo")
                         .WithMany("PhotosAnswers")
                         .HasForeignKey("PhotoId")
@@ -2073,10 +2089,6 @@ namespace DaoModels.Migrations
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("DaoModels.DAO.Models.UserQuestionnaire", "UserQuestionnaire")
-                        .WithMany()
-                        .HasForeignKey("UserQuestionnaireId");
                 });
 
             modelBuilder.Entity("DaoModels.DAO.Models.PhotoDriverInspection", b =>
@@ -2169,15 +2181,15 @@ namespace DaoModels.Migrations
 
             modelBuilder.Entity("DaoModels.DAO.Models.UserAnswer", b =>
                 {
+                    b.HasOne("DaoModels.DAO.Models.DriverQuestionnaire", "DriverQuestionnaire")
+                        .WithMany()
+                        .HasForeignKey("DriverQuestionnaireId");
+
                     b.HasOne("DaoModels.DAO.Models.Question", "Question")
                         .WithMany("UserAnswers")
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("DaoModels.DAO.Models.UserQuestionnaire", "UserQuestionnaire")
-                        .WithMany()
-                        .HasForeignKey("UserQuestionnaireId");
                 });
 
             modelBuilder.Entity("DaoModels.DAO.Models.UserMailQuestion", b =>
@@ -2185,19 +2197,6 @@ namespace DaoModels.Migrations
                     b.HasOne("DaoModels.DAO.Models.PhoneNumber", "PhoneNumber")
                         .WithMany()
                         .HasForeignKey("PhoneNumberId");
-                });
-
-            modelBuilder.Entity("DaoModels.DAO.Models.UserQuestionnaire", b =>
-                {
-                    b.HasOne("DaoModels.DAO.Models.Questionnaire", "Questionnaire")
-                        .WithMany()
-                        .HasForeignKey("QuestionnaireId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DaoModels.DAO.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("DaoModels.DAO.Models.VehicleBrand", b =>
@@ -2255,15 +2254,15 @@ namespace DaoModels.Migrations
 
             modelBuilder.Entity("DaoModels.DAO.Models.VideoAnswer", b =>
                 {
+                    b.HasOne("DaoModels.DAO.Models.DriverQuestionnaire", "DriverQuestionnaire")
+                        .WithMany()
+                        .HasForeignKey("DriverQuestionnaireId");
+
                     b.HasOne("DaoModels.DAO.Models.Question", "Question")
                         .WithMany("VideoAnswers")
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("DaoModels.DAO.Models.UserQuestionnaire", "UserQuestionnaire")
-                        .WithMany()
-                        .HasForeignKey("UserQuestionnaireId");
 
                     b.HasOne("DaoModels.DAO.Models.Video", "Video")
                         .WithMany()

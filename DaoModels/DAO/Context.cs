@@ -49,7 +49,7 @@ namespace DaoModels.DAO
         public DbSet<Truck> Trucks { get; set; }
         public DbSet<UserAnswer> UsersAnswers { get; set; }
         public DbSet<UserMailQuestion> UsersMailsQuestions { get; set; }
-        public DbSet<UserQuestionnaire> UsersQuestionnaires { get; set; }
+        public DbSet<DriverQuestionnaire> DriversQuestionnaires { get; set; }
         public DbSet<VehicleBody> VehiclesBodies { get; set; }
         public DbSet<VehicleBrand> VehiclesBrands { get; set; }
         public DbSet<VehicleDetails> VehiclesDetails { get; set; }

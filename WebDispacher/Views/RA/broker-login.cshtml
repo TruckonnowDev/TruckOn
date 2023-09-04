@@ -6,15 +6,16 @@
 @model LoginViewModel
 
 @{
-    ViewData["Title"] = "Carrier Login";
+    ViewData["Title"] = "Broker Login";
 }
+
 <link href="~/css/Auth/login.css" rel="stylesheet" type="text/css" />
 <div id="carrier-login">
     <div class="page-login">
         <div class="login-wrap">
             <div class="login-img">
                 <picture>
-                    <img src="/img/loginCarrier.svg" alt="login carrier">
+                    <img src="/img/loginCarrier.svg" alt="login broker">
                 </picture>
             </div>
             <div class="login-body">
@@ -22,14 +23,14 @@
                     <div class="form-property">
                         <div class="content">
                             <div class="title">
-                                <h1>@Localizer["CarrierTMSHeader"]</h1>
+                                <h1>@Localizer["BrokerTMSHeader"]</h1>
                             </div>
                             <div class="body-form-login">
                             <p style="color: red; text-align: center; font-size: 15px">
                                 @ViewData["TextError"]
                                 @Html.ValidationSummary()
                             </p>
-                                <form action="~/RA/CarrierLogin" method="post" class="form-login">
+                                <form action="~/RA/BrokerLogin" method="post" class="form-login">
                             <div class="input-login-item">
                                 <label for="">
                                     @Localizer["Email"]

@@ -840,7 +840,16 @@ namespace WebDispacher.Business.Services
                 {
                     if (company.CompanyStatus == CompanyStatus.Active)
                     {
-                        typeNavBar = NavConstants.NormalCompany;
+                        if(company.CompanyType == CompanyType.Carrier)
+                        {
+                            typeNavBar = NavConstants.NormalCompany;
+                        }
+
+                        if (company.CompanyType == CompanyType.Broker)
+                        {
+                            typeNavBar = NavConstants.BrokerCompany;
+                        }
+                        
                     }
 
                     break;

@@ -11,6 +11,8 @@
         public const string ThankRegistrationSubject = "Thank you for registering with Truckonnow";
         public const string NotLogin = "notlogin";
         public const string Admin = "Admin";
+        public const string UserEntityTypeResetPassword = "User";
+        public const string DriverEntityTypeResetPassword = "Driver";
         public const string DeactivateEmailSubject = "Deactivate your company";
         public const string ActivateEmailSubject = "Activate your company";
         public const int NormalPageCount = 20;

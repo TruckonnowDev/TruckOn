@@ -15,6 +15,7 @@ namespace WebDispacher.Business.Interfaces
         User GetUserById(string id);
         Task<User> GetFirstUserByCompanyId(int id);
         Task SetLastLoginDateToUser(LoginViewModel model, string localDate);
+        Task<bool> CreatePasswordResets(User user, string code, string localDate);
         Company GetCompanyById(string companyId);
         Task<string> GetFirstUserEmailByCompanyId(int id);
 

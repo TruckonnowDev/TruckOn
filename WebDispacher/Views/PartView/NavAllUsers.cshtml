@@ -11,19 +11,40 @@
                 </div>
             </div>
             <div class="col-md-auto">
-                <div class="info">
-                    <a href="tel:+1 (773) 420-4444" class="tel">+1 (773) 420-4444</a>
-                    <div class="login">
-                        <a href="#" id="login">@Localizer["Login"]</a>
-                        <ul class="sub-login">
-                            <li><a href="/carrier-login">@Localizer["CarrierTMS"]</a></li>
-                            <li><a href="/shipper-login">@Localizer["ShipperTMS"]</a></li>
-                        </ul>
-                    </div>
-                    <a href="/try_for_free"><div class="btn1">@Localizer["TryForFree"]</div></a>
-                    @await Html.PartialAsync("_SelectLanguagePartial")
+                <div class="info row nav-main-second-block">
+                        <div class="login header-phone-number">
+                            <a href="tel:+1 (773) 420-4444" class="tel">+1 (773) 420-4444</a>
+                        </div>
+                        <div class="login">
+                            <a href="#" id="login">@Localizer["Login"]</a>
+                            <ul class="sub-login">
+                                <li><a href="/carrier-login">@Localizer["CarrierTMS"]</a></li>
+                                <li><a href="/shipper-login">@Localizer["ShipperTMS"]</a></li>
+                                <li><a href="/broker-login">@Localizer["BrokerTMS"]</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <a href="/try_for_free">
+                                <div class="btn1">
+                                    @Localizer["TryForFree"]
+                                </div>
+                            </a>
+                        </div>
+                    <div class="login m-0 ml-2">
+                            @await Html.PartialAsync("_SelectLanguagePartial")
+                            </div>
+                        </div>
+                    
                 </div>
             </div>
-        </div>
     </div>
 </header>
+
+<style>
+    .nav-main-second-block {
+        display: flex;
+        margin-right: 0px;
+        align-content: flex-end;
+        align-items: flex-end
+    }
+</style>

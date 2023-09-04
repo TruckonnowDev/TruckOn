@@ -445,5 +445,40 @@ namespace WebDispacher.Business.Services
                 await db.SaveChangesAsync();
             }
         }
+
+        public async Task CreateEntityTypesResetPasswords()
+        {
+            if (db.RecoveriesTypes.Any(cs => cs.Name == UserConstants.UserEntityTypeResetPassword))
+            {
+                Console.WriteLine("User type already exists");
+            }
+            else
+            {
+                var recoveryType = new RecoveryType
+                {
+                    Name = UserConstants.UserEntityTypeResetPassword
+                };
+
+                await db.RecoveriesTypes.AddAsync(recoveryType);
+
+                await db.SaveChangesAsync();
+            }
+            
+            if (db.RecoveriesTypes.Any(cs => cs.Name == UserConstants.DriverEntityTypeResetPassword))
+            {
+                Console.WriteLine("Driver type already exists");
+            }
+            else
+            {
+                var recoveryType = new RecoveryType
+                {
+                    Name = UserConstants.DriverEntityTypeResetPassword
+                };
+
+                await db.RecoveriesTypes.AddAsync(recoveryType);
+
+                await db.SaveChangesAsync();
+            }
+        }
     }
 }

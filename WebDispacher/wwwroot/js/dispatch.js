@@ -91,11 +91,12 @@ function GetFileName(str, id) {
 }
 
 function CheckValidDoB(e, inputId, errorMessageClassNameElem, label) {
-
+    e.preventDefault();
+    
     let currentDoB = $(`#${inputId}`);
     let dtNow = new Date();
     let currentDoBValue = currentDoB.val();
-
+    
     if (currentDoBValue !== "underfiend" && currentDoBValue !== "") {
         let currentDate = new Date(currentDoBValue);
 

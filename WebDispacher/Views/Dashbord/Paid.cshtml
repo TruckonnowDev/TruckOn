@@ -29,8 +29,8 @@
                             <input class="type-button" type="text" value="@ViewBag.LoadId" id="loadId-input" name="loadId" placeholder="@Localizer["LoadId"]">
                             <input class="type-button" type="text" value="@ViewBag.Name" id="name-input" name="name" placeholder="@Localizer["Name"]">
                             <input class="type-button" type="text" value="@ViewBag.Address" id="address-input" name="address" placeholder="@Localizer["Address"]">
-                            <input class="type-button" type="text" value="@ViewBag.Phone" id="phone-input" name="phone" placeholder="@Localizer["PhoneNumber"]">
-                            <input class="type-button" type="text" value="@ViewBag.Email" id="email-input" name="email" placeholder="@Localizer["Email"]">
+                            <input class="type-button" type="text" value="@ViewBag.Phone" id="phone-input" pattern="@PatternConstants.PhoneNumberWithoutCountryCode" name="phone" placeholder="@Localizer["PhoneNumber"]">
+                            <input class="type-button" type="text" value="@ViewBag.Email" id="email-input" pattern="@PatternConstants.Email" name="email" placeholder="@Localizer["Email"]">
                             <input class="type-button" type="text" value="@ViewBag.price" id="price-input" name="price" placeholder="@Localizer["Price"]">
                             <button type="submit" class="btn1 btn-modal mt-2">@Localizer["Search"]</button>
                         </form>
@@ -113,7 +113,13 @@
     <script src="~/js/orders.js"></script>
 </div>
 
+<script src="~/js/input-replacer.js"></script>
 <script>
+    setReplacer(document.querySelector('#name-input'), @ExpressionConstants.OnlyLetters);
+    setReplacer(document.querySelector('#price-input'), @ExpressionConstants.OnlyDigits);
+
+    $("#phone-input").mask("(999)-999-9999", { placeholder: "(XXX)-XXX-XXXX" });
+
     const filters = 'loadId=@ViewBag.LoadId&name=@ViewBag.Name&address=@ViewBag.Address&phone=@ViewBag.Phone&email=@ViewBag.Email&price=@ViewBag.price';
 
     ConfirmRemoveEntry(GetDateTimeInFormat(new Date()), `/Dashbord/Order/ArchivedOrder`, `/Dashbord/Order/Paid?${filters}`, '#confirmDeleteEntryModal');

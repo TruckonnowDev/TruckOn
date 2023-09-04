@@ -27,7 +27,7 @@ namespace WebDispacher.Controellers
         
         [HttpGet]
         [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
-        public async Task<IActionResult> DriverCheck(DriverSearchViewModel model)
+        public async Task<IActionResult> DriverCheck(CheckDriverViewModel model)
         {
             try
             {
@@ -41,10 +41,13 @@ namespace WebDispacher.Controellers
                     return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
 
-                var removedDrivers = await driverService.GetDriverReportsByCompnayId(model, CompanyId);
+                var removedDrivers = await driverService.GetDriverReportsByCompnayId(model.Search == null ? new DriverSearchViewModel() : model.Search, CompanyId);
 
                 ViewBag.Drivers = removedDrivers;
-                return View("DriverCheck", model);
+                return View("DriverCheck", new CheckDriverViewModel {
+                    Search = model.Search,
+                    DriverReports = removedDrivers,
+                });
             }
             catch (Exception e)
             {
@@ -70,6 +73,25 @@ namespace WebDispacher.Controellers
                     return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
                 return View("CarrierCheck");
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            return Redirect(Config.BaseReqvesteUrl);
+        }
+        
+        [HttpGet]
+        [Authorize(Policy = PolicyIdentityConstants.BrokerCompany)]
+        public IActionResult CarrierBrokerCheck()
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                ViewData[NavConstants.TypeNavBar] = NavConstants.BrokerCompany;
+                
+                return View("CarrierBrokerCheck");
             }
             catch (Exception e)
             {

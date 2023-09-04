@@ -370,7 +370,8 @@ namespace WebDispacher.Business.Services
 
             driverReports = driverReports.Where(dr => dr.Driver.FirstName == model.FirstName &&
                                                     dr.Driver.LastName == model.LastName &&
-                                                    dr.Driver.DriverLicenseNumber == model.LicenseNumber)
+                                                    dr.Driver.DriverLicenseNumber == model.LicenseNumber &&
+                                                    dr.Driver.DateOfBirth == model.DateOfBirth)
                                         .OrderByDescending(x => x.Id);
 
             var driverReportsList = await driverReports.ToListAsync();
@@ -448,7 +449,7 @@ namespace WebDispacher.Business.Services
 
         public void LayoutDown(int idLayout, int idTransported)
         {
-            /*var transportVehicle = db.TransportVehicles
+            var transportVehicle = db.TransportVehicles
                 .Where(p => p.Id == idTransported)
                 .Include(p => p.Layouts)
                 .First(p => p.Id == idTransported);
@@ -460,12 +461,12 @@ namespace WebDispacher.Business.Services
             layoutsCurrent.OrdinalIndex++;
             layoutsDown.OrdinalIndex--;
 
-            db.SaveChanges();*/
+            db.SaveChanges();
         }
 
         public void UnSelectLayout(int idLayout)
         {
-            /*var transportVehicle = db.TransportVehicles
+            var transportVehicle = db.TransportVehicles
                 .Include(t => t.Layouts)
                 .First(t => t.Layouts.FirstOrDefault(l => l.Id == idLayout) != null);
             transportVehicle.CountPhoto--;
@@ -477,15 +478,15 @@ namespace WebDispacher.Business.Services
             if (layouts == null) return;
             
             layouts.IsUsed = false;
-            db.SaveChanges();*/
+            db.SaveChanges();
         }
 
         public void SelectProfile(int idProfile, string typeTransport, int idTr, string idCompany)
         {
-            /*var typeTransportVehikle =
+            var typeTransportVehikle =
                 typeTransport == TruckAndTrailerConstants.Truck ? TypeTransportVehikle.Truck : TypeTransportVehikle.Trailer;
 
-            var profileSettings = GetSetingsDb(idCompany, typeTransportVehikle, idTr);
+            var profileSettings = GetSettingsDb(idCompany, typeTransportVehikle, idTr);
             var profileSetting = profileSettings.FirstOrDefault(p => p.IsUsed);
 
             if (idProfile != 0)
@@ -496,12 +497,12 @@ namespace WebDispacher.Business.Services
             if (profileSetting != null)
             {
                 SelectProfileDb(profileSetting.Id, false);
-            }*/
+            }
         }
 
         public void LayoutUp(int idLayout, int idTransported)
         {
-            /*var transportVehicle = db.TransportVehicles
+            var transportVehicle = db.TransportVehicles
                 .Where(p => p.Id == idTransported)
                 .Include(p => p.Layouts)
                 .First(p => p.Id == idTransported);
@@ -512,7 +513,7 @@ namespace WebDispacher.Business.Services
             layoutsCurrent.OrdinalIndex--;
             layoutsUp.OrdinalIndex++;
 
-            db.SaveChanges();*/
+            db.SaveChanges();
         }
 
         public async Task RemoveProfile(string idCompany, int idProfile)

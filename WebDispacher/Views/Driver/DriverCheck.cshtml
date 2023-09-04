@@ -19,8 +19,8 @@
                     <div class="title">
                         <h1>@Localizer["Drivers"]</h1>
                         <form method="get" action="" class="search ">
-                            <input placeholder="@Localizer["NameDriverSearch"]" class="text-input" value="@ViewBag.NameDriver" name="nameDriver" type="text">
-                            <input placeholder="@Localizer["DriverLicenseSearch"]" class="text-input input-big" value="@ViewBag.DriversLicense" name="driversLicense" type="text">
+                            <input placeholder="@Localizer["NameDriverSearch"]" class="text-input" id="search-driver-name" value="@ViewBag.NameDriver" name="nameDriver" type="text">
+                            <input placeholder="@Localizer["DriverLicenseSearch"]" class="text-input input-big" id="search-driver-license" value="@ViewBag.DriversLicense" name="driversLicense" type="text">
                             <input type="submit" value="@Localizer["Search"]" class="btn1">
                         </form>
                     </div>
@@ -56,7 +56,11 @@
         </div>
     </div>
 </body>
-
+<script src="~/js/input-replacer.js"></script>
+<script>
+    setReplacer(document.querySelector('#search-driver-name'), @ExpressionConstants.OnlyLetters);
+    setReplacer(document.querySelector('#search-driver-license'), @ExpressionConstants.WithoutDashes);
+</script>
 <style>
     .input-big {
         width: 34% !important;

@@ -63,6 +63,11 @@ else if (ViewData[NavConstants.TypeNavBar] == NavConstants.NormalCompany)
     @await Html.PartialAsync("~/Views/PartView/NavNormalCompany.cshtml")
     ;
 }
+else if (ViewData[NavConstants.TypeNavBar] == NavConstants.BrokerCompany)
+{
+    @await Html.PartialAsync("~/Views/PartView/NavBrokerCompany.cshtml")
+    ;
+}
 else if (ViewData[NavConstants.TypeNavBar] == NavConstants.TypeNavBaseCompanySettings)
 {
     @await Html.PartialAsync("~/Views/PartView/NavSettingsBaseCompany.cshtml")

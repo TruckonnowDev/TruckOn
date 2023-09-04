@@ -10,5 +10,6 @@ namespace WebDispacher.Business.Interfaces
         Task CreateBasicOrderStatuses();
         Task CreateVehicleInfo();
         Task CreateDispatcherType();
+        Task CreateEntityTypesResetPasswords();
     }
 }

@@ -30,17 +30,20 @@
                                 <input style="display:none;" name="Experience" id="experienceInp" /><br />
                                 <label class="big-label" for="">
                                     @Localizer["FirstName"]
-                                    <input class="height-input" asp-for="FirstName" type="text" id="firstName" value="@Model.FirstName" required>
+                                    <input class="height-input" asp-for="FirstName" type="text" id="firstName" value="@Model.FirstName" maxlength="25" required>
                                     @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
                                 </label>
                                 <label class="big-label" for="">
                                     @Localizer["LastName"]
-                                    <input class="height-input" asp-for="LastName" id="lastName" value="@Model.LastName" type="text" required>
+                                    <input class="height-input" asp-for="LastName" id="lastName" value="@Model.LastName" type="text" maxlength="25" required>
                                     @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
                                 </label>
                                 <label class="big-label" id="dateOfBirthLabel" for="">
                                     @Localizer["DateOfBirth"]
-                                    <input class="height-input" asp-for="DateOfBirth" id="dateOfBirth" type="text">
+                                    @{
+                                        var date = Model.DateOfBirth == DateTime.MinValue ? DateTime.Today : Model.DateOfBirth;
+                                    }
+                                    <input class="height-input" asp-for="DateOfBirth" id="dateOfBirth" value="@date.ToString(DateTimeFormats.DateOfBirth)" type="text">
                                     <p class="dob-not-current-format text-danger"></p>
                                 </label>
                                 <label class="big-label" for="">
@@ -158,8 +161,8 @@
 
 <script src="~/js/input-replacer.js"></script>
 <script>
-    setReplacer(document.querySelector('#firstName'), @ExpressionConstants.OnlyDigits);
-    setReplacer(document.querySelector('#lastName'), @ExpressionConstants.OnlyDigits);
+    setReplacer(document.querySelector('#firstName'), /[\W\d]+/g);
+    setReplacer(document.querySelector('#lastName'), @ExpressionConstants.OnlyLetters);
     setReplacer(document.querySelector('#driverNumber'), @ExpressionConstants.WithoutDashes);
 
 $.fn.setCursorPosition = function (pos) {

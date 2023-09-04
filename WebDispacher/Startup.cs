@@ -104,23 +104,24 @@ namespace WebDispacher
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy(PolicyIdentityConstants.CarrierCompany, policy =>
-                    policy.RequireRole(RolesIdentityConstants.UserRole)
-                        .RequireClaim(ClaimsIdentityConstants.CompanyType, ClaimsIdentityConstants.CompanyCarrierValue)
-                        .RequireClaim(ClaimsIdentityConstants.CompanyId));
-
-                options.AddPolicy(PolicyIdentityConstants.CarrierAdminCompany, policy =>
-                    policy.RequireRole(RolesIdentityConstants.AdminRole)
-                    .RequireClaim(ClaimsIdentityConstants.CompanyType, ClaimsIdentityConstants.CompanyCarrierAdminValue)
+            options.AddPolicy(PolicyIdentityConstants.CarrierCompany, policy =>
+                policy.RequireRole(RolesIdentityConstants.UserRole)
+                    .RequireClaim(ClaimsIdentityConstants.CompanyType, ClaimsIdentityConstants.CompanyCarrierValue)
                     .RequireClaim(ClaimsIdentityConstants.CompanyId));
 
-                options.AddPolicy(PolicyIdentityConstants.ShipperCompany, policy =>
-                    policy.RequireRole(RolesIdentityConstants.UserRole)
-                    .RequireClaim(ClaimsIdentityConstants.CompanyType, ClaimsIdentityConstants.CompanyShipperValue));
-                
-                options.AddPolicy(PolicyIdentityConstants.BrokerCompany, policy =>
-                    policy.RequireRole(RolesIdentityConstants.UserRole)
-                    .RequireClaim(ClaimsIdentityConstants.CompanyType, ClaimsIdentityConstants.CompanyBrokerValue));
+            options.AddPolicy(PolicyIdentityConstants.CarrierAdminCompany, policy =>
+                policy.RequireRole(RolesIdentityConstants.AdminRole)
+                .RequireClaim(ClaimsIdentityConstants.CompanyType, ClaimsIdentityConstants.CompanyCarrierAdminValue)
+                .RequireClaim(ClaimsIdentityConstants.CompanyId));
+
+            options.AddPolicy(PolicyIdentityConstants.ShipperCompany, policy =>
+                policy.RequireRole(RolesIdentityConstants.UserRole)
+                .RequireClaim(ClaimsIdentityConstants.CompanyType, ClaimsIdentityConstants.CompanyShipperValue));
+
+            options.AddPolicy(PolicyIdentityConstants.BrokerCompany, policy =>
+                policy.RequireRole(RolesIdentityConstants.UserRole)
+                .RequireClaim(ClaimsIdentityConstants.CompanyType, ClaimsIdentityConstants.CompanyBrokerValue)
+                .RequireClaim(ClaimsIdentityConstants.CompanyId));
             });
 
             services.ConfigureApplicationCookie(o =>

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DaoModels.Migrations
 {
-    public partial class init : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -416,7 +416,6 @@ namespace DaoModels.Migrations
                     SenderName = table.Column<string>(nullable: true),
                     SenderEmail = table.Column<string>(nullable: true),
                     PhoneNumberId = table.Column<int>(nullable: true),
-                    SenderPhoneCountryCode = table.Column<string>(nullable: true),
                     Message = table.Column<string>(nullable: true),
                     MailStatus = table.Column<int>(nullable: false),
                     DateTimeReceived = table.Column<DateTime>(nullable: false)
@@ -477,40 +476,12 @@ namespace DaoModels.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UsersQuestionnaires",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(nullable: true),
-                    QuestionnaireId = table.Column<int>(nullable: false),
-                    IsCompleted = table.Column<bool>(nullable: false),
-                    DateTimeCompleted = table.Column<DateTime>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UsersQuestionnaires", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_UsersQuestionnaires_Questionnaires_QuestionnaireId",
-                        column: x => x.QuestionnaireId,
-                        principalTable: "Questionnaires",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UsersQuestionnaires_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "PasswordsRecoveries",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    EntityRecoveryId = table.Column<int>(nullable: false),
+                    EntityRecoveryId = table.Column<string>(nullable: true),
                     DateTimeAction = table.Column<DateTime>(nullable: false),
                     Token = table.Column<string>(nullable: true),
                     RecoveryTypeId = table.Column<int>(nullable: false)
@@ -867,66 +838,6 @@ namespace DaoModels.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PhotosAnswers",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    QuestionId = table.Column<int>(nullable: false),
-                    UserQuestionnaireId = table.Column<int>(nullable: true),
-                    PhotoId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PhotosAnswers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PhotosAnswers_Photos_PhotoId",
-                        column: x => x.PhotoId,
-                        principalTable: "Photos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PhotosAnswers_Questions_QuestionId",
-                        column: x => x.QuestionId,
-                        principalTable: "Questions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PhotosAnswers_UsersQuestionnaires_UserQuestionnaireId",
-                        column: x => x.UserQuestionnaireId,
-                        principalTable: "UsersQuestionnaires",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UsersAnswers",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    QuestionId = table.Column<int>(nullable: false),
-                    UserQuestionnaireId = table.Column<int>(nullable: true),
-                    TextAnswer = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UsersAnswers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_UsersAnswers_Questions_QuestionId",
-                        column: x => x.QuestionId,
-                        principalTable: "Questions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UsersAnswers_UsersQuestionnaires_UserQuestionnaireId",
-                        column: x => x.UserQuestionnaireId,
-                        principalTable: "UsersQuestionnaires",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "VehiclesModels",
                 columns: table => new
                 {
@@ -950,39 +861,6 @@ namespace DaoModels.Migrations
                         name: "FK_VehiclesModels_VehiclesBrands_VehicleBrandId",
                         column: x => x.VehicleBrandId,
                         principalTable: "VehiclesBrands",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "VideosAnswers",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    QuestionId = table.Column<int>(nullable: false),
-                    UserQuestionnaireId = table.Column<int>(nullable: true),
-                    VideoId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_VideosAnswers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_VideosAnswers_Questions_QuestionId",
-                        column: x => x.QuestionId,
-                        principalTable: "Questions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_VideosAnswers_UsersQuestionnaires_UserQuestionnaireId",
-                        column: x => x.UserQuestionnaireId,
-                        principalTable: "UsersQuestionnaires",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_VideosAnswers_Videos_VideoId",
-                        column: x => x.VideoId,
-                        principalTable: "Videos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -1028,6 +906,34 @@ namespace DaoModels.Migrations
                         name: "FK_DocumentsDrivers_Drivers_DriverId",
                         column: x => x.DriverId,
                         principalTable: "Drivers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DriversQuestionnaires",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DriverId = table.Column<int>(nullable: false),
+                    QuestionnaireId = table.Column<int>(nullable: false),
+                    IsCompleted = table.Column<bool>(nullable: false),
+                    DateTimeCompleted = table.Column<DateTime>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DriversQuestionnaires", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DriversQuestionnaires_Drivers_DriverId",
+                        column: x => x.DriverId,
+                        principalTable: "Drivers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DriversQuestionnaires_Questionnaires_QuestionnaireId",
+                        column: x => x.QuestionnaireId,
+                        principalTable: "Questionnaires",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -1179,6 +1085,99 @@ namespace DaoModels.Migrations
                         principalTable: "VehiclesModels",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PhotosAnswers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    QuestionId = table.Column<int>(nullable: false),
+                    DriverQuestionnaireId = table.Column<int>(nullable: true),
+                    PhotoId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PhotosAnswers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PhotosAnswers_DriversQuestionnaires_DriverQuestionnaireId",
+                        column: x => x.DriverQuestionnaireId,
+                        principalTable: "DriversQuestionnaires",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PhotosAnswers_Photos_PhotoId",
+                        column: x => x.PhotoId,
+                        principalTable: "Photos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PhotosAnswers_Questions_QuestionId",
+                        column: x => x.QuestionId,
+                        principalTable: "Questions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UsersAnswers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    QuestionId = table.Column<int>(nullable: false),
+                    DriverQuestionnaireId = table.Column<int>(nullable: true),
+                    TextAnswer = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UsersAnswers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UsersAnswers_DriversQuestionnaires_DriverQuestionnaireId",
+                        column: x => x.DriverQuestionnaireId,
+                        principalTable: "DriversQuestionnaires",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_UsersAnswers_Questions_QuestionId",
+                        column: x => x.QuestionId,
+                        principalTable: "Questions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "VideosAnswers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    QuestionId = table.Column<int>(nullable: false),
+                    DriverQuestionnaireId = table.Column<int>(nullable: true),
+                    VideoId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VideosAnswers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_VideosAnswers_DriversQuestionnaires_DriverQuestionnaireId",
+                        column: x => x.DriverQuestionnaireId,
+                        principalTable: "DriversQuestionnaires",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_VideosAnswers_Questions_QuestionId",
+                        column: x => x.QuestionId,
+                        principalTable: "Questions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_VideosAnswers_Videos_VideoId",
+                        column: x => x.VideoId,
+                        principalTable: "Videos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -1609,6 +1608,16 @@ namespace DaoModels.Migrations
                 column: "TruckId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DriversQuestionnaires_DriverId",
+                table: "DriversQuestionnaires",
+                column: "DriverId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DriversQuestionnaires_QuestionnaireId",
+                table: "DriversQuestionnaires",
+                column: "QuestionnaireId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_HistoriesOrdersActions_OrderId",
                 table: "HistoriesOrdersActions",
                 column: "OrderId");
@@ -1664,6 +1673,11 @@ namespace DaoModels.Migrations
                 column: "PhotoTypeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PhotosAnswers_DriverQuestionnaireId",
+                table: "PhotosAnswers",
+                column: "DriverQuestionnaireId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PhotosAnswers_PhotoId",
                 table: "PhotosAnswers",
                 column: "PhotoId");
@@ -1672,11 +1686,6 @@ namespace DaoModels.Migrations
                 name: "IX_PhotosAnswers_QuestionId",
                 table: "PhotosAnswers",
                 column: "QuestionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PhotosAnswers_UserQuestionnaireId",
-                table: "PhotosAnswers",
-                column: "UserQuestionnaireId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PhotosDriversInspections_DriverInspectionId",
@@ -1734,29 +1743,19 @@ namespace DaoModels.Migrations
                 column: "VehicleModelId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_UsersAnswers_DriverQuestionnaireId",
+                table: "UsersAnswers",
+                column: "DriverQuestionnaireId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UsersAnswers_QuestionId",
                 table: "UsersAnswers",
                 column: "QuestionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UsersAnswers_UserQuestionnaireId",
-                table: "UsersAnswers",
-                column: "UserQuestionnaireId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_UsersMailsQuestions_PhoneNumberId",
                 table: "UsersMailsQuestions",
                 column: "PhoneNumberId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UsersQuestionnaires_QuestionnaireId",
-                table: "UsersQuestionnaires",
-                column: "QuestionnaireId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UsersQuestionnaires_UserId",
-                table: "UsersQuestionnaires",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_VehiclesBrands_VehicleTypeId",
@@ -1794,14 +1793,14 @@ namespace DaoModels.Migrations
                 column: "VideoTypeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_VideosAnswers_DriverQuestionnaireId",
+                table: "VideosAnswers",
+                column: "DriverQuestionnaireId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_VideosAnswers_QuestionId",
                 table: "VideosAnswers",
                 column: "QuestionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_VideosAnswers_UserQuestionnaireId",
-                table: "VideosAnswers",
-                column: "UserQuestionnaireId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_VideosAnswers_VideoId",
@@ -1896,6 +1895,9 @@ namespace DaoModels.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
                 name: "PhotosVehiclesInspections");
 
             migrationBuilder.DropTable(
@@ -1914,10 +1916,10 @@ namespace DaoModels.Migrations
                 name: "CustomerST");
 
             migrationBuilder.DropTable(
-                name: "Questions");
+                name: "DriversQuestionnaires");
 
             migrationBuilder.DropTable(
-                name: "UsersQuestionnaires");
+                name: "Questions");
 
             migrationBuilder.DropTable(
                 name: "Videos");
@@ -1936,9 +1938,6 @@ namespace DaoModels.Migrations
 
             migrationBuilder.DropTable(
                 name: "Questionnaires");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "VideoTypes");

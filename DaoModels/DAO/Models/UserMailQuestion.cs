@@ -11,7 +11,6 @@ namespace DaoModels.DAO.Models
         public string SenderEmail { get; set; }
         public int? PhoneNumberId { get; set; }
         public PhoneNumber PhoneNumber { get; set; }
-        public string SenderPhoneCountryCode { get; set; }
         public string Message { get; set; }
         public MailStatus MailStatus { get; set; }
         public DateTime DateTimeReceived { get; set; }

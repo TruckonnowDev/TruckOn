@@ -75,8 +75,7 @@
 <script src="~/js/input-replacer.js"></script>
 <script>
 
-    setReplacer(document.querySelector('#name'), @ExpressionConstants.OnlyDigits);
-
+    setReplacer(document.querySelector('#name'), @ExpressionConstants.OnlyLetters
     $.fn.setCursorPosition = function (pos) {
         if ($(this).get(0).setSelectionRange) {
             $(this).get(0).setSelectionRange(pos, pos);

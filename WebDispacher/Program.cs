@@ -36,6 +36,7 @@ namespace WebDispacher
                 await seed.CreateBasicOrderStatuses();
                 await seed.CreateVehicleInfo();
                 await seed.CreateDispatcherType();
+                await seed.CreateEntityTypesResetPasswords();
             }
         }
     }

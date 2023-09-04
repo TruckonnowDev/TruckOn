@@ -1,0 +1,43 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+<header class="line">
+    <div class="container">
+        <div class="row align-items-center justify-content-between">
+            <div class="col-md-auto">
+                <div class="logo">
+                    <img src="~/img/logo.svg" alt="" onclick="document.location.href='http://truckonnow.com/'">
+                </div>
+            </div>
+            <div class="col-md-auto">
+                <ul class="menu top-nav_menu">
+                    <li><a id="CarrierBrokerCheck" href="/Check/CarrierBrokerCheck">@Localizer["CarrierCheck"]</a></li>
+                    <li><a href="/Exsit">@Localizer["Exit"]</a></li>
+                </ul>
+                <div class="burger">
+                    <button class="top-nav_btn hamburger hamburger--3dy">
+                        <span class="hamburger-box">
+                            <span class="hamburger-inner"></span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<script>
+    const NavItems = ['CarrierBrokerCheck', 'Dispatch']
+    $(document).ready(function () {
+        var str = location.pathname
+        for (let i = 0; i < NavItems.length; i++) {
+            if (str.indexOf(NavItems[i]) >= 0) {
+                $('#' + NavItems[i]).addClass('active');
+                break;
+            }
+        }
+
+    });
+</script>

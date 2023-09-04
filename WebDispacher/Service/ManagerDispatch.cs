@@ -1,4 +1,4 @@
-﻿using BaceModel.ModelInspertionDriver;
+﻿/*using BaceModel.ModelInspertionDriver;
 using DaoModels.DAO.DTO;
 using DaoModels.DAO.Enum;
 using DaoModels.DAO.Interface;
@@ -285,7 +285,7 @@ namespace WebDispacher.Service
             return users;
         }
 
-        /* UserService */
+        *//* UserService *//*
         internal void AddUserToDispatch(Users users)
         {
             _sqlEntityFramworke.AddUserToDispatchDB(users);
@@ -479,7 +479,7 @@ namespace WebDispacher.Service
             return responseStripe;
         }
 
-        /* CompanyService */
+        *//* CompanyService *//*
         private bool CheckFirstPaymentMethodInCompany(string idCompany)
         {
             bool isFirstPaymentMethodInCompany = false;
@@ -491,7 +491,7 @@ namespace WebDispacher.Service
             return isFirstPaymentMethodInCompany;
         }
         
-        /* CompanyService */
+        *//* CompanyService *//*
         internal ResponseStripe SelectDefaultPaymentMethod(string idPayment, string idCompany = null, Customer_ST customer_ST = null)
         {
             if(customer_ST == null)
@@ -517,7 +517,7 @@ namespace WebDispacher.Service
             return (Trailer)_sqlEntityFramworke.GetTrailerById(idTrailer);
         }
 
-        /* CompanyService */
+        *//* CompanyService *//*
         internal void InitStripeForCompany(string nameCommpany, string emailCommpany, int idCompany)
         {
             Customer_ST customer_ST = new Customer_ST();
@@ -558,7 +558,7 @@ namespace WebDispacher.Service
             }
         }
         
-        /* TruckAndTrailerService */
+        *//* TruckAndTrailerService *//*
         private ITr GetTr(int idTr, string typeTransport)
         {
             ITr tr = null;
@@ -573,7 +573,7 @@ namespace WebDispacher.Service
             return tr;
         }
 
-        /* UserService */
+        *//* UserService *//*
         private List<Layouts> GetLayoutsByTransportVehicle(ITransportVehicle transportVehicle)
         {
             List<Layouts> layouts = new List<Layouts>();
@@ -742,7 +742,7 @@ namespace WebDispacher.Service
             _sqlEntityFramworke.LayoutDownDb(idLayout, idTransported);
         }
         
-        /* UserService */
+        *//* UserService *//*
         private bool ValidCompanyRoute(TypeCompany typeCompany, string route)
         {
             bool validCompany = false;
@@ -771,7 +771,7 @@ namespace WebDispacher.Service
             return shipping;
         }
         
-        /* Company service */
+        *//* Company service *//*
         private ITransportationDispatch GetTransportationDispatch(string typeDispatch)
         {
             ITransportationDispatch transportationDispatch = null;
@@ -1504,4 +1504,4 @@ namespace WebDispacher.Service
             return _sqlEntityFramworke.GetHistoryOrderByIdOrder(idOrder);
         }
     }
-}
+}*/

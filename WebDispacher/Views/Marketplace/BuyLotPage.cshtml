@@ -1,0 +1,153 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using WebDispacher.Constants;
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Buy Lot | Marketplace";
+}
+
+<link rel="stylesheet" href="~/libs/jquery/lightgallery.css">
+<body>
+    <div class="admin">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12"
+                     style="
+                       margin-top: 50px;">
+                    <div class="nav-forum-marketplace">
+                        <div class="nav-forum-item">
+                            <a href="/Marketplace/">
+                                Marketplace
+                            </a>
+                            <i class="bi bi-arrow-right"></i>
+                        </div>
+                        <div class="nav-forum-item">
+                            <a href="/Marketplace/Classifieds">
+                                Classifieds
+                            </a>
+                            <i class="bi bi-arrow-right"></i>
+                        </div>
+                        <div class="nav-forum-item">
+                            <a href="/Marketplace/Classifieds/CategoryBuy">
+                                Buy
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="tabContent">
+                        <div class="row">
+                            <div class="col-md-7">
+                                <div class="img-block" style="width:100%;padding: 16px;" id="lightgallery">
+                                    <div class="main-img" style="width: 100%;padding: 18px;">
+                                        <img style="max-width:100%" src="https://торги-россии.рф/pictures/$2y$10$cQQXK7aTxwLssgEto71R.JaAmun2hRPEsEhBa0Ziok4JmM0YLcG.jpeg" />
+                                    </div>
+                                    <div class="other-img">
+                                        <div class="img-one">
+                                            <img style="max-width:100%" src="https://торги-россии.рф/pictures/$2y$10$cQQXK7aTxwLssgEto71R.JaAmun2hRPEsEhBa0Ziok4JmM0YLcG.jpeg" />
+                                        </div>
+                                        <div class="img-one">
+                                            <img style="max-width:100%" src="https://торги-россии.рф/pictures/$2y$10$cQQXK7aTxwLssgEto71R.JaAmun2hRPEsEhBa0Ziok4JmM0YLcG.jpeg" />
+                                        </div><div class="img-one">
+                                            <img style="max-width:100%" src="https://торги-россии.рф/pictures/$2y$10$cQQXK7aTxwLssgEto71R.JaAmun2hRPEsEhBa0Ziok4JmM0YLcG.jpeg" />
+                                        </div><div class="img-one">
+                                            <img style="max-width:100%" src="https://торги-россии.рф/pictures/$2y$10$cQQXK7aTxwLssgEto71R.JaAmun2hRPEsEhBa0Ziok4JmM0YLcG.jpeg" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="main-short-text-block">
+                                    <div class="main-text-block">
+                                        <h1>Name</h1>
+                                    </div>
+                                    <div class="control-panel mt-4">
+                                        <button type="button" class="btn3">Write</button>
+                                        <button type="button" class="btn2 mt-3">Call</button>
+                                    </div>
+                                    <div class="info-seller">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-block">
+                                    <div class="description">
+                                        <h2>Description</h2>
+                                        <p>Description description description description description description description description description description</p>
+                                    </div>
+                                    <div class="zip-code">
+                                        <h3>ZipCode -- <b>40506</b></h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<style>
+    .btn3 {
+        width: 250px;
+        padding: 12px 24px;
+        font-size: 16px;
+    }
+    
+    .btn2 {
+        width: 250px;
+        padding: 12px 24px;
+        font-size: 16px;
+    }
+
+    .intl-tel-input {
+        width: 100%;
+    }
+
+
+    .nav-forum-marketplace {
+        display: flex;
+    }
+
+    .nav-forum-item {
+        margin-right: 10px;
+    }
+
+    .nav-forum-item a {
+        margin-right: 10px;
+    }
+
+    .other-img {
+        justify-content: center;
+        padding: 18px;
+        display: grid;
+        grid-template-columns: repeat(5, 120px);
+        gap: 8px;
+    }
+
+    .other-img .img-one {
+        max-width: 100%;
+        height: auto;
+        border: 1px black solid;
+    }
+
+    .control-panel {
+        display: flex;
+        flex-direction: column;
+    }
+
+</style>
+
+<script src="~/libs//jquery/dist/lightgallery-all.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#lightgallery').lightGallery({
+
+        });
+    });
+</script>
+<script src="~/js/input-replacer.js"></script>

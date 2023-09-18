@@ -1,0 +1,42 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization;
+@using WebDispacher.ViewModels.Marketplace;
+
+@model BuyItemMarketPostShortViewModel;
+
+@inject IViewLocalizer Localizer
+
+<link rel="stylesheet" href="~/css/Marketplace/Marketplace.css">
+
+<div class="one-line">
+    <div class="top-line" style="margin-bottom:0;">
+        <div class="left">
+            <div class="text">
+                <img src="https://avtozaryad.ru/local/templates/main/assets/images/user.png" style="max-width: 70px;max-height: 70px;height: auto;margin: 0;">
+            </div>
+            <div class="text">
+                <a href="/Marketplace/Classifieds/CategoryBuy/@Model.Id">
+                    <h2 class="show-icon">@Model.Title</h2>
+                </a>
+                @{
+                    var desc = string.IsNullOrEmpty(Model.Description) || Model.Description.Length <= 50 ? Model.Description : Model.Description.Substring(0, 50) + "...";
+                }
+                <p class="show-icon">@desc</p>
+            </div>
+        </div>
+        <div class="right mr-2">
+            <div class="first-end-block">
+                <div class="comments show-icon">
+                    <i class="bi bi-chat-right-fill"></i>
+                    <p>0</p>
+                </div>
+                <div class="views show-icon">
+                    <i class="bi bi-eye-fill"></i>
+                    <p>0</p>
+                </div>
+            </div>
+            <a href="/Marketplace/Classifieds/CategoryBuy/@Model.Id">
+                <h3 class="show-icon">@Model.DateTimeLastUpdate.ToString("MMM d, yyyy")</h3>
+            </a>
+        </div>
+    </div>
+</div>

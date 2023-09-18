@@ -1,0 +1,192 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using WebDispacher.Constants;
+@using WebDispacher.ViewModels.Marketplace;
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Create Buy Lot | Marketplace";
+}
+@model CreateBuyLotViewModel
+
+<link rel="stylesheet" href="~/libs/intl-tel-input-master/css/intlTelInput.css">Э
+<script src="~/libs/intl-tel-input-master/js/intlTelInput.js"></script>
+<body>
+    <div class="admin">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12"
+                    style="
+                       margin-top: 30px;">
+                    <div class="nav-forum-marketplace">
+                        <div class="nav-forum-item">
+                            <a href="/Marketplace/Classifieds/CategoryBuy">
+                                Back
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="tabContent">
+                        <h2>@Localizer["BuyItemLot"]</h2>
+                        <form action="" method="post">
+                            <div class="validation" asp-validation-summary="ModelOnly"></div>
+                            <label for="">
+                                <label class="mb-0">Title</label>
+                                <input type="text" id="title" asp-for="Title" required>
+                            </label>
+                            <label for="">
+                                <label class="mb-0">Description</label>
+                                <textarea type="text" asp-for="Description" id="description"></textarea>
+                            </label>
+                            <label for="">
+                                <label class="mb-0">Email</label>
+                                <input type="email" id="email" asp-for="Email" pattern="@PatternConstants.Email" required>
+                            </label>
+                            <label for="">
+                                <label class="mb-0">Phone Number</label>
+                                <input type="text" name="phoneC" id="phoneC" pattern="@PatternConstants.PhoneNumberWithoutCountryCode" placeholder="(XXX)-XXX-XXXX" required>
+                                <input type="hidden" id="country-code-dialcode" name="DialCode">
+                                <input type="hidden" id="country-code-iso2" name="Iso2">
+                                <input type="hidden" id="country-code-name" name="Name">
+                            </label>
+                            <label for="">
+                                <label class="mb-0">Zip Code</label>
+                                <input type="text" asp-for="ZipCode" id="zipcode" />
+                            </label>
+                            <input type="hidden" value="" name="localDate" />
+                            <input class="btn1" type="submit" value="@Localizer["Publish"]" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<style>
+    .btn3 {
+        width: 250px;
+        padding: 12px 24px;
+        font-size: 16px;
+    }
+    
+    .btn2 {
+        width: 250px;
+        padding: 12px 24px;
+        font-size: 16px;
+    }
+
+    .intl-tel-input {
+        width: 100%;
+    }
+
+
+    .nav-forum-marketplace {
+        display: flex;
+    }
+
+    .nav-forum-item {
+        margin-right: 10px;
+    }
+
+    .nav-forum-item a {
+        margin-right: 10px;
+    }
+
+    .other-img {
+        justify-content: center;
+        padding: 18px;
+        display: grid;
+        grid-template-columns: repeat(5, 120px);
+        gap: 8px;
+    }
+
+    .other-img .img-one {
+        max-width: 100%;
+        height: auto;
+        border: 1px black solid;
+    }
+
+    .control-panel {
+        display: flex;
+        flex-direction: column;
+    }
+
+</style>
+
+<script src="~/libs//jquery/dist/lightgallery-all.min.js"></script>
+
+<script src="~/js/input-replacer.js"></script>
+<script type="text/javascript">
+    $.fn.setCursorPosition = function (pos) {
+        if ($(this).get(0).setSelectionRange) {
+            $(this).get(0).setSelectionRange(pos, pos);
+        }
+        else if ($(this).get(0).createTextRange) {
+            var range = $(this).get(0).createTextRange();
+            range.collapse(true);
+            range.moveEnd('character', pos);
+            range.moveStart('character', pos);
+            range.select();
+        }
+    };
+
+    $('input[name="zipcode"]').on('click', function () {
+        $(this).setCursorPosition(0);
+    });
+
+    $("#zipcode").mask("99999", { placeholder: "XXXXX" });
+
+    $(document).ready(function () {
+        $("#phoneC").mask("(999)-999-9999", { placeholder: "(XXX)-XXX-XXXX" });
+
+        if (!$("#country-code-iso2").val()) {
+            $("#country-code-iso2").val("us")
+            $("#country-code-dialcode").val("1")
+            $("#country-code-name").val("United States")
+        }
+
+        var phone = $("#phoneC");
+        phone.intlTelInput({
+            initialCountry: $("#country-code-iso2").val() ? $("#country-code-iso2").val() : "us",
+            separateDialCode: true,
+        });
+
+        phone.on("countrychange", function (e, countryData) {
+            $("#country-code-dialcode").val(countryData.dialCode);
+            $("#country-code-iso2").val(countryData.iso2);
+            $("#country-code-name").val(countryData.name);
+        });
+    });
+
+    const dateInput = document.querySelector("[name='localDate']");
+
+    $("input[type=submit]").on('click', function (e) {
+        dateInput.value = GetDateTimeInFormat(new Date());
+    });
+</script>
+<style>
+    .tabContent {
+        margin-top: 20px;
+    }
+
+    .tabContent form {
+        margin-top: 30px;
+    }
+
+    .nav-forum-marketplace {
+        display: flex;
+    }
+
+    .nav-forum-item {
+        margin-right: 10px;
+    }
+
+    .nav-forum-item a {
+        margin-right: 10px;
+    }
+
+    .intl-tel-input {
+        width: 100%;
+    }
+</style>

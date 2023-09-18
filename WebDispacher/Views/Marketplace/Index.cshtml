@@ -1,5 +1,68 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Mvc.Localization;
+@{
     ViewData["Title"] = "Marketplace";
 }
+@inject IViewLocalizer Localizer
 
-@await Html.PartialAsync("~/Views/Error/Notready.cshtml")
+<link rel="stylesheet" href="~/css/Marketplace/Marketplace.css">
+
+<body>
+    <div class="admin">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12"
+                    style="display:flex;
+                    justify-content: space-between;
+                    margin-top: 84px;">
+                    <div class="title">
+                        <h1>@Localizer["Marketplace"]</h1>
+                    </div>
+                    <div class="search-panel">
+                        <input style="width: 360px;margin-top:0;height:46px;" class="type-button" placeholder="Search by name.." />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="tabs">
+                        <div class="tabContent">
+                            <div class="one-line">
+                                <div class="top-line" style="margin-bottom:0;">
+                                    <div class="left">
+                                        <div class="text">
+                                            <div class="main-icon-block">
+                                                <i class="bi bi-cart4"></i>
+                                            </div>
+                                        </div>
+                                        <div class="text">
+                                            <a href="/Marketplace/Classifieds">
+                                            <h2 class="show-icon">@Localizer["Classifieds"]</h2>
+                                            </a>
+                                        <p class="show-icon">@Localizer["MarketplaceDescription"] Post your for sale/buy ad</p>
+                                        </div>
+                                        </div>
+                                    <div class="right mr-2">
+                                        <div class="first-end-block">
+                                            <div class="comments show-icon">
+                                                <i class="bi bi-chat-right-fill"></i>
+                                                <p>0</p>
+                                            </div>
+                                            <div class="views show-icon">
+                                                <i class="bi bi-eye-fill"></i>
+                                                <p>0</p>
+                                            </div>
+                                        </div>
+                                        <a href="/Marketplace/Classifieds">
+                                            <h3 class="show-icon">Sep 7, 2023</h3>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>

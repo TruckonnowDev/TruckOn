@@ -1,0 +1,118 @@
+﻿.show-icon {
+    color: #767676;
+    transition: color 0.3s ease;
+}
+
+.show-icon:hover {
+    color: #597bdd;
+}
+
+.show-icon:hover p {
+    color: #597bdd;
+}
+
+.right {
+    display: flex;
+    gap: 160px;
+    justify-content: space-between;
+}
+
+.first-end-block {
+    display: flex;
+    gap: 24px;
+}
+
+.comments {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+    .comments p {
+        margin-left: 12px;
+    }
+
+.views {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+    .views p {
+        margin-left: 12px;
+    }
+
+.admin #tabs .tabContent {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.one-line {
+    border-radius: 10px;
+    background-color: #f1f1f1;
+    padding: 20px 12px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+    .one-line:hover {
+        transform: scale(1.02);
+    }
+
+.title {
+    margin-top: 0 !important;
+}
+
+.one-line .top-line .left {
+    justify-content: flex-start
+}
+
+.text {
+    max-width: 70%;
+}
+
+.tabContent h2 {
+    font-size: 20px;
+}
+
+.main-icon-block {
+    max-width: 70px;
+    max-height: 70px;
+    height: auto;
+    width: 100%;
+    margin: 0;
+}
+
+.main-icon-block i {
+    color: white;
+    background-color: blue;
+    font-size: 32px;
+    border-radius: 46px;
+    padding: 16px 20px;
+}
+
+.first-end-block .show-icon i {
+    font-size: 20px;
+}
+
+.nav-forum-marketplace {
+    display: flex;
+}
+
+.nav-forum-item {
+    margin-right: 10px;
+}
+
+.nav-forum-item a {
+    margin-right: 10px;
+}
+
+.btn1:hover {
+    background: #f9f9f9;
+    border: 1px solid #2c5deb;
+    color: #2c5deb;
+    -webkit-transition: .3s all;
+    -o-transition: .3s all;
+    transition: .3s all
+}

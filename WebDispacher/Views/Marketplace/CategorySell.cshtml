@@ -1,0 +1,117 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization;
+@{
+    ViewData["Title"] = "Buy | Marketplace";
+}
+@inject IViewLocalizer Localizer
+
+<link rel="stylesheet" href="~/css/Marketplace/Marketplace.css">
+
+<body>
+    <div class="admin">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12"
+                    style="
+                       margin-top: 50px;">
+                    <div class="nav-forum-marketplace">
+                        <div class="nav-forum-item">
+                            <a href="/Marketplace/">
+                                Marketplace
+                            </a>
+                            <i class="bi bi-arrow-right"></i>
+                        </div>
+                        <div class="nav-forum-item">
+                            <a href="/Marketplace/Classifieds">
+                                Classifieds
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12"
+                    style="display:flex;
+                    justify-content: space-between;
+                    margin-top: 20px;">
+                    <div class="title">
+                        <h1>@Localizer["Sell"]</h1>
+                        <button class="btn1" onclick="window.location.href='@Url.Action("CreateSellLot", "Marketplace")';">@Localizer["AddSellItem"]</button>
+                    </div>
+                    <div class="search-panel">
+                        <input style="width: 360px;margin-top:0;height:46px;" class="type-button" placeholder="Search by name.." />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="tabs">
+                        <div class="tabContent">
+                        @*@for (var i = 0; i < Model.DriverReports.Count; i++)
+                            {*@
+                            <div class="one-line">
+                                <div class="top-line" style="margin-bottom:0;">
+                                    <div class="left">
+                                        <div class="text">
+                                            <img src="https://avtozaryad.ru/local/templates/main/assets/images/user.png" style="max-width: 70px;max-height: 70px;height: auto;margin: 0;">
+                                            </div>
+                                            <div class="text">
+                                            <a href="/Marketplace/Classifieds/CategorySell/Item">
+                                                <h2 class="show-icon">@Localizer["AddOne"]</h2>
+                                                </a>
+                                            <p class="show-icon">@Localizer["BuyDescription"] Post your for sale/buy ad</p>
+                                            </div>
+                                        </div>
+                                    <div class="right mr-2">
+                                        <div class="first-end-block">
+                                            <div class="comments show-icon">
+                                                <i class="bi bi-chat-right-fill" style="font-size:20px;"></i>
+                                                <p>0</p>
+                                            </div>
+                                            <div class="views show-icon">
+                                                <i class="bi bi-eye-fill" style="font-size:20px;"></i>
+                                                <p>0</p>
+                                            </div>
+                                        </div>
+                                        <a href="/Marketplace/Classifieds/CategorySell/Item">
+                                            <h3 class="show-icon">Sep 7, 2023</h3>
+                                        </a>
+                                    </div>
+                                </div>
+                                </div>
+                            <div class="one-line">
+                                <div class="top-line" style="margin-bottom:0;">
+                                    <div class="left">
+                                        <div class="text">
+                                            <img src="https://avtozaryad.ru/local/templates/main/assets/images/user.png" style="max-width: 70px;max-height: 70px;height: auto;margin: 0;">
+                                        </div>
+                                        <div class="text">
+                                            <a href="#">
+                                                <h2 class="show-icon">@Localizer["AddOne"]</h2>
+                                            </a>
+                                            <p class="show-icon">@Localizer["BuyDescription"] Post your for sale/buy ad</p>
+                                        </div>
+                                    </div>
+                                    <div class="right mr-2">
+                                        <div class="first-end-block">
+                                            <div class="comments show-icon">
+                                                <i class="bi bi-chat-right-fill" style="font-size:20px;"></i>
+                                                <p>0</p>
+                                            </div>
+                                            <div class="views show-icon">
+                                                <i class="bi bi-eye-fill" style="font-size:20px;"></i>
+                                                <p>0</p>
+                                            </div>
+                                        </div>
+                                        <a href="#">
+                                            <h3 class="show-icon">Sep 7, 2023</h3>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                           @* }*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>

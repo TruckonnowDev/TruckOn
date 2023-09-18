@@ -1,0 +1,107 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization;
+@{
+    ViewData["Title"] = "Classifieds | Marketplace";
+}
+@inject IViewLocalizer Localizer
+
+<link rel="stylesheet" href="~/css/Marketplace/Marketplace.css">
+
+<body>
+    <div class="admin">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12"
+                     style="
+                       margin-top: 50px;">
+                    <div class="nav-forum-marketplace">
+                        <div class="nav-forum-item">
+                            <a href="/Marketplace/">
+                                Marketplace
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12"
+                     style="display:flex;
+                    justify-content: space-between;
+                    margin-top: 20px;">
+                    <div class="title">
+                        <h1>@Localizer["Classifieds"]</h1>
+                    </div>
+                    <div class="search-panel">
+                        <input style="width: 360px;margin-top:0;height:46px;" class="type-button" placeholder="Search by name.." />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="tabs">
+                        <div class="tabContent">
+                            <div class="one-line">
+                                <div class="top-line" style="margin-bottom:0;">
+                                    <div class="left">
+                                        <div class="text">
+                                            <img src="https://avtozaryad.ru/local/templates/main/assets/images/user.png" style="max-width: 70px;max-height: 70px;height: auto;margin: 0;">
+                                            </div>
+                                            <div class="text">
+                                                <a href="/Marketplace/Classifieds/CategoryBuy">
+                                                <h2 class="show-icon">@Localizer["Buy"]</h2>
+                                                </a>
+                                            <p class="show-icon">@Localizer["BuyDescription"] Post your for sale/buy ad</p>
+                                            </div>
+                                        </div>
+                                    <div class="right mr-2">
+                                        <div class="first-end-block">
+                                            <div class="comments show-icon">
+                                                <i class="bi bi-chat-right-fill"></i>
+                                                <p>0</p>
+                                            </div>
+                                            <div class="views show-icon">
+                                                <i class="bi bi-eye-fill"></i>
+                                                <p>0</p>
+                                            </div>
+                                        </div>
+                                        <a href="/Marketplace/Classifieds/CategoryBuy">
+                                            <h3 class="show-icon">Sep 7, 2023</h3>
+                                        </a>
+                                    </div>
+                                </div>
+                                </div>
+                            <div class="one-line">
+                                <div class="top-line" style="margin-bottom:0;">
+                                    <div class="left">
+                                        <div class="text">
+                                            <img src="https://avtozaryad.ru/local/templates/main/assets/images/user.png" style="max-width: 70px;max-height: 70px;height: auto;margin: 0;">
+                                        </div>
+                                        <div class="text">
+                                            <a href="/Marketplace/Classifieds/CategorySell">
+                                                <h2 class="show-icon">@Localizer["Sell"]</h2>
+                                            </a>
+                                            <p class="show-icon">@Localizer["SellDescription"] Post your for sale/buy ad</p>
+                                        </div>
+                                    </div>
+                                    <div class="right mr-2">
+                                        <div class="first-end-block">
+                                            <div class="comments show-icon">
+                                                <i class="bi bi-chat-right-fill"></i>
+                                                <p>0</p>
+                                            </div>
+                                            <div class="views show-icon">
+                                                <i class="bi bi-eye-fill"></i>
+                                                <p>0</p>
+                                            </div>
+                                        </div>
+                                        <a href="/Marketplace/Classifieds/CategorySell">
+                                            <h3 class="show-icon">Sep 7, 2023</h3>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>

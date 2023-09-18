@@ -60,6 +60,7 @@ namespace WebDispacher
             services.AddTransient<IDriverService, DriverService>();
             services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IMarketplaceService, MarketplaceService>();
             services.AddScoped<IOrderService, Business.Services.OrderService>();
             services.AddScoped<ISeedDatabaseService, SeedDatabaseService>();
 

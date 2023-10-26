@@ -61,6 +61,7 @@
 
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="0.9.10" />
+    <PackageReference Include="AspNetCoreRateLimit" Version="3.2.2" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.32" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.32">
@@ -419,6 +420,158 @@
     <EmbeddedResource Update="Resources\Views\PartView\Vehicles\_VehiclesTable.ru.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>_VehiclesTable.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\Index.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Index.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\Index.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Index.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\Index.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Index.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\Classifieds.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Classifieds.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\Classifieds.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Classifieds.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\Classifieds.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Classifieds.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\CategoryBuy.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CategoryBuy.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\CategoryBuy.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CategoryBuy.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\CategoryBuy.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CategoryBuy.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\BuyLotPage.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>BuyLotPage.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\BuyLotPage.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>BuyLotPage.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\BuyLotPage.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>BuyLotPage.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\SellLotPage.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>BuyLotPage.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\SellLotPage.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>BuyLotPage.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\SellLotPage.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>BuyLotPage.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\CategorySell.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CategorySell.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\CategorySell.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CategorySell.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\CategorySell.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CategorySell.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\CreateBuyLot.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CreateBuyLot.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\CreateBuyLot.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CreateBuyLot.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\CreateBuyLot.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CreateBuyLot.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\CreateSellLot.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CreateBuyLot.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\ManageBuyLot.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ManageBuyLot.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\ManageBuyLot.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ManageBuyLot.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\ManageBuyLot.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ManageBuyLot.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\ManageSellLot.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ManageBuyLot.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\ManageSellLot.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ManageBuyLot.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\ManageSellLot.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ManageBuyLot.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\ShowPhoneNumber.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ShowPhoneNumber.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\ShowPhoneNumber.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ShowPhoneNumber.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\ShowPhoneNumber.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ShowPhoneNumber.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Marketplace\ForumItem.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ForumItem.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Marketplace\ForumItem.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ForumItem.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Marketplace\ForumItem.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ForumItem.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\UserLots.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CategorySell.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\SelectNewTypeAd.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SelectNewTypeAd.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\SelectNewTypeAd.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SelectNewTypeAd.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\SelectNewTypeAd.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SelectNewTypeAd.ru.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

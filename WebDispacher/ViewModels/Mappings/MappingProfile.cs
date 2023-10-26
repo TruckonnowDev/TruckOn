@@ -5,6 +5,7 @@ using WebDispacher.ViewModels.Company;
 using WebDispacher.ViewModels.Contact;
 using WebDispacher.ViewModels.Dispatcher;
 using WebDispacher.ViewModels.Driver;
+using WebDispacher.ViewModels.Marketplace;
 using WebDispacher.ViewModels.Order;
 using WebDispacher.ViewModels.RA.Carrier.Registration;
 using WebDispacher.ViewModels.Settings;
@@ -38,6 +39,12 @@ namespace WebDispacher.ViewModels.Mappings
             CreateMap<VehicleBrandViewModel, VehicleBrand>()
                 .ReverseMap();
             CreateMap<VehicleModelViewModel, VehicleModel>()
+                .ReverseMap();
+            CreateMap<BuyItemMarketPostViewModel, BuyItemMarketPost>()
+                .ReverseMap();
+            CreateMap<SellItemMarketPostViewModel, SellItemMarketPost>()
+                .ReverseMap();
+            CreateMap<MarketPostViewModel, MarketPost>()
                 .ReverseMap();
 
             CreateMap<DriverReport, DriverReportViewModel>()

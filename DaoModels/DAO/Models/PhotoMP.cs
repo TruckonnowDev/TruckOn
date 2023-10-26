@@ -9,14 +9,15 @@ namespace DaoModels.DAO.Models
     public class PhotoMP
     {
         public int Id { get; set; }
+        public string Name { get; set; }
         public int PhotoListMPId { get; set; }
         public PhotoListMP PhotoListMP { get; set; }
         public int PhotoTypeId { get; set; }
         public PhotoType PhotoType { get; set; }
         public string PhotoPath { get; set; }
         public string PhotoUrl { get; set; }
-        public double Height { get; set; }
-        public double Width { get; set; }
+        public int Height { get; set; }
+        public int Width { get; set; }
         public DateTime DateTimeUpload { get; set; }
         [NotMapped]
         public string Base64

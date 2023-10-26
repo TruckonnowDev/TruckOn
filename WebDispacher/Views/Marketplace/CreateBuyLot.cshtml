@@ -9,8 +9,9 @@
 }
 @model CreateBuyLotViewModel
 
-<link rel="stylesheet" href="~/libs/intl-tel-input-master/css/intlTelInput.css">Э
+<link rel="stylesheet" href="~/libs/intl-tel-input-master/css/intlTelInput.css">
 <script src="~/libs/intl-tel-input-master/js/intlTelInput.js"></script>
+<link rel="stylesheet" href="~/css/Marketplace/Marketplace.css">
 <body>
     <div class="admin">
         <div class="container">
@@ -21,41 +22,64 @@
                     <div class="nav-forum-marketplace">
                         <div class="nav-forum-item">
                             <a href="/Marketplace/Classifieds/CategoryBuy">
-                                Back
+                                @Localizer["BackToCategoryBuy"]
                             </a>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-5">
                     <div class="tabContent">
-                        <h2>@Localizer["BuyItemLot"]</h2>
-                        <form action="" method="post">
+                        <h2>@Localizer["BuyItemLotHeader"]</h2>
+                        <form action="" enctype="multipart/form-data" method="post">
                             <div class="validation" asp-validation-summary="ModelOnly"></div>
                             <label for="">
-                                <label class="mb-0">Title</label>
+                                <label class="mb-0">@Localizer["TitleLabel"]</label>
                                 <input type="text" id="title" asp-for="Title" required>
                             </label>
                             <label for="">
-                                <label class="mb-0">Description</label>
+                                <label class="mb-0">@Localizer["DescriptionLabel"]</label>
                                 <textarea type="text" asp-for="Description" id="description"></textarea>
                             </label>
                             <label for="">
-                                <label class="mb-0">Email</label>
+                                <label class="mb-0">@Localizer["EmailLabel"]</label>
                                 <input type="email" id="email" asp-for="Email" pattern="@PatternConstants.Email" required>
                             </label>
                             <label for="">
-                                <label class="mb-0">Phone Number</label>
-                                <input type="text" name="phoneC" id="phoneC" pattern="@PatternConstants.PhoneNumberWithoutCountryCode" placeholder="(XXX)-XXX-XXXX" required>
-                                <input type="hidden" id="country-code-dialcode" name="DialCode">
-                                <input type="hidden" id="country-code-iso2" name="Iso2">
-                                <input type="hidden" id="country-code-name" name="Name">
+                                <label class="mb-0">@Localizer["PhoneNumberLabel"]</label>
+                                <input type="text" asp-for="PhoneNumber.Number" id="phoneC" pattern="@PatternConstants.PhoneNumberWithoutCountryCode" placeholder="(XXX)-XXX-XXXX" required>
+                                <input type="hidden" id="country-code-dialcode" asp-for="PhoneNumber.DialCode">
+                                <input type="hidden" id="country-code-iso2" asp-for="PhoneNumber.Iso2">
+                                <input type="hidden" id="country-code-name" asp-for="PhoneNumber.Name">
                             </label>
                             <label for="">
-                                <label class="mb-0">Zip Code</label>
-                                <input type="text" asp-for="ZipCode" id="zipcode" />
+                                <label class="mb-0">@Localizer["ZipCodeLabel"]</label>
+                                <input type="text" asp-for="ZipCode" id="zipcode" required />
+                            </label>
+                            <label for="">
+                                <label class="mb-0">@Localizer["FilesLabel"]</label>
+                                <div class="d-flex align-items-center wrap">
+                                    <div class="file-group big-label mb-2">
+                                        <div class="row d-flex align-items-center inp-file-width">
+                                            <div class="col-8 label-input">
+                                                <div id="fl1" style="word-wrap:break-word"></div>
+                                            </div>
+                                            <div class="col-4 select-doc">
+                                                <div class="select-button-1 d-flex justify-content-end">
+                                                    <label>
+                                                        @Localizer["SelectDocument"]
+                                                        <input class="height-input" id="fi1" multiple type="file" name="files" accept="image/jpeg, image/jpg">
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <a>@Localizer["InfoMessageUploadFiles"]</a>
+                                    <p class="file-limit-exceeded text-danger"></p>
+                                </div>
+
                             </label>
                             <input type="hidden" value="" name="localDate" />
-                            <input class="btn1" type="submit" value="@Localizer["Publish"]" />
+                            <input class="btn1" type="submit" value="@Localizer["PublishButton"]" />
                         </form>
                     </div>
                 </div>
@@ -64,22 +88,13 @@
     </div>
 </body>
 <style>
-    .btn3 {
-        width: 250px;
-        padding: 12px 24px;
-        font-size: 16px;
-    }
-    
-    .btn2 {
-        width: 250px;
-        padding: 12px 24px;
-        font-size: 16px;
+    .big-label {
+        width: 100% !important;
     }
 
-    .intl-tel-input {
+    .inp-file-width {
         width: 100%;
     }
-
 
     .nav-forum-marketplace {
         display: flex;
@@ -115,6 +130,58 @@
 </style>
 
 <script src="~/libs//jquery/dist/lightgallery-all.min.js"></script>
+
+<script>
+    function ClearFiles(deleteLink, inputId) {
+        var fileDiv = deleteLink.parentElement;
+        while (fileDiv.firstChild) {
+            fileDiv.removeChild(fileDiv.firstChild);
+        }
+
+        var fileInput = document.getElementById(inputId);
+
+        fileInput.value = "";
+
+        if (fileInput.hasAttribute('temp-required')) {
+            fileInput.removeAttribute('temp-required');
+            fileInput.required = false;
+        }
+
+        if ($(fileInput).prop('required')) {
+            fileInput.parentElement.classList.remove("green-valid");
+            fileInput.parentElement.classList.add("red-valid");
+        } else {
+            fileInput.parentElement.classList.remove("green-valid");
+            fileInput.parentElement.classList.remove("red-valid");
+        }
+        
+        var fileLimitExceeded = fileInput.parentElement.parentNode.getElementsByClassName("file-limit-exceeded")[0];
+        if (fileLimitExceeded) {
+            fileLimitExceeded.innerHTML = "";
+        }
+    }
+
+    document.getElementById("fi1").addEventListener("change", function (event) {
+        var uploaded = document.getElementById("fl1");
+        uploaded.innerHTML = "";
+
+        for (var i = 0; i < event.target.files.length; i++) {
+            var file = event.target.files[i];
+            var filename = file.name;
+
+            var fileDiv = document.createElement("div");
+            fileDiv.style.wordWrap = "break-word";
+            fileDiv.innerHTML = filename;
+            fileDiv.setAttribute("data-index", i);
+
+            uploaded.appendChild(fileDiv);
+        }
+
+        var fileDiv = document.createElement("div");
+        fileDiv.innerHTML = `<a class="red-button-custom" onclick="ClearFiles(this.parentElement, 'fi1')">(@Localizer["DeleteButton"])</a>`;
+        uploaded.appendChild(fileDiv);
+    });
+</script>
 
 <script src="~/js/input-replacer.js"></script>
 <script type="text/javascript">
@@ -158,6 +225,8 @@
             $("#country-code-name").val(countryData.name);
         });
     });
+
+    var selectedFiles = [];
 
     const dateInput = document.querySelector("[name='localDate']");
 

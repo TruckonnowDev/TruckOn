@@ -19,27 +19,75 @@
                     <div class="nav-forum-marketplace">
                         <div class="nav-forum-item">
                             <a href="/Marketplace/">
-                                Marketplace
+                                @Localizer["MarketplaceNavItem"]
                             </a>
                             <i class="bi bi-arrow-right"></i>
                         </div>
                         <div class="nav-forum-item">
                             <a href="/Marketplace/Classifieds">
-                                Classifieds
+                                @Localizer["ClassifiedsNavItem"]
                             </a>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-12"
-                    style="display:flex;
-                    justify-content: space-between;
-                    margin-top: 20px;">
+                <div class="col-md-12 header-nav-block">
                     <div class="title">
-                        <h1>@Localizer["Buy"]</h1>
-                        <button class="btn1" onclick="window.location.href='@Url.Action("CreateBuyLot", "Marketplace")';">@Localizer["AddBuyItem"]</button>
+                        <h1>@Localizer["BuyHeader"]</h1>
+                        <button class="btn1" onclick="window.location.href='@Url.Action("CreateBuyLot", "Marketplace")';">@Localizer["AddBuyItemButton"]</button>
                     </div>
                     <div class="search-panel">
-                        <input style="width: 360px;margin-top:0;height:46px;" class="type-button" placeholder="Search by name.." />
+                        <a style="background-color: white;color:#686F7C;" data-toggle="collapse" href="#search-form" role="button" aria-expanded="false" aria-controls="search-form">
+                            @Localizer["FiltersLabel"]
+                            <span class="open-chevron">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                                </svg>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-12"> 
+                    <div class="collapse multi-collapse" id="search-form" style="width: 100%;">
+                        <div style="margin-top: 15px; background-color: #f1f1f1;border-radius:10px; padding: 1.25rem!important;" class="card border card-body">
+                            <form method="get" id="filterForm" action="/Marketplace/Classifieds/CategoryBuy">
+                                <input type="hidden" asp-for="Filters.Page" value="@Model.Filters.Page" />
+                                <input type="hidden" asp-for="Filters.SortType" value="@Model.Filters.SortType" />
+                                <div class="filters-block">
+                                    <div class="row">
+                                        <div class="col-md-6" style="padding: 10px;">
+                                            <div id="isOnlyMyPosts" style="display: flex; gap: 6px;margin: 12px 0;">
+                                                <input type="checkbox" id="isOnlyMyPostsChecker" asp-for="Filters.IsOnlyMyPosts" />
+                                                <label for="isOnlyMyPosts" style="margin-bottom: 0;font-weight:600;font-size:14px;">@Localizer["OnlyMyPostsFilter"]</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6" style="padding: 10px;">
+                                            <div id="KeyWords" class="filter-block">
+                                                <label for="KeyWords">@Localizer["KeyWordsLabel"]</label>
+                                                <input id="keyWordsFilterInput" class="type-button" asp-for="Filters.KeyWords" value="@Model.Filters.KeyWords" placeholder="@Localizer["SearchByKeywordPlaceholder"]">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; justify-content: flex-end;">
+                                    <button type="submit" class="btn1 btn-modal mt-2">@Localizer["SearchButtonName"]</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-12">
+                    <div class="sort" id="sort-block">
+                        <button data-sort-type="@SortType.Base"
+                                class="@(Model.Filters.SortType == SortType.Base ? "active" : "")">@Localizer["BaseSortTypeLabel"]</button>
+                        <button data-sort-type="@SortType.New"
+                                class="@(Model.Filters.SortType == SortType.New ? "active" : "")">@Localizer["NewSortTypeLabel"]</button>
+                        <button data-sort-type="@SortType.MinViews"
+                                class="@(Model.Filters.SortType == SortType.MinViews ? "active" : "")">@Localizer["MinViewsSortTypeLabel"]</button>
+                        <button data-sort-type="@SortType.MaxViews"
+                                class="@(Model.Filters.SortType == SortType.MaxViews ? "active" : "")">@Localizer["MaxViewsSortTypeLabel"]</button>
+                        <button data-sort-type="@SortType.LastUpdate"
+                                class="@(Model.Filters.SortType == SortType.LastUpdate ? "active" : "")">@Localizer["LastUpdateSortTypeLabel"]</button>
                     </div>
                 </div>
             </div>
@@ -47,11 +95,22 @@
                 <div class="col-md-12">
                     <div id="tabs">
                         <div class="tabContent">
-                        @for (var i = 0; i < Model.Items.Count; i++)
-                        {
-                            @await Html.PartialAsync("~/Views/PartView/Marketplace/ForumItem.cshtml", Model.Items[i]);
-                        }
-                            <pagination-list actual-pages="functions.GetPages(ViewBag.SelectedPage, Model.CountPage)" selected-page="ViewBag.SelectedPage" />
+                            @foreach (var item in Model.Items)
+                            {
+                                @await Html.PartialAsync("~/Views/PartView/Marketplace/ForumItem.cshtml", item)
+                            }
+                            <pagination-list actual-pages="functions.GetPages(Model.Filters.Page, Model.Filters.CountPages)" selected-page="Model.Filters.Page" />
+                            
+                            @if(Model.Items.Count == 0)
+                            {
+                                <div class="block-empty">
+                                    <i class="bi bi-emoji-frown-fill" style="font-size: 28px;"></i>
+                                    <h2>
+                                        @Localizer["NotFoundAdsLabel"]
+                                    </h2>
+                                </div>
+                                
+                            }
                         </div>
                     </div>
                 </div>
@@ -60,3 +119,26 @@
         </div>
     </div>
 </body>
+
+<script>
+    const sortButtons = document.querySelectorAll('button[data-sort-type]');
+
+    sortButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            if (!button.classList.contains('active')) {
+                document.querySelector('#filterForm input[name="Filters.SortType"]').value = button.getAttribute('data-sort-type');
+
+                document.getElementById('filterForm').submit();
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        const isOnlyMyPosts = document.getElementById('isOnlyMyPostsChecker');
+        const keyWordsFilter = document.getElementById('keyWordsFilterInput');
+
+        if (isOnlyMyPosts.checked || keyWordsFilter.value !== "" ) {
+            $("#search-form").addClass('show')
+        }
+    });
+</script>

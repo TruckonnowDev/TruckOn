@@ -9,9 +9,9 @@ namespace WebDispacher.Business.Extensions
 {
     public static class MarketplaceExtensions
     {
-        public static async Task<List<BuyItemMarketPostShortViewModel>> ProjectToBuyItemMarketPostShort(this IQueryable<BuyItemMarketPost> query)
+        public static IQueryable<ItemMarketPostShortViewModel> ProjectToBuyItemMarketPostShort(this IQueryable<BuyItemMarketPost> query)
         {
-            return await query.Select(u => new BuyItemMarketPostShortViewModel
+            return query.Select(u => new ItemMarketPostShortViewModel
             {
                 Id = u.Id,
                 Title = u.Title,
@@ -21,8 +21,9 @@ namespace WebDispacher.Business.Extensions
                 ConditionPost = u.MarketPost.ConditionPost,
                 ShowView = u.MarketPost.ShowView,
                 ShowComment = u.MarketPost.ShowComment,
-                DateTimeLastUpdate = u.MarketPost.DateTimeLastUpdate
-            }).ToListAsync();
+                DateTimeLastUpdate = u.MarketPost.DateTimeLastUpdate,
+
+            });
         }
     }
 }

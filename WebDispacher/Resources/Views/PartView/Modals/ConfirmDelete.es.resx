@@ -135,4 +135,10 @@
   <data name="ConfirmMessageActivateCompany" xml:space="preserve">
     <value>¿Activar Empresa?</value>
   </data>
+  <data name="ConfirmMessageDeleteMarketPost" xml:space="preserve">
+    <value>Eliminar publicación?</value>
+  </data>
+  <data name="ConfirmMessageCloseMarketPost" xml:space="preserve">
+    <value>¿Cerrar Publicación? (Vendido)</value>
+  </data>
 </root>

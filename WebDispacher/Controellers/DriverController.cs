@@ -332,7 +332,6 @@ namespace WebDispacher.Controellers
         [HttpPost]
         [Route("Driver/Drivers/CreateDriver")]
         [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
-        [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
         public async Task<IActionResult> CreateDriver(CreateDriverViewModel model,
             IFormFile dLDoc, IFormFile medicalCardDoc, IFormFile sSNDoc, IFormFile proofOfWorkAuthorizationOrGCDoc,
             IFormFile dQLDoc, IFormFile contractDoc, IFormFile drugTestResultsDoc, string dateTimeLocal)
@@ -348,7 +347,7 @@ namespace WebDispacher.Controellers
                     string.IsNullOrEmpty(model.DriverControl.Password)) return View("CreateDriver");
 
                     model.CompanyId = Convert.ToInt32(CompanyId);
-
+                    
                     await driverService.CreateDriver(model,
                         dLDoc, medicalCardDoc, sSNDoc, proofOfWorkAuthorizationOrGCDoc, dQLDoc, contractDoc, drugTestResultsDoc, dateTimeLocal);
 
@@ -482,7 +481,7 @@ namespace WebDispacher.Controellers
         [Route("Driver/InspactionTrucks")]
         [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
-        public async Task<IActionResult> ViewAllInspactionDate(string driverId, string idTruck, string idTrailer, string date)
+        public async Task<IActionResult> ViewAllInspactionDate(string driverId, string truckId, string trailerId, string date)
         {
             try
             {
@@ -500,7 +499,7 @@ namespace WebDispacher.Controellers
                 var trucks = await truckAndTrailerService.GetTrucks(0, CompanyId);
                 var trailers = await truckAndTrailerService.GetTrailers(0, CompanyId);
                     
-                var inspectionTruck = truckAndTrailerService.GetInspectionTrucks(driverId, idTruck, idTrailer, date)
+                var inspectionTruck = truckAndTrailerService.GetInspectionTrucks(driverId, truckId, trailerId, date)
                     .Select(x => new InspectinView()
                     {
                         Id = x.Id,
@@ -520,8 +519,8 @@ namespace WebDispacher.Controellers
                 }
 
                 ViewBag.IdDriver = driverId;
-                ViewBag.IdTruck = idTruck;
-                ViewBag.IdTrailer = idTrailer;
+                ViewBag.IdTruck = truckId;
+                ViewBag.IdTrailer = trailerId;
                 ViewBag.SelectData = date;
 
                 return View("AllInspactionTruckData", new FullInformationInspection

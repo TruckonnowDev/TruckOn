@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DaoModels.DAO.Models
 {
@@ -12,5 +10,7 @@ namespace DaoModels.DAO.Models
         public int MarketPostId { get; set; }
         public MarketPost MarketPost { get; set; }
         public DateTime DateTimeAction { get; set; }
+        public string UserAgent { get; set; }
+        public string IPAddress { get; set; }
     }
 }

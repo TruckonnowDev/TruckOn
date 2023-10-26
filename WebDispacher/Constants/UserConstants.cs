@@ -13,6 +13,10 @@
         public const string Admin = "Admin";
         public const string UserEntityTypeResetPassword = "User";
         public const string DriverEntityTypeResetPassword = "Driver";
+        public const string MarketplaceBuyEntityTypeResetPassword = "MarketplaceBuy";
+        public const string MarketplaceSellEntityTypeResetPassword = "MarketplaceSell";
+        public const string MarketplaceBuyCategory = "CategoryBuy";
+        public const string MarketplaceSellCategory = "CategorySell";
         public const string DeactivateEmailSubject = "Deactivate your company";
         public const string ActivateEmailSubject = "Activate your company";
         public const int NormalPageCount = 20;

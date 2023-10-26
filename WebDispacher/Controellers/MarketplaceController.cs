@@ -1,7 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DaoModels.DAO.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using WebDispacher.Business.Interfaces;
 using WebDispacher.Business.Services;
@@ -29,7 +36,7 @@ namespace WebDispacher.Controellers
         [HttpGet]
         [Route("Marketplace")]
         [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             try
             {
@@ -41,6 +48,18 @@ namespace WebDispacher.Controellers
                 {
                     return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
+
+                try
+                {
+                    var allCategoryInfo = await marketplaceService.GetCountViewAndDateLastUpdateAll();
+
+                    ViewBag.AllCategoryInfo = allCategoryInfo;
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.AllCategoryInfo = (0, DateTime.MinValue);
+                }
+
                 return View();
             }
             catch (Exception e)
@@ -54,7 +73,7 @@ namespace WebDispacher.Controellers
         [HttpGet]
         [Route("Marketplace/Classifieds")]
         [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
-        public IActionResult Classifieds()
+        public async Task<IActionResult> Classifieds(string userId = null)
         {
             try
             {
@@ -65,6 +84,44 @@ namespace WebDispacher.Controellers
                 if (isCancelSubscribe)
                 {
                     return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
+                }
+                
+                if (string.IsNullOrEmpty(userId))
+                {
+                    userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                }
+                
+                try
+                {
+                    var userCategoryInfo = await marketplaceService.GetCountViewAndDateLastUpdateByUserId(userId);
+                    ViewBag.UserCategoryInfo = userCategoryInfo;
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.UserCategoryInfo = (0, DateTime.MinValue);
+                    
+                }
+                
+                try
+                {
+                    var buyCategoryInfo = await marketplaceService.GetCountViewAndDateLastUpdateBuy();
+                    ViewBag.BuyCategoryInfo = buyCategoryInfo;
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.BuyCategoryInfo = (0, DateTime.MinValue);
+                    
+                }
+                
+                try
+                {
+                    var sellCategoryInfo = await marketplaceService.GetCountViewAndDateLastUpdateSell();
+                    ViewBag.SellCategoryInfo = sellCategoryInfo;
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.SellCategoryInfo = (0, DateTime.MinValue);
+                    
                 }
                 return View();
             }
@@ -79,7 +136,7 @@ namespace WebDispacher.Controellers
         [HttpGet]
         [Route("Marketplace/Classifieds/CategoryBuy")]
         [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
-        public async Task<IActionResult> CategoryBuy(int page = 1)
+        public async Task<IActionResult> CategoryBuy(BuyMarketPostsFiltersViewModel filters)
         {
             try
             {
@@ -92,16 +149,14 @@ namespace WebDispacher.Controellers
                     return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
 
-                var buyItems = await marketplaceService.GetPublicBuyItemsMarketPosts(page);
+                var user = await companyService.GetUserByCompanyId(CompanyId);
 
-                var countPages = await companyService.GetCountContactsPages(CompanyId);
-
-                ViewBag.SelectedPage = page;
+                var buyItems = await marketplaceService.GetBuyItemsMarketPosts(filters, user);
 
                 return View(new BuyItemMarketPostShortVmList
                 {
                     Items = buyItems,
-                    CountPage = countPages
+                    Filters = filters,
                 });
             }
             catch (Exception e)
@@ -112,10 +167,45 @@ namespace WebDispacher.Controellers
             return Redirect(Config.BaseReqvesteUrl);
         }
         
+        
+        [HttpGet]
+        [Route("Marketplace/Classifieds/MyAds")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> UserLots(UserMarketPostsFiltersViewModel filters)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                ViewData[NavConstants.TypeNavBar] = NavConstants.NormalCompany;
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+
+                if (isCancelSubscribe)
+                {
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
+                }
+
+                var user = await companyService.GetUserByCompanyId(CompanyId);
+
+                var buyItems = await marketplaceService.GetUserItemsMarketPosts(filters, user);
+
+                return View(new UserMarketPostShortVmList
+                {
+                    Items = buyItems,
+                    Filters = filters,
+                });
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            return Redirect(Config.BaseReqvesteUrl);
+        }
+
         [HttpGet]
         [Route("Marketplace/Classifieds/CategorySell")]
         [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
-        public IActionResult CategorySell()
+        public async Task<IActionResult> CategorySell(SellMarketPostsFiltersViewModel filters)
         {
             try
             {
@@ -127,7 +217,55 @@ namespace WebDispacher.Controellers
                 {
                     return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
-                return View();
+
+                var user = await companyService.GetUserByCompanyId(CompanyId);
+
+                var buyItems = await marketplaceService.GetSellItemsMarketPosts(filters, user);
+
+                return View(new SellItemMarketPostShortVmList
+                {
+                    Items = buyItems,
+                    Filters = filters,
+                });
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            return Redirect(Config.BaseReqvesteUrl);
+        }
+
+        [HttpGet]
+        [Route("Marketplace/Classifieds/CategoryBuy/{id:int}/")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> BuyLotPage(int id)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                ViewData[NavConstants.TypeNavBar] = NavConstants.NormalCompany;
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+
+                if (isCancelSubscribe)
+                {
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
+                }
+
+                var queryUser = await companyService.GetUserByCompanyId(CompanyId);
+
+                var buyLotItem = await marketplaceService.GetBuyItemMarketPost(id, queryUser.Id);
+
+                ViewBag.QueryUser = queryUser;
+
+                if(buyLotItem != null)
+                {
+                    await marketplaceService.AddViewToMarketPost(id, queryUser.Id);
+
+                    return View(buyLotItem);
+                }
+
+                return Redirect($"{Config.BaseReqvesteUrl}/Marketplace/Classifieds/CategoryBuy");
             }
             catch (Exception e)
             {
@@ -138,13 +276,13 @@ namespace WebDispacher.Controellers
         }
         
         [HttpGet]
-        [Route("Marketplace/Classifieds/CategoryBuy/Item")]
+        [Route("Marketplace/Classifieds/CategoryBuy/{id:int}/Edit")]
         [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
-        public IActionResult BuyLotPage()
+        public async Task<IActionResult> ManageBuyLot(int id)
         {
             try
             {
-                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 ViewData[NavConstants.TypeNavBar] = NavConstants.NormalCompany;
                 var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
 
@@ -152,7 +290,19 @@ namespace WebDispacher.Controellers
                 {
                     return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
-                return View();
+
+                var queryUser = await companyService.GetUserByCompanyId(CompanyId);
+
+                if (!marketplaceService.IsHavePermissionToEditMarketPost(id, queryUser.Id))
+                {
+                    return Forbid();
+                }
+
+                var buyLotItem = await marketplaceService.GetBuyItemMarketPost(id, queryUser.Id);
+
+                ViewBag.QueryUser = queryUser;
+
+                return View(buyLotItem);
             }
             catch (Exception e)
             {
@@ -163,9 +313,81 @@ namespace WebDispacher.Controellers
         }
         
         [HttpGet]
-        [Route("Marketplace/Classifieds/CategorySell/Item")]
+        [Route("Marketplace/Classifieds/CategorySell/{id:int}/Edit")]
         [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
-        public IActionResult SellLotPage()
+        public async Task<IActionResult> ManageSellLot(int id)
+        {
+            try
+            {
+                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                ViewData[NavConstants.TypeNavBar] = NavConstants.NormalCompany;
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+
+                if (isCancelSubscribe)
+                {
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
+                }
+
+                var queryUser = await companyService.GetUserByCompanyId(CompanyId);
+
+                if (!marketplaceService.IsHavePermissionToEditMarketPost(id, queryUser.Id))
+                {
+                    return Forbid();
+                }
+
+                var sellLotItem = await marketplaceService.GetSellItemMarketPost(id, queryUser.Id);
+
+                ViewBag.QueryUser = queryUser;
+
+                return View(sellLotItem);
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            return Redirect(Config.BaseReqvesteUrl);
+        }
+        
+        
+        [HttpPost]
+        [Route("Marketplace/RemoveImage")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> RemoveUploadedImage(int imageId, int postId)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                ViewData[NavConstants.TypeNavBar] = NavConstants.NormalCompany;
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+
+                if (isCancelSubscribe)
+                {
+                    return Json(new { success = false });
+                }
+
+                var user = await companyService.GetUserByCompanyId(CompanyId);
+
+                if (!marketplaceService.IsHavePermissionToEditMarketPost(postId, user.Id))
+                {
+                    return Json(new { success = false });
+                }
+
+                var b = await marketplaceService.RemoveUploadedImage(imageId);
+
+                return Json(new { success = true }); ;
+            }
+            catch (Exception e)
+            {
+
+            }
+            return Json(new { success = false });
+        }
+
+        [HttpGet]
+        [Route("Marketplace/Classifieds/CategorySell/{id:int}/")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> SellLotPage(int id)
         {
             try
             {
@@ -177,7 +399,21 @@ namespace WebDispacher.Controellers
                 {
                     return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
                 }
-                return View();
+
+                var queryUser = await companyService.GetUserByCompanyId(CompanyId);
+
+                var sellLotItem = await marketplaceService.GetSellItemMarketPost(id, queryUser.Id);
+
+                ViewBag.QueryUser = queryUser;
+
+                if (sellLotItem != null)
+                {
+                    await marketplaceService.AddViewToMarketPost(id, queryUser.Id);
+
+                    return View(sellLotItem);
+                }
+
+                return Redirect($"{Config.BaseReqvesteUrl}/Marketplace/Classifieds/CategorySell");
             }
             catch (Exception e)
             {
@@ -186,7 +422,7 @@ namespace WebDispacher.Controellers
 
             return Redirect(Config.BaseReqvesteUrl);
         }
-        
+
         [HttpGet]
         [Route("Marketplace/Classifieds/CategoryBuy/CreateBuyLot")]
         [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
@@ -215,17 +451,18 @@ namespace WebDispacher.Controellers
         [HttpPost]
         [Route("Marketplace/Classifieds/CategoryBuy/CreateBuyLot")]
         [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
-        public async Task<IActionResult> CreateBuyLot(CreateBuyLotViewModel model, string localDate)
+        public async Task<IActionResult> CreateBuyLot(CreateBuyLotViewModel model, List<IFormFile> files, string localDate)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                    ViewData[NavConstants.TypeNavBar] = NavConstants.NormalCompany;
+                    
+                    var itemId = await marketplaceService.CreateBuyLot(model, files, CompanyId, localDate);
 
-                    await marketplaceService.CreateBuyLot(model, CompanyId, localDate);
-
-                    return Redirect($"{Config.BaseReqvesteUrl}/Marketplace/Classifieds/CategoryBuy/Item");
+                    return Redirect($"{Config.BaseReqvesteUrl}/Marketplace/Classifieds/CategoryBuy/{itemId}");
                 }
                 catch (Exception)
                 {
@@ -239,7 +476,182 @@ namespace WebDispacher.Controellers
 
             return Redirect(Config.BaseReqvesteUrl);
         }
-    
+        
+        [HttpPost]
+        [Route("Marketplace/Classifieds/CategorySell/CreateSellLot")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> CreateSellLot(CreateSellLotViewModel model, List<IFormFile> files, string localDate)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                    ViewData[NavConstants.TypeNavBar] = NavConstants.NormalCompany;
+                    
+                    var itemId = await marketplaceService.CreateSellLot(model, files, CompanyId, localDate);
+
+                    return Redirect($"{Config.BaseReqvesteUrl}/Marketplace/Classifieds/CategorySell/{itemId}");
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+            else
+            {
+                return View(model);
+            }
+
+            return Redirect(Config.BaseReqvesteUrl);
+        }
+        
+        [HttpPost]
+        [Route("Marketplace/Classifieds/CategoryBuy/UpdateBuyLot")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> UpdateBuyLot(BuyItemMarketPostViewModel model, List<IFormFile> files, string localDate)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+                    var itemId = await marketplaceService.UpdateBuyLot(model, files, localDate);
+
+                    return Redirect($"{Config.BaseReqvesteUrl}/Marketplace/Classifieds/CategoryBuy/{itemId}");
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+            else
+            {
+                return View("Marketplace/Classifieds/CategoryBuy/CreateBuyLot", model);
+            }
+
+            return Redirect(Config.BaseReqvesteUrl);
+        }
+        
+        [HttpPost]
+        [Route("Marketplace/Classifieds/CategorySell/UpdateSellLot")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> UpdateSellLot(SellItemMarketPostViewModel model, List<IFormFile> files, string localDate)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+                    var itemId = await marketplaceService.UpdateSellLot(model, files, localDate);
+
+                    return Redirect($"{Config.BaseReqvesteUrl}/Marketplace/Classifieds/CategorySell/{itemId}");
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+            else
+            {
+                return View("Marketplace/Classifieds/CategorySell/CreateSellLot", model);
+            }
+
+            return Redirect(Config.BaseReqvesteUrl);
+        }
+        
+        
+        [HttpPost]
+        [Route("Marketplace/RemoveMarketPost")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> RemoveMarketPost(int postId, string localDate)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+                var user = await companyService.GetUserByCompanyId(CompanyId);
+
+                if (!marketplaceService.IsHavePermissionToEditMarketPost(postId, user.Id))
+                {
+                    return Forbid();
+                }
+
+                await marketplaceService.UpdateMarketPostById(postId, localDate, DaoModels.DAO.Enum.ConditionPost.Deleted);
+
+                return Json(new { 
+                    success = true
+                });
+            }
+            catch (Exception)
+            {
+
+            }
+
+            return Json(new
+            {
+                success = false
+            });
+        }
+        
+        [HttpPost]
+        [Route("Marketplace/CloseMarketPost")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> CloseMarketPost(int postId, string localDate)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+                var user = await companyService.GetUserByCompanyId(CompanyId);
+
+                if (!marketplaceService.IsHavePermissionToEditMarketPost(postId, user.Id))
+                {
+                    return Forbid();
+                }
+
+                await marketplaceService.UpdateMarketPostById(postId, localDate, DaoModels.DAO.Enum.ConditionPost.Sold);
+
+                return Json(new
+                {
+                    success = true
+                });
+            }
+            catch (Exception)
+            {
+
+            }
+
+            return Json(new
+            {
+                success = false
+            });
+        }
+
+        [HttpGet]
+        [Route("Marketpace/Image")]
+        [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
+        public IActionResult GetImage(string imagePath)
+        {
+            if (!System.IO.File.Exists(imagePath))
+            {
+                return NotFound();
+            }
+
+            string fileExtension = Path.GetExtension(imagePath);
+
+            if (!IsAllowedExtension(fileExtension))
+            {
+                return BadRequest("Недопустимый формат изображения.");
+            }
+
+            var imageFileStream = System.IO.File.OpenRead(imagePath);
+
+            return File(imageFileStream, DocAndFileConstants.ContentTypeImage);
+        }
+
         [HttpGet]
         [Route("Marketplace/Classifieds/CategorySell/CreateSellLot")]
         [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
@@ -263,6 +675,13 @@ namespace WebDispacher.Controellers
             }
 
             return Redirect(Config.BaseReqvesteUrl);
+        }
+
+        private bool IsAllowedExtension(string extension)
+        {
+            string[] allowedExtensions = { ".jpg", ".jpeg", ".png", };
+
+            return allowedExtensions.Contains(extension, StringComparer.OrdinalIgnoreCase);
         }
     }
 }

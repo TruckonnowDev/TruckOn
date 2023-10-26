@@ -73,6 +73,8 @@ function CheckValid(elementFileId, elementInputId, errorMessage ="Selected file 
 }
 
 function GetFileName(str, id) {
+    console.log(str);
+    console.log(id);
     if (str.lastIndexOf('\\')) {
         var i = str.lastIndexOf('\\') + 1;
     } else {
@@ -87,12 +89,9 @@ function GetFileName(str, id) {
     } else {
         uploaded.innerHTML = '';
     }
-
 }
 
 function CheckValidDoB(e, inputId, errorMessageClassNameElem, label) {
-    e.preventDefault();
-    
     let currentDoB = $(`#${inputId}`);
     let dtNow = new Date();
     let currentDoBValue = currentDoB.val();

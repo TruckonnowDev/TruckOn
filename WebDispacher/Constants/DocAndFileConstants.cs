@@ -3,6 +3,7 @@
     public static class DocAndFileConstants
     {
         public const string ContentTypePdf = "application/pdf";
+        public const string ContentTypeImage = "image/jpeg";
         public const string TruckRegistration = "Truck Registration";
         public const string TrailerRegistration = "Trailer registration";
         public const string TruckAgreement = "Truck Lease Agreement";

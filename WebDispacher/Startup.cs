@@ -20,6 +20,9 @@ using DaoModels.DAO.Models;
 using Microsoft.AspNetCore.Http.Features;
 using WebDispacher.Constants.Identity;
 using System;
+using AspNetCoreRateLimit;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebDispacher
 {
@@ -34,11 +37,42 @@ namespace WebDispacher
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddOptions();
+            services.AddMemoryCache();
+
+            var rateLimitOptions = new IpRateLimitOptions
+            {
+                EnableEndpointRateLimiting = true,
+                StackBlockedRequests = false,
+                RealIpHeader = "X-Real-IP",
+                ClientIdHeader = "X-ClientId",
+                HttpStatusCode = 429,
+                QuotaExceededMessage = "Too Many Requests"
+            };
+
+            rateLimitOptions.GeneralRules = new List<RateLimitRule>
+            {
+                new RateLimitRule
+                {
+                    Endpoint = "*",
+                    Period = "1s",
+                    Limit = 50
+                }
+            };
+
+            services.AddMemoryCache();
+
+            services.AddSingleton(rateLimitOptions);
+
+            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+
             services.AddLocalization(options => options.ResourcesPath = "Resources");
             services.AddDbContext<Context>(ServiceLifetime.Transient);
-                services.AddMvc()
-                        .AddDataAnnotationsLocalization()
-                        .AddViewLocalization();
+            services.AddMvc()
+                    .AddDataAnnotationsLocalization()
+                    .AddViewLocalization();
 
            services.Configure<RequestLocalizationOptions>(options =>
             {
@@ -49,10 +83,34 @@ namespace WebDispacher
                     new CultureInfo("ru")
                 };
 
-                options.DefaultRequestCulture = new RequestCulture("en");
+                var defaultCulture = new CultureInfo("en");
+
+                options.DefaultRequestCulture = new RequestCulture(defaultCulture);
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
+
+                var numberFormat = new NumberFormatInfo
+                {
+                    NumberDecimalSeparator = ".",
+                };
+
+                foreach (var culture in supportedCultures)
+                {
+                    culture.NumberFormat = numberFormat;
+                }
             });
+
+            services.Configure<MvcOptions>(options =>
+            {
+                var cultureEs = new CultureInfo("es");
+                cultureEs.NumberFormat.CurrencyDecimalSeparator = ".";
+                cultureEs.NumberFormat.NumberDecimalSeparator = ".";
+                
+                var cultureRu = new CultureInfo("es");
+                cultureRu.NumberFormat.CurrencyDecimalSeparator = ".";
+                cultureRu.NumberFormat.NumberDecimalSeparator = ".";
+            });
+
 
             services.AddAutoMapper(typeof(MappingProfile));
 

@@ -9,6 +9,7 @@ namespace DaoModels.DAO.Enum
         Hidden,
         Published,
         Sold,
-        Deleted
+        Deleted,
+        NotSelected
     }
 }

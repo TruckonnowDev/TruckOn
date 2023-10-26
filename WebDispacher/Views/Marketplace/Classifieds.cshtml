@@ -16,7 +16,7 @@
                     <div class="nav-forum-marketplace">
                         <div class="nav-forum-item">
                             <a href="/Marketplace/">
-                                Marketplace
+                                @Localizer["MarketplaceNavItem"]
                             </a>
                         </div>
                     </div>
@@ -26,10 +26,7 @@
                     justify-content: space-between;
                     margin-top: 20px;">
                     <div class="title">
-                        <h1>@Localizer["Classifieds"]</h1>
-                    </div>
-                    <div class="search-panel">
-                        <input style="width: 360px;margin-top:0;height:46px;" class="type-button" placeholder="Search by name.." />
+                        <h1>@Localizer["ClassifiedsHeader"]</h1>
                     </div>
                 </div>
             </div>
@@ -37,62 +34,122 @@
                 <div class="col-md-12">
                     <div id="tabs">
                         <div class="tabContent">
+
                             <div class="one-line">
                                 <div class="top-line" style="margin-bottom:0;">
-                                    <div class="left">
-                                        <div class="text">
-                                            <img src="https://avtozaryad.ru/local/templates/main/assets/images/user.png" style="max-width: 70px;max-height: 70px;height: auto;margin: 0;">
-                                            </div>
-                                            <div class="text">
-                                                <a href="/Marketplace/Classifieds/CategoryBuy">
-                                                <h2 class="show-icon">@Localizer["Buy"]</h2>
-                                                </a>
-                                            <p class="show-icon">@Localizer["BuyDescription"] Post your for sale/buy ad</p>
-                                            </div>
+                                    <div class="image-post">
+                                        <img src="https://avtozaryad.ru/local/templates/main/assets/images/user.png" style="max-width: 70px;max-height: 70px;height: auto;margin: 0;">
+                                    </div>
+                                    <div class="basic-info-about-post">
+                                        <div class="post-title">
+                                            <a href="/Marketplace/Classifieds/CategoryBuy">
+                                                <h2 class="show-icon">
+                                                    @Localizer["BuyHeaderBlock"]
+                                                </h2>
+                                            </a>
                                         </div>
-                                    <div class="right mr-2">
-                                        <div class="first-end-block">
-                                            <div class="comments show-icon">
-                                                <i class="bi bi-chat-right-fill"></i>
-                                                <p>0</p>
-                                            </div>
-                                            <div class="views show-icon">
-                                                <i class="bi bi-eye-fill"></i>
-                                                <p>0</p>
-                                            </div>
+                                        <div class="post-description">
+                                            <p class="show-icon">@Localizer["BuyDescriptionBlock"]</p>
                                         </div>
+                                    </div>
+                                    <div class="first-end-block">
+                                        <div class="comments show-icon">
+                                            <i class="bi bi-chat-right-fill"></i>
+                                            <p>0</p>
+                                        </div>
+                                    </div>
+                                    <div class="second-end-block">
+                                        <div class="views show-icon">
+                                            <i class="bi bi-eye-fill"></i>
+                                            <p>@ViewBag.BuyCategoryInfo.Item1</p>
+                                        </div>
+                                    </div>
+                                    <div class="last-end-block">
                                         <a href="/Marketplace/Classifieds/CategoryBuy">
-                                            <h3 class="show-icon">Sep 7, 2023</h3>
+                                            @{
+                                                var dateBuy = ViewBag.BuyCategoryInfo.Item2 == DateTime.MinValue ? "" : ViewBag.BuyCategoryInfo.Item2.ToString("MMM d, yyyy");
+                                            }
+                                            <h3 class="show-icon">@dateBuy</h3>
                                         </a>
                                     </div>
                                 </div>
-                                </div>
+                            </div>
+                            
                             <div class="one-line">
                                 <div class="top-line" style="margin-bottom:0;">
-                                    <div class="left">
-                                        <div class="text">
-                                            <img src="https://avtozaryad.ru/local/templates/main/assets/images/user.png" style="max-width: 70px;max-height: 70px;height: auto;margin: 0;">
-                                        </div>
-                                        <div class="text">
+                                    <div class="image-post">
+                                        <img src="https://avtozaryad.ru/local/templates/main/assets/images/user.png" style="max-width: 70px;max-height: 70px;height: auto;margin: 0;">
+                                    </div>
+                                    <div class="basic-info-about-post">
+                                        <div class="post-title">
                                             <a href="/Marketplace/Classifieds/CategorySell">
-                                                <h2 class="show-icon">@Localizer["Sell"]</h2>
+                                                <h2 class="show-icon">
+                                                    @Localizer["SellHeaderBlock"]
+                                                </h2>
                                             </a>
-                                            <p class="show-icon">@Localizer["SellDescription"] Post your for sale/buy ad</p>
+                                        </div>
+                                        <div class="post-description">
+                                            <p class="show-icon">@Localizer["SellDescriptionBlock"]</p>
                                         </div>
                                     </div>
-                                    <div class="right mr-2">
-                                        <div class="first-end-block">
-                                            <div class="comments show-icon">
-                                                <i class="bi bi-chat-right-fill"></i>
-                                                <p>0</p>
-                                            </div>
-                                            <div class="views show-icon">
-                                                <i class="bi bi-eye-fill"></i>
-                                                <p>0</p>
-                                            </div>
+                                    <div class="first-end-block">
+                                        <div class="comments show-icon">
+                                            <i class="bi bi-chat-right-fill"></i>
+                                            <p>0</p>
                                         </div>
+                                    </div>
+                                    <div class="second-end-block">
+                                        <div class="views show-icon">
+                                            <i class="bi bi-eye-fill"></i>
+                                            <p>@ViewBag.SellCategoryInfo.Item1</p>
+                                        </div>
+                                    </div>
+                                    <div class="last-end-block">
                                         <a href="/Marketplace/Classifieds/CategorySell">
-                                            <h3 class="show-icon">Sep 7, 2023</h3>
+                                            @{
+                                                var dateSell = ViewBag.SellCategoryInfo.Item2 == DateTime.MinValue ? "" : ViewBag.SellCategoryInfo.Item2.ToString("MMM d, yyyy");
+                                            }
+                                            <h3 class="show-icon">@dateSell</h3>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="one-line">
+                                <div class="top-line" style="margin-bottom:0;">
+                                    <div class="image-post">
+                                        <img src="https://avtozaryad.ru/local/templates/main/assets/images/user.png" style="max-width: 70px;max-height: 70px;height: auto;margin: 0;">
+                                    </div>
+                                    <div class="basic-info-about-post">
+                                        <div class="post-title">
+                                            <a href="/Marketplace/Classifieds/MyAds">
+                                                <h2 class="show-icon">
+                                                    @Localizer["MyAdsBlock"]
+                                                </h2>
+                                            </a>
+                                        </div>
+                                        <div class="post-description">
+                                            <p class="show-icon">@Localizer["MyAdsDescriptionBlock"]</p>
+                                        </div>
+                                    </div>
+                                    <div class="first-end-block">
+                                        <div class="comments show-icon">
+                                            <i class="bi bi-chat-right-fill"></i>
+                                            <p>0</p>
+                                        </div>
+                                    </div>
+                                    <div class="second-end-block">
+                                        <div class="views show-icon">
+                                            <i class="bi bi-eye-fill"></i>
+                                            <p>@ViewBag.UserCategoryInfo.Item1</p>
+                                        </div>
+                                    </div>
+                                    <div class="last-end-block">
+                                        <a href="/Marketplace/Classifieds/MyAds">
+                                             @{
+                                                var dateUser = ViewBag.UserCategoryInfo.Item2 == DateTime.MinValue ? "" : ViewBag.UserCategoryInfo.Item2.ToString("MMM d, yyyy");
+                                            }
+                                            <h3 class="show-icon">@dateUser</h3>
                                         </a>
                                     </div>
                                 </div>

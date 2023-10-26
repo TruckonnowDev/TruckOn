@@ -135,4 +135,10 @@
   <data name="ConfirmMessageActivateCompany" xml:space="preserve">
     <value>Aктивировать компанию?</value>
   </data>
+  <data name="ConfirmMessageDeleteMarketPost" xml:space="preserve">
+    <value>Удалить Объявление?</value>
+  </data>
+  <data name="ConfirmMessageCloseMarketPost" xml:space="preserve">
+    <value>Закрыть пост? (Продано)</value>
+  </data>
 </root>

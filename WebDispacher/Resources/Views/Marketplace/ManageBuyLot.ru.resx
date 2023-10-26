@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="BuyItemLotHeader" xml:space="preserve">
+        <value>Объявление о Покупке</value>
+    </data>
+    <data name="TitleLabel" xml:space="preserve">
+        <value>Название</value>
+    </data>
+    <data name="DescriptionLabel" xml:space="preserve">
+        <value>Описание</value>
+    </data>
+    <data name="EmailLabel" xml:space="preserve">
+        <value>Электроная почта</value>
+    </data>
+    <data name="PhoneNumberLabel" xml:space="preserve">
+        <value>Номер телефона</value>
+    </data>
+    <data name="ZipCodeLabel" xml:space="preserve">
+        <value>Почтовый индекс</value>
+    </data>
+    <data name="CurrentStatusLabel" xml:space="preserve">
+        <value>Текущий статус</value>
+    </data>
+    <data name="PublicStatusPostItem" xml:space="preserve">
+        <value>Опубликованный</value>
+    </data>
+    <data name="HideStatusPostItem" xml:space="preserve">
+        <value>Скрытый</value>
+    </data>
+    <data name="BackToElement" xml:space="preserve">
+        <value>Вернуться к объявлению</value>
+    </data>
+    <data name="AddNewImagesLabel" xml:space="preserve">
+        <value>Фото</value>
+    </data>
+    <data name="SelectDocument" xml:space="preserve">
+        <value>Выбрать Фото</value>
+    </data>
+    <data name="InfoMessageUploadFiles" xml:space="preserve">
+        <value>Вы можете загружать файлы только в форматах jpg и jpeg-а (максимальный размер загружаемого файла составляет 5 Мб)</value>
+    </data>
+    <data name="SaveChangesButton" xml:space="preserve">
+        <value>Сохранить</value>
+    </data>
+    <data name="DeleteButton" xml:space="preserve">
+        <value>Удалить</value>
+    </data>
+    <data name="CloseButton" xml:space="preserve">
+        <value>Закрыть</value>
+    </data>
+    <data name="UploadedFilesHeader" xml:space="preserve">
+        <value>Загруженные Фото</value>
+    </data>
+    <data name="NotificationTextErrorRemove" xml:space="preserve">
+        <value>Объявление не было удалено</value>
+    </data>
+    <data name="NotificationTextErrorClose" xml:space="preserve">
+        <value>Объявление не было закрыто</value>
+    </data>
+    <data name="NotificationTextErrorDeleteImg" xml:space="preserve">
+        <value>Объявление не было закрыто</value>
+    </data>
+    <data name="NotificationTextSuccessDeleteImg" xml:space="preserve">
+        <value>Изображение успешно удалено</value>
+    </data>
+</root>

@@ -9,6 +9,7 @@ namespace DaoModels.DAO.Enum
         New,
         LikeNew,
         Good,
-        Fair
+        Fair,
+        NotSelected
     }
 }

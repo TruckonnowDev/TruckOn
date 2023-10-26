@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DaoModels.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20230904152111_Init")]
+    [Migration("20230911195850_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -103,6 +103,106 @@ namespace DaoModels.Migrations
                     b.HasIndex("QuestionId");
 
                     b.ToTable("AnswerOptions");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.BuyItemMarketPost", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MarketPostId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PhoneNumberId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PhotoListMPId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ZipCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MarketPostId");
+
+                    b.HasIndex("PhoneNumberId");
+
+                    b.HasIndex("PhotoListMPId");
+
+                    b.ToTable("BuyItemsMarketsPosts");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.CheckoutMP", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("BuyerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("DateTimeAction")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MarketPostId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<string>("SellerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BuyerId");
+
+                    b.HasIndex("MarketPostId");
+
+                    b.HasIndex("SellerId");
+
+                    b.ToTable("CheckoutMPs");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.CommentMarketPost", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("DateTimeAction")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MarketPostId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MarketPostId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CommentsMarketsPosts");
                 });
 
             modelBuilder.Entity("DaoModels.DAO.Models.Company", b =>
@@ -744,6 +844,38 @@ namespace DaoModels.Migrations
                     b.ToTable("HistoriesOrdersActions");
                 });
 
+            modelBuilder.Entity("DaoModels.DAO.Models.MarketPost", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ConditionPost")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DateTimeCreate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateTimeLastUpdate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("ShowComment")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("ShowView")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("MarketPosts");
+                });
+
             modelBuilder.Entity("DaoModels.DAO.Models.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -994,6 +1126,55 @@ namespace DaoModels.Migrations
                     b.ToTable("PhotosDriversInspections");
                 });
 
+            modelBuilder.Entity("DaoModels.DAO.Models.PhotoListMP", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PhotosListMPs");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.PhotoMP", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("DateTimeUpload")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("Height")
+                        .HasColumnType("float");
+
+                    b.Property<int>("PhotoListMPId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PhotoPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PhotoTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PhotoUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Width")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PhotoListMPId");
+
+                    b.HasIndex("PhotoTypeId");
+
+                    b.ToTable("PhotosMP");
+                });
+
             modelBuilder.Entity("DaoModels.DAO.Models.PhotoType", b =>
                 {
                     b.Property<int>("Id")
@@ -1082,6 +1263,51 @@ namespace DaoModels.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("RecoveriesTypes");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.SellItemMarketPost", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ConditionItem")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MarketPostId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PhoneNumberId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PhotoListMPId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ZipCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MarketPostId");
+
+                    b.HasIndex("PhoneNumberId");
+
+                    b.HasIndex("PhotoListMPId");
+
+                    b.ToTable("SellItemsMarketsPosts");
                 });
 
             modelBuilder.Entity("DaoModels.DAO.Models.Settings.Layouts", b =>
@@ -1681,6 +1907,31 @@ namespace DaoModels.Migrations
                     b.ToTable("VideoTypes");
                 });
 
+            modelBuilder.Entity("DaoModels.DAO.Models.ViewMarketPost", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("DateTimeAction")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MarketPostId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MarketPostId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ViewsMarketsPosts");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -1835,6 +2086,55 @@ namespace DaoModels.Migrations
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.BuyItemMarketPost", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.MarketPost", "MarketPost")
+                        .WithMany()
+                        .HasForeignKey("MarketPostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DaoModels.DAO.Models.PhoneNumber", "PhoneNumber")
+                        .WithMany()
+                        .HasForeignKey("PhoneNumberId");
+
+                    b.HasOne("DaoModels.DAO.Models.PhotoListMP", "PhotoListMP")
+                        .WithMany()
+                        .HasForeignKey("PhotoListMPId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.CheckoutMP", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.User", "Buyer")
+                        .WithMany()
+                        .HasForeignKey("BuyerId");
+
+                    b.HasOne("DaoModels.DAO.Models.MarketPost", "MarketPost")
+                        .WithMany()
+                        .HasForeignKey("MarketPostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DaoModels.DAO.Models.User", "Seller")
+                        .WithMany()
+                        .HasForeignKey("SellerId");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.CommentMarketPost", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.MarketPost", "MarketPost")
+                        .WithMany()
+                        .HasForeignKey("MarketPostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DaoModels.DAO.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("DaoModels.DAO.Models.Company", b =>
@@ -2016,6 +2316,13 @@ namespace DaoModels.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("DaoModels.DAO.Models.MarketPost", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
             modelBuilder.Entity("DaoModels.DAO.Models.Order", b =>
                 {
                     b.HasOne("DaoModels.DAO.Models.Company", "Company")
@@ -2108,6 +2415,21 @@ namespace DaoModels.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("DaoModels.DAO.Models.PhotoMP", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.PhotoListMP", "PhotoListMP")
+                        .WithMany("Photos")
+                        .HasForeignKey("PhotoListMPId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DaoModels.DAO.Models.PhotoType", "PhotoType")
+                        .WithMany()
+                        .HasForeignKey("PhotoTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("DaoModels.DAO.Models.PhotoVehicleInspection", b =>
                 {
                     b.HasOne("DaoModels.DAO.Models.Photo", "Photo")
@@ -2128,6 +2450,25 @@ namespace DaoModels.Migrations
                     b.HasOne("DaoModels.DAO.Models.Questionnaire", "Questionnaire")
                         .WithMany("Questions")
                         .HasForeignKey("QuestionnaireId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.SellItemMarketPost", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.MarketPost", "MarketPost")
+                        .WithMany()
+                        .HasForeignKey("MarketPostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DaoModels.DAO.Models.PhoneNumber", "PhoneNumber")
+                        .WithMany()
+                        .HasForeignKey("PhoneNumberId");
+
+                    b.HasOne("DaoModels.DAO.Models.PhotoListMP", "PhotoListMP")
+                        .WithMany()
+                        .HasForeignKey("PhotoListMPId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -2271,6 +2612,19 @@ namespace DaoModels.Migrations
                         .HasForeignKey("VideoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.ViewMarketPost", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.MarketPost", "MarketPost")
+                        .WithMany()
+                        .HasForeignKey("MarketPostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DaoModels.DAO.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

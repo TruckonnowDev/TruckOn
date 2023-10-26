@@ -1,0 +1,291 @@
+﻿@using DaoModels.DAO.Enum;
+@using Microsoft.AspNetCore.Mvc.Localization
+@using WebDispacher.Constants;
+@using WebDispacher.ViewModels.Marketplace;
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Create Sell Lot | Marketplace";
+}
+
+@model CreateSellLotViewModel
+
+<link rel="stylesheet" href="~/libs/intl-tel-input-master/css/intlTelInput.css">
+<script src="~/libs/intl-tel-input-master/js/intlTelInput.js"></script>
+<link rel="stylesheet" href="~/css/Marketplace/Marketplace.css">
+<body>
+    <div class="admin">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12"
+                     style="
+                       margin-top: 30px;">
+                    <div class="nav-forum-marketplace">
+                        <div class="nav-forum-item">
+                            <a href="/Marketplace/Classifieds/CategorySell">
+                                @Localizer["BackToCategorySell"]
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="tabContent">
+                        <h2>@Localizer["SellItemLotHeader"]</h2>
+                        <form action="" enctype="multipart/form-data" id="createSellItem" method="post">
+                            <div class="validation" asp-validation-summary="ModelOnly"></div>
+                            <label for="">
+                                <label class="mb-0">@Localizer["TitleLabel"]</label>
+                                <input type="text" id="title" asp-for="Title" required>
+                            </label>
+                            <label for="">
+                                @Localizer["PriceLabel"]
+                                <input type="number" onchange="(function(el){el.value=parseFloat(el.value).toFixed(2);})(this)" id="price" asp-for="Price" name="Price" step="0.01"  required/> 
+                            </label>
+                            <label for="">
+                                <label class="mb-0">@Localizer["ConditionLabel"]</label>
+                                <select class="height-input input-select" id="conditionItemsFilterInput" asp-for="ConditionItem">
+                                    <option value=@ConditionItem.New>@Localizer["NewConditionItemFiler"]</option>
+                                    <option value=@ConditionItem.LikeNew>@Localizer["LikeNewConditionItemFiler"]</option>
+                                    <option value=@ConditionItem.Good>@Localizer["GoodConditionItemFiler"]</option>
+                                    <option value=@ConditionItem.Fair>@Localizer["FairConditionItemFiler"]</option>
+                                </select>
+                            </label>
+                            <label for="">
+                                <label class="mb-0">@Localizer["DescriptionLabel"]</label>
+                                <textarea type="text" asp-for="Description" id="description"></textarea>
+                            </label>
+                            <label for="">
+                                <label class="mb-0">@Localizer["EmailLabel"]</label>
+                                <input type="email" id="email" asp-for="Email" pattern="@PatternConstants.Email" required>
+                            </label>
+                            <label for="">
+                                <label class="mb-0">@Localizer["PhoneNumberLabel"]</label>
+                                <input type="text" asp-for="PhoneNumber.Number" id="phoneC" pattern="@PatternConstants.PhoneNumberWithoutCountryCode" placeholder="(XXX)-XXX-XXXX" required>
+                                <input type="hidden" id="country-code-dialcode" asp-for="PhoneNumber.DialCode">
+                                <input type="hidden" id="country-code-iso2" asp-for="PhoneNumber.Iso2">
+                                <input type="hidden" id="country-code-name" asp-for="PhoneNumber.Name">
+                            </label>
+                            <label for="">
+                                <label class="mb-0">@Localizer["ZipCodeLabel"]</label>
+                                <input type="text" asp-for="ZipCode" id="zipcode" required/>
+                            </label>
+                            <label for="">
+                                <label class="mb-0">@Localizer["FilesLabel"]</label>
+                                <div class="d-flex align-items-center wrap">
+                                    <div class="file-group big-label mb-2">
+                                        <div class="row d-flex align-items-center inp-file-width">
+                                            <div class="col-8 label-input">
+                                                <div id="fl1" style="word-wrap:break-word"></div>
+                                            </div>
+                                            <div class="col-4 select-doc">
+                                                <div class="select-button-1 d-flex justify-content-end">
+                                                    <label>
+                                                        @Localizer["SelectDocument"]
+                                                        <input class="height-input" id="fi1" multiple type="file" name="files" accept="image/jpeg, image/jpg">
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <a>@Localizer["InfoMessageUploadFiles"]</a>
+                                    <p class="file-limit-exceeded text-danger"></p>
+                                </div>
+
+                            </label>
+                            <input type="hidden" value="" name="localDate" />
+                            <input class="btn1" type="submit" value="@Localizer["PublishButton"]" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<style>
+    .btn3 {
+        width: 250px;
+        padding: 12px 24px;
+        font-size: 16px;
+    }
+
+    .btn2 {
+        width: 250px;
+        padding: 12px 24px;
+        font-size: 16px;
+    }
+
+    .intl-tel-input {
+        width: 100%;
+    }
+
+
+    .nav-forum-marketplace {
+        display: flex;
+    }
+
+    .nav-forum-item {
+        margin-right: 10px;
+    }
+
+        .nav-forum-item a {
+            margin-right: 10px;
+        }
+
+    .other-img {
+        justify-content: center;
+        padding: 18px;
+        display: grid;
+        grid-template-columns: repeat(5, 120px);
+        gap: 8px;
+    }
+
+        .other-img .img-one {
+            max-width: 100%;
+            height: auto;
+            border: 1px black solid;
+        }
+
+    .control-panel {
+        display: flex;
+        flex-direction: column;
+    }
+
+</style>
+
+<script src="~/libs//jquery/dist/lightgallery-all.min.js"></script>
+
+<script>
+
+
+    function ClearFiles(deleteLink, inputId) {
+        var fileDiv = deleteLink.parentElement;
+        while (fileDiv.firstChild) {
+            fileDiv.removeChild(fileDiv.firstChild);
+        }
+
+        var fileInput = document.getElementById(inputId);
+
+        fileInput.value = "";
+
+        if (fileInput.hasAttribute('temp-required')) {
+            fileInput.removeAttribute('temp-required');
+            fileInput.required = false;
+        }
+
+        if ($(fileInput).prop('required')) {
+            fileInput.parentElement.classList.remove("green-valid");
+            fileInput.parentElement.classList.add("red-valid");
+        } else {
+            fileInput.parentElement.classList.remove("green-valid");
+            fileInput.parentElement.classList.remove("red-valid");
+        }
+
+        var fileLimitExceeded = fileInput.parentElement.parentNode.getElementsByClassName("file-limit-exceeded")[0];
+        if (fileLimitExceeded) {
+            fileLimitExceeded.innerHTML = "";
+        }
+    }
+
+    document.getElementById("fi1").addEventListener("change", function (event) {
+        var uploaded = document.getElementById("fl1");
+        uploaded.innerHTML = "";
+
+        for (var i = 0; i < event.target.files.length; i++) {
+            var file = event.target.files[i];
+            var filename = file.name;
+
+            var fileDiv = document.createElement("div");
+            fileDiv.style.wordWrap = "break-word";
+            fileDiv.innerHTML = filename;
+            fileDiv.setAttribute("data-index", i);
+
+            uploaded.appendChild(fileDiv);
+        }
+
+        var fileDiv = document.createElement("div");
+        fileDiv.innerHTML = `<a class="red-button-custom" onclick="ClearFiles(this.parentElement, 'fi1')">(@Localizer["DeleteButton"])</a>`;
+        uploaded.appendChild(fileDiv);
+    });
+</script>
+
+<script src="~/js/input-replacer.js"></script>
+<script type="text/javascript">
+    $.fn.setCursorPosition = function (pos) {
+        if ($(this).get(0).setSelectionRange) {
+            $(this).get(0).setSelectionRange(pos, pos);
+        }
+        else if ($(this).get(0).createTextRange) {
+            var range = $(this).get(0).createTextRange();
+            range.collapse(true);
+            range.moveEnd('character', pos);
+            range.moveStart('character', pos);
+            range.select();
+        }
+    };
+
+    $('input[name="zipcode"]').on('click', function () {
+        $(this).setCursorPosition(0);
+    });
+
+    $("#zipcode").mask("99999", { placeholder: "XXXXX" });
+
+    $(document).ready(function () {
+        $("#phoneC").mask("(999)-999-9999", { placeholder: "(XXX)-XXX-XXXX" });
+
+        if (!$("#country-code-iso2").val()) {
+            $("#country-code-iso2").val("us")
+            $("#country-code-dialcode").val("1")
+            $("#country-code-name").val("United States")
+        }
+
+        var phone = $("#phoneC");
+        phone.intlTelInput({
+            initialCountry: $("#country-code-iso2").val() ? $("#country-code-iso2").val() : "us",
+            separateDialCode: true,
+        });
+
+        phone.on("countrychange", function (e, countryData) {
+            $("#country-code-dialcode").val(countryData.dialCode);
+            $("#country-code-iso2").val(countryData.iso2);
+            $("#country-code-name").val(countryData.name);
+        });
+    });
+
+    var selectedFiles = [];
+
+    const dateInput = document.querySelector("[name='localDate']");
+
+    $("input[type=submit]").on('click', function (e) {
+        dateInput.value = GetDateTimeInFormat(new Date());
+    });
+</script>
+<style>
+    .big-label{
+        width: 100%!important;
+    }
+
+    .tabContent {
+        margin-top: 20px;
+    }
+
+        .tabContent form {
+            margin-top: 30px;
+        }
+
+    .nav-forum-marketplace {
+        display: flex;
+    }
+
+    .nav-forum-item {
+        margin-right: 10px;
+    }
+
+        .nav-forum-item a {
+            margin-right: 10px;
+        }
+
+    .intl-tel-input {
+        width: 100%;
+    }
+</style>

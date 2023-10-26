@@ -155,6 +155,18 @@ namespace DaoModels.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PhotosListMPs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PhotosListMPs", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PhotoTypes",
                 columns: table => new
                 {
@@ -357,6 +369,30 @@ namespace DaoModels.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "MarketPosts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(nullable: true),
+                    ConditionPost = table.Column<int>(nullable: false),
+                    ShowView = table.Column<bool>(nullable: false),
+                    ShowComment = table.Column<bool>(nullable: false),
+                    DateTimeLastUpdate = table.Column<DateTime>(nullable: false),
+                    DateTimeCreate = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MarketPosts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MarketPosts_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AddressInformations",
                 columns: table => new
                 {
@@ -449,6 +485,37 @@ namespace DaoModels.Migrations
                     table.PrimaryKey("PK_Photos", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Photos_PhotoTypes_PhotoTypeId",
+                        column: x => x.PhotoTypeId,
+                        principalTable: "PhotoTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PhotosMP",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PhotoListMPId = table.Column<int>(nullable: false),
+                    PhotoTypeId = table.Column<int>(nullable: false),
+                    PhotoPath = table.Column<string>(nullable: true),
+                    PhotoUrl = table.Column<string>(nullable: true),
+                    Height = table.Column<double>(nullable: false),
+                    Width = table.Column<double>(nullable: false),
+                    DateTimeUpload = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PhotosMP", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PhotosMP_PhotosListMPs_PhotoListMPId",
+                        column: x => x.PhotoListMPId,
+                        principalTable: "PhotosListMPs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PhotosMP_PhotoTypes_PhotoTypeId",
                         column: x => x.PhotoTypeId,
                         principalTable: "PhotoTypes",
                         principalColumn: "Id",
@@ -587,6 +654,172 @@ namespace DaoModels.Migrations
                         principalTable: "VideoTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BuyItemsMarketsPosts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
+                    Email = table.Column<string>(nullable: true),
+                    PhoneNumberId = table.Column<int>(nullable: true),
+                    ZipCode = table.Column<string>(nullable: true),
+                    MarketPostId = table.Column<int>(nullable: false),
+                    PhotoListMPId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BuyItemsMarketsPosts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BuyItemsMarketsPosts_MarketPosts_MarketPostId",
+                        column: x => x.MarketPostId,
+                        principalTable: "MarketPosts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BuyItemsMarketsPosts_PhonesNumbers_PhoneNumberId",
+                        column: x => x.PhoneNumberId,
+                        principalTable: "PhonesNumbers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BuyItemsMarketsPosts_PhotosListMPs_PhotoListMPId",
+                        column: x => x.PhotoListMPId,
+                        principalTable: "PhotosListMPs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CheckoutMPs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MarketPostId = table.Column<int>(nullable: false),
+                    DateTimeAction = table.Column<DateTime>(nullable: false),
+                    Price = table.Column<double>(nullable: false),
+                    BuyerId = table.Column<string>(nullable: true),
+                    SellerId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CheckoutMPs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CheckoutMPs_AspNetUsers_BuyerId",
+                        column: x => x.BuyerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_CheckoutMPs_MarketPosts_MarketPostId",
+                        column: x => x.MarketPostId,
+                        principalTable: "MarketPosts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CheckoutMPs_AspNetUsers_SellerId",
+                        column: x => x.SellerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CommentsMarketsPosts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(nullable: true),
+                    MarketPostId = table.Column<int>(nullable: false),
+                    DateTimeAction = table.Column<DateTime>(nullable: false),
+                    Message = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CommentsMarketsPosts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CommentsMarketsPosts_MarketPosts_MarketPostId",
+                        column: x => x.MarketPostId,
+                        principalTable: "MarketPosts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CommentsMarketsPosts_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SellItemsMarketsPosts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(nullable: true),
+                    Price = table.Column<double>(nullable: false),
+                    ConditionItem = table.Column<int>(nullable: false),
+                    Description = table.Column<string>(nullable: true),
+                    Email = table.Column<string>(nullable: true),
+                    PhoneNumberId = table.Column<int>(nullable: true),
+                    ZipCode = table.Column<string>(nullable: true),
+                    MarketPostId = table.Column<int>(nullable: false),
+                    PhotoListMPId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SellItemsMarketsPosts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SellItemsMarketsPosts_MarketPosts_MarketPostId",
+                        column: x => x.MarketPostId,
+                        principalTable: "MarketPosts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SellItemsMarketsPosts_PhonesNumbers_PhoneNumberId",
+                        column: x => x.PhoneNumberId,
+                        principalTable: "PhonesNumbers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_SellItemsMarketsPosts_PhotosListMPs_PhotoListMPId",
+                        column: x => x.PhotoListMPId,
+                        principalTable: "PhotosListMPs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ViewsMarketsPosts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(nullable: true),
+                    MarketPostId = table.Column<int>(nullable: false),
+                    DateTimeAction = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ViewsMarketsPosts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ViewsMarketsPosts_MarketPosts_MarketPostId",
+                        column: x => x.MarketPostId,
+                        principalTable: "MarketPosts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ViewsMarketsPosts_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -1501,6 +1734,46 @@ namespace DaoModels.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BuyItemsMarketsPosts_MarketPostId",
+                table: "BuyItemsMarketsPosts",
+                column: "MarketPostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BuyItemsMarketsPosts_PhoneNumberId",
+                table: "BuyItemsMarketsPosts",
+                column: "PhoneNumberId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BuyItemsMarketsPosts_PhotoListMPId",
+                table: "BuyItemsMarketsPosts",
+                column: "PhotoListMPId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CheckoutMPs_BuyerId",
+                table: "CheckoutMPs",
+                column: "BuyerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CheckoutMPs_MarketPostId",
+                table: "CheckoutMPs",
+                column: "MarketPostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CheckoutMPs_SellerId",
+                table: "CheckoutMPs",
+                column: "SellerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CommentsMarketsPosts_MarketPostId",
+                table: "CommentsMarketsPosts",
+                column: "MarketPostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CommentsMarketsPosts_UserId",
+                table: "CommentsMarketsPosts",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Companies_PhoneNumberId",
                 table: "Companies",
                 column: "PhoneNumberId");
@@ -1628,6 +1901,11 @@ namespace DaoModels.Migrations
                 column: "TransportVehicleId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_MarketPosts_UserId",
+                table: "MarketPosts",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_CompanyId",
                 table: "Orders",
                 column: "CompanyId");
@@ -1698,6 +1976,16 @@ namespace DaoModels.Migrations
                 column: "PhotoId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PhotosMP_PhotoListMPId",
+                table: "PhotosMP",
+                column: "PhotoListMPId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PhotosMP_PhotoTypeId",
+                table: "PhotosMP",
+                column: "PhotoTypeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PhotosVehiclesInspections_PhotoId",
                 table: "PhotosVehiclesInspections",
                 column: "PhotoId");
@@ -1716,6 +2004,21 @@ namespace DaoModels.Migrations
                 name: "IX_Questions_QuestionnaireId",
                 table: "Questions",
                 column: "QuestionnaireId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SellItemsMarketsPosts_MarketPostId",
+                table: "SellItemsMarketsPosts",
+                column: "MarketPostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SellItemsMarketsPosts_PhoneNumberId",
+                table: "SellItemsMarketsPosts",
+                column: "PhoneNumberId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SellItemsMarketsPosts_PhotoListMPId",
+                table: "SellItemsMarketsPosts",
+                column: "PhotoListMPId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SubscribeST_CustomerSTId",
@@ -1806,6 +2109,16 @@ namespace DaoModels.Migrations
                 name: "IX_VideosAnswers_VideoId",
                 table: "VideosAnswers",
                 column: "VideoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ViewsMarketsPosts_MarketPostId",
+                table: "ViewsMarketsPosts",
+                column: "MarketPostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ViewsMarketsPosts_UserId",
+                table: "ViewsMarketsPosts",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -1830,6 +2143,15 @@ namespace DaoModels.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "BuyItemsMarketsPosts");
+
+            migrationBuilder.DropTable(
+                name: "CheckoutMPs");
+
+            migrationBuilder.DropTable(
+                name: "CommentsMarketsPosts");
 
             migrationBuilder.DropTable(
                 name: "CompanyUsers");
@@ -1877,7 +2199,13 @@ namespace DaoModels.Migrations
                 name: "PhotosDriversInspections");
 
             migrationBuilder.DropTable(
+                name: "PhotosMP");
+
+            migrationBuilder.DropTable(
                 name: "ProfileSettings");
+
+            migrationBuilder.DropTable(
+                name: "SellItemsMarketsPosts");
 
             migrationBuilder.DropTable(
                 name: "SubscribeST");
@@ -1889,13 +2217,13 @@ namespace DaoModels.Migrations
                 name: "VideosAnswers");
 
             migrationBuilder.DropTable(
+                name: "ViewsMarketsPosts");
+
+            migrationBuilder.DropTable(
                 name: "UsersMailsQuestions");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "PhotosVehiclesInspections");
@@ -1913,6 +2241,9 @@ namespace DaoModels.Migrations
                 name: "TransportVehicles");
 
             migrationBuilder.DropTable(
+                name: "PhotosListMPs");
+
+            migrationBuilder.DropTable(
                 name: "CustomerST");
 
             migrationBuilder.DropTable(
@@ -1923,6 +2254,9 @@ namespace DaoModels.Migrations
 
             migrationBuilder.DropTable(
                 name: "Videos");
+
+            migrationBuilder.DropTable(
+                name: "MarketPosts");
 
             migrationBuilder.DropTable(
                 name: "Photos");
@@ -1941,6 +2275,9 @@ namespace DaoModels.Migrations
 
             migrationBuilder.DropTable(
                 name: "VideoTypes");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "PhotoTypes");

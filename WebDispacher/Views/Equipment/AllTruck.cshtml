@@ -128,7 +128,7 @@
                             <td class="input-img mt-3 mb-3">
                                 <div class="td-click-img-margin">
 
-                                        <div data-title="@Localizer["ViewNotificataion"]" class="ico-doc ico-doc-view" onclick="document.location.href = '@ViewBag.BaseUrl/Driver/InspactionTrucks?idDriver=0&idTruck='+@Model[i].Id+'&idTrailer=0&date=0';">
+                                        <div data-title="@Localizer["ViewNotificataion"]" class="ico-doc ico-doc-view" onclick="document.location.href = '@ViewBag.BaseUrl/Driver/InspactionTrucks?driverId=0&truckId='+@Model[i].Id+'&trailerId=0&date=0';">
                                             <i class="bi bi-cursor-fill" style="color: #4caf50; font-size:20px"></i>
                                         </div>
                                     @*<img src="~/img/arrow.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Driver/InspactionTrucks?idDriver=0&idTruck='+@ViewBag.Trucks[i].Id+'&idTrailer=0&date=0';" />*@
@@ -162,7 +162,7 @@
             </div>
         </div>
     </div>
-    @await Html.PartialAsync("~/Views/PartView/Modals/ConfirmDelete.cshtml");
+    @await Html.PartialAsync("~/Views/PartView/Modals/ConfirmDelete.cshtml", new ViewDataDictionary(ViewData) { {"ModalId", "confirmDeleteEntryModal"},});
 </body>
 
 <script>

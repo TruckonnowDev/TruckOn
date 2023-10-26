@@ -63,6 +63,14 @@ namespace DaoModels.DAO
         public DbSet<ProfileSettings> ProfileSettings { get; set; }
         public DbSet<TransportVehicle> TransportVehicles { get; set; }
         public DbSet<PhoneNumber> PhonesNumbers { get; set; }
+        public DbSet<MarketPost> MarketPosts { get; set; }
+        public DbSet<ViewMarketPost> ViewsMarketsPosts { get; set; }
+        public DbSet<SellItemMarketPost> SellItemsMarketsPosts { get; set; }
+        public DbSet<BuyItemMarketPost> BuyItemsMarketsPosts { get; set; }
+        public DbSet<CommentMarketPost> CommentsMarketsPosts { get; set; }
+        public DbSet<CheckoutMP> CheckoutMPs { get; set; }
+        public DbSet<PhotoListMP> PhotosListMPs { get; set; }
+        public DbSet<PhotoMP> PhotosMP { get; set; }
 
         public Context()
         {

@@ -479,6 +479,41 @@ namespace WebDispacher.Business.Services
 
                 await db.SaveChangesAsync();
             }
+        } 
+        
+        public async Task CreateEntityPhotoTypes()
+        {
+            if (db.RecoveriesTypes.Any(cs => cs.Name == UserConstants.MarketplaceBuyEntityTypeResetPassword))
+            {
+                Console.WriteLine("Marketplace Buy type already exists");
+            }
+            else
+            {
+                var marketplaceType = new PhotoType
+                {
+                    Type = UserConstants.MarketplaceBuyEntityTypeResetPassword
+                };
+
+                await db.PhotoTypes.AddAsync(marketplaceType);
+
+                await db.SaveChangesAsync();
+            }
+            
+            if (db.RecoveriesTypes.Any(cs => cs.Name == UserConstants.MarketplaceSellEntityTypeResetPassword))
+            {
+                Console.WriteLine("Marketplace Sell type already exists");
+            }
+            else
+            {
+                var marketplaceType = new PhotoType
+                {
+                    Type = UserConstants.MarketplaceSellEntityTypeResetPassword
+                };
+
+                await db.PhotoTypes.AddAsync(marketplaceType);
+
+                await db.SaveChangesAsync();
+            }
         }
     }
 }

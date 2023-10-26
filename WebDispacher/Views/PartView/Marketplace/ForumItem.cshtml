@@ -1,0 +1,84 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization;
+@using System.Security.Claims;
+@using WebDispacher.ViewModels.Marketplace;
+
+@model ItemMarketPostShortViewModel;
+
+@inject IViewLocalizer Localizer
+
+<div class="one-line">
+    <div class="top-line" style="margin-bottom:0;">
+        <div class="image-post">
+            <img src="https://avtozaryad.ru/local/templates/main/assets/images/user.png" style="max-width: 70px;max-height: 70px;height: auto;margin: 0;">
+        </div>
+        <div class="basic-info-about-post">
+            <div class="post-title">
+                @switch (Model.ConditionItem)
+                {
+                    case DaoModels.DAO.Enum.ConditionItem.New:
+                        {
+                            <span class="badge bg-success">@Localizer["NewItemLabel"]</span>
+                            break;
+                        }
+                    case DaoModels.DAO.Enum.ConditionItem.LikeNew:
+                        {
+                            <span class="badge bg-secondary ">@Localizer["LikeNewItemLabel"]</span>
+                            break;
+                        }
+
+                    case DaoModels.DAO.Enum.ConditionItem.Good:
+                        {
+                            <span class="badge bg-secondary ">@Localizer["GoodItemLabel"]</span>
+                            break;
+                        }
+                    case DaoModels.DAO.Enum.ConditionItem.Fair:
+                        {
+                            <span class="badge bg-warning">@Localizer["FairItemLabel"]</span>
+                            break;
+                        }
+                }
+                <a href="/Marketplace/Classifieds/@Model.TypeMarketPost/@Model.MarketPostId">
+                    <h2 class="show-icon">
+                        @Model.Title
+                        @if (Model.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+                        {
+                            <span>
+                                <i style="color: #ffa700;font-size:16px;" class="bi bi-star-fill"></i>
+                            </span>
+                        }
+                    </h2>
+                    @if (Model.Price.HasValue)
+                    {
+                        <span style="margin-left:-4px;font-size:14px;font-weight: 600;color:#2c5deb;">
+                            <i class="bi bi-currency-dollar" style="font-size:16px"></i>
+                            @Model.Price
+                        </span>
+                    }
+                </a>
+            </div>
+            <div class="post-description">
+                @{
+                    var desc = string.IsNullOrEmpty(Model.Description) || Model.Description.Length <= 50 ? Model.Description : Model.Description.Substring(0, 50) + "...";
+                }
+                <p class="show-icon">@desc</p>
+            </div>
+        </div>
+        <div class="first-end-block">
+            <div class="comments show-icon">
+                <i class="bi bi-chat-right-fill"></i>
+                <p>0</p>
+            </div>
+        </div>
+        <div class="second-end-block">
+            <div class="views show-icon">
+                <i class="bi bi-eye-fill"></i>
+                <p>@Model.ViewCount</p>
+            </div>
+        </div>
+        <div class="last-end-block">
+            <a href="/Marketplace/Classifieds/@Model.TypeMarketPost/@Model.MarketPostId">
+                <h3 class="show-icon">@Model.DateTimeLastUpdate.ToString("MMM d, yyyy")</h3>
+            </a>
+        </div>
+    </div>
+</div>

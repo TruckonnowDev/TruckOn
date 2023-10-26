@@ -1,5 +1,71 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Mvc.Localization;
+@{
     ViewData["Title"] = "Marketplace";
 }
+@inject IViewLocalizer Localizer
 
-@await Html.PartialAsync("~/Views/Error/Notready.cshtml")
+<link rel="stylesheet" href="~/css/Marketplace/Marketplace.css">
+
+<body>
+    <div class="admin">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12"
+                    style="display:flex;
+                    justify-content: space-between;
+                    margin-top: 84px;">
+                    <div class="title">
+                        <h1>@Localizer["MarketplaceHeader"]</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="tabs">
+                        <div class="tabContent">
+                            <div class="one-line">
+                                <div class="top-line" style="margin-bottom:0;">
+                                    <div class="image-post">
+                                        <img src="https://avtozaryad.ru/local/templates/main/assets/images/user.png" style="max-width: 70px;max-height: 70px;height: auto;margin: 0;">
+                                    </div>
+                                    <div class="basic-info-about-post">
+                                        <div class="post-title">
+                                            <a href="/Marketplace/Classifieds">
+                                                <h2 class="show-icon">@Localizer["ClassifiedsHeaderBlock"]</h2>
+                                            </a>
+                                        </div>
+                                        <div class="post-description">
+                                            <p class="show-icon">@Localizer["ClassifiedsDescription"]</p>
+                                        </div>
+                                    </div>
+                                    <div class="first-end-block">
+                                        <div class="comments show-icon">
+                                            <i class="bi bi-chat-right-fill"></i>
+                                            <p>0</p>
+                                        </div>
+                                    </div>
+                                    <div class="second-end-block">
+                                        <div class="views show-icon">
+                                            <i class="bi bi-eye-fill"></i>
+                                            <p>@ViewBag.AllCategoryInfo.Item1</p>
+                                        </div>
+                                    </div>
+                                    <div class="last-end-block">
+                                        <a href="/Marketplace/Classifieds">
+                                            @{
+                                                var date = ViewBag.AllCategoryInfo.Item2 == DateTime.MinValue ? string.Empty : ViewBag.AllCategoryInfo.Item2.ToString("MMM d, yyyy");
+
+                                            }
+                                            <h3 class="show-icon">@date</h3>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>

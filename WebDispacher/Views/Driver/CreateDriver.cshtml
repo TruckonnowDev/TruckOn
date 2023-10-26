@@ -21,7 +21,7 @@
                         <div class="title">
                             <h1 class="text-info-header-1">@Localizer["InfoAboutDriver"]</h1>
                         </div>
-                        <form action="" method="post" enctype="multipart/form-data">
+                        <form action="" method="post" enctype="multipart/form-data" id="createDriverForm">
                             @Html.ValidationSummary()
                             <label class="big-label" for="">
                                 @Localizer["FirstName"]
@@ -290,7 +290,7 @@
         if (this.validity.patternMismatch) {
             this.setCustomValidity("@Localizer["EmailValidMessage"]")
         }
-    })
+    });
 
     $("#fi1").change(function () {
         CheckValid('fl1', 'fi1');
@@ -334,7 +334,7 @@
         CheckValidDoB(e, "dateOfBirth", "dob-not-current-format", "dateOfBirthLabel");
 
         dateInput.value = GetDateTimeInFormat(new Date());
-    })
+    });
 </script>
 
 <style>

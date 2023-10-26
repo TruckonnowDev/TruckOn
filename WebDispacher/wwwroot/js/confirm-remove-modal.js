@@ -43,5 +43,13 @@ function ShowAlert() {
             SuccessAlert("Message sent successfully");
             localStorage.removeItem('notification');
         }
+        else if (notif === 'successCloseMarketPostMessage') {
+            SuccessAlert("The ad was successfully closed");
+            localStorage.removeItem('notification');
+        }
+        else if (notif === 'successRemoveMarketPostMessage') {
+            SuccessAlert("The ad was successfully removed");
+            localStorage.removeItem('notification');
+        }
     }
 }

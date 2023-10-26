@@ -1,0 +1,385 @@
+﻿.show-icon {
+    color: #767676;
+    transition: color 0.3s ease;
+}
+
+.show-icon:hover {
+    color: #597bdd;
+}
+
+.show-icon:hover p {
+    color: #597bdd;
+}
+
+.right {
+    display: flex;
+    gap: 160px;
+    justify-content: space-between;
+}
+
+.first-end-block {
+    display: flex;
+    gap: 24px;
+}
+
+.comments {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.comments p {
+    margin-left: 12px;
+}
+
+.views {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.views p {
+    margin-left: 12px;
+}
+
+.admin #tabs .tabContent {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.one-line {
+    border-radius: 10px;
+    background-color: #f1f1f1;
+    padding: 20px 12px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.one-line:hover {
+    transform: scale(1.02);
+}
+
+.title {
+    margin-top: 0 !important;
+}
+
+.one-line .top-line .left {
+    justify-content: flex-start
+}
+
+.text {
+    max-width: 70%;
+}
+
+.tabContent h2 {
+    font-size: 20px;
+}
+
+.main-icon-block {
+    max-width: 70px;
+    max-height: 70px;
+    height: auto;
+    width: 100%;
+    margin: 0;
+}
+
+.main-icon-block i {
+    color: white;
+    background-color: blue;
+    font-size: 32px;
+    border-radius: 46px;
+    padding: 16px 20px;
+}
+
+.first-end-block .show-icon i {
+    font-size: 20px;
+}
+
+.nav-forum-marketplace {
+    display: flex;
+}
+
+.nav-forum-item {
+    margin-right: 10px;
+}
+
+.nav-forum-item a {
+    margin-right: 10px;
+}
+
+.btn1:hover {
+    background: #f9f9f9;
+    border: 1px solid #2c5deb;
+    color: #2c5deb;
+    -webkit-transition: .3s all;
+    -o-transition: .3s all;
+    transition: .3s all
+}
+
+.block-empty {
+    padding: 60px 0px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    color: #2c5deb;
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.block-empty i {
+    font-size: 28px;
+}
+
+.block-empty h2 {
+    color: #2c5deb;
+}
+
+.sort {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 14px 0;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+@media screen and (max-width:994px) {
+    .sort {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+    }
+}
+
+.sort button {
+    cursor: pointer;
+}
+
+.sort button:hover {
+    background: #2c5deb;
+    border: 1px solid #2c5deb;
+    color: #f9f9f9;
+    -webkit-transition: .3s all;
+    -o-transition: .3s all;
+    transition: .3s all
+}
+
+.sort .active {
+    color: white;
+    background: #2c5deb;
+}
+
+.sort button {
+    background: #f9f9f9;
+    color: #2c5deb;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.25;
+    border-radius: 10px;
+    padding: 8px 20px;
+    display: inline-block;
+    border: 1px solid #2c5deb;
+}
+
+.search-panel {
+    display: flex;
+    padding: 10px;
+}
+
+.header-nav-block {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.filter-block label {
+    display: flex;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.filter-block input {
+    width: 100%;
+    margin-top: 0;
+    height: 46px;
+}
+
+.top-line .image-post {
+    display: table-cell;
+    padding: 10px;
+}
+
+.top-line .basic-info-about-post {
+    display: table-cell;
+    width: 100%;
+    padding: 10px;
+}
+
+.top-line .first-end-block {
+    display: table-cell;
+    min-width: 50px;
+    width: 20%;
+    text-align: right;
+    padding: 10px;
+}
+
+.top-line .first-end-block .comments {
+    justify-content: flex-end;
+}
+
+.top-line .second-end-block {
+    display: table-cell;
+    min-width: 50px;
+    width: 20%;
+    text-align: right;
+    padding: 10px;
+}
+
+.top-line .second-end-block .show-icon i{
+    font-size: 20px;
+}
+
+.top-line .last-end-block {
+    display: table-cell;
+    min-width: 130px;
+    width: 25%;
+}
+
+.tabContent .one-line .top-line {
+    justify-content: normal;
+}
+
+@media screen and (max-width:767px) {
+    .image-post img {
+        max-width: 70px;
+        max-height: 70px;
+        height: 100%;
+        width: 100%;
+        margin: 0;
+    }
+
+    .main-icon-block i {
+        font-size: 24px;
+        padding: 8px 10px;
+    }
+
+    .top-line .image-post {
+        width: 20%;
+    }
+
+    .top-line .basic-info-about-post {
+        width: 80%;
+    }
+
+    .top-line  .first-end-block {
+        width: auto;
+        min-width: 60px;
+    }
+
+    .top-line .first-end-block .comments {
+        justify-content: flex-start;
+    }
+
+    .top-line .second-end-block {
+        width: auto;
+        min-width: 80px;
+    }
+
+    .first-end-block .show-icon i {
+        font-size: 14px;
+    }
+
+    .top-line .second-end-block .show-icon i {
+        font-size: 14px;
+    }
+
+    .comments p {
+        font-size: 14px;
+    }
+
+    .views p {
+        font-size: 14px;
+    }
+
+    .last-end-block .show-icon {
+        font-size: 14px;
+    }
+
+    .post-title h2 {
+        font-size: 16px;
+    }
+
+    .post-description p {
+        font-size: 13px;
+    }
+}
+
+.badge {
+    font-weight: 500;
+    font-size: 10px;
+    color: white;
+    padding: 0.45rem 0.45rem;
+    border-radius: 0.45rem;
+}
+
+.post-description {
+    margin-top: 0.5rem;
+}
+
+.tabContent form label {
+    width: 100%;
+}
+
+.inp-file-width {
+    width: 100%;
+}
+
+.tabContent .btn1, .tabContent .btn2 {
+    width: 100%;
+}
+
+.block-status {
+    position: absolute;
+    z-index: 6;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 22px;
+    background: rgb(24 26 27 / 57%);
+}
+
+.btn3 {
+    margin-top:20px;
+    width: 100%;
+}
+
+.filter-block {
+    margin: 12px 0;
+}
+
+.block-price {
+    display: flex;
+    justify-content: space-between;
+}
+
+.block-price .short-button {
+    width: 48%;
+    margin-right: 0;
+}
+
+.no-photos-item {
+    width: 100%;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: gray;
+}

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="BuyItemLotHeader" xml:space="preserve">
+        <value>Comprar Lote de Artículos</value>
+    </data>
+    <data name="TitleLabel" xml:space="preserve">
+        <value>Título</value>
+    </data>
+    <data name="DescriptionLabel" xml:space="preserve">
+        <value>Descripción</value>
+    </data>
+    <data name="EmailLabel" xml:space="preserve">
+        <value>Correo Electrónico</value>
+    </data>
+    <data name="PhoneNumberLabel" xml:space="preserve">
+        <value>Número de Teléfono</value>
+    </data>
+    <data name="ZipCodeLabel" xml:space="preserve">
+        <value>Código Posta</value>
+    </data>
+    <data name="HideStatusPostItem" xml:space="preserve">
+        <value>Oculto</value>
+    </data>
+    <data name="PublicStatusPostItem" xml:space="preserve">
+        <value>Público</value>
+    </data>
+    <data name="CurrentStatusLabel" xml:space="preserve">
+        <value>Estado Actual</value>
+    </data>
+    <data name="BackToElement" xml:space="preserve">
+        <value>Volver al anuncio</value>
+    </data>
+    <data name="UploadedFilesHeader" xml:space="preserve">
+        <value>Fotos Subidas</value>
+    </data>
+    <data name="SelectDocument" xml:space="preserve">
+        <value>Seleccionar Fotos</value>
+    </data>
+    <data name="SaveChangesButton" xml:space="preserve">
+        <value>Guardar Cambios</value>
+    </data>
+    <data name="NotificationTextErrorRemove" xml:space="preserve">
+        <value>El anuncio no se ha eliminado</value>
+    </data>
+    <data name="NotificationTextErrorDeleteImg" xml:space="preserve">
+        <value>Error al eliminar la imagen</value>
+    </data>
+    <data name="NotificationTextErrorClose" xml:space="preserve">
+        <value>El anuncio no se cerró</value>
+    </data>
+    <data name="InfoMessageUploadFiles" xml:space="preserve">
+        <value>Вы можете загружать файлы только в форматах jpg и jpeg (максимальный размер загружаемого файла - 5 МБ).</value>
+    </data>
+    <data name="DeleteButton" xml:space="preserve">
+        <value>Suprimir</value>
+    </data>
+    <data name="CloseButton" xml:space="preserve">
+        <value>Cerrar</value>
+    </data>
+    <data name="AddNewImagesLabel" xml:space="preserve">
+        <value>Fotos</value>
+    </data>
+    <data name="NotificationTextSuccessDeleteImg" xml:space="preserve">
+        <value>La imagen se eliminó correctamente</value>
+    </data>
+</root>

@@ -273,7 +273,7 @@
     <value>Фиксированная ежемесячная плата за доступ за единицу</value>
   </data>
   <data name="RepairLocator" xml:space="preserve">
-    <value>Ремонтная поддержка</value>
+    <value>Ремонтная Поддержка</value>
   </data>
   <data name="ThirdPlusSixthBlock" xml:space="preserve">
     <value>Импортируйте заказы непосредственно с досок загрузки и брокеров</value>

@@ -272,7 +272,7 @@
     <value>Flat Monthy Access Fee per Unit</value>
   </data>
   <data name="RepairLocator" xml:space="preserve">
-    <value>Repair locator</value>
+    <value>Repair Locator</value>
   </data>
   <data name="ThirdPlusSixthBlock" xml:space="preserve">
     <value>Import orders directly from load boards and brokers</value>

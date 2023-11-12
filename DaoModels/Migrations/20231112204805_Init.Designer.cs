@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DaoModels.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20230911195850_Init")]
+    [Migration("20231112204805_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -809,6 +809,90 @@ namespace DaoModels.Migrations
                     b.ToTable("Geolocations");
                 });
 
+            modelBuilder.Entity("DaoModels.DAO.Models.HistoryDriverAction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ActionType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("AuthorId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ChangedField")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContentAfter")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContentBefore")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateTimeAction")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DriverId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("IpAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserAgent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("HistoriesDriversActions");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.HistoryMarketPostAction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ActionType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("AuthorId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ChangedField")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContentAfter")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContentBefore")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateTimeAction")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("IpAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MarketPostId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserAgent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("HistoriesMarketPostsActions");
+                });
+
             modelBuilder.Entity("DaoModels.DAO.Models.HistoryOrderAction", b =>
                 {
                     b.Property<int>("Id")
@@ -842,6 +926,90 @@ namespace DaoModels.Migrations
                     b.HasIndex("OrderId");
 
                     b.ToTable("HistoriesOrdersActions");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.HistoryTrailerAction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ActionType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("AuthorId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ChangedField")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContentAfter")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContentBefore")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateTimeAction")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("IpAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TrailerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserAgent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("HistoriesTrailerActions");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.HistoryTruckAction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ActionType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("AuthorId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ChangedField")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContentAfter")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContentBefore")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateTimeAction")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("IpAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TruckId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserAgent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("HistoriesTrucksActions");
                 });
 
             modelBuilder.Entity("DaoModels.DAO.Models.MarketPost", b =>
@@ -919,8 +1087,8 @@ namespace DaoModels.Migrations
                     b.Property<int?>("DriverId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Fax")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("FaxNumberId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Instructions")
                         .HasColumnType("nvarchar(max)");
@@ -955,6 +1123,8 @@ namespace DaoModels.Migrations
                     b.HasIndex("DeliveryId");
 
                     b.HasIndex("DriverId");
+
+                    b.HasIndex("FaxNumberId");
 
                     b.HasIndex("PhoneNumberId");
 
@@ -1148,8 +1318,11 @@ namespace DaoModels.Migrations
                     b.Property<DateTime>("DateTimeUpload")
                         .HasColumnType("datetime2");
 
-                    b.Property<double>("Height")
-                        .HasColumnType("float");
+                    b.Property<int>("Height")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PhotoListMPId")
                         .HasColumnType("int");
@@ -1163,8 +1336,8 @@ namespace DaoModels.Migrations
                     b.Property<string>("PhotoUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Width")
-                        .HasColumnType("float");
+                    b.Property<int>("Width")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -1537,8 +1710,8 @@ namespace DaoModels.Migrations
                     b.Property<string>("State")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Type")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("TruckTypeId")
+                        .HasColumnType("int");
 
                     b.Property<string>("VIN")
                         .HasColumnType("nvarchar(max)");
@@ -1553,9 +1726,34 @@ namespace DaoModels.Migrations
 
                     b.HasIndex("CompanyId");
 
+                    b.HasIndex("TruckTypeId");
+
                     b.HasIndex("VehicleModelId");
 
                     b.ToTable("Trucks");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.TruckType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Slug")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("VehicleCategoryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VehicleCategoryId");
+
+                    b.ToTable("TruckTypes");
                 });
 
             modelBuilder.Entity("DaoModels.DAO.Models.User", b =>
@@ -1728,6 +1926,21 @@ namespace DaoModels.Migrations
                     b.HasIndex("VehicleTypeId");
 
                     b.ToTable("VehiclesBrands");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.VehicleCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("VehiclesCategories");
                 });
 
             modelBuilder.Entity("DaoModels.DAO.Models.VehicleDetails", b =>
@@ -1917,8 +2130,14 @@ namespace DaoModels.Migrations
                     b.Property<DateTime>("DateTimeAction")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("IPAddress")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("MarketPostId")
                         .HasColumnType("int");
+
+                    b.Property<string>("UserAgent")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -1930,6 +2149,37 @@ namespace DaoModels.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("ViewsMarketsPosts");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.ViewUserMailQuestion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("DateTimeAction")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("IPAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserAgent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("UserMailQuestionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("UserMailQuestionId");
+
+                    b.ToTable("ViewsUsersMailsQuestions");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -2345,6 +2595,10 @@ namespace DaoModels.Migrations
                         .WithMany("Orders")
                         .HasForeignKey("DriverId");
 
+                    b.HasOne("DaoModels.DAO.Models.PhoneNumber", "FaxNumber")
+                        .WithMany()
+                        .HasForeignKey("FaxNumberId");
+
                     b.HasOne("DaoModels.DAO.Models.PhoneNumber", "PhoneNumber")
                         .WithMany()
                         .HasForeignKey("PhoneNumberId");
@@ -2517,9 +2771,22 @@ namespace DaoModels.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("DaoModels.DAO.Models.TruckType", "TruckType")
+                        .WithMany()
+                        .HasForeignKey("TruckTypeId");
+
                     b.HasOne("DaoModels.DAO.Models.VehicleModel", null)
                         .WithMany("Trucks")
                         .HasForeignKey("VehicleModelId");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.TruckType", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.VehicleCategory", "VehicleCategory")
+                        .WithMany("TruckTypes")
+                        .HasForeignKey("VehicleCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("DaoModels.DAO.Models.UserAnswer", b =>
@@ -2625,6 +2892,19 @@ namespace DaoModels.Migrations
                     b.HasOne("DaoModels.DAO.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("DaoModels.DAO.Models.ViewUserMailQuestion", b =>
+                {
+                    b.HasOne("DaoModels.DAO.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.HasOne("DaoModels.DAO.Models.UserMailQuestion", "UserMailQuestion")
+                        .WithMany("Views")
+                        .HasForeignKey("UserMailQuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

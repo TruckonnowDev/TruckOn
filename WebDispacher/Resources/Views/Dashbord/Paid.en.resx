@@ -176,4 +176,7 @@
 	<data name="AssignedTo" xml:space="preserve">
 		<value>Assigned to</value>
 	</data>
+	<data name="PickupEstimated" xml:space="preserve">
+		<value>Pickup Estimated</value>
+	</data>
 </root>

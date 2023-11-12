@@ -183,4 +183,13 @@
   <data name="OptionalForNyRolling" xml:space="preserve">
     <value>opcional para el balanceo de NY</value>
   </data>
+  <data name="VehicleCategory" xml:space="preserve">
+    <value>Categoría de Vehículo</value>
+  </data>
+  <data name="ChooseVehicleCategory" xml:space="preserve">
+    <value>Elija un tipo de vehículo</value>
+  </data>
+  <data name="ChooseTruckType" xml:space="preserve">
+    <value>Elija un tipo de camión</value>
+  </data>
 </root>

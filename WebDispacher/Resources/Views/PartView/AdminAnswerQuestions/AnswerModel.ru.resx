@@ -39,4 +39,7 @@
     <data name="Phone" xml:space="preserve">
         <value>Телефон</value>
     </data>
+    <data name="IncomingMessage" xml:space="preserve">
+        <value>Входящее сообщение</value>
+    </data>
 </root>

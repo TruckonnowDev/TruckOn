@@ -66,4 +66,7 @@
     <data name="MaxLengthPhoneNumber" xml:space="preserve">
         <value>Maximum phone length {1} characters</value>
     </data>
+    <data name="USDOTNumberOnlyNumber" xml:space="preserve">
+        <value>The USDOT Number field must contain only digits</value>
+    </data>
 </root>

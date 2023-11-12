@@ -18,8 +18,9 @@ namespace WebDispacher.ViewModels.Order
         public int? PhoneNumberId { get; set; }
         public EditPhoneNumberViewModel PhoneNumber { get; set; }
 
-        [History]
-        public string Fax { get; set; }
+        public int? FaxNumberId { get; set; }
+
+        public EditPhoneNumberViewModel FaxNumber { get; set; }
 
         [History]
         public string McNumber { get; set; }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -15,6 +16,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using WebDispacher.Business.Interfaces;
 using WebDispacher.Constants;
+using WebDispacher.Resources.ViewModels.History;
 using WebDispacher.ViewModels.Trailer; 
 using WebDispacher.ViewModels.Truck;
 
@@ -25,18 +27,24 @@ namespace WebDispacher.Business.Services
         private readonly Context db;
         private readonly IMapper mapper;
         private readonly IUserService userService;
+        private readonly IHistoryActionService historyActionService;
+        private readonly IHttpContextAccessor httpContextAccessor;
         private readonly int maxFileLength = 6 * 1024 * 1024;
 
         public TruckAndTrailerService(
             IMapper mapper,
             Context db,
-            IUserService userService)
+            IUserService userService,
+            IHistoryActionService historyActionService,
+            IHttpContextAccessor httpContextAccessor)
         {
             this.userService = userService;
             this.mapper = mapper;
             this.db = db;
+            this.historyActionService = historyActionService;
+            this.httpContextAccessor = httpContextAccessor;
         }
-        
+
         public async Task<int> AddProfile(string idCompany, int idTr, string typeTransport)
         {
             var tr = await GetTr(idTr, typeTransport);
@@ -293,14 +301,37 @@ namespace WebDispacher.Business.Services
                 await SaveDocTruck(nYHUTDoc, DocAndFileConstants.NyHit, truckId, dateTimeLocal);
             }
         }
-        public async Task EditTrailer(TrailerViewModel model, string localDate)
+        public async Task EditTrailer(TrailerViewModel model, string companyId, string localDate)
         {
-            await EditTrailerDb(model, localDate);
+            await EditTrailerDb(model, companyId, localDate);
+        }
+
+        public async Task<List<TruckType>> GetTruckTypes(string category)
+        {
+            var categoryId = Int32.Parse(category);
+
+            var truckTypes = await db.TruckTypes.Where(tt => tt.VehicleCategoryId == categoryId).ToListAsync();
+
+            return truckTypes;
+        }
+        
+        public async Task<List<VehicleCategory>> GetVehicleCategiries()
+        {
+            var vehicleCategories = await db.VehiclesCategories.ToListAsync();
+
+            return vehicleCategories;
+        }
+
+        public async Task<string> GetTruckTypeSlugByName(string truckName)
+        {
+            var slug = await db.TruckTypes.FirstOrDefaultAsync(tt => tt.Slug != null && tt.Name == truckName);
+
+            return slug == null ? null : slug.Slug;
         }
 
         public async Task EditTruck(TruckViewModel model, IFormFile truckRegistrationDoc,
             IFormFile truckLeaseAgreementDoc, IFormFile truckAnnualInspection, IFormFile bobTailPhysicalDamage,
-            IFormFile nYHUTDoc, string localDate)
+            IFormFile nYHUTDoc, string companyId, string localDate)
         {
             if (model == null) return;
 
@@ -311,11 +342,25 @@ namespace WebDispacher.Business.Services
 
             if (editTruck == null) return;
 
+            var editTruckViewModel = mapper.Map<TruckViewModel>(editTruck);
+            var userId = (await GetUserByCompanyId(companyId)).Id;
+            var authorId = (await GetUserByCompanyId(editTruck.CompanyId.ToString())).Id;
+
+            var actionData = new HistoryActionData
+            {
+                UserId = userId,
+                AuthorId = authorId,
+                IPAddress = GetIPAddress(),
+                UserAgent = GetUserAgent(),
+            };
+
+            await historyActionService.CompareAndSaveUpdatedFields<HistoryTruckAction, TruckViewModel>(editTruckViewModel, model, editTruck.Id, actionData, dateTimeUpdate);
+
             editTruck.Name = model.NameTruck;
             editTruck.Year = Convert.ToInt32(model.Year);
             editTruck.Brand = model.Make;
             editTruck.Model = model.Model;
-            editTruck.Type = model.Type;
+            editTruck.TruckTypeId = model.TruckTypeId;
             editTruck.State = model.State;
             editTruck.PlateExpires = model.Exp;
             editTruck.VIN = model.Vin;
@@ -353,16 +398,30 @@ namespace WebDispacher.Business.Services
             }
         }
         
-        private async Task EditTrailerDb(TrailerViewModel model, string localDate)
+        private async Task EditTrailerDb(TrailerViewModel model, string companyId, string localDate)
         {
             if (model == null) return;
 
             var dateTimeUpdate = string.IsNullOrEmpty(localDate) ? DateTime.Now : DateTime.ParseExact(localDate, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
 
             var editTrailer = await db.Trailers.FirstOrDefaultAsync(t => t.Id == model.Id);
-            
+
             if (editTrailer == null) return;
-            
+
+            var editTrailerViewModel = mapper.Map<TrailerViewModel>(editTrailer);
+            var userId = (await GetUserByCompanyId(companyId)).Id;
+            var authorId = (await GetUserByCompanyId(editTrailer.CompanyId.ToString())).Id;
+
+            var actionData = new HistoryActionData
+            {
+                UserId = userId,
+                AuthorId = authorId,
+                IPAddress = GetIPAddress(),
+                UserAgent = GetUserAgent(),
+            };
+
+            await historyActionService.CompareAndSaveUpdatedFields<HistoryTrailerAction, TrailerViewModel>(editTrailerViewModel, model, editTrailer.Id, actionData, dateTimeUpdate);
+
             editTrailer.Name = model.Name;
             editTrailer.Type = model.Type;
             editTrailer.Year = Convert.ToInt32(model.Year);
@@ -487,7 +546,7 @@ namespace WebDispacher.Business.Services
                 VIN = truckModel.Vin,
                 Owner = truckModel.Owner,
                 Color = truckModel.ColorTruck,
-                Type = truckModel.Type,
+                TruckTypeId = truckModel.TruckTypeId,
                 DateTimeCreate = truckModel.DateTimeRegistration,
                 DateTimeLastUpdate = truckModel.DateTimeLastUpload,
             };
@@ -582,7 +641,20 @@ namespace WebDispacher.Business.Services
             
             return trailer;
         }
-        
+
+        private async Task<User> GetUserByCompanyId(string companyId)
+        {
+            int companyIndex = Convert.ToInt32(companyId);
+
+            var userInfo = await db.Users
+                .Include(u => u.CompanyUsers)
+                .FirstOrDefaultAsync(x => x.CompanyUsers.First(cu => cu.CompanyId == companyIndex).UserId == x.Id);
+
+            if (userInfo == null) return null;
+
+            return userInfo;
+        }
+
         private async Task<Truck> GetTruckDb(string idDriver)
         {
             var driver = await db.Drivers
@@ -609,7 +681,7 @@ namespace WebDispacher.Business.Services
         
         private async Task<TruckViewModel> GetTruckByIdDb(int idTr)
         {
-            var truck = await db.Trucks.FirstOrDefaultAsync(t => t.Id == idTr);
+            var truck = await db.Trucks.Include(t => t.TruckType).FirstOrDefaultAsync(t => t.Id == idTr);
 
             return mapper.Map<TruckViewModel>(truck);
         }
@@ -618,6 +690,7 @@ namespace WebDispacher.Business.Services
         {
             var trucks = db.Trucks
                 .Where(t => t.CompanyId == companyId)
+                .Include(t => t.TruckType)
                 .OrderByDescending(x => x.Id)
                 .AsQueryable();
 
@@ -637,6 +710,15 @@ namespace WebDispacher.Business.Services
             var listTrucks = await trucks.ToListAsync();
 
             return listTrucks;
+        }
+        private string GetUserAgent()
+        {
+            return httpContextAccessor.HttpContext.Request.Headers["User-Agent"].ToString();
+        }
+
+        private string GetIPAddress()
+        {
+            return httpContextAccessor.HttpContext.Connection.RemoteIpAddress?.ToString();
         }
 
         private async Task<int> GetCountTrucksPagesInDb(string idCompany)

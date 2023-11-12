@@ -169,10 +169,17 @@ namespace WebDispacher.Business.Services
 
             db.SaveChanges();
         }
-        
+
         public Company GetCompanyById(string companyId)
         {
-            return db.Companies.FirstOrDefault(c => c.Id.ToString() == companyId);
+            var companyIndex = Int32.Parse(companyId);
+
+            using(var context = new Context())
+            {
+                var company = context.Companies.FirstOrDefault(c => c.Id == companyIndex);
+
+                return company;
+            }
         }
         
         public User GetUserById(string id)

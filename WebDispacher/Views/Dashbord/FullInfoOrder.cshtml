@@ -77,8 +77,12 @@
                                 <p class="text-info-p">
                                     @Model.Order.PickedUp.Address, @Model.Order.PickedUp.City, @Model.Order.PickedUp.State, @Model.Order.PickedUp.ZipCode <br>
                                     <b>@Localizer["Contact"]: </b>@Model.Order.PickedUp.ContactName <br>
-                                    <b>@Localizer["Phone"]:</b> @Model.Order.PickedUp.PhoneNumber <br>
-                                    <b>@Localizer["PickupDate"]: </b> @Model.Order.DateTimePickedUp
+                                    @{
+                                        var phonePickedUp = string.IsNullOrEmpty(Model.Order.PickedUp.PhoneNumber.Number) ? string.Empty : $"+{@Model.Order.PickedUp.PhoneNumber.DialCode} {@Model.Order.PickedUp.PhoneNumber.Number}";
+                                    }
+                                    <b>@Localizer["Phone"]:</b> +@Model.Order.PickedUp.PhoneNumber.DialCode @Model.Order.PickedUp.PhoneNumber.Number <br>
+                                    <b>@Localizer["PickupDate"]: </b> @Model.Order.DateTimePickedUp.ToString(DateTimeFormats.DateOfBirth)<br>
+                                    <b>@Localizer["PickupEmail"]: </b> @Model.Order.PickedUp.Email
                                 </p>
                             </div>
                         </div>
@@ -88,8 +92,12 @@
                                 <p class="text-info-p">
                                     @Model.Order.Delivery.Address, @Model.Order.Delivery.City, @Model.Order.Delivery.State, @Model.Order.Delivery.ZipCode <br>
                                     <b>@Localizer["Contact"]:</b> @Model.Order.Delivery.ContactName<br>
-                                    <b>@Localizer["Phone"]:</b> @Model.Order.Delivery.PhoneNumber<br>
-                                    <b>@Localizer["DeliveryDate"]:</b> @Model.Order.DateTimeDelivery
+                                    @{
+                                        var phoneDelivery = string.IsNullOrEmpty(Model.Order.Delivery.PhoneNumber.Number) ? string.Empty : $"+{@Model.Order.Delivery.PhoneNumber.DialCode} {@Model.Order.Delivery.PhoneNumber.Number}";
+                                    }
+                                    <b>@Localizer["Phone"]:</b> @phoneDelivery<br>
+                                    <b>@Localizer["DeliveryDate"]:</b> @Model.Order.DateTimeDelivery.ToString(DateTimeFormats.DateOfBirth)<br>
+                                    <b>@Localizer["DeliveryEmail"]:</b> @Model.Order.Delivery.Email
                                 </p>
                             </div>
                         </div>
@@ -98,8 +106,12 @@
                                 <h3 class="text-info-header-3">@Localizer["Customer"]</h3>
                                 <p class="text-info-p">
                                     <b>@Localizer["Contact"]:</b> @Model.Order.Contact<br>
-                                    <b>@Localizer["Phone"]:</b> @Model.Order.PhoneNumber<br>
-                                    <b>@Localizer["Fax"]:</b> @Model.Order.Fax<br>
+                                    @{
+                                        var phoneCustomer = string.IsNullOrEmpty(Model.Order.PhoneNumber.Number) ? string.Empty : $"+{@Model.Order.PhoneNumber.DialCode} {@Model.Order.PhoneNumber.Number}";
+                                        var faxPhone = string.IsNullOrEmpty(Model.Order.FaxNumber.Number) ? string.Empty : $"+{@Model.Order.FaxNumber.DialCode} {@Model.Order.FaxNumber.Number}";
+                                    }
+                                    <b>@Localizer["Phone"]:</b> @phoneCustomer<br>
+                                    <b>@Localizer["Fax"]:</b> @faxPhone<br>
                                     <b>@Localizer["McNumber"]:</b> @Model.Order.McNumber
                                 </p>
                             </div>
@@ -109,6 +121,10 @@
                                 <h3 class="text-info-header-3">@Localizer["PaymentInfo"]</h3>
                                 <p class="text-info-p">
                                     <b>@Localizer["Price"]:</b> @Model.Order.Price<br>
+                                    @if (Model.Order.BrokerFee != 0)
+                                    {
+                                        <b>@Localizer["BrokerFee"]:</b> @Model.Order.BrokerFee<br>
+                                    }
                                     <b>@Localizer["PaymentMethod"]:</b> @Model.Order.PaymentMethod<br>
                                     <b>@Localizer["OnDeliveryToCarrier"]: </b> 
                                 </p>

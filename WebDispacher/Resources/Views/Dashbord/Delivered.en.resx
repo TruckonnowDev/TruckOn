@@ -182,4 +182,7 @@
 	<data name="CustomerMustPayShippingTo" xml:space="preserve">
 		<value>Customer must pay shipping to</value>
 	</data>
+	<data name="PickupEstimated" xml:space="preserve">
+		<value>Pickup Estimated</value>
+	</data>
 </root>

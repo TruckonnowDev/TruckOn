@@ -78,4 +78,16 @@
     <data name="CategorySellForumNav" xml:space="preserve">
         <value>Продажа</value>
     </data>
+    <data name="ActionHistory" xml:space="preserve">
+        <value>История Изменений</value>
+    </data>
+    <data name="ShowHistory" xml:space="preserve">
+        <value>Показать историю</value>
+    </data>
+    <data name="CountActions" xml:space="preserve">
+        <value>Количество изменений</value>
+    </data>
+    <data name="DateAction" xml:space="preserve">
+        <value>Дата Действия</value>
+    </data>
 </root>

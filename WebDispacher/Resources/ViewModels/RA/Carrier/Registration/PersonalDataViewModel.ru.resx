@@ -66,4 +66,7 @@
     <data name="USDOTNumberRequired" xml:space="preserve">
         <value>USDOT Номер должен быть указан</value>
     </data>
+    <data name="USDOTNumberOnlyNumber" xml:space="preserve">
+        <value>Поле USDOT Number должно содержать только цифры</value>
+    </data>
 </root>

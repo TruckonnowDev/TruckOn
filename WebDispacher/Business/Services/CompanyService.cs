@@ -37,16 +37,21 @@ namespace WebDispacher.Business.Services
         private readonly IMapper mapper; 
         private readonly StripeApi stripeApi;
         private readonly IUserService userService;
+
+        private readonly IHttpContextAccessor httpContextAccessor;
+
         private readonly int maxFileLength = 6 * 1024 * 1024;
 
         public CompanyService(
             IMapper mapper,
-            Context db,
+            Context db, 
+            IHttpContextAccessor httpContextAccessor,
             IUserService userService)
         {
             this.userService = userService;
             this.mapper = mapper;
             this.db = db;
+            this.httpContextAccessor = httpContextAccessor;
             stripeApi = new StripeApi();
         }
 
@@ -98,6 +103,32 @@ namespace WebDispacher.Business.Services
             }
 
             return true;
+        }
+
+        public async Task<int> GetNewUserMailQuestions()
+        {
+            var newUserMailQuestions = await db.UsersMailsQuestions
+                .Where(question => !question.Views.Any())
+                .CountAsync();
+
+            return newUserMailQuestions;
+        }
+        
+        public async Task SetViewInUserMailQuestion(ViewUserMailQuestion model)
+        {
+            using (var context = new Context())
+            {
+                if (model == null) return;
+
+                model.UserAgent = GetUserAgent();
+                model.IPAddress = GetIPAddress();
+
+                await context.ViewsUsersMailsQuestions.AddAsync(model);
+
+                await context.SaveChangesAsync();
+
+                return;
+            }
         }
 
         public async Task<bool> CheckCompanyRequiredDoc(string idCompany)
@@ -374,15 +405,17 @@ namespace WebDispacher.Business.Services
 
         public async Task<User> GetUserByCompanyId(string companyId)
         {
-            int companyIndex = Convert.ToInt32(companyId);
+            using (var dbt = new Context())
+            {
+                int companyIndex = Convert.ToInt32(companyId);
+                var userInfo = await dbt.Users
+                    .Include(u => u.CompanyUsers)
+                    .FirstOrDefaultAsync(x => x.CompanyUsers.First(cu => cu.CompanyId == companyIndex).UserId == x.Id);
 
-            var userInfo = await db.Users
-                .Include(u => u.CompanyUsers)
-                .FirstOrDefaultAsync(x => x.CompanyUsers.First(cu => cu.CompanyId == companyIndex).UserId == x.Id);
+                if (userInfo == null) return null;
 
-            if (userInfo == null) return null;
-
-            return userInfo;
+                return userInfo;
+            }
         }
 
         public ContactViewModel GetContact(int id)
@@ -676,7 +709,7 @@ namespace WebDispacher.Business.Services
                 Name = model.PersonalData.CompanyName,
                 PhoneNumberId = phoneCompany.Id,
                 CompanyType = companyType,
-                USDOT = model.PersonalData.USDOTNumber,
+                USDOT = model.PersonalData.USDOTNumber.Value,
                 CompanyStatus = CompanyStatus.Active,
                 DateTimeRegistration = DateTime.Now,
                 DateTimeLastUpdate = DateTime.Now,
@@ -821,51 +854,59 @@ namespace WebDispacher.Business.Services
             var company = userService.GetCompanyById(companyId);
 
             if (company == null) return typeNavBar;
-            
+            if (company.CompanyStatus == CompanyStatus.Admin)
+            {
+                return NavConstants.BaseCompany;
+            }
             switch (typeNav)
             {
                 case NavConstants.TypeNavCancel:
-                {
-                    if (company.CompanyStatus == CompanyStatus.Active)
                     {
-                        typeNavBar = NavConstants.CancelSubscribe;
-                    }
+                        if (company.CompanyStatus == CompanyStatus.Active)
+                        {
+                            typeNavBar = NavConstants.CancelSubscribe;
+                        }
 
-                    break;
-                }
+                        break;
+                    }
                 case NavConstants.Work when company.CompanyStatus == CompanyStatus.Admin:
                     typeNavBar = NavConstants.BaseCompany;
                     break;
                 case NavConstants.Work:
-                {
-                    if (company.CompanyStatus == CompanyStatus.Active)
                     {
-                        if(company.CompanyType == CompanyType.Carrier)
+                        if (company.CompanyStatus == CompanyStatus.Active)
                         {
-                            typeNavBar = NavConstants.NormalCompany;
+                            if (company.CompanyType == CompanyType.Carrier)
+                            {
+                                typeNavBar = NavConstants.NormalCompany;
+                            }
+
+                            if (company.CompanyType == CompanyType.Broker)
+                            {
+                                typeNavBar = NavConstants.BrokerCompany;
+                            }
+
                         }
 
-                        if (company.CompanyType == CompanyType.Broker)
-                        {
-                            typeNavBar = NavConstants.BrokerCompany;
-                        }
-                        
+                        break;
                     }
-
-                    break;
-                }
                 case NavConstants.TypeNavSettings when company.CompanyStatus == CompanyStatus.Admin:
                     typeNavBar = NavConstants.TypeNavBaseCompanySettings;
                     break;
                 case NavConstants.TypeNavSettings:
-                {
-                    if (company.CompanyStatus == CompanyStatus.Active)
                     {
-                        typeNavBar = NavConstants.TypeNavNormalCompanySettings;
-                    }
+                        if (company.CompanyStatus == CompanyStatus.Active)
+                        {
+                            typeNavBar = NavConstants.TypeNavNormalCompanySettings;
+                        }
 
-                    break;
-                }
+                        break;
+                    }
+                case NavConstants.NormalCompany when company.CompanyStatus == CompanyStatus.Active:
+                    {
+                        typeNavBar = NavConstants.NormalCompany; 
+                        break;
+                    }
             }
 
             return typeNavBar;
@@ -1181,24 +1222,28 @@ namespace WebDispacher.Business.Services
 
         private async Task<CompanyViewModel> GetCompanyByIdDb(int id)
         {
-            var companyUserInfo = await db.CompanyUsers.FirstOrDefaultAsync(cu => cu.CompanyId == id);
-            if (companyUserInfo == null) return null;
-
-            var companyInfo = await db.Companies.Include(c => c.PhoneNumber).FirstOrDefaultAsync(x => x.Id == companyUserInfo.CompanyId);
-            if (companyInfo == null) return null;
-            var userInfo = await db.Users.FirstOrDefaultAsync(x => x.Id == companyUserInfo.UserId);
-            if (userInfo == null) return null;
-
-            var companyViewModel = new CompanyViewModel
+            using (var dbt = new Context())
             {
-                Id = companyInfo.Id,
-                Name = companyInfo.Name,
-                PhoneNumber = companyInfo.PhoneNumber,
-                CompanyType = companyInfo.CompanyType,
-                Email = userInfo.Email,
-            };
+                var companyUserInfo = await dbt.CompanyUsers.FirstOrDefaultAsync(cu => cu.CompanyId == id);
+                if (companyUserInfo == null) return null;
 
-            return companyViewModel;
+                var companyInfo = await dbt.Companies.Include(c => c.PhoneNumber).FirstOrDefaultAsync(x => x.Id == companyUserInfo.CompanyId);
+                if (companyInfo == null) return null;
+                var userInfo = await dbt.Users.FirstOrDefaultAsync(x => x.Id == companyUserInfo.UserId);
+                if (userInfo == null) return null;
+
+                var companyViewModel = new CompanyViewModel
+                {
+                    Id = companyInfo.Id,
+                    Name = companyInfo.Name,
+                    PhoneNumber = companyInfo.PhoneNumber,
+                    CompanyType = companyInfo.CompanyType,
+                    CompanyStatus = companyInfo.CompanyStatus,
+                    Email = userInfo.Email,
+                };
+
+                return companyViewModel;
+            }
         }
 
         private async Task<List<Company>> GetCompaniesDb(int page)
@@ -1429,6 +1474,16 @@ namespace WebDispacher.Business.Services
         private IEnumerable<User> GetUsers()
         {
             return db.Users.ToList();
+        }
+
+        private string GetUserAgent()
+        {
+            return httpContextAccessor.HttpContext.Request.Headers["User-Agent"].ToString();
+        }
+
+        private string GetIPAddress()
+        {
+            return httpContextAccessor.HttpContext.Connection.RemoteIpAddress?.ToString();
         }
     }
 }

@@ -12,7 +12,7 @@
     <div class="modal-body">
         <div class="tabContent mt-0">
             <div style="padding:3px 0px 4px;">
-                <p>@Localizer["Email"]: <b>@Model.SenderEmail</b></p>
+                <p><b>@Localizer["Email"]:</b> @Model.SenderEmail</p>
                 @{
                     var phoneUser = string.Empty;
                     if (Model?.PhoneNumber.DialCode != 0 && !string.IsNullOrEmpty(Model?.PhoneNumber.Number))
@@ -20,9 +20,10 @@
                         phoneUser = $"+{Model.PhoneNumber.DialCode} {Model.PhoneNumber.Number}";
                     }
                 }
-                <p>@Localizer["Phone"]: <b>@phoneUser</b></p>
-                <p>@Localizer["Name"]: <b>@Model.SenderName</b></p>
+                <p><b>@Localizer["Phone"]:</b> @phoneUser</p>
+                <p><b>@Localizer["Name"]:</b> @Model.SenderName</p>
                 <p>
+                    <b>@Localizer["IncomingMessage"]:</b>
                     @Model.Message
                 </p>
             </div>
@@ -76,11 +77,10 @@
             var formData = $(this).serialize();
 
             $.post("Answer", formData, function (response) {
-                console.log(response);
                 if(response === true){
                     localStorage.setItem('notification', 'successSendMessage');
                 }
-                window.location.reload();
+                window.location.href = window.location.href;
             }).fail(function (xhr, textStatus, errorThrown) {
                 console.error(errorThrown);
             });

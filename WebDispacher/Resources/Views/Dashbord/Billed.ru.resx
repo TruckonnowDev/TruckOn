@@ -179,4 +179,7 @@
 	<data name="Phone" xml:space="preserve">
 		<value>Телефон</value>
 	</data>
+	<data name="PickupEstimated" xml:space="preserve">
+		<value>Предполагаемая отправка</value>
+	</data>
 </root>

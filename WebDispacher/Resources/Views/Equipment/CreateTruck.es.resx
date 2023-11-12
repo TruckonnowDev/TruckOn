@@ -189,4 +189,10 @@
   <data name="Year" xml:space="preserve">
     <value>Año</value>
   </data>
+  <data name="VehicleCategory" xml:space="preserve">
+    <value>Categoría de Vehículo</value>
+  </data>
+  <data name="ChooseVehicleCategory" xml:space="preserve">
+    <value>Elija un tipo de vehículo</value>
+  </data>
 </root>

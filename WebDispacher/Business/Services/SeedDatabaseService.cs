@@ -8,6 +8,8 @@ using System.Linq;
 using DaoModels.DAO.Enum;
 using static System.Net.Mime.MediaTypeNames;
 using WebDispacher.Constants;
+using System.Xml.Linq;
+using System.Collections.Generic;
 
 namespace WebDispacher.Business.Services
 {
@@ -64,12 +66,21 @@ namespace WebDispacher.Business.Services
                     UserName = "truckonnow@test.com"
                 };
 
+                var phoneNumber = new PhoneNumber
+                {
+                    Name = "United States",
+                    Iso2 = "us",
+                    DialCode = 1,
+                    Number = "(555)-555-5555",
+                };
+
                 var company = new Company
                 {
                     Name = "Truckonnow Team",
                     CompanyType = CompanyType.Carrier,
                     CompanyStatus = CompanyStatus.Admin,
-                    DateTimeRegistration = DateTime.Now
+                    DateTimeRegistration = DateTime.Now,
+                    PhoneNumber = phoneNumber,
                 };
 
                 await userManager.CreateAsync(user, "truckon777");
@@ -102,12 +113,21 @@ namespace WebDispacher.Business.Services
                     UserName = "mrserge.husack@gmail.com"
                 };
 
+                var phoneNumber = new PhoneNumber
+                {
+                    Name = "United States",
+                    Iso2 = "us",
+                    DialCode = 1,
+                    Number = "(555)-555-5555",
+                };
+
                 var company = new Company
                 {
                     Name = "Serge Admin Company",
                     CompanyType = CompanyType.Carrier,
                     CompanyStatus = CompanyStatus.Admin,
-                    DateTimeRegistration = DateTime.Now
+                    DateTimeRegistration = DateTime.Now,
+                    PhoneNumber = phoneNumber,
                 };
 
                 await userManager.CreateAsync(user, "Welcome1");
@@ -143,21 +163,33 @@ namespace WebDispacher.Business.Services
                     UserName = "truckonnow1@test.com"
                 };
 
+                var phoneNumber = new PhoneNumber
+                {
+                    Name = "United States",
+                    Iso2 = "us",
+                    DialCode = 1,
+                    Number = "(555)-555-5555",
+                };
+
                 var company = new Company
                 {
                     Name = "Truckonnow Team1",
                     CompanyType = CompanyType.Carrier,
                     CompanyStatus = CompanyStatus.Active,
-                    DateTimeRegistration = DateTime.Now
+                    DateTimeRegistration = DateTime.Now,
+                    PhoneNumber = phoneNumber,
                 };
+
                 await db.Companies.AddAsync(company);
                 await userManager.CreateAsync(user, "truckon777");
                 await db.SaveChangesAsync();
+
                 var companyUser = new CompanyUser
                 {
                     CompanyId = company.Id,
                     UserId = user.Id,
                 };
+
                 await db.CompanyUsers.AddAsync(companyUser);
                 await db.SaveChangesAsync();
                 await userManager.AddToRoleAsync(user, "User");
@@ -177,13 +209,23 @@ namespace WebDispacher.Business.Services
                     UserName = "truckonnow2@test.com"
                 };
 
+                var phoneNumber = new PhoneNumber
+                {
+                    Name = "United States",
+                    Iso2 = "us",
+                    DialCode = 1,
+                    Number = "(555)-555-5555",
+                };
+
                 var company = new Company
                 {
                     Name = "Truckonnow Team2",
                     CompanyType = CompanyType.Carrier,
                     CompanyStatus = CompanyStatus.Active,
-                    DateTimeRegistration = DateTime.Now
+                    DateTimeRegistration = DateTime.Now,
+                    PhoneNumber = phoneNumber,
                 };
+
                 await db.Companies.AddAsync(company);
                 await userManager.CreateAsync(user, "truckon777");
                 await db.SaveChangesAsync();
@@ -211,12 +253,21 @@ namespace WebDispacher.Business.Services
                     UserName = "truckonnow3@test.com"
                 };
 
+                var phoneNumber = new PhoneNumber
+                {
+                    Name = "United States",
+                    Iso2 = "us",
+                    DialCode = 1,
+                    Number = "(555)-555-5555",
+                };
+
                 var company = new Company
                 {
                     Name = "Truckonnow Team3",
                     CompanyType = CompanyType.Carrier,
                     CompanyStatus = CompanyStatus.Active,
-                    DateTimeRegistration = DateTime.Now
+                    DateTimeRegistration = DateTime.Now,
+                    PhoneNumber = phoneNumber,
                 };
                 await db.Companies.AddAsync(company);
                 await userManager.CreateAsync(user, "truckon777");
@@ -244,13 +295,20 @@ namespace WebDispacher.Business.Services
                     Email = "serge.husack@gmail.com",
                     UserName = "serge.husack@gmail.com"
                 };
-
+                var phoneNumber = new PhoneNumber
+                {
+                    Name = "United States",
+                    Iso2 = "us",
+                    DialCode = 1,
+                    Number = "(555)-555-5555",
+                };
                 var company = new Company
                 {
                     Name = "Serge Carrier Company",
                     CompanyType = CompanyType.Carrier,
                     CompanyStatus = CompanyStatus.Active,
-                    DateTimeRegistration = DateTime.Now
+                    DateTimeRegistration = DateTime.Now,
+                    PhoneNumber = phoneNumber,
                 };
                 await db.Companies.AddAsync(company);
                 await userManager.CreateAsync(user, "Welcome1");
@@ -514,6 +572,133 @@ namespace WebDispacher.Business.Services
 
                 await db.SaveChangesAsync();
             }
+        }
+        
+        
+        public async Task InitVehicleCategory(string name)
+        {
+            if (db.VehiclesCategories.Any(cs => cs.Name == name))
+            {
+                Console.WriteLine($"{name} category already exists");
+            }
+            else
+            {
+                var vehicleCategory = new VehicleCategory
+                {
+                    Name = name
+                };
+
+                await db.VehiclesCategories.AddAsync(vehicleCategory);
+
+                await db.SaveChangesAsync();
+            }
+        }
+
+        public async Task InitVehiclesCategories()
+        {
+            await InitVehicleCategory("Pickup Truck");
+            await InitVehicleCategory("Semi-Truck");
+            await InitVehicleCategory("Box Truck");
+            await InitVehicleCategory("Dump Truck");
+            await InitVehicleCategory("Garbage Truck");
+            await InitVehicleCategory("Grapple Truck");
+            await InitVehicleCategory("Refrigerator Truck");
+            await InitVehicleCategory("Tow Truck");
+            await InitVehicleCategory("Van");
+            await InitVehicleCategory("Tractor");
+            await InitVehicleCategory("Motorhome");
+            await InitVehicleCategory("Bus");
+        }
+
+        public async Task InitTruckTypeInVehicleCategory(string vehicleCategoryName, string truckTypeName)
+        {
+            var vehicleCategory = db.VehiclesCategories.FirstOrDefault(vc => vc.Name == vehicleCategoryName);
+            if (vehicleCategory == null)
+            {
+                Console.WriteLine($"{vehicleCategoryName} not found");
+
+                return;
+            }
+
+            if (db.TruckTypes.Any(cs => cs.Name == truckTypeName))
+            {
+                Console.WriteLine($"{truckTypeName} truck type already exists");
+            }
+            else
+            {
+                var truckType = new TruckType
+                {
+                    Name = truckTypeName,
+                    VehicleCategoryId  = vehicleCategory.Id,
+                };
+
+                await db.TruckTypes.AddAsync(truckType);
+
+                await db.SaveChangesAsync();
+            }
+        }
+
+        public async Task InitTrucksTypesInVehicliesCategories()
+        {
+            List<(string, List<string>)> values = new List<(string, List<string>)>
+            {
+                ("Pickup Truck", new List<string>() {
+                "2Dr Pickup with Single Wheel", "2Dr Pickup with Dually Wheels", "4Dr Crew Cab Pickup with Single Wheel", "4Dr Crew Cab Pickup with Dually Wheels",
+                "2Dr Pickup ( flat bed ) Pickup with Single Wheel", "2Dr Pickup ( flat bed ) Pickup with  Dually Wheels", "4Dr Crew Cab ( flat bed ) Pickup with Single Wheel",
+                "4Dr Crew Cab ( flat bed ) Pickup with  Dually Wheels" }),
+                ("Semi-Truck",new List<string>() { "Day Cab", "Flat Roof Sleeper", "Mid-Roof Sleeper", "Raised Roof Sleeper"}),
+                ("Box Truck", new List<string>() { "10-foot Standard Box Truck (capacity 2850 lbs.)", "12-foot truck Standard Box Truck (capacity 3100 lbs.)", "16-foot truck Standard Box Truck (capacity 4300 lbs.)",
+                    "22-foot truck Standard Box Truck (capacity 10000 lbs.)", "24-foot truck Standard Box Truck (capacity 10000 lbs.)", "26-foot truck Standard Box Truck (capacity 12000 lbs.)",
+                    "Utility Box Truck", "Refrigerated Box Truck", "Landscaping Box Truck", "Flatbed Box Truck"}),
+                ("Dump Truck", new List<string>() { "Standard Dump Truck", "Side Dump Truck", "Tri-Axle Dump Truck", "Super Dump Truck", "Bottom Dump Truck", "Double Bottom Truck", "OFF-Highway Dump Truck"}),
+                ("Garbage Truck", new List<string>() { "Front Loader", "Rear Loader", "Side Loader", "Manual Side Loader", "Automatic Side Loader", "Manual/Automatic Side Loader", "Semi-Automatic Side Loader", }),
+                ("Grapple Truck", new List<string>() { "Combination Loader", "Rear-steering Design", "Rear-mounted Grappling Arm (no collection bin)", "Rear-mounted Grappling Arm with Connected Trailers",
+                    "Grapple-enabled Roll-off Truck"}),
+                ("Refrigerator Truck", new List<string>() { "Refrigerated with Lift Gate", "Full-Freezer Van", "Semi-Freezer Van", "Chiller Conversion Van", "Insulation Van"}),
+                ("Tow Truck", new List<string>() {"Boom", "Wheel-Lift", "Integrated", "Flatbed", "Lift Flatbed"}),
+                ("Van", new List<string>() { "Panel Van", "Crew Van", "Minibus", "Chassis Van", "Drop-side Van", "Tripper Van", "Box Van", "Luton Van", "Electric Van", }),
+                ("Tractor", new List<string>() { "Industrial Tractor (tugger)", "Row Crop Tractor", "Orchard Tractor", "Compact Tractor", "Sub-Compact Tractor", "Utility Tractor", "Garden Tractor",
+                    "Specialty Tractor", "Earthmoving Tractor",  }),
+                ("Motorhome", new List<string>() { "Class A (29-45ft.)", "Class B (18-24ft.)", "Class C (30-33ft.)" }),
+                ("Bus", new List<string>() { "Single-deck Bus", "Double-deck Bus", "Articulated Bus", "Trolley Bus", "School Bus", "Special needs Bus", "Coach/Motor Bus", "Shuttle Bus", "Party Bus",  }),
+
+            };
+
+            for(int i = 0; i < values.Count; i++)
+            {
+                var vehicleCategoryName = values[i].Item1;
+                for(int j = 0;  j < values[i].Item2.Count; j++)
+                {
+                    await InitTruckTypeInVehicleCategory(vehicleCategoryName, values[i].Item2[j]);
+                }
+            }
+        }
+
+        public async Task SetSlugByTruckTypeName(string truckTypeName, string slug)
+        {
+            var truckTypes = db.TruckTypes.FirstOrDefault(vc => vc.Name == truckTypeName);
+            if (truckTypes == null)
+            {
+                Console.WriteLine($"{truckTypes} not found");
+
+                return;
+            }
+
+            truckTypes.Slug = slug;
+
+            await db.SaveChangesAsync();
+        }
+
+        public async Task InitSlugsByTruckTypesNames()
+        {
+            await SetSlugByTruckTypeName("2Dr Pickup with Single Wheel", "2DrPickupwithSingleWheel");
+            await SetSlugByTruckTypeName("2Dr Pickup with Dually Wheels", "2DrPickupwithDuallyWheels");
+            await SetSlugByTruckTypeName("4Dr Crew Cab Pickup with Single Wheel", "4DrCrewCabPickupwithSingleWheel");
+            await SetSlugByTruckTypeName("4Dr Crew Cab Pickup with Dually Wheels", "4DrCrewCabPickupwithDuallyWheels");
+            await SetSlugByTruckTypeName("2Dr Pickup ( flat bed ) Pickup with Single Wheel", "2DrPickupPickupwithSingleWheel");
+            await SetSlugByTruckTypeName("2Dr Pickup ( flat bed ) Pickup with  Dually Wheels", "2DrPickupPickupwithDuallyWheels");
+            await SetSlugByTruckTypeName("4Dr Crew Cab ( flat bed ) Pickup with Single Wheel", "4DrCrewCabPickupwithSingleWheelFlatBed");
+            await SetSlugByTruckTypeName("4Dr Crew Cab ( flat bed ) Pickup with  Dually Wheels", "4DrCrewCabPickupwithDuallyWheelsFlatBed");
         }
     }
 }

@@ -189,4 +189,10 @@
   <data name="AddNewTruck" xml:space="preserve">
     <value>Добавить грузовик</value>
   </data>
+  <data name="VehicleCategory" xml:space="preserve">
+    <value>Категория Авто</value>
+  </data>
+  <data name="ChooseVehicleCategory" xml:space="preserve">
+    <value>Выберите тип авто</value>
+  </data>
 </root>

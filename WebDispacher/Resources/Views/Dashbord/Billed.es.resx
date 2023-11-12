@@ -179,4 +179,7 @@
 	<data name="CustomerMustPayShippingTo" xml:space="preserve">
 		<value>El cliente debe pagar el envío a</value>
 	</data>
+	<data name="PickupEstimated" xml:space="preserve">
+		<value>Recogida Estimada</value>
+	</data>
 </root>

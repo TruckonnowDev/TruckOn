@@ -173,4 +173,7 @@
 	<data name="Phone" xml:space="preserve">
 		<value>Teléfono</value>
 	</data>
+	<data name="PickupEstimated" xml:space="preserve">
+		<value>Recogida Estimada</value>
+	</data>
 </root>

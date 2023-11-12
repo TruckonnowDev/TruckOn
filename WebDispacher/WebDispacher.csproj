@@ -63,6 +63,10 @@
     <PackageReference Include="AngleSharp" Version="0.9.10" />
     <PackageReference Include="AspNetCoreRateLimit" Version="3.2.2" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageReference Include="DeviceDetector.NET" Version="3.11.6" />
+    <PackageReference Include="DeviceDetector.NET.NetCore" Version="3.9.2.2" />
+    <PackageReference Include="MaxMind.Db" Version="4.0.0" />
+    <PackageReference Include="MaxMind.GeoIP2" Version="3.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.32" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.32">
       <PrivateAssets>all</PrivateAssets>
@@ -82,6 +86,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Stripe.net" Version="37.16.0" />
     <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
+    <PackageReference Include="UserAgentParser" Version="1.17.0" />
     <PackageReference Include="xNet" Version="3.3.4" />
     
   </ItemGroup>
@@ -572,6 +577,18 @@
     <EmbeddedResource Update="Resources\Views\PartView\Modals\SelectNewTypeAd.ru.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SelectNewTypeAd.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\History\ChangeHistoryModalData.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ChangeHistoryModalData.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\History\ChangeHistoryModalData.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ChangeHistoryModalData.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\History\ChangeHistoryModalData.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ChangeHistoryModalData.ru.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

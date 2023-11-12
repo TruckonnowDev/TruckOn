@@ -34,7 +34,7 @@ namespace WebDispacher.Business.Interfaces
         void InitStripeForCompany(string nameCompany, string emailCompany, int companyId);
         Task<List<Contact>> GetContactsByCompanyId(int page, string companyId);
         Task UpdateCompanyStatus(int companyId, CompanyStatus companyStatus);
-
+        Task<int> GetNewUserMailQuestions();
         Task<bool> ActivateCompany(string companyId);
         Task<bool> UploadCompanyRequiredDoc(IFormFile certificateOfInsurance, IFormFile mcLetter, string companyId);
         Task<bool> CheckCompanyRequiredDoc(string idCompany);
@@ -85,5 +85,6 @@ namespace WebDispacher.Business.Interfaces
         List<UserDTO> GetUsers(int idCompanySelect);
         CustomerST GetCustomer_STByIdCompany(string companyId);
         Task SaveDocCompany(IFormFile uploadedFile, string nameDoc, int companyId, string localDate);
+        Task SetViewInUserMailQuestion(ViewUserMailQuestion model);
     }
 }

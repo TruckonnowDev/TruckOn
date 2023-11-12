@@ -125,4 +125,7 @@
 	<data name="MailControl" xml:space="preserve">
 		<value>Control de Correo</value>
 	</data>
+	<data name="Marketplace" xml:space="preserve">
+		<value>Mercado</value>
+	</data>
 </root>

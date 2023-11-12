@@ -11,7 +11,8 @@ namespace DaoModels.DAO.Models
         public string Contact { get; set; }
         public int? PhoneNumberId { get; set; }
         public PhoneNumber PhoneNumber { get; set; }
-        public string Fax { get; set; }
+        public int? FaxNumberId { get; set; }
+        public PhoneNumber FaxNumber { get; set; }
         public string McNumber { get; set; }
         public string Instructions { get; set; }
         public string PaymentMethod { get; set; }

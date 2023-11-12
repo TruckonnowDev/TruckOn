@@ -176,4 +176,7 @@
 	<data name="ShippingPaid" xml:space="preserve">
 		<value>Envío pagado</value>
 	</data>
+	<data name="PickupEstimated" xml:space="preserve">
+		<value>Recogida Estimada</value>
+	</data>
 </root>

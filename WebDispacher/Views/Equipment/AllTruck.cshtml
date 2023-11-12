@@ -69,7 +69,7 @@
                                     <div class="value-td">@Model[i].Model</div>
                                 </td>
                             <td aria-label="@Localizer["Type"]">
-                                    @{
+                                    @* @{
                                         var typeValue = Model[i].Type;
                                         switch (Model[i].Type)
                                         {
@@ -99,8 +99,8 @@
                                                 break;
                                         }
                                         <div class="value-td">@typeValue</div>
-                                    }
-                                    
+                                    } *@
+                                    <div class="value-td">@Model[i]?.TruckType?.Name</div>
                                 </td>
                             <td aria-label="@Localizer["Vin"] #">
                                     <div class="value-td">@Model[i].VIN</div>

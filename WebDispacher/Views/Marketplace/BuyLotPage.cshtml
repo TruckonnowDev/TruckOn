@@ -1,17 +1,21 @@
-﻿@using Microsoft.AspNetCore.Mvc.Localization;
+﻿@using MaxMind.GeoIP2;
+@using Microsoft.AspNetCore.Mvc.Localization;
 @using WebDispacher.Constants;
 @using WebDispacher.Service;
 @using WebDispacher.ViewModels.Marketplace;
+@using DeviceDetectorNET;
+@using DeviceDetectorNET.Parser;
+@using MaxMind.Db;
 
 @inject IViewLocalizer Localizer
 
-@model BuyItemMarketPostViewModel
+@model BuyItemMarketPostWithHistoryViewModel
 
 @{
     ViewData["Title"] = "Buy Lot | Marketplace";
 }
 <link rel="stylesheet"
-href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+      href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
 
 <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
 
@@ -22,7 +26,7 @@ href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
         <div class="container">
             <div class="row">
                 <div class="col-md-12"
-                style="
+                     style="
                        margin-top: 50px;">
                     <div class="nav-forum-marketplace">
                         <div class="nav-forum-item">
@@ -51,7 +55,7 @@ href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
                                 <div class="img-block" style="width:100%;padding: 16px;padding-left:0px;" id="lightgallery">
                                     <div style="--swiper-navigation-color: #fff; --swiper-pagination-color: #fff" class="swiper mySwiper2">
                                         <div class="swiper-wrapper">
-                                            @if (Model?.PhotoListMP?.Photos == null || Model?.PhotoListMP?.Photos.Count == 0)
+                                            @if (Model?.BuyItemMarketPost?.PhotoListMP?.Photos == null || Model?.BuyItemMarketPost?.PhotoListMP?.Photos.Count == 0)
                                             {
                                                 <div class="swiper-slide">
                                                     <span class="no-photos-item">@Localizer["NoImagesBlockHeader"]</span>
@@ -59,11 +63,11 @@ href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
                                             }
                                             else
                                             {
-                                                @foreach (var item in Model?.PhotoListMP?.Photos)
+                                                @foreach (var item in Model?.BuyItemMarketPost?.PhotoListMP?.Photos)
                                                 {
                                                     <div class="swiper-slide">
                                                         <a href="@Config.BaseReqvesteUrl/Marketpace/Image?imagePath=@item.PhotoPath" target="_blank" style="cursor: zoom-in">
-                                                            <img src="@Config.BaseReqvesteUrl/Marketpace/Image?imagePath=@item.PhotoPath" alt=""/>
+                                                            <img src="@Config.BaseReqvesteUrl/Marketpace/Image?imagePath=@item.PhotoPath" alt="" />
                                                         </a>
                                                     </div>
                                                 }
@@ -71,13 +75,13 @@ href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
                                         </div>
                                         <div class="swiper-button-next"></div>
                                         <div class="swiper-button-prev"></div>
-                                        @if (Model.MarketPost.ConditionPost == DaoModels.DAO.Enum.ConditionPost.Deleted)
+                                        @if (Model.BuyItemMarketPost.MarketPost.ConditionPost == DaoModels.DAO.Enum.ConditionPost.Deleted)
                                         {
                                             <div class="block-status">
                                                 <span>@Localizer["RemovedPostStatus"]</span>
                                             </div>
                                         }
-                                        @if (Model.MarketPost.ConditionPost == DaoModels.DAO.Enum.ConditionPost.Sold)
+                                        @if (Model.BuyItemMarketPost.MarketPost.ConditionPost == DaoModels.DAO.Enum.ConditionPost.Sold)
                                         {
                                             <div class="block-status">
                                                 <span>@Localizer["SoldPostStatus"]</span>
@@ -86,12 +90,12 @@ href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
                                     </div>
                                     <div thumbsSlider="" class="swiper mySwiper">
                                         <div class="swiper-wrapper">
-                                            @if (Model?.PhotoListMP?.Photos != null && Model?.PhotoListMP?.Photos.Count != 0)
+                                            @if (Model?.BuyItemMarketPost?.PhotoListMP?.Photos != null && Model?.BuyItemMarketPost?.PhotoListMP?.Photos.Count != 0)
                                             {
-                                                @foreach (var item in Model.PhotoListMP.Photos)
+                                                @foreach (var item in Model.BuyItemMarketPost.PhotoListMP.Photos)
                                                 {
                                                     <div class="swiper-slide">
-                                                        <img src="@Config.BaseReqvesteUrl/Marketpace/Image?imagePath=@item.PhotoPath" alt=""/>
+                                                        <img src="@Config.BaseReqvesteUrl/Marketpace/Image?imagePath=@item.PhotoPath" alt="" />
                                                     </div>
                                                 }
                                             }
@@ -102,11 +106,11 @@ href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
                             <div class="col-md-5" style="padding:6px;">
                                 <div class="main-short-text-block">
                                     <div class="main-text-block">
-                                        <h1>@Model.Title</h1>
+                                        <h1>@Model.BuyItemMarketPost.Title</h1>
                                         <h3>
-                                            @if (ViewBag.QueryUser.Id.Equals(Model.MarketPost.UserId))
+                                            @if (ViewBag.QueryUser.Id.Equals(Model.BuyItemMarketPost.MarketPost.UserId))
                                             {
-                                                @switch (Model.MarketPost.ConditionPost)
+                                                @switch (Model.BuyItemMarketPost.MarketPost.ConditionPost)
                                                 {
                                                     case DaoModels.DAO.Enum.ConditionPost.Published:
                                                         {
@@ -133,16 +137,16 @@ href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
                                             }
                                         </h3>
                                         <div class="zip-code">
-                                            <h3>@Localizer["ZipCodeLabel"] -- <b>@Model.ZipCode</b></h3>
+                                            <h3>@Localizer["ZipCodeLabel"] -- <b>@Model.BuyItemMarketPost.ZipCode</b></h3>
                                         </div>
                                     </div>
                                     <div class="control-panel mt-4">
-                                        @if (Model.MarketPost.ConditionPost != DaoModels.DAO.Enum.ConditionPost.Deleted
-                                                && Model.MarketPost.ConditionPost != DaoModels.DAO.Enum.ConditionPost.Sold)
+                                        @if (Model.BuyItemMarketPost.MarketPost.ConditionPost != DaoModels.DAO.Enum.ConditionPost.Deleted
+                                        && Model.BuyItemMarketPost.MarketPost.ConditionPost != DaoModels.DAO.Enum.ConditionPost.Sold)
                                         {
-                                            @if (ViewBag.QueryUser.Id.Equals(Model.MarketPost.UserId))
+                                            @if (ViewBag.QueryUser.Id.Equals(Model.BuyItemMarketPost.MarketPost.UserId))
                                             {
-                                                <a class="btn2 mt-3" href="/Marketplace/Classifieds/CategoryBuy/@Model.MarketPostId/Edit">@Localizer["ManageButton"]</a>
+                                                <a class="btn2 mt-3" href="/Marketplace/Classifieds/CategoryBuy/@Model.BuyItemMarketPost.MarketPostId/Edit">@Localizer["ManageButton"]</a>
                                             }
                                             else
                                             {
@@ -153,7 +157,6 @@ href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
                                         }
                                     </div>
                                     <div class="info-seller">
-
                                     </div>
                                 </div>
                             </div>
@@ -161,37 +164,194 @@ href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
                                 <div class="text-block">
                                     <div class="description">
                                         <h2>@Localizer["DescriptionBlockLabel"]</h2>
-                                        <p>@Model.Description</p>
+                                        <p>@Model.BuyItemMarketPost.Description</p>
                                     </div>
                                 </div>
                             </div>
+                            @if (ViewBag.Admin != null && ViewBag.Admin.CompanyStatus == DaoModels.DAO.Enum.CompanyStatus.Admin)
+                            {
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-12 mb-2">
+                                            <div class="right-bar-about">
+                                                <h3 class="text-info-header-3">@Localizer["ActionHistory"]</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="archive-item">
+                                        <div class="archive-title">
+                                            <p style="font-size: 20px">
+                                                @Localizer["ShowHistory"]
+                                                <span>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
+                                                        <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                                                    </svg>
+                                                </span>
+                                            </p>
+                                        </div>
+                                        <div class="content">
+                                            <div class="row">
+                                                @for (var i = 0; i < Model.Actions.Count; i++)
+                                                {
+                                                    var date = Model.Actions[i].GroupAction.ToString(DateTimeFormats.DateTimeInfoUS);
+                                                    <div class="col-md-3 mb-4" data-toggle="modal" data-target="#historyChanges" data-date="@date" data-item-id="@Model.BuyItemMarketPost.MarketPostId">
+                                                        <div class="one text-info-p">
+                                                            <p>
+                                                                <b>@Localizer["DateAction"]:</b> @Model.Actions[i].GroupAction.ToString(DateTimeFormats.DateTimeInfoUS)
+                                                            </p>
+                                                            <p>
+                                                                <b>@Localizer["CountActions"]: </b> @Model.Actions[i].GroupCount
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
-    @await Html.PartialAsync("~/Views/PartView/Modals/ShowPhoneNumber.cshtml", $"+{Model?.PhoneNumber?.DialCode} {Model?.PhoneNumber?.Number}")
+    @if (ViewBag.Admin != null && ViewBag.Admin.CompanyStatus == DaoModels.DAO.Enum.CompanyStatus.Admin)
+    {
+        @await Html.PartialAsync("~/Views/PartView/History/ChangeHistoryElem.cshtml")
+    }
+    @await Html.PartialAsync("~/Views/PartView/Modals/ShowPhoneNumber.cshtml", $"+{Model?.BuyItemMarketPost?.PhoneNumber?.DialCode} {Model?.BuyItemMarketPost?.PhoneNumber?.Number}")
 </body>
 
- <script>
+<script>
+    $(document).on("show.bs.modal", "#historyChanges", function (event) {
+        var button = $(event.relatedTarget);
+        var date = button.data("date");
+        var itemId = button.data("item-id");
+
+        $.ajax({
+            type: "GET",
+            url: `/Marketplace/GetChanges?date=${date}&marketPostId=${itemId}`,
+            success: function (data) {
+                $("#historyChanges").find(".modal-dialog").html(data);
+            }
+        });
+    });
+</script>
+
+<script>
+    const archiveItems = document.querySelectorAll(".archive-item");
+    archiveItems.forEach(item => {
+        item.querySelector(".archive-title").addEventListener("click", () => {
+            item.classList.toggle("active");
+            let contentItem = item.querySelector(".content");
+            if (contentItem.style.maxHeight) {
+                contentItem.style.maxHeight = null;
+            } else {
+                contentItem.style.maxHeight = contentItem.scrollHeight + 'px'
+            }
+        })
+    })
+</script>
+
+<style>
+    .archive-item {
+        cursor: pointer;
+    }
+
+    .archive-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .archive-title h3 {
+            font-size: 1.7rem;
+        }
+
+        .archive-title span {
+            vertical-align: middle;
+        }
+
+    .content {
+        visibility: hidden;
+        overflow: hidden;
+        max-height: 0;
+        opacity: 0;
+        transition: visibility 1s, opacity 0.5s ease, max-height 0.5s ease;
+    }
+
+    .archive-item.active .content {
+        visibility: visible;
+        opacity: 1;
+        transition: visibility 1s, opacity 0.5s ease;
+    }
+
+    .archive-item .archive-title span svg {
+        transform: rotate(360deg);
+        transition: transform 0.3s ease;
+    }
+
+    .archive-item.active .archive-title span svg {
+        transform: rotate(180deg);
+        transition: transform 0.3s ease;
+    }
+
+    .archive-item p {
+        font-size: 13px;
+    }
+
+    p {
+        font-size: 15px;
+    }
+
+    h3 {
+        font-size: 16px;
+    }
+
+    .Billing table td {
+        width: 350px;
+    }
+
+
+    .modal-dialog.change-history {
+        position: absolute;
+        left: 0;
+        right: 0;
+        margin-left: auto;
+        margin-right: auto;
+        top: 100px;
+        width: 520px !important;
+        text-align: left;
+        background-color: #fff;
+        -moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
+        -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
+        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
+        transition: height 0.25s linear;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        border-radius: 30px;
+    }
+</style>
+<script>
     var swiper = new Swiper(".mySwiper", {
-      spaceBetween: 8,
-      slidesPerView: 6,
-      freeMode: true,
-      watchSlidesProgress: true,
+        spaceBetween: 8,
+        slidesPerView: 6,
+        freeMode: true,
+        watchSlidesProgress: true,
     });
     var swiper2 = new Swiper(".mySwiper2", {
-      spaceBetween: 8,
-      navigation: {
-        nextEl: ".swiper-button-next",
-        prevEl: ".swiper-button-prev",
-      },
-      thumbs: {
-        swiper: swiper,
-      },
+        spaceBetween: 8,
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+        thumbs: {
+            swiper: swiper,
+        },
     });
-  </script>
+</script>
 
 <style>
     .swiper {
@@ -210,12 +370,12 @@ href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
         max-height: 450px;
     }
 
-    .swiper-slide img {
-        display: block;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
+        .swiper-slide img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
     .swiper {
         width: 100%;
@@ -241,28 +401,28 @@ href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
         padding: 10px 2px;
     }
 
-    .mySwiper .swiper-slide {
-        width: 25%;
-        height: 86px;
-        opacity: 0.4;
-        cursor: pointer;
-    }
+        .mySwiper .swiper-slide {
+            width: 25%;
+            height: 86px;
+            opacity: 0.4;
+            cursor: pointer;
+        }
 
     .mySwiper2 .swiper-slide-active {
         transition: transform 0.3s ease;
     }
 
-    .mySwiper2 .swiper-slide-active:hover {
-        transform: scale(1.05);
-    }
-    
+        .mySwiper2 .swiper-slide-active:hover {
+            transform: scale(1.05);
+        }
+
     .mySwiper .swiper-slide-thumb-active {
         opacity: 1;
     }
 
-    .mySwiper .swiper-slide-thumb-active img {
-        border: 2px red solid;
-    }
+        .mySwiper .swiper-slide-thumb-active img {
+            border: 2px red solid;
+        }
 
     .swiper-slide img {
         display: block;
@@ -271,11 +431,12 @@ href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
         object-fit: cover;
     }
 </style>
+
 <style>
     .btn2, .btn3 {
         max-width: 300px;
     }
-    
+
     .btn2 {
         text-align: center;
     }
@@ -323,6 +484,7 @@ href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
 </style>
 
 <script src="~/js/input-replacer.js"></script>
+
 <script>
     $(document).ready(function () {
         ShowAlert();

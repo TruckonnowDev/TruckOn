@@ -39,4 +39,7 @@
     <data name="Submit" xml:space="preserve">
         <value>Submit</value>
     </data>
+    <data name="IncomingMessage" xml:space="preserve">
+        <value>Incoming Message</value>
+    </data>
 </root>

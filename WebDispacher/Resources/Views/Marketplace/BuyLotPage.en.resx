@@ -63,4 +63,16 @@
     <data name="DescriptionBlockLabel" xml:space="preserve">
         <value>Description</value>
     </data>
+    <data name="ActionHistory" xml:space="preserve">
+        <value>Action History</value>
+    </data>
+    <data name="ShowHistory" xml:space="preserve">
+        <value>Show History</value>
+    </data>
+    <data name="DateAction" xml:space="preserve">
+        <value>Date Action</value>
+    </data>
+    <data name="CountActions" xml:space="preserve">
+        <value>Count Actions</value>
+    </data>
 </root>

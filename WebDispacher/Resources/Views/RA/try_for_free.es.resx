@@ -132,7 +132,7 @@
   <data name="CarrierTMSDescription" xml:space="preserve">
     <value>Carrier TMS lo ayuda a administrar cargas, conductores y facturación. Todo en un solo lugar.</value>
   </data>
-  <data name="RequestAccess" xml:space="preserve">
+  <data name="ShipperTMSRequestAccessButton" xml:space="preserve">
     <value>Solicitar Acceso</value>
   </data>
   <data name="ShipperFirstItem" xml:space="preserve">
@@ -149,5 +149,17 @@
   </data>
   <data name="SignUp" xml:space="preserve">
     <value>Registrarse</value>
+  </data>
+  <data name="CarrierTMSRequestAccessButton" xml:space="preserve">
+    <value>Solicitar Acceso</value>
+  </data>
+  <data name="BrokerTMSRequestAccessButton" xml:space="preserve">
+    <value>Solicitar Acceso</value>
+  </data>
+  <data name="BrokerTMS" xml:space="preserve">
+    <value>TMS del Corredor</value>
+  </data>
+  <data name="IncomingMessage" xml:space="preserve">
+    <value>Mensaje Entrante</value>
   </data>
 </root>

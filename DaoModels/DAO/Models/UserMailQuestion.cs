@@ -15,5 +15,6 @@ namespace DaoModels.DAO.Models
         public MailStatus MailStatus { get; set; }
         public DateTime DateTimeReceived { get; set; }
         public List<AdminAnswer> AdminAnswers { get; set; }
+        public List<ViewUserMailQuestion> Views { get; set; }
     }
 }

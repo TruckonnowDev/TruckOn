@@ -19,6 +19,7 @@ using WebDispacher.Business.Interfaces;
 using WebDispacher.Constants;
 using WebDispacher.Service;
 using WebDispacher.ViewModels.Marketplace;
+using WebDispacher.ViewModels.Order;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace WebDispacher.Business.Services
@@ -39,13 +40,15 @@ namespace WebDispacher.Business.Services
             Context db,
             ICompanyService companyService,
             IMemoryCache memoryCache,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            IHistoryActionService historyActionService)
         {
             this.mapper = mapper;
             this.db = db;
             this.companyService = companyService;
             this.memoryCache = memoryCache;
             this.httpContextAccessor = httpContextAccessor;
+            this.historyActionService = historyActionService;
         }
 
         public async Task<bool> AddViewToMarketPost(int postId, string userId)
@@ -77,7 +80,7 @@ namespace WebDispacher.Business.Services
 
         public async Task<List<ItemMarketPostShortViewModel>> GetBuyItemsMarketPosts(BuyMarketPostsFiltersViewModel filters, User user)
         {
-            var buyItems = await GetFilteredBuyItems(filters, user).ToListAsync();
+            var buyItems = GetFilteredBuyItems(filters, user).ToList();
 
             var buyItemsViewModel = await ConvertBuyItemsToMarketPostViewModelListAsync(buyItems);
 
@@ -115,7 +118,7 @@ namespace WebDispacher.Business.Services
 
             return PaginateItemsViewModel(sellItemsViewModel, filters.Page);
         }
-        
+
         public async Task<List<ItemMarketPostShortViewModel>> GetUserItemsMarketPosts(UserMarketPostsFiltersViewModel filters, User user)
         {
             var sellItems = await GetFilteredSellItems(
@@ -130,7 +133,7 @@ namespace WebDispacher.Business.Services
                 },
                 user)
                 .ToListAsync();
-            
+
             var buyItems = await GetFilteredBuyItems(
                 new BuyMarketPostsFiltersViewModel
                 {
@@ -225,7 +228,7 @@ namespace WebDispacher.Business.Services
                 .ThenInclude(simp => simp.Photos)
                 .FirstOrDefaultAsync(simp => simp.MarketPostId == id);
             if (model == null) return null;
-            
+
             if (model.MarketPost.ConditionPost == ConditionPost.Published
                 || model.MarketPost.ConditionPost == ConditionPost.Sold)
             {
@@ -233,6 +236,40 @@ namespace WebDispacher.Business.Services
             }
 
             return IsHavePermissionToEditMarketPost(id, currentUserId) ? mapper.Map<SellItemMarketPostViewModel>(model) : null;
+        }
+        
+        public async Task<SellItemMarketPostWithHistoryViewModel> GetSellItemMarketPostWithHistory(int id, string currentUserId)
+        {
+            var model = await db.SellItemsMarketsPosts
+                .Include(simp => simp.MarketPost)
+                .ThenInclude(mp => mp.User)
+                .Include(simp => simp.PhoneNumber)
+                .Include(simp => simp.PhotoListMP)
+                .ThenInclude(simp => simp.Photos)
+                .FirstOrDefaultAsync(simp => simp.MarketPostId == id);
+            if (model == null) return null;
+
+            var history = GetMarketPostHistoryActionsById(model.MarketPostId);
+
+            var sellItemMarketPostViewModel = mapper.Map<SellItemMarketPostViewModel>(model);
+
+            if (model.MarketPost.ConditionPost == ConditionPost.Published
+                || model.MarketPost.ConditionPost == ConditionPost.Sold)
+            {
+                return new SellItemMarketPostWithHistoryViewModel
+                {
+                    SellItemMarketPost = sellItemMarketPostViewModel,
+                    Actions = history,
+                };
+            }
+
+            return IsHavePermissionToEditMarketPost(id, currentUserId) ?
+                new SellItemMarketPostWithHistoryViewModel
+            {
+                SellItemMarketPost = sellItemMarketPostViewModel,
+                Actions = history,
+            }
+            : null;
         }
 
         public async Task<bool> RemoveUploadedImage(int id)
@@ -385,7 +422,7 @@ namespace WebDispacher.Business.Services
         }
 
 
-        public async Task<int> UpdateBuyLot(BuyItemMarketPostViewModel model, List<IFormFile> files, string localDate)
+        public async Task<int> UpdateBuyLot(BuyItemMarketPostViewModel model, string companyId, List<IFormFile> files, string localDate)
         {
             var dateTimeLastUpdate = DateTime.ParseExact(localDate, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
 
@@ -420,6 +457,20 @@ namespace WebDispacher.Business.Services
 
             if (currentBuyItemMarketPost != null)
             {
+                var editBuyItemMarketPostViewModel = mapper.Map<BuyItemMarketPostViewModel>(currentBuyItemMarketPost);
+                var userId = (await companyService.GetUserByCompanyId(companyId)).Id;
+                var authorId = currentMarketPost.UserId;
+
+                var actionData = new HistoryActionData
+                {
+                    UserId = userId,
+                    AuthorId = authorId,
+                    IPAddress = GetIPAddress(),
+                    UserAgent = GetUserAgent(),
+                };
+
+                await historyActionService.CompareAndSaveUpdatedFields<HistoryMarketPostAction, BuyItemMarketPostViewModel>(editBuyItemMarketPostViewModel, model, currentMarketPost.Id, actionData, dateTimeLastUpdate);
+
                 currentBuyItemMarketPost.Title = model.Title;
                 currentBuyItemMarketPost.Description = model.Description;
                 currentBuyItemMarketPost.Email = model.Email;
@@ -439,7 +490,236 @@ namespace WebDispacher.Business.Services
             return currentMarketPost.Id;
         }
 
-        public async Task<int> UpdateSellLot(SellItemMarketPostViewModel model, List<IFormFile> files, string localDate)
+        public async Task<BuyItemMarketPostWithHistoryViewModel> GetBuyItemMarketPostWithHistory(int id, string currentUserId)
+        {
+            using (var dbt = new Context())
+            {
+                var model = await dbt.BuyItemsMarketsPosts
+                    .Include(bimp => bimp.MarketPost)
+                    .ThenInclude(mp => mp.User)
+                    .Include(bimp => bimp.PhoneNumber)
+                    .Include(bimp => bimp.PhotoListMP)
+                    .ThenInclude(plmp => plmp.Photos)
+                    .FirstOrDefaultAsync(bimp => bimp.MarketPostId == id);
+
+                if (model == null) return null;
+
+                var history = GetMarketPostHistoryActionsById(model.MarketPostId);
+
+                var buyItemMarketPostViewModel = mapper.Map<BuyItemMarketPostViewModel>(model);
+
+                if (model.MarketPost.ConditionPost == ConditionPost.Published
+                    || model.MarketPost.ConditionPost == ConditionPost.Sold)
+                {
+                    return new BuyItemMarketPostWithHistoryViewModel
+                    {
+                        BuyItemMarketPost = buyItemMarketPostViewModel,
+                        Actions = history,
+                    };
+                }
+
+                return IsHavePermissionToEditMarketPost(id, currentUserId) ?
+                    new BuyItemMarketPostWithHistoryViewModel
+                    {
+                        BuyItemMarketPost = buyItemMarketPostViewModel,
+                        Actions = history,
+                    }
+                : null;
+            }
+        }
+
+
+        public HistoryMarketPostActionGroup GetHistoryForDate(DateTime date, int itemId)
+        {
+            var historyBuyItemActions = db.HistoriesMarketPostsActions
+                .Where(hoa => hoa.MarketPostId == itemId && hoa.DateTimeAction.Date == date.Date)
+                .OrderByDescending(hoa => hoa.DateTimeAction)
+                .ToList();
+
+            var userIds = historyBuyItemActions.Select(hoa => hoa.UserId).Distinct().ToList();
+
+            var companyNames = db.CompanyUsers
+                .Where(cu => userIds.Contains(cu.UserId))
+                .Select(cu => new
+                {
+                    UserId = cu.UserId,
+                    CompanyName = cu.Company.Name
+                })
+                .ToDictionary(x => x.UserId, x => x.CompanyName);
+
+            var groupedHistory = new HistoryMarketPostActionGroup
+            {
+                GroupAction = date,
+                Groups = historyBuyItemActions.Select(hoa =>
+                {
+                    var historyBuyMarketPostActionViewModel = new HistoryMarketPostActionViewModel
+                    {
+                        Id = hoa.Id,
+                        UserId = hoa.UserId,
+                        ActionType = hoa.ActionType,
+                        ChangedField = hoa.ChangedField,
+                        ContentBefore = hoa.ContentBefore,
+                        ContentAfter = hoa.ContentAfter,
+                        DateTimeAction = hoa.DateTimeAction,
+                        UserAgent = hoa.UserAgent,
+                        IpAddress = hoa.IpAddress,
+                        AuthorName = companyNames.ContainsKey(hoa.UserId) ? companyNames[hoa.UserId] : "Not Found",
+                        CurrentUserName = companyNames.ContainsKey(hoa.UserId) ? companyNames[hoa.UserId] : "Not Found",
+                        UserAgentInfoViewModel = GetInfoAboutUserAgent(hoa.UserAgent),
+                        IPInfoViewModel = GetInfoAboutIpAddress(hoa.IpAddress),
+                    };
+                    return historyBuyMarketPostActionViewModel;
+                }).ToList()
+            };
+
+            return groupedHistory;
+        }
+
+        public IPInfoViewModel GetInfoAboutIpAddress(string ipAddress)
+        {
+            try
+            {
+                using(var reader = new DatabaseReader(PathDbGeo))
+                {
+                    var response = reader.City(ipAddress);
+                    var ipInfoViewModel = new IPInfoViewModel
+                    {
+                        CountryName = response.Country.Name,
+                        MostSpecificSubdivisionName = response.MostSpecificSubdivision.Name,
+                        CityName = response.City.Name,
+                        PostalCode = response.Postal.Code,
+                        PostalCodeСonfidence = response.Postal.Confidence,
+                        Latitude = response.Location.Latitude,
+                        Longitude = response.Location.Longitude,
+                        LocationAccuracyRadius = response.Location.AccuracyRadius
+                    };
+
+                    return ipInfoViewModel;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                
+            }
+
+            return null;
+        }
+        
+        public UserAgentInfoViewModel GetInfoAboutUserAgent(string userAgent)
+        {
+            try
+            {
+                var agentInfo = new DeviceDetector(userAgent);
+                agentInfo.Parse();
+
+                if (agentInfo.IsBot()) return null;
+                var userAgentViewModel = new UserAgentInfoViewModel();
+
+                var clientInfo = agentInfo.GetClient();
+                if(clientInfo != null)
+                {
+                    userAgentViewModel.BrowserName = clientInfo.Match.Name;
+                    userAgentViewModel.BrowserVersion = clientInfo.Match.Version;
+                }
+
+                var osInfo = agentInfo.GetOs();
+                if (osInfo != null)
+                {
+                    userAgentViewModel.OSName = osInfo.Match.Name;
+                    userAgentViewModel.OSVersion = osInfo.Match.Version;
+                    userAgentViewModel.OSPlatform = osInfo.Match.Platform;
+                }
+
+                userAgentViewModel.DeviceName = agentInfo.GetDeviceName();
+                userAgentViewModel.DeviceBrand = agentInfo.GetBrandName();
+                userAgentViewModel.DeviceModel = agentInfo.GetModel();
+                userAgentViewModel.IsDesktop = agentInfo.IsDesktop();
+                userAgentViewModel.IsMobile = agentInfo.IsMobile();
+
+                return userAgentViewModel;
+            }
+            catch (Exception ex)
+            {
+                
+            }
+
+            return null;
+        }
+
+        public List<GroupsHistoriesListShortViewModel> GetMarketPostHistoryActionsById(int id)
+        {
+            using (var dbt = new Context())
+            {
+                var historyBuyItemActions = dbt.HistoriesMarketPostsActions
+                    .Where(hoa => hoa.MarketPostId == id)
+                    .OrderByDescending(hoa => hoa.DateTimeAction)
+                    .AsEnumerable()
+                    .ToList();
+
+                var groupedHistoryData = historyBuyItemActions
+                    .GroupBy(hoa => hoa.DateTimeAction.Date)
+                    .Select(group => new GroupsHistoriesListShortViewModel
+                    {
+                        GroupAction = group.Key,
+                        GroupCount = group.Count()
+                    })
+                    .ToList();
+
+                return groupedHistoryData;
+            }
+        }
+
+        public List<HistoryMarketPostActionGroup> GetBuyItemHistoryById(int id)
+        {
+            var historyBuyItemActions = db.HistoriesMarketPostsActions
+                .Where(hoa => hoa.MarketPostId == id)
+                .OrderByDescending(hoa => hoa.DateTimeAction)
+                .AsEnumerable()
+                .ToList();
+
+            var userIds = historyBuyItemActions.Select(hoa => hoa.UserId).Distinct().ToList();
+
+            var companyNames = db.CompanyUsers
+                .Where(cu => userIds.Contains(cu.UserId))
+                .Select(cu => new
+                {
+                    UserId = cu.UserId,
+                    CompanyName = cu.Company.Name
+                })
+                .ToDictionary(x => x.UserId, x => x.CompanyName);
+
+            var groupedHistory = historyBuyItemActions
+                .GroupBy(hoa => hoa.DateTimeAction.Date)
+                .Select(group => new HistoryMarketPostActionGroup
+                {
+                    GroupAction = group.Key,
+                    Groups = group.Select(hoa =>
+                    {
+                        var historyBuyMarketPostActionViewModel = new HistoryMarketPostActionViewModel
+                        {
+                            Id = hoa.Id,
+                            UserId = hoa.UserId,
+                            ActionType = hoa.ActionType,
+                            ChangedField = hoa.ChangedField,
+                            ContentBefore = hoa.ContentBefore,
+                            ContentAfter = hoa.ContentAfter,
+                            DateTimeAction = hoa.DateTimeAction,
+                            UserAgent = hoa.UserAgent,
+                            IpAddress = hoa.IpAddress,
+                            AuthorName = companyNames.ContainsKey(hoa.UserId) ? companyNames[hoa.UserId] : "Not Found",
+                            CurrentUserName = companyNames.ContainsKey(hoa.UserId) ? companyNames[hoa.UserId] : "Not Found"
+                        };
+                        return historyBuyMarketPostActionViewModel;
+                    }).ToList()
+                })
+                .ToList();
+
+            return groupedHistory;
+        }
+
+
+        public async Task<int> UpdateSellLot(SellItemMarketPostViewModel model, string companyId, List<IFormFile> files, string localDate)
         {
             var dateTimeLastUpdate = DateTime.ParseExact(localDate, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
 
@@ -459,7 +739,7 @@ namespace WebDispacher.Business.Services
 
             var currentPhoneNumber = await db.PhonesNumbers.FirstOrDefaultAsync(p => p.Id == model.PhoneNumberId);
 
-            if(currentPhoneNumber != null)
+            if (currentPhoneNumber != null)
             {
                 currentPhoneNumber.Number = model.PhoneNumber.Number;
                 currentPhoneNumber.DialCode = model.PhoneNumber.DialCode;
@@ -474,6 +754,20 @@ namespace WebDispacher.Business.Services
 
             if (currentSellItemMarketPost != null)
             {
+                var editSellItemMarketPostViewModel = mapper.Map<SellItemMarketPostViewModel>(currentSellItemMarketPost);
+                var userId = (await companyService.GetUserByCompanyId(companyId)).Id;
+                var authorId = currentMarketPost.UserId;
+
+                var actionData = new HistoryActionData
+                {
+                    UserId = userId,
+                    AuthorId = authorId,
+                    IPAddress = GetIPAddress(),
+                    UserAgent = GetUserAgent(),
+                };
+
+                await historyActionService.CompareAndSaveUpdatedFields<HistoryMarketPostAction, SellItemMarketPostViewModel>(editSellItemMarketPostViewModel, model, currentMarketPost.Id, actionData, dateTimeLastUpdate);
+
                 currentSellItemMarketPost.Title = model.Title;
                 currentSellItemMarketPost.Description = model.Description;
                 currentSellItemMarketPost.Email = model.Email;
@@ -484,8 +778,8 @@ namespace WebDispacher.Business.Services
 
             await db.SaveChangesAsync();
 
-            if (files != null &&  files.Count <= MaxCountFilesInPost) 
-            { 
+            if (files != null && files.Count <= MaxCountFilesInPost)
+            {
                 foreach (var file in files)
                 {
                     await SavePhotoToPost(file, UserConstants.MarketplaceSellEntityTypeResetPassword, currentSellItemMarketPost.PhotoListMPId, dateTimeLastUpdate);
@@ -497,12 +791,15 @@ namespace WebDispacher.Business.Services
 
         public bool IsHavePermissionToEditMarketPost(int postId, string userId)
         {
-            var isAuthor = db.MarketPosts.Any(mp => mp.Id == postId && mp.UserId == userId);
+            using (var dbt = new Context())
+            {
+                var isAuthor = dbt.MarketPosts.Any(mp => mp.Id == postId && mp.UserId == userId);
 
-            return isAuthor;
+                return isAuthor;
+            }
         }
 
-        public async Task<(int,DateTime)> GetCountViewAndDateLastUpdateBuy()
+        public async Task<(int, DateTime)> GetCountViewAndDateLastUpdateBuy()
         {
             var lastUpdateDateTime = await GetDateTimeLastUpdateBuy();
 
@@ -533,7 +830,7 @@ namespace WebDispacher.Business.Services
 
             return lastUpdateDateTime;
         }
-        
+
         public async Task<int> GetTotalViewBuy()
         {
             var cacheKey = $"GetTotalViewBuy";
@@ -557,7 +854,7 @@ namespace WebDispacher.Business.Services
             return lastUpdateDateTime;
         }
 
-        public async Task<(int,DateTime)> GetCountViewAndDateLastUpdateSell()
+        public async Task<(int, DateTime)> GetCountViewAndDateLastUpdateSell()
         {
             var lastUpdateDateTime = await GetDateTimeLastUpdateSell();
 
@@ -611,9 +908,8 @@ namespace WebDispacher.Business.Services
 
             return lastUpdateDateTime;
         }
-        
-        
-        public async Task<(int,DateTime)> GetCountViewAndDateLastUpdateByUserId(string userId)
+
+        public async Task<(int, DateTime)> GetCountViewAndDateLastUpdateByUserId(string userId)
         {
             var lastUpdateDateTime = await GetDateTimeLastUpdateUserId(userId);
 
@@ -621,7 +917,7 @@ namespace WebDispacher.Business.Services
 
             return (totalViewForUser, lastUpdateDateTime);
         }
-        
+
         public async Task<int> GetTotalViewUserId(string userId)
         {
             var cacheKey = $"GetTotalView_" + userId;
@@ -644,7 +940,7 @@ namespace WebDispacher.Business.Services
 
             return lastUpdateDateTime;
         }
-        
+
         public async Task<DateTime> GetDateTimeLastUpdateUserId(string userId)
         {
             var cacheKey = $"GetDateTimeLastUpdate_" + userId;
@@ -668,7 +964,7 @@ namespace WebDispacher.Business.Services
             return lastUpdateDateTime;
         }
 
-        public async Task<(int,DateTime)> GetCountViewAndDateLastUpdateAll()
+        public async Task<(int, DateTime)> GetCountViewAndDateLastUpdateAll()
         {
             var lastUpdateDateTime = await GetDateTimeLastUpdateAll();
 
@@ -721,6 +1017,28 @@ namespace WebDispacher.Business.Services
             }
 
             return lastUpdateDateTime;
+        }
+
+        public async Task<bool> AddHistoryMarketPostItem(int postId, string userId)
+        {
+            /* var marketPost = await db.MarketPosts
+                 .FirstOrDefaultAsync(mp => mp.Id == postId);
+
+             if (marketPost == null) return false;
+
+             var viewMarketPost = new HistoryMarketPostAction
+             {
+                 UserId = userId,
+                 MarketPostId = postId,
+                 DateTimeAction = DateTime.UtcNow,
+                 UserAgent = GetUserAgent(),
+                 IPAddress = GetIPAddress()
+             };
+
+             db.ViewsMarketsPosts.Add(viewMarketPost);
+             await db.SaveChangesAsync();*/
+
+            return true;
         }
 
         public async Task SavePhotoToPost(IFormFile uploadedFile, string postType, int postId, DateTime dateTimeUpload)
@@ -785,7 +1103,7 @@ namespace WebDispacher.Business.Services
 
             return buyItems;
         }
-        
+
         private IQueryable<SellItemMarketPost> GetFilteredSellItems(SellMarketPostsFiltersViewModel filters, User user)
         {
             var sellItems = db.SellItemsMarketsPosts
@@ -807,7 +1125,7 @@ namespace WebDispacher.Business.Services
             {
                 sellItems = sellItems.Where(simp => simp.Price > filters.FirstPrice);
             }
-            
+
             if (filters.LastPrice != 0)
             {
                 sellItems = sellItems.Where(simp => simp.Price < filters.LastPrice);
@@ -837,7 +1155,7 @@ namespace WebDispacher.Business.Services
 
             return buyItemsViewModel;
         }
-        
+
         private async Task<List<ItemMarketPostShortViewModel>> ConvertSellItemsToMarketPostViewModelListAsync(List<SellItemMarketPost> sellItemsList)
         {
             var sellItemsViewModel = new List<ItemMarketPostShortViewModel>();
@@ -978,7 +1296,7 @@ namespace WebDispacher.Business.Services
                 TypeMarketPost = UserConstants.MarketplaceBuyCategory,
             };
         }
-        
+
         private async Task<ItemMarketPostShortViewModel> ConvertToViewModelSellItemMarketPostAsync(SellItemMarketPost model)
         {
             return new ItemMarketPostShortViewModel

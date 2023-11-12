@@ -183,4 +183,13 @@
   <data name="OptionalForNyRolling" xml:space="preserve">
     <value>опционально для прокатки в Нью-Йорке</value>
   </data>
+  <data name="VehicleCategory" xml:space="preserve">
+    <value>Категория Авто</value>
+  </data>
+  <data name="ChooseVehicleCategory" xml:space="preserve">
+    <value>Выберите тип авто</value>
+  </data>
+  <data name="ChooseTruckType" xml:space="preserve">
+    <value>Выберите тип грузовика</value>
+  </data>
 </root>

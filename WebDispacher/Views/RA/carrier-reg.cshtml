@@ -69,7 +69,7 @@
                                 <label for="">
                                     @Html.DisplayNameFor(x => x.USDOTNumber)
                                     <div class="mt-2">
-                                        <input type="text" id="usdot" name="USDOTNumber" value="@Model.USDOTNumber" placeholder="" required>
+                                        <input type="text" id="usdot" name="USDOTNumber" value="@((Model.USDOTNumber == 0) ? string.Empty : Model.USDOTNumber.ToString())" placeholder="" required>
                                     </div>
                                     @Html.ValidationMessageFor(model => model.USDOTNumber, "", new { @class = "text-danger" })
                                 </label>

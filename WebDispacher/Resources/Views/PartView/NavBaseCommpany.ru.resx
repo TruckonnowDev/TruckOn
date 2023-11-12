@@ -125,4 +125,7 @@
 	<data name="MailControl" xml:space="preserve">
 		<value>Управление почтой</value>
 	</data>
+	<data name="Marketplace" xml:space="preserve">
+		<value>Рыночная площадка</value>
+	</data>
 </root>

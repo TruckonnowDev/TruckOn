@@ -18,6 +18,7 @@ using Stripe;
 using WebDispacher.Business.Interfaces;
 using WebDispacher.Constants;
 using WebDispacher.Models;
+using WebDispacher.Resources.ViewModels.History;
 using WebDispacher.Service;
 using WebDispacher.Service.EmailSmtp;
 using WebDispacher.ViewModels.Driver;
@@ -33,6 +34,8 @@ namespace WebDispacher.Business.Services
         private readonly IUserService userService;
         private readonly ICompanyService companyService;
         private readonly ITruckAndTrailerService truckAndTrailerService;
+        private readonly IHistoryActionService historyActionService;
+        private readonly IHttpContextAccessor httpContextAccessor;
         private readonly int maxFileLength = 6 * 1024 * 1024;
  
         public DriverService(
@@ -40,7 +43,9 @@ namespace WebDispacher.Business.Services
             Context db,
             ITruckAndTrailerService truckAndTrailerService,
             IUserService userService,
-            ICompanyService companyService)
+            ICompanyService companyService,
+            IHttpContextAccessor httpContextAccessor,
+            IHistoryActionService historyActionService)
         {
             this.truckAndTrailerService = truckAndTrailerService;
             this.companyService = companyService;
@@ -48,6 +53,8 @@ namespace WebDispacher.Business.Services
             this.mapper = mapper;
             this.db = db;
             stripeApi = new StripeApi();
+            this.httpContextAccessor = httpContextAccessor;
+            this.historyActionService = historyActionService;
         }
 
         public List<Driver> GetDriversByIdCompany(string companyId)
@@ -205,7 +212,7 @@ namespace WebDispacher.Business.Services
         }
 
 
-        public async Task EditDriver(EditDriverViewModel model, string localDate)
+        public async Task EditDriver(EditDriverViewModel model, string companyId, string localDate)
         {
             if (model == null) return;
 
@@ -217,7 +224,20 @@ namespace WebDispacher.Business.Services
                 .FirstOrDefaultAsync(d => d.Id == model.Id);
 
             if (driverEdit == null) return;
-            
+
+            var editDriverViewModel = mapper.Map<EditDriverViewModel>(driverEdit);
+            var userId = (await companyService.GetUserByCompanyId(companyId)).Id;
+            var authorId = (await companyService.GetUserByCompanyId(driverEdit.CompanyId.ToString())).Id;
+
+            var actionData = new HistoryActionData
+            {
+                UserId = userId,
+                AuthorId = authorId,
+                IPAddress = GetIPAddress(),
+                UserAgent = GetUserAgent(),
+            };
+
+            await historyActionService.CompareAndSaveUpdatedFields<HistoryDriverAction, EditDriverViewModel>(editDriverViewModel, model, driverEdit.Id, actionData, dateTimeUpdate);
 
             driverEdit.FirstName = model.FirstName;
             driverEdit.LastName = model.LastName;
@@ -650,15 +670,18 @@ namespace WebDispacher.Business.Services
 
         private async Task<List<Driver>> GetDriversInDb(int companyId)
         {
-            var drivers = await db.Drivers
-                .Where(d => d.CompanyId == companyId && d.DriverReport == null)
-                .Include(d => d.Inspections)
-                .Include(d => d.Geolocation)
-                .Include(d => d.PhoneNumber)
-                .OrderByDescending(d => d.Id)
-                .ToListAsync();
+            using(var context = new Context())
+            {
+                var drivers = await db.Drivers
+                    .Where(d => d.CompanyId == companyId && d.DriverReport == null)
+                    .Include(d => d.Inspections)
+                    .Include(d => d.Geolocation)
+                    .Include(d => d.PhoneNumber)
+                    .OrderByDescending(d => d.Id)
+                    .ToListAsync();
 
-            return drivers;
+                return drivers;
+            }
         }
 
         private async Task<List<Driver>> GetDriversInDb(int page, int companyId)
@@ -726,6 +749,16 @@ namespace WebDispacher.Business.Services
             }
             
             await SaveDocDriverDb(path, driverId, nameDoc, dateTimeUpload);
+        }
+
+        private string GetUserAgent()
+        {
+            return httpContextAccessor.HttpContext.Request.Headers["User-Agent"].ToString();
+        }
+
+        private string GetIPAddress()
+        {
+            return httpContextAccessor.HttpContext.Connection.RemoteIpAddress?.ToString();
         }
 
         private async Task SaveDocDriverDb(string path, int driverId, string nameDoc, string localDate)

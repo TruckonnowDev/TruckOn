@@ -3,6 +3,7 @@ using DaoModels.DAO.Models.Settings;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using System;
 
 namespace DaoModels.DAO
@@ -33,6 +34,10 @@ namespace DaoModels.DAO
         public DbSet<DriverReport> DriversReports { get; set; }
         public DbSet<Geolocation> Geolocations { get; set; }
         public DbSet<HistoryOrderAction> HistoriesOrdersActions { get; set; }
+        public DbSet<HistoryDriverAction> HistoriesDriversActions { get; set; }
+        public DbSet<HistoryTruckAction> HistoriesTrucksActions { get; set; }
+        public DbSet<HistoryTrailerAction> HistoriesTrailerActions { get; set; }
+        public DbSet<HistoryMarketPostAction> HistoriesMarketPostsActions { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<PasswordRecovery> PasswordsRecoveries { get; set; }
         public DbSet<PaymentMethod> PaymentsMethods { get; set; }
@@ -47,8 +52,11 @@ namespace DaoModels.DAO
         public DbSet<SubscribeST> SubscribeST { get; set; }
         public DbSet<Trailer> Trailers { get; set; }
         public DbSet<Truck> Trucks { get; set; }
+        public DbSet<TruckType> TruckTypes { get; set; }
+        public DbSet<VehicleCategory> VehiclesCategories { get; set; }
         public DbSet<UserAnswer> UsersAnswers { get; set; }
         public DbSet<UserMailQuestion> UsersMailsQuestions { get; set; }
+        public DbSet<ViewUserMailQuestion> ViewsUsersMailsQuestions { get; set; }
         public DbSet<DriverQuestionnaire> DriversQuestionnaires { get; set; }
         public DbSet<VehicleBody> VehiclesBodies { get; set; }
         public DbSet<VehicleBrand> VehiclesBrands { get; set; }
@@ -90,10 +98,11 @@ namespace DaoModels.DAO
             if (!optionsBuilder.IsConfigured)
             {
                 //optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=WebDispatchDB;Trusted_Connection=True;");
-                //optionsBuilder.UseSqlServer("Server=localhost\\SQLEXPRESS;Database=WebDispatch2;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;");
-                optionsBuilder.UseSqlServer("Data Source=212.224.113.5;Initial Catalog=WebDispatchNew;Integrated Security=False;User ID=roma;Password=123;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False");
+                optionsBuilder.UseSqlServer("Server=ADMIN\\SQLEXPRESS;Database=WebDispatch2;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;");
+                //optionsBuilder.UseSqlServer("Data Source=212.224.113.5;Initial Catalog=WebDispatchNew;Integrated Security=False;User ID=roma;Password=123;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False");
                 //optionsBuilder.UseSqlServer("Data Source=127.0.0.1;Initial Catalog=WebDispatch;Integrated Security=False;User ID=roma;Password=123;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False");
                 //optionsBuilder.UseSqlServer("Data Source=127.0.0.1;Initial Catalog=WebDispatchDev;Integrated Security=False;User ID=roma;Password=123;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False");
+                //optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             }
         }
 

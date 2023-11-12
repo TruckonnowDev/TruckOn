@@ -179,4 +179,7 @@
 	<data name="Unassign" xml:space="preserve">
 		<value>Desasignar</value>
 	</data>
+	<data name="PickupEstimated" xml:space="preserve">
+		<value>Recogida Estimada</value>
+	</data>
 </root>

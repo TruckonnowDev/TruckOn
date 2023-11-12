@@ -202,7 +202,7 @@ namespace WebDispacher.Controellers
         {
             ViewData[NavConstants.TypeNavBar] = NavConstants.NavTryForFree;
             ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-            
+
             if (!string.IsNullOrEmpty(model.CompanyName))
             {
                 var comanyName = companyService.CheckCompanyName(model.CompanyName);
@@ -283,7 +283,7 @@ namespace WebDispacher.Controellers
                         if (company.Id != 0 && user.Id != null)
                         {
                             await companyService.AddUserToCompany(user, company);
-
+                            await userService.SendEmailSuccessCarrierRegistration(user.Email);
                             return View("carrier-reg-congratulation");
                         }
                         

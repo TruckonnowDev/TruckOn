@@ -63,4 +63,16 @@
     <data name="ZipCodeLabel" xml:space="preserve">
         <value>Código Postal</value>
     </data>
+    <data name="ActionHistory" xml:space="preserve">
+        <value>Historial de Acciones</value>
+    </data>
+    <data name="CountActions" xml:space="preserve">
+        <value>Acciones de Recuento</value>
+    </data>
+    <data name="DateAction" xml:space="preserve">
+        <value>Acción de Fecha</value>
+    </data>
+    <data name="ShowHistory" xml:space="preserve">
+        <value>Mostrar Historial</value>
+    </data>
 </root>

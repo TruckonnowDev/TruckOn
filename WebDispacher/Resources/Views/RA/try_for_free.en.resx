@@ -130,9 +130,9 @@
     <value>Carrier TMS</value>
   </data>
   <data name="CarrierTMSDescription" xml:space="preserve">
-    <value>Carrier TMS helps you manage loads, drivers and billing. All in one place.</value>
+    <value>Carrier TMS helps you to manage loads, drivers, and billing.  All in one place.</value>
   </data>
-  <data name="RequestAccess" xml:space="preserve">
+  <data name="ShipperTMSRequestAccessButton" xml:space="preserve">
     <value>Request Access</value>
   </data>
   <data name="ShipperFirstItem" xml:space="preserve">
@@ -149,5 +149,17 @@
   </data>
   <data name="SignUp" xml:space="preserve">
     <value>Sign Up</value>
+  </data>
+  <data name="CarrierTMSRequestAccessButton" xml:space="preserve">
+    <value>Request Access</value>
+  </data>
+  <data name="BrokerTMSRequestAccessButton" xml:space="preserve">
+    <value>Request Access</value>
+  </data>
+  <data name="BrokerTMS" xml:space="preserve">
+    <value>Broker TMS</value>
+  </data>
+  <data name="IncomingMessage" xml:space="preserve">
+    <value>Incoming Message</value>
   </data>
 </root>

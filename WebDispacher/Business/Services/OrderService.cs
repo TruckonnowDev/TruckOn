@@ -540,16 +540,19 @@ namespace WebDispacher.Business.Services
             var phoneNumberContact = new PhoneNumber();
             var phoneNumberPickedUp = new PhoneNumber();
             var phoneNumberDelivery = new PhoneNumber();
+            var phoneNumberFax = new PhoneNumber();
 
             await db.PhonesNumbers.AddAsync(phoneNumberContact);
             await db.PhonesNumbers.AddAsync(phoneNumberPickedUp);
             await db.PhonesNumbers.AddAsync(phoneNumberDelivery);
+            await db.PhonesNumbers.AddAsync(phoneNumberFax);
 
             await db.SaveChangesAsync();
 
             pickedUpInfo.PhoneNumberId = phoneNumberPickedUp.Id;
             deliveryInfo.PhoneNumberId = phoneNumberDelivery.Id;
             order.PhoneNumberId = phoneNumberContact.Id;
+            order.FaxNumberId = phoneNumberFax.Id;
 
             var orderEntry = db.Orders.FirstOrDefault(s => s.OrderId == order.OrderId);
 
@@ -916,6 +919,7 @@ namespace WebDispacher.Business.Services
                 .ThenInclude(o => o.PhoneNumber)
                 .Include(o => o.Delivery)
                 .ThenInclude(o => o.PhoneNumber)
+                .Include(o => o.FaxNumber)
                 .Include(o => o.CurrentStatus)
                 .FirstOrDefaultAsync(o => o.Id == id && o.CompanyId == companyId);
 
@@ -924,70 +928,73 @@ namespace WebDispacher.Business.Services
 
         private async Task<List<Order>> GetOrdersInDb(int companyId, string status, int page, string loadId, string name, string address, string phone, string email, decimal price)
         {
-            var qOrders = db.Orders
-                .Include(o => o.PhoneNumber)
-                .Include(o => o.Delivery)
-                .ThenInclude(o => o.PhoneNumber)
-                .Include(o => o.PickedUp)
-                .ThenInclude(o => o.PhoneNumber)
-                .Include(o => o.CurrentStatus)
-                .Include(o => o.Driver)
-                .Where(o => o.CurrentStatus.StatusName == status && o.CompanyId == companyId)
-                .OrderByDescending(o => o.DateTimeLastUpdate)
-                .AsQueryable();
-        
-            if (loadId != null)
+            using (var context = new Context())
             {
-                qOrders = qOrders.Where(x =>
-                    x.OrderId == loadId);
-            }
-            
-            if (name != null)
-            {
-                qOrders = qOrders.Where(x =>
-                    x.Contact.Contains(name) || x.PickedUp.Name.Contains(name) || x.PickedUp.ContactName.Contains(name) ||
-                    x.Delivery.Name.Contains(name) || x.Delivery.ContactName.Contains(name));
-            }
-        
-            if (address != null)
-            {
-                qOrders = qOrders.Where(x =>
-                    x.PickedUp.Address.Contains(address) || x.Delivery.Address.Contains(address) || x.PickedUp.City.Contains(address) ||
-                    x.Delivery.City.Contains(address));
-            }
-        
-            if (phone != null)
-            {
-               /* qOrders = qOrders.Where(x =>
-                    x.PickedUp.PhoneNumber.Contains(phone) || x.Delivery.PhoneNumber.Contains(phone) || x.PhoneNumber.Contains(phone));*/
-            }
-        
-            if (email != null)
-            {
-                qOrders = qOrders.Where(x => x.PickedUp.Email.Contains(email) || x.Delivery.Email.Contains(email));
-            }
-        
-            if (price != 0)
-            {
-                qOrders = qOrders.Where(x => x.Price == price);
-            }
+                var qOrders = context.Orders
+                    .Include(o => o.PhoneNumber)
+                    .Include(o => o.Delivery)
+                    .ThenInclude(o => o.PhoneNumber)
+                    .Include(o => o.PickedUp)
+                    .ThenInclude(o => o.PhoneNumber)
+                    .Include(o => o.CurrentStatus)
+                    .Include(o => o.Driver)
+                    .Where(o => o.CurrentStatus.StatusName == status && o.CompanyId == companyId)
+                    .OrderByDescending(o => o.DateTimeLastUpdate)
+                    .AsQueryable();
 
-            if (page == UserConstants.AllPagesNumber) return await qOrders.ToListAsync();
+                if (loadId != null)
+                {
+                    qOrders = qOrders.Where(x =>
+                        x.OrderId == loadId);
+                }
 
-            try
-            {
-                qOrders = qOrders.Skip(UserConstants.NormalPageCount * page - UserConstants.NormalPageCount);
+                if (name != null)
+                {
+                    qOrders = qOrders.Where(x =>
+                        x.Contact.Contains(name) || x.PickedUp.Name.Contains(name) || x.PickedUp.ContactName.Contains(name) ||
+                        x.Delivery.Name.Contains(name) || x.Delivery.ContactName.Contains(name));
+                }
 
-                qOrders = qOrders.Take(UserConstants.NormalPageCount);
+                if (address != null)
+                {
+                    qOrders = qOrders.Where(x =>
+                        x.PickedUp.Address.Contains(address) || x.Delivery.Address.Contains(address) || x.PickedUp.City.Contains(address) ||
+                        x.Delivery.City.Contains(address));
+                }
+
+                if (phone != null)
+                {
+                    /* qOrders = qOrders.Where(x =>
+                         x.PickedUp.PhoneNumber.Contains(phone) || x.Delivery.PhoneNumber.Contains(phone) || x.PhoneNumber.Contains(phone));*/
+                }
+
+                if (email != null)
+                {
+                    qOrders = qOrders.Where(x => x.PickedUp.Email.Contains(email) || x.Delivery.Email.Contains(email));
+                }
+
+                if (price != 0)
+                {
+                    qOrders = qOrders.Where(x => x.Price == price);
+                }
+
+                if (page == UserConstants.AllPagesNumber) return await qOrders.ToListAsync();
+
+                try
+                {
+                    qOrders = qOrders.Skip(UserConstants.NormalPageCount * page - UserConstants.NormalPageCount);
+
+                    qOrders = qOrders.Take(UserConstants.NormalPageCount);
+                }
+                catch (Exception)
+                {
+                    qOrders = qOrders.Skip((UserConstants.NormalPageCount * page) - UserConstants.NormalPageCount);
+                }
+
+                var listOrders = await qOrders.ToListAsync();
+
+                return listOrders;
             }
-            catch(Exception)
-            {
-                qOrders = qOrders.Skip((UserConstants.NormalPageCount * page) - UserConstants.NormalPageCount);
-            }
-        
-            var listOrders = await qOrders.ToListAsync();
-            
-            return listOrders;
         }
         
         private async Task<int> GetCountPageInDb(int companyId, string status, string loadId, string name, string address, string phone, string email, decimal price)
@@ -1310,6 +1317,7 @@ namespace WebDispacher.Business.Services
 
             var orderEdit = await db.Orders
                 .Include(o => o.PhoneNumber)
+                .Include(o => o.FaxNumber)
                 .Include(o => o.Delivery)
                 .ThenInclude(o => o.PhoneNumber)
                 .Include(o => o.PickedUp)
@@ -1430,8 +1438,12 @@ namespace WebDispacher.Business.Services
                 orderEdit.PhoneNumber.Name = model.PhoneNumber.Name ?? string.Empty;
                 orderEdit.PhoneNumber.Number = model.PhoneNumber.Number ?? string.Empty;
                 orderEdit.PhoneNumber.Iso2 = model.PhoneNumber.Iso2 ?? string.Empty;
+                
+                if (model.FaxNumber.DialCode != 0) orderEdit.FaxNumber.DialCode = model.FaxNumber.DialCode;
+                orderEdit.FaxNumber.Name = model.FaxNumber.Name ?? string.Empty;
+                orderEdit.FaxNumber.Number = model.FaxNumber.Number ?? string.Empty;
+                orderEdit.FaxNumber.Iso2 = model.FaxNumber.Iso2 ?? string.Empty;
 
-                orderEdit.Fax = model.Fax ?? string.Empty;
                 orderEdit.McNumber = model.McNumber ?? string.Empty;
                 orderEdit.DateTimeLastUpdate = dateTimeUpdate;
 
@@ -1445,9 +1457,9 @@ namespace WebDispacher.Business.Services
 
         private void CompareAndSaveUpdatedFieldsInOrder(object original, object updated, List<HistoryOrderAction> historyEntries,int orderId, DateTime dateTimeUpdate, string prefix = "")
         {
-            Type originalType = original.GetType();
+            var originalType = original.GetType();
 
-            PropertyInfo[] properties = originalType.GetProperties();
+            var properties = originalType.GetProperties();
 
             foreach (var property in properties)
             {
@@ -1455,7 +1467,7 @@ namespace WebDispacher.Business.Services
                 {
                     object originalValue = property.GetValue(original);
                     object updatedValue = property.GetValue(updated);
-                    originalValue = originalValue == null ? string.Empty : originalValue;
+                    originalValue ??= string.Empty;
                     if (!Equals(originalValue, updatedValue) && !(string.IsNullOrEmpty(originalValue.ToString()) && updatedValue==null))
                     {
                         string fieldName = prefix + property.Name;
@@ -1476,8 +1488,8 @@ namespace WebDispacher.Business.Services
 
                 if (property.PropertyType.IsClass && !property.PropertyType.IsPrimitive && property.PropertyType != typeof(string))
                 {
-                    object originalNested = property.GetValue(original);
-                    object updatedNested = property.GetValue(updated);
+                    var originalNested = property.GetValue(original);
+                    var updatedNested = property.GetValue(updated);
 
                     if (originalNested != null && updatedNested != null)
                     {

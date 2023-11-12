@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="ActionType" xml:space="preserve">
+        <value>Tipo de Acción</value>
+    </data>
+    <data name="FieldAction" xml:space="preserve">
+        <value>Acción de campo</value>
+    </data>
+    <data name="ContentBefore" xml:space="preserve">
+        <value>Contenido Antes</value>
+    </data>
+    <data name="ContentAfter" xml:space="preserve">
+        <value>Contenido Después</value>
+    </data>
+    <data name="TimeAction" xml:space="preserve">
+        <value>Acción de Tiempo</value>
+    </data>
+    <data name="AuthorName" xml:space="preserve">
+        <value>Nombre del Autor</value>
+    </data>
+    <data name="ExecutorName" xml:space="preserve">
+        <value>Nombre del Albacea</value>
+    </data>
+    <data name="CurrentActionIp" xml:space="preserve">
+        <value>Ip De Acción Actual</value>
+    </data>
+    <data name="BrowserName" xml:space="preserve">
+        <value>Nombre del Navegador</value>
+    </data>
+    <data name="BrowserVersion" xml:space="preserve">
+        <value>Versión del Navegador</value>
+    </data>
+    <data name="OsName" xml:space="preserve">
+        <value>Nombre del SO</value>
+    </data>
+    <data name="OsVersion" xml:space="preserve">
+        <value>Versión del SO</value>
+    </data>
+    <data name="OsPlatform" xml:space="preserve">
+        <value>Plataforma OS</value>
+    </data>
+    <data name="Device" xml:space="preserve">
+        <value>Dispositivo</value>
+    </data>
+    <data name="IsMobile" xml:space="preserve">
+        <value>Es Móvil</value>
+    </data>
+    <data name="IsDesktop" xml:space="preserve">
+        <value>Es de Escritorio</value>
+    </data>
+    <data name="Region" xml:space="preserve">
+        <value>Región</value>
+    </data>
+    <data name="MostSpecificSubdivisionName" xml:space="preserve">
+        <value>Nombre Específico</value>
+    </data>
+    <data name="City" xml:space="preserve">
+        <value>Ciudad</value>
+    </data>
+    <data name="PostalCode" xml:space="preserve">
+        <value>Código Postal</value>
+    </data>
+    <data name="PostalCodeConfidence" xml:space="preserve">
+        <value>Confianza en el Código Postal</value>
+    </data>
+    <data name="Latitude" xml:space="preserve">
+        <value>Latitud</value>
+    </data>
+    <data name="Longitude" xml:space="preserve">
+        <value>Longitud</value>
+    </data>
+    <data name="LocationAccuracyRadius" xml:space="preserve">
+        <value>Radio de Precisión de Ubicación</value>
+    </data>
+</root>

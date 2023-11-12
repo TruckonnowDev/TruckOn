@@ -19,7 +19,7 @@ namespace WebDispacher.Business.Interfaces
         DriverInspection GetInspectionTruck(string idInspection);
         Task RemoveDriversByCompanyId(string companyId, string localDate);
 
-        Task EditDriver(EditDriverViewModel model, string localDate);
+        Task EditDriver(EditDriverViewModel model, string companyId, string localDate);
 
         Task CreateDriver(CreateDriverViewModel model,
             IFormFile dLDoc, IFormFile medicalCardDoc, IFormFile sSNDoc, IFormFile proofOfWorkAuthorizationOrGCDoc,

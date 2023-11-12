@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 @using WebDispacher.Constants;
+@using WebDispacher.Service;
 
 @inject IViewLocalizer Localizer
 
@@ -42,31 +43,20 @@
                                 <input class="height-input" id="model" type="text" asp-for="Model" maxlength="20">
                                 @Html.ValidationMessageFor(model => model.Model, "", new { @class = "text-danger" })
                             </label>
+                            @* onchange="SelectTruck(this.options[this.selectedIndex].value)" *@
+                            <label class="big-label" for="">
+                                @Localizer["VehicleCategory"] <br />
+                                <select class="height-input input-select" asp-for="VehicleCategoryId" id="vehicleCategoryDropdown">
+                                    <option value="" >@Localizer["ChooseVehicleCategory"]</option>
+                                </select>
+                                @Html.ValidationMessageFor(model => model.VehicleCategoryId, "", new { @class = "text-danger" })
+                            </label>
                             <label class="big-label" for="">
                                 @Localizer["TypeTruck"] <br />
-                                <select class="height-input input-select" asp-for="Type" onchange="SelectTruck(this.options[this.selectedIndex].value)">
+                                <select class="height-input input-select" asp-for="TruckTypeId" id="truckTypeDropdown">
                                     <option value="">@Localizer["ChooseTruckType"]</option>
-                                    <option value="2DrPickupwithSingleWheel">2Dr Pickup with Single Wheel</option>
-                                    <option value="2DrPickupwithDuallyWheels">2Dr Pickup with Dually Wheels</option>
-                                    <option value="4DrCrewCabPickupwithSingleWheel">4Dr Crew Cab Pickup with Single Wheel</option>
-                                    <option value="4DrCrewCabPickupwithDuallyWheels">4Dr Crew Cab Pickup with Dually Wheels</option>
-                                    <option value="2DrPickupPickupwithSingleWheel">2Dr Pickup ( flat bed ) Pickup with Single Wheel</option>
-                                    <option value="2DrPickupPickupwithDuallyWheels">2Dr Pickup ( flat bed ) Pickup with  Dually Wheels</option>
-                                    <option value="4DrCrewCabPickupwithSingleWheelFlatBed">4Dr Crew Cab ( flat bed ) Pickup with Single Wheel</option>
-                                    <option value="4DrCrewCabPickupwithDuallyWheelsFlatBed">4Dr Crew Cab ( flat bed ) Pickup with  Dually Wheels</option>
-                                    @*<option value="PickupFourWheel">Four-wheel pickup dually</option>
-                                        <option value="FourDoorTruckChassisOpenFrame">Four-door truck with double chassis and open frame</option>
-                                        <option value="BoxTruckSingleWheel">Box Truck Single Wheel</option>
-                                        <option value="BoxTruckWheelDually">Box Truck Wheel Dually</option>
-                                        <option value="CargiVanChasissDuallyOrSingleWheel">Cargi Van Chasiss Dually Or Single Wheel</option>
-                                        <option value="CargoVanMustHaveWithDually">Cargo Van Must Have With Dually</option>
-                                        <option value="PickUpDuallyChassisOpenFrameInTheBackMustHave2">Pick Up Dually Chassis Open Frame In The Back Must Have 2</option>
-                                        <option value="PickUpDuallyChassisMustHave2Door">Pick Up Dually Chassis Must Have 2 Door</option>
-                                        <option value="PickUpDuallyChassisMustHave4Door">Pick Up Dually Chassis Must Have 4 Door</option>
-                                        <option value="PickUpDuallyFlatbed4Door">Pick Up Dually Flatbed 4 Door</option>
-                                        <option value="PickUpDuallyFlatbedMustHave2Door">Pick Up Dually Flatbed Must Have 2 Door</option>*@
                                 </select>
-                                @Html.ValidationMessageFor(model => model.Type, "", new { @class = "text-danger" })
+                                @Html.ValidationMessageFor(model => model.TruckTypeId, "", new { @class = "text-danger" })
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["Vin"]#
@@ -268,90 +258,127 @@
                     </div>
                 </div>
                 <div class="col-md-6 image-col-place">
-                    <div id="4DrCrewCabPickupwithDuallyWheels" class="row" style="display:none;">
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door1.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door2.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door3.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door4.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door5.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door6.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door7.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door8.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door9.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door10.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door11.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door12.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door13.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door14.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door15.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door16.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door17.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door18.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door19.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door20.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door21.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door22.png&type=png" alt="">
-                        </div>
-                        <div class="col-md-auto">
-                            <img src="@ViewBag.BaseUrl/Equipment/Image?name=../TruckPattern/PickUpDually4TiresInTheBackMustHave4Door/PickUpDually4TiresInTheBackMustHave4Door23.png&type=png" alt="">
-                        </div>
-                    </div>
-                    @await Html.PartialAsync("~/Views/Equipment/VehicleImages.cshtml", new ViewDataDictionary(ViewData) { {"CountPhoto", "32"}, { "VehicleName", "2DrPickupwithSingleWheel" } })
-                    @await Html.PartialAsync("~/Views/Equipment/VehicleImages.cshtml", new ViewDataDictionary(ViewData) { {"CountPhoto", "35"}, { "VehicleName", "2DrPickupwithDuallyWheels" } })
-                    @await Html.PartialAsync("~/Views/Equipment/VehicleImages.cshtml", new ViewDataDictionary(ViewData) { {"CountPhoto", "35"}, { "VehicleName", "4DrCrewCabPickupwithSingleWheel" } })
-                    @await Html.PartialAsync("~/Views/Equipment/VehicleImages.cshtml", new ViewDataDictionary(ViewData) { {"CountPhoto", "12"}, { "VehicleName", "2DrPickupPickupwithSingleWheel" } })
-                    @await Html.PartialAsync("~/Views/Equipment/VehicleImages.cshtml", new ViewDataDictionary(ViewData) { {"CountPhoto", "30"}, { "VehicleName", "2DrPickupPickupwithDuallyWheels" } })
-                    @await Html.PartialAsync("~/Views/Equipment/VehicleImages.cshtml", new ViewDataDictionary(ViewData) { {"CountPhoto", "30"}, { "VehicleName", "4DrCrewCabPickupwithSingleWheelFlatBed" } })
-                    @await Html.PartialAsync("~/Views/Equipment/VehicleImages.cshtml", new ViewDataDictionary(ViewData) { {"CountPhoto", "30"}, { "VehicleName", "4DrCrewCabPickupwithDuallyWheelsFlatBed" } })
+                    
                 </div>
                 
             </div>
         </div>
     </div>
 </body>
+
+<script>
+    $(document).ready(function () {
+        $("#truckTypeDropdown").change(function () {
+            var selectedText = $("#truckTypeDropdown option:selected").text();
+            if (selectedText) {
+                $.ajax({
+                    url: `/Equipment/GetTruckSlug?vehicleName=${selectedText}`,
+                    method: 'GET',
+                    success: function (data) {
+                        var slug = data;
+
+                        // Теперь, когда у нас есть slug, делаем второй запрос
+                        $.ajax({
+                            url: `/Equipment/GetImages?vehicleSlug=${slug}`,
+                            method: 'GET',
+                            success: function (data) {
+                                console.log(data);
+                                var imageColPlace = $(".image-col-place");
+                                imageColPlace.empty();
+
+                                data.forEach(function (fileName) {
+                                    var srcPhoto = `@Config.BaseReqvesteUrl/Equipment/Image?name=../TruckPattern/${slug}/${fileName}&type=png`;
+                                    var imageElement = `<div class="col-md-auto m-2"><img src="${srcPhoto}" alt=""></div>`;
+                                    imageColPlace.append(imageElement);
+                                });
+                            },
+                            error: function () {
+                            }
+                        });
+                    },
+                    error: function () {
+                    }
+                });
+            }
+        });
+
+        var loadTruckTypesUrl = "/Equipment/GetTruckTypes";
+
+        $("#vehicleCategoryDropdown").change(function () {
+            var categoryId = $(this).val();
+            console.log("сработало событие изменения категории авто")
+            $.ajax({
+                url: loadTruckTypesUrl,
+                data: { categoryId: categoryId },
+                method: 'GET',
+                success: function (data) {
+                    var truckTypeDropdown = $('#truckTypeDropdown');
+                    truckTypeDropdown.empty();
+
+                    truckTypeDropdown.append($('<option>', {
+                        value: '',
+                        text: '@Localizer["ChooseTruckType"]'
+                    }));
+
+                    $.each(data, function (index, item) {
+                        truckTypeDropdown.append($('<option>', {
+                            value: item.id,
+                            text: item.name
+                        }));
+                    });
+
+                    if (selectedTruckTypeId) {
+                        if (truckTypeDropdown.find('option[value="' + selectedTruckTypeId + '"]').length > 0) {
+                            truckTypeDropdown.val(selectedTruckTypeId);
+                            truckTypeDropdown.change();
+                        }
+                    }
+                }
+            });
+        });
+
+        var selectedVehicleCategoryId = "@ViewData["SelectedVehicleCategoryId"]";
+        var selectedTruckTypeId = "@ViewData["SelectedTruckTypeId"]";
+
+        $.ajax({
+            url: '/Equipment/GetVehicleCategiries',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var categoryDropdown = $('#vehicleCategoryDropdown');
+                categoryDropdown.empty();
+                categoryDropdown.append($('<option>', {
+                    value: '',
+                    text: '@Localizer["ChooseVehicleCategory"]'
+                }));
+
+
+                $.each(data, function (index, item) {
+                    categoryDropdown.append($('<option>', {
+                        value: item.id,
+                        text: item.name
+                    }));
+                });
+
+                if (selectedVehicleCategoryId) {
+                    if (categoryDropdown.find('option[value="' + selectedVehicleCategoryId + '"]').length > 0) {
+                        categoryDropdown.val(selectedVehicleCategoryId);
+                    }
+                }
+                categoryDropdown.change();
+            },
+            error: function () {
+            }
+        });
+    });
+
+$(document).ready(function () {
+        
+
+    
+});
+</script>
+
 
 <script>
     function formatBeforeSubmit() {
@@ -365,9 +392,9 @@
 <script src="~/js/input-replacer.js"></script>
 <script>
     setReplacer(document.querySelector('#year'), @ExpressionConstants.OnlyDigits);
-     setReplacer(document.querySelector('#name'), @ExpressionConstants.OnlyLetters);
+    setReplacer(document.querySelector('#name'), @ExpressionConstants.OnlyLettersDigitsDashes);
     setReplacer(document.querySelector('#make'), @ExpressionConstants.OnlyLetters);
-    setReplacer(document.querySelector('#model'), @ExpressionConstants.OnlyLetters);
+    setReplacer(document.querySelector('#model'), @ExpressionConstants.OnlyLettersDigitsDashes);
     setReplacer(document.querySelector('#color'), @ExpressionConstants.OnlyLetters);
     setReplacer(document.querySelector('#owner'), @ExpressionConstants.OnlyLetters);
 

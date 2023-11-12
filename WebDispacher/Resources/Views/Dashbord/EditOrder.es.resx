@@ -264,4 +264,7 @@
   <data name="VehFormInfoSuccessSend" xml:space="preserve">
     <value>El vehículo se guardó correctamente en el pedido</value>
   </data>
+  <data name="FaxNumber" xml:space="preserve">
+    <value>Número de fax</value>
+  </data>
 </root>

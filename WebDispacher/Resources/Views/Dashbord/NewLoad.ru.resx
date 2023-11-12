@@ -173,4 +173,7 @@
 	<data name="DeliveryEstimated" xml:space="preserve">
 		<value>Предполагаемая доставка</value>
 	</data>
+	<data name="PickupEstimated" xml:space="preserve">
+		<value>Предполагаемая отправка</value>
+	</data>
 </root>

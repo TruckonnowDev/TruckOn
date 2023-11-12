@@ -21,11 +21,12 @@ namespace WebDispacher.Business.Interfaces
         Task<TruckViewModel> GetTruckById(int truckId);
         Task<Trailer> GetTrailer(string idDriver);
         TrailerViewModel GetTrailerById(int idTrailer);
-
+        Task<List<TruckType>> GetTruckTypes(string category);
         Task<Trailer> GetTrailerByPlate(string trailerPlate);
         Task<List<Trailer>> GetTrailers(int page, string idCompany);
         Task<int> GetCountTrailersPages(string idCompany);
         Task RemoveTrailer(int id);
+        Task<List<VehicleCategory>> GetVehicleCategiries();
         Task<ITr> GetTr(int idTr, string typeTransport);
         Task<List<DocumentTrailer>> GetTrailerDocsById(int id);
         List<DriverInspection> GetInspectionTrucks(string idDriver, string idTruck, string idTrailer, string date);
@@ -43,11 +44,13 @@ namespace WebDispacher.Business.Interfaces
 
         Task EditTruck(TruckViewModel model, IFormFile truckRegistrationDoc,
             IFormFile truckLeaseAgreementDoc, IFormFile truckAnnualInspection, IFormFile bobTailPhysicalDamage,
-            IFormFile nYHUTDoc, string localDate);
+            IFormFile nYHUTDoc, string companyId, string localDate);
 
-        Task EditTrailer(TrailerViewModel model, string localDate);
+        Task EditTrailer(TrailerViewModel model, string companyId, string localDate);
 
         Task<int> AddProfile(string idCompany, int idTr, string typeTransport);
         Task SaveDocTruck(IFormFile uploadedFile, string nameDoc, int truckId, string dateTimeUpload);
+
+        Task<string> GetTruckTypeSlugByName(string truckName);
     }
 }

@@ -201,4 +201,13 @@
   <data name="McNumber" xml:space="preserve">
     <value>Mc Number</value>
   </data>
+  <data name="PickupEmail" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="DeliveryEmail" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="BrokerFee" xml:space="preserve">
+    <value>Broker fee</value>
+  </data>
 </root>

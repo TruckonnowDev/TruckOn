@@ -1,5 +1,7 @@
-﻿using DaoModels.DAO.Models;
+﻿using AngleSharp.Css.Values;
+using DaoModels.DAO.Models;
 using System.ComponentModel.DataAnnotations;
+using WebDispacher.Attributes;
 
 namespace WebDispacher.ViewModels.RA.Carrier.Registration
 {
@@ -23,7 +25,7 @@ namespace WebDispacher.ViewModels.RA.Carrier.Registration
 
         [Required(ErrorMessage = "USDOTNumberRequired")]
         [Display(Name = "USDOTNumber")]
-        public int USDOTNumber { get; set; }
+        public int? USDOTNumber { get; set; }
 
         [Required(ErrorMessage = "CompanyNameRequired")]
         [Display(Name = "CompanyName")]

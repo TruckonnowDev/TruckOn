@@ -264,4 +264,7 @@
   <data name="VehFormInfoSuccessSend" xml:space="preserve">
     <value>The vehicle was successfully save to the order</value>
   </data>
+  <data name="FaxNumber" xml:space="preserve">
+    <value>Fax number</value>
+  </data>
 </root>

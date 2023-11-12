@@ -23,6 +23,11 @@ using System;
 using AspNetCoreRateLimit;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using WebDispacher.Business.Services.HistoryFactory;
+using WebDispacher.ViewModels.Truck;
+using WebDispacher.ViewModels.Trailer;
+using WebDispacher.ViewModels.Driver;
+using WebDispacher.ViewModels.Marketplace;
 
 namespace WebDispacher
 {
@@ -70,6 +75,7 @@ namespace WebDispacher
 
             services.AddLocalization(options => options.ResourcesPath = "Resources");
             services.AddDbContext<Context>(ServiceLifetime.Transient);
+
             services.AddMvc()
                     .AddDataAnnotationsLocalization()
                     .AddViewLocalization();
@@ -106,7 +112,7 @@ namespace WebDispacher
                 cultureEs.NumberFormat.CurrencyDecimalSeparator = ".";
                 cultureEs.NumberFormat.NumberDecimalSeparator = ".";
                 
-                var cultureRu = new CultureInfo("es");
+                var cultureRu = new CultureInfo("ru");
                 cultureRu.NumberFormat.CurrencyDecimalSeparator = ".";
                 cultureRu.NumberFormat.NumberDecimalSeparator = ".";
             });
@@ -114,13 +120,21 @@ namespace WebDispacher
 
             services.AddAutoMapper(typeof(MappingProfile));
 
+            services.AddScoped<Context>();
             services.AddScoped<ITruckAndTrailerService, TruckAndTrailerService>();
-            services.AddTransient<IDriverService, DriverService>();
+            services.AddScoped<IDriverService, DriverService>();
             services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IMarketplaceService, MarketplaceService>();
             services.AddScoped<IOrderService, Business.Services.OrderService>();
             services.AddScoped<ISeedDatabaseService, SeedDatabaseService>();
+
+            services.AddScoped<IHistoryActionService, HistoryActionService>();
+            services.AddScoped<IHistoryActionFactory<HistoryTruckAction, TruckViewModel>, HistoryTruckActionFactory>();
+            services.AddScoped<IHistoryActionFactory<HistoryTrailerAction, TrailerViewModel>, HistoryTrailerActionFactory>();
+            services.AddScoped<IHistoryActionFactory<HistoryDriverAction, EditDriverViewModel>, HistoryDriverActionFactory>();
+            services.AddScoped<IHistoryActionFactory<HistoryMarketPostAction, BuyItemMarketPostViewModel>, HistoryBuyItemMarketPostActionFactory>();
+            services.AddScoped<IHistoryActionFactory<HistoryMarketPostAction, SellItemMarketPostViewModel>, HistorySellItemMarketPostActionFactory>();
 
             services.AddSingleton<Functions.Functions>();
 
@@ -163,6 +177,7 @@ namespace WebDispacher
 
             services.AddAuthorization(options =>
             {
+
             options.AddPolicy(PolicyIdentityConstants.CarrierCompany, policy =>
                 policy.RequireRole(RolesIdentityConstants.UserRole)
                     .RequireClaim(ClaimsIdentityConstants.CompanyType, ClaimsIdentityConstants.CompanyCarrierValue)
@@ -173,7 +188,17 @@ namespace WebDispacher
                 .RequireClaim(ClaimsIdentityConstants.CompanyType, ClaimsIdentityConstants.CompanyCarrierAdminValue)
                 .RequireClaim(ClaimsIdentityConstants.CompanyId));
 
-            options.AddPolicy(PolicyIdentityConstants.ShipperCompany, policy =>
+            options.AddPolicy(PolicyIdentityConstants.CarrierCompanyOrAdmin, policy =>
+            {
+                policy.RequireRole(RolesIdentityConstants.UserRole, RolesIdentityConstants.AdminRole)
+                 .RequireAssertion(context =>
+                 {
+                     return context.User.HasClaim(ClaimsIdentityConstants.CompanyType, ClaimsIdentityConstants.CompanyCarrierValue) ||
+                            context.User.HasClaim(ClaimsIdentityConstants.CompanyType, ClaimsIdentityConstants.CompanyCarrierAdminValue);
+                 });
+            });
+
+                options.AddPolicy(PolicyIdentityConstants.ShipperCompany, policy =>
                 policy.RequireRole(RolesIdentityConstants.UserRole)
                 .RequireClaim(ClaimsIdentityConstants.CompanyType, ClaimsIdentityConstants.CompanyShipperValue));
 

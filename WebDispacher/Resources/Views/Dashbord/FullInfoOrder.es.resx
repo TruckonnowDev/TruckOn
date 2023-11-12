@@ -201,4 +201,13 @@
   <data name="McNumber" xml:space="preserve">
     <value>Número Mc</value>
   </data>
+  <data name="PickupEmail" xml:space="preserve">
+    <value>Correo Electrónico</value>
+  </data>
+  <data name="DeliveryEmail" xml:space="preserve">
+    <value>Correo Electrónico</value>
+  </data>
+  <data name="BrokerFee" xml:space="preserve">
+    <value>Comisión del corredor</value>
+  </data>
 </root>

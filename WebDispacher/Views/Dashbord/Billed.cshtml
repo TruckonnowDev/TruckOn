@@ -81,6 +81,7 @@
                                             }
                                         }
                                         <p>@Localizer["Phone"]: @phonePickedUp</p>
+                                        <p>@Localizer["PickupEstimated"]: @Model[i].DateTimePickedUp.ToString(DateTimeFormats.DateOfBirth) </p>
                                     </div>
                                     <div class="info-block">
                                         <h3>@Localizer["Destination"]</h3>
@@ -93,7 +94,7 @@
                                             }
                                         }
                                         <p>@Localizer["Phone"]: @phoneDelivery</p>
-                                        <p>@Localizer["DeliveryEstimated"]:@Model[i].DateTimeDelivery.ToString(DateTimeFormats.BaseCalendarDate)</p>
+                                        <p>@Localizer["DeliveryEstimated"]:@Model[i].DateTimeDelivery.ToString(DateTimeFormats.DateOfBirth)</p>
                                     </div>
                                     <div class="info-block">
                                          @if (Model[i].DriverId != null)

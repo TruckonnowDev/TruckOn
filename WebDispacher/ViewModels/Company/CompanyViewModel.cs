@@ -30,6 +30,8 @@ namespace WebDispacher.ViewModels.Company
         [Required(ErrorMessage = "CompanyTypeRequired")]
         public CompanyType CompanyType { get; set; }
 
+        public CompanyStatus CompanyStatus { get; set; }
+
         public DateTime DateTimeRegistration { get; set; }
         public DateTime DateTimeLastUpdate { get; set; }
     }

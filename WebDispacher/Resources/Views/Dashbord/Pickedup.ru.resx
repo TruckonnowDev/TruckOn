@@ -173,4 +173,7 @@
 	<data name="Delete" xml:space="preserve">
 		<value>Удалить</value>
 	</data>
+	<data name="PickupEstimated" xml:space="preserve">
+		<value>Предполагаемая отправка</value>
+	</data>
 </root>

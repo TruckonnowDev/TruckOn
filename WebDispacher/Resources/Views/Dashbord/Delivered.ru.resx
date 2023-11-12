@@ -182,4 +182,7 @@
 	<data name="ShippingPaid" xml:space="preserve">
 		<value>Доставка оплачена</value>
 	</data>
+	<data name="PickupEstimated" xml:space="preserve">
+		<value>Предполагаемая отправка</value>
+	</data>
 </root>

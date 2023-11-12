@@ -342,38 +342,15 @@
                                                 @Localizer["ModalFormMessage"]
                                                 <textarea type="text" id="user-message" name="message" required></textarea>
                                             </label>
-                                            <button type="submit" class="btn1 btn-modal submit-modal">@Localizer["ModalFormSubmit"]</button>
+                                            <input type="hidden" value="" name="localDate" id="localDate" />
+                                            <button type="button" class="btn1 btn-modal submit-modal">@Localizer["ModalFormSubmit"]</button>
                                         </div>
                                     </div>
                                 </div>
                             </form>
                         </div>
                     </div>
-                   <div @*class="modal-footer"*@>@*
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="left-modal-footer" style="width: 100%">
-                                    <div class="text-h2-white lh-3 mb-2">
-                                        @Localizer["ModalFooterDescription"]
-                                    </div>
-                                    <div class="modal-ul lh-2-5">
-                                        <ul class="text-p-white pl-4">
-                                            <li>@Localizer["ModalFooterFirstItem"]</li>
-                                            <li>@Localizer["ModalFooterSecondItem"]</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 d-flex align-items-center">
-                                <div class="right-modal-footer" style="width:100%">
-                                    <div class="center-text">
-                                        <a href="/try_for_free">
-                                            <div class="btn1 btn-black">@Localizer["TryForFree"]</div>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>*@
+                   <div>
                     </div>
                 </div>
             </div>
@@ -390,10 +367,6 @@
                     </a>
                 </div>
                 </div>
-                @*<p>
-                    @Localizer["BodyTenthBlock"] <a href="tel:+1 (773) 420-4444">+1 (773) 420-4444</a>
-                </p>
-                </div>*@
             <div class="d-flex justify-content-end">
                 <div class="col-md-12">
                     <button class="btn1" style="width: 150px;padding: 16px 20px;" data-toggle="modal" data-target="#addNewDocFormModal">@Localizer["ContactUs"]</button>
@@ -405,8 +378,20 @@
 </footer>
 
 <link rel="stylesheet" href="~/libs/intl-tel-input-master/css/intlTelInput.css">
+<script src="~/js/input-replacer.js"></script>
+
+<script>
+    setReplacer(document.querySelector('#user-name'), @ExpressionConstants.OnlyLetters);
+</script>
+
 <script src="~/libs/intl-tel-input-master/js/intlTelInput.js"></script>
 <script>
+    const dateInput = document.querySelector("[name='localDate']");
+
+    $("input[type=submit]").on('click', function (e) {
+        dateInput.value = GetDateTimeInFormat(new Date());
+    });
+
     $.fn.setCursorPosition = function (pos) {
         if ($(this).get(0).setSelectionRange) {
             $(this).get(0).setSelectionRange(pos, pos);
@@ -456,49 +441,50 @@
 
     $('.submit-modal').on('click', function (event) {
         let form = document.getElementById('contactForm');
-        if(form.checkValidity() == true){
+        if (form.checkValidity() == false) {
             event.preventDefault();
-
-            let body = {
-                SenderName: $('#user-name').val(),
-                SenderEmail: $('#user-email').val(),
-                PhoneNumber: {
-                    Number : $('#phone').val(),
-                    Iso2: $("#country-code-iso2").val(),
-                    DialCode: $("#country-code-dialcode").val(),
-                    Name: $("#country-code-name").val(),
-                },
-                Message: $('#user-message').val(),
-            };
-
-            console.log(body);
-            $.ajax({
-                type: "post",
-                data: body,
-                async: true,
-                url: `/RA/ContactForm`,
-                success: function (response) {
-                    if(response === true){
-                        SuccessAlert("@Localizer["ContactFormSuccessSend"]")
-                        $('#user-name').val("");
-                        $('#user-email').val("");
-                        $('#phone-number').val("");
-                        $('#user-message').val("");
-                        $("#country-code-iso2").val("us");
-                        $("#country-code-dialcode").val("1");
-                        $("#country-code-name").val("United States");
-                    }else{
-                        WarningAlert("@Localizer["ContactFormNotSend"]")
-                    }
-                },
-                error: function (response) {
-                    ErrorAlert("@Localizer["ContactFormHaveError"]");
-                },
-                complete: function () {
-                    $('#addNewDocFormModal').modal('hide');
-                }
-            });
+            return;
         }
+
+        let body = {
+            SenderName: $('#user-name').val(),
+            SenderEmail: $('#user-email').val(),
+            PhoneNumber: {
+                Number : $('#phone').val(),
+                Iso2: $("#country-code-iso2").val(),
+                DialCode: $("#country-code-dialcode").val(),
+                Name: $("#country-code-name").val(),
+            },
+            Message: $('#user-message').val(),
+            localDate: GetDateTimeInFormat(new Date()),
+        };
+
+        $.ajax({
+            type: "post",
+            data: body,
+            async: true,
+            url: `/RA/ContactForm`,
+            success: function (response) {
+                if(response === true){
+                    SuccessAlert("@Localizer["ContactFormSuccessSend"]")
+                    $('#user-name').val("");
+                    $('#user-email').val("");
+                    $('#phone-number').val("");
+                    $('#user-message').val("");
+                    $("#country-code-iso2").val("us");
+                    $("#country-code-dialcode").val("1");
+                    $("#country-code-name").val("United States");
+                }else{
+                    WarningAlert("@Localizer["ContactFormNotSend"]")
+                }
+            },
+            error: function (response) {
+                ErrorAlert("@Localizer["ContactFormHaveError"]");
+            },
+            complete: function () {
+                $('#addNewDocFormModal').modal('hide');
+            }
+        });
         
     });
 

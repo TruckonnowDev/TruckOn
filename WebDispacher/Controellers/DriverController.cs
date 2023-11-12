@@ -321,7 +321,7 @@ namespace WebDispacher.Controellers
                     
                 return View("CreateDriver");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
             }
@@ -460,7 +460,7 @@ namespace WebDispacher.Controellers
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                     
-                    await driverService.EditDriver(model, localDate);
+                    await driverService.EditDriver(model, CompanyId, localDate);
                         
                     return Redirect($"{Config.BaseReqvesteUrl}/Driver/Drivers");
                 }

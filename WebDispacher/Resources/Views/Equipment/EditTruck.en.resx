@@ -183,4 +183,13 @@
   <data name="OptionalForNyRolling" xml:space="preserve">
     <value>NY Rolling</value>
   </data>
+  <data name="VehicleCategory" xml:space="preserve">
+    <value>Vehicle Category</value>
+  </data>
+  <data name="ChooseVehicleCategory" xml:space="preserve">
+    <value>Choose a vehicle type</value>
+  </data>
+  <data name="ChooseTruckType" xml:space="preserve">
+    <value>Choose a truck type</value>
+  </data>
 </root>

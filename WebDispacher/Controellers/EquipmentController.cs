@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using DaoModels.DAO.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.Extensions.Hosting.Internal;
 using WebDispacher.Business.Interfaces;
 using WebDispacher.Constants;
 using WebDispacher.Constants.Identity;
@@ -102,6 +106,64 @@ namespace WebDispacher.Controellers
             }
             
             return Redirect(Config.BaseReqvesteUrl);
+        }
+
+        public IActionResult LoadVehicleImages(string vehicleName)
+        {
+            ViewData["VehicleName"] = vehicleName;
+            return PartialView("~/Views/Equipment/VehicleImages.cshtml", ViewData);
+        }
+
+        [HttpGet]
+        [Route("GetImages")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> GetImages(string vehicleSlug)
+        {
+            if (string.IsNullOrEmpty(vehicleSlug)) return Json(new string[0]);
+
+            var directoryPath = $"../TruckPattern/" + vehicleSlug;
+
+            try
+            {
+                var imageFiles = Directory.GetFiles(directoryPath)
+                    .Where(file => file.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
+                    .Select(Path.GetFileName);
+
+                return Json(imageFiles);
+            }
+            catch(Exception ex) 
+            { 
+            
+            }
+
+            return Json(new string[0]);
+        }
+
+        [Route("GetTruckSlug")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> GetTruckSlugByName(string vehicleName)
+        {
+            var vehicleSlug = await truckAndTrailerService.GetTruckTypeSlugByName(vehicleName);
+
+            return Json(vehicleSlug);
+        }
+
+        [Route("GetTruckTypes")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> GetTruckTypes(string categoryId)
+        {
+            var truckTypes = await truckAndTrailerService.GetTruckTypes(categoryId);
+
+            return Json(truckTypes);
+        }
+        
+        [Route("GetVehicleCategiries")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> GetVehicleCategiries()
+        {
+            var vehicleCategories = await truckAndTrailerService.GetVehicleCategiries();
+
+            return Json(vehicleCategories);
         }
 
         [Route("Truck/Remove")]
@@ -200,6 +262,15 @@ namespace WebDispacher.Controellers
             }
             else
             {
+                if(truck.VehicleCategoryId != null)
+                {
+                    ViewData["SelectedVehicleCategoryId"] = truck.VehicleCategoryId;
+                }
+                
+                if(truck.TruckTypeId != null)
+                {
+                    ViewData["SelectedTruckTypeId"] = truck.TruckTypeId;
+                }
                 return View("CreateTruck", truck);
             }
 
@@ -337,6 +408,16 @@ namespace WebDispacher.Controellers
 
                 ViewBag.TruckDocs = await truckAndTrailerService.GetBaseTruckDoc(truckId.ToString());
 
+                if (truck.VehicleCategoryId != null)
+                {
+                    ViewData["SelectedVehicleCategoryId"] = truck.VehicleCategoryId;
+                }
+
+                if (truck.TruckTypeId != null)
+                {
+                    ViewData["SelectedTruckTypeId"] = truck.TruckTypeId;
+                }
+
                 return View(truck);
             }
             catch (Exception)
@@ -362,18 +443,27 @@ namespace WebDispacher.Controellers
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
                     await truckAndTrailerService.EditTruck(truck, truckRegistrationDoc,
-                        truckLeaseAgreementDoc, truckAnnualInspection, bobTailPhysicalDamage, nYHUTDoc, localDate);
+                        truckLeaseAgreementDoc, truckAnnualInspection, bobTailPhysicalDamage, nYHUTDoc, CompanyId, localDate);
 
 
                     return Redirect($"{Config.BaseReqvesteUrl}/Equipment/Trucks");
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
 
                 }
             }
             else
             {
+                if (truck.VehicleCategoryId != null)
+                {
+                    ViewData["SelectedVehicleCategoryId"] = truck.VehicleCategoryId;
+                }
+
+                if (truck.TruckTypeId != null)
+                {
+                    ViewData["SelectedTruckTypeId"] = truck.TruckTypeId;
+                }
                 ViewBag.TruckDocs = await truckAndTrailerService.GetBaseTruckDoc(truck.Id.ToString());
                 return View("EditTruck", truck);
             }
@@ -424,7 +514,7 @@ namespace WebDispacher.Controellers
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-                    await truckAndTrailerService.EditTrailer(trailer, localDate);
+                    await truckAndTrailerService.EditTrailer(trailer, CompanyId, localDate);
 
                     return Redirect($"{Config.BaseReqvesteUrl}/Equipment/trailers");
                 }

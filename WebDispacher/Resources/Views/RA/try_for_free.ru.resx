@@ -132,7 +132,7 @@
   <data name="CarrierTMSDescription" xml:space="preserve">
     <value>Перевозчик TMS помогает вам управлять нагрузками, водителями и выставлением счетов. Все в одном месте.</value>
   </data>
-  <data name="RequestAccess" xml:space="preserve">
+  <data name="ShipperTMSRequestAccessButton" xml:space="preserve">
     <value>Запросить доступ</value>
   </data>
   <data name="ShipperFirstItem" xml:space="preserve">
@@ -149,5 +149,17 @@
   </data>
   <data name="SignUp" xml:space="preserve">
     <value>Регистрация</value>
+  </data>
+  <data name="CarrierTMSRequestAccessButton" xml:space="preserve">
+    <value>Запросить доступ</value>
+  </data>
+  <data name="BrokerTMSRequestAccessButton" xml:space="preserve">
+    <value>Запросить доступ</value>
+  </data>
+  <data name="BrokerTMS" xml:space="preserve">
+    <value>Брокер TMS</value>
+  </data>
+  <data name="IncomingMessage" xml:space="preserve">
+    <value>Входящее сообщение</value>
   </data>
 </root>

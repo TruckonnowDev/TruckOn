@@ -12,5 +12,8 @@ namespace WebDispacher.Business.Interfaces
         Task CreateDispatcherType();
         Task CreateEntityTypesResetPasswords();
         Task CreateEntityPhotoTypes();
+        Task InitVehiclesCategories();
+        Task InitTrucksTypesInVehicliesCategories();
+        Task InitSlugsByTruckTypesNames();
     }
 }

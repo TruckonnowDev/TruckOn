@@ -1,4 +1,5 @@
-﻿using DaoModels.DAO.Models;
+﻿using AspNetCoreRateLimit;
+using DaoModels.DAO.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -35,13 +36,13 @@ namespace WebDispacher.Controellers
 
         [HttpGet]
         [Route("Marketplace")]
-        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompanyOrAdmin)]
         public async Task<IActionResult> Index()
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                ViewData[NavConstants.TypeNavBar] = NavConstants.NormalCompany;
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId, NavConstants.NormalCompany);
                 var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
 
                 if (isCancelSubscribe)
@@ -72,13 +73,13 @@ namespace WebDispacher.Controellers
         
         [HttpGet]
         [Route("Marketplace/Classifieds")]
-        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompanyOrAdmin)]
         public async Task<IActionResult> Classifieds(string userId = null)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                ViewData[NavConstants.TypeNavBar] = NavConstants.NormalCompany;
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId, NavConstants.NormalCompany);
                 var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
 
                 if (isCancelSubscribe)
@@ -135,13 +136,13 @@ namespace WebDispacher.Controellers
         
         [HttpGet]
         [Route("Marketplace/Classifieds/CategoryBuy")]
-        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompanyOrAdmin)]
         public async Task<IActionResult> CategoryBuy(BuyMarketPostsFiltersViewModel filters)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                ViewData[NavConstants.TypeNavBar] = NavConstants.NormalCompany;
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId, NavConstants.NormalCompany);
                 var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
 
                 if (isCancelSubscribe)
@@ -152,7 +153,7 @@ namespace WebDispacher.Controellers
                 var user = await companyService.GetUserByCompanyId(CompanyId);
 
                 var buyItems = await marketplaceService.GetBuyItemsMarketPosts(filters, user);
-
+                
                 return View(new BuyItemMarketPostShortVmList
                 {
                     Items = buyItems,
@@ -170,13 +171,13 @@ namespace WebDispacher.Controellers
         
         [HttpGet]
         [Route("Marketplace/Classifieds/MyAds")]
-        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompanyOrAdmin)]
         public async Task<IActionResult> UserLots(UserMarketPostsFiltersViewModel filters)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                ViewData[NavConstants.TypeNavBar] = NavConstants.NormalCompany;
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId, NavConstants.NormalCompany);
                 var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
 
                 if (isCancelSubscribe)
@@ -204,7 +205,7 @@ namespace WebDispacher.Controellers
 
         [HttpGet]
         [Route("Marketplace/Classifieds/CategorySell")]
-        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompanyOrAdmin)]
         public async Task<IActionResult> CategorySell(SellMarketPostsFiltersViewModel filters)
         {
             try
@@ -238,13 +239,13 @@ namespace WebDispacher.Controellers
 
         [HttpGet]
         [Route("Marketplace/Classifieds/CategoryBuy/{id:int}/")]
-        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompanyOrAdmin)]
         public async Task<IActionResult> BuyLotPage(int id)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                ViewData[NavConstants.TypeNavBar] = NavConstants.NormalCompany;
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId, NavConstants.NormalCompany);
                 var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
 
                 if (isCancelSubscribe)
@@ -253,9 +254,9 @@ namespace WebDispacher.Controellers
                 }
 
                 var queryUser = await companyService.GetUserByCompanyId(CompanyId);
+                ViewBag.Admin = await companyService.GetCompanyById(Int32.Parse(CompanyId));
 
-                var buyLotItem = await marketplaceService.GetBuyItemMarketPost(id, queryUser.Id);
-
+                var buyLotItem = await marketplaceService.GetBuyItemMarketPostWithHistory(id, queryUser.Id);
                 ViewBag.QueryUser = queryUser;
 
                 if(buyLotItem != null)
@@ -274,16 +275,40 @@ namespace WebDispacher.Controellers
 
             return Redirect(Config.BaseReqvesteUrl);
         }
+
         
+
+        [HttpGet]
+        [Route("Marketplace/GetChanges")]
+        public IActionResult GetMarketPlaceChanges(string date, int marketPostId)
+        {
+            try
+            {
+                var selectedDate = DateTime.ParseExact(date, DateTimeFormats.DateTimeInfoUS, null);
+
+                var historyForDate = marketplaceService.GetHistoryForDate(selectedDate, marketPostId);
+
+                return PartialView("~/Views/PartView/History/ChangeHistoryModalData.cshtml", historyForDate);
+
+            }
+            catch(Exception e)
+            {
+
+            }
+
+            return Redirect(Config.BaseReqvesteUrl);
+        }
+
+
         [HttpGet]
         [Route("Marketplace/Classifieds/CategoryBuy/{id:int}/Edit")]
-        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompanyOrAdmin)]
         public async Task<IActionResult> ManageBuyLot(int id)
         {
             try
             {
                  ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                ViewData[NavConstants.TypeNavBar] = NavConstants.NormalCompany;
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId, NavConstants.NormalCompany);
                 var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
 
                 if (isCancelSubscribe)
@@ -314,13 +339,13 @@ namespace WebDispacher.Controellers
         
         [HttpGet]
         [Route("Marketplace/Classifieds/CategorySell/{id:int}/Edit")]
-        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompanyOrAdmin)]
         public async Task<IActionResult> ManageSellLot(int id)
         {
             try
             {
                  ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                ViewData[NavConstants.TypeNavBar] = NavConstants.NormalCompany;
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId, NavConstants.NormalCompany);
                 var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
 
                 if (isCancelSubscribe)
@@ -352,13 +377,13 @@ namespace WebDispacher.Controellers
         
         [HttpPost]
         [Route("Marketplace/RemoveImage")]
-        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompanyOrAdmin)]
         public async Task<IActionResult> RemoveUploadedImage(int imageId, int postId)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                ViewData[NavConstants.TypeNavBar] = NavConstants.NormalCompany;
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId, NavConstants.NormalCompany);
                 var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
 
                 if (isCancelSubscribe)
@@ -386,13 +411,13 @@ namespace WebDispacher.Controellers
 
         [HttpGet]
         [Route("Marketplace/Classifieds/CategorySell/{id:int}/")]
-        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompanyOrAdmin)]
         public async Task<IActionResult> SellLotPage(int id)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                ViewData[NavConstants.TypeNavBar] = NavConstants.NormalCompany;
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId, NavConstants.NormalCompany);
                 var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
 
                 if (isCancelSubscribe)
@@ -401,9 +426,9 @@ namespace WebDispacher.Controellers
                 }
 
                 var queryUser = await companyService.GetUserByCompanyId(CompanyId);
+                ViewBag.Admin = await companyService.GetCompanyById(Int32.Parse(CompanyId));
 
-                var sellLotItem = await marketplaceService.GetSellItemMarketPost(id, queryUser.Id);
-
+                var sellLotItem = await marketplaceService.GetSellItemMarketPostWithHistory(id, queryUser.Id);
                 ViewBag.QueryUser = queryUser;
 
                 if (sellLotItem != null)
@@ -425,13 +450,13 @@ namespace WebDispacher.Controellers
 
         [HttpGet]
         [Route("Marketplace/Classifieds/CategoryBuy/CreateBuyLot")]
-        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompanyOrAdmin)]
         public IActionResult CreateBuyLot()
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                ViewData[NavConstants.TypeNavBar] = NavConstants.NormalCompany;
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId, NavConstants.NormalCompany);
                 var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
 
                 if (isCancelSubscribe)
@@ -450,7 +475,7 @@ namespace WebDispacher.Controellers
         
         [HttpPost]
         [Route("Marketplace/Classifieds/CategoryBuy/CreateBuyLot")]
-        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompanyOrAdmin)]
         public async Task<IActionResult> CreateBuyLot(CreateBuyLotViewModel model, List<IFormFile> files, string localDate)
         {
             if (ModelState.IsValid)
@@ -458,7 +483,7 @@ namespace WebDispacher.Controellers
                 try
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                    ViewData[NavConstants.TypeNavBar] = NavConstants.NormalCompany;
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId, NavConstants.NormalCompany);
                     
                     var itemId = await marketplaceService.CreateBuyLot(model, files, CompanyId, localDate);
 
@@ -479,7 +504,7 @@ namespace WebDispacher.Controellers
         
         [HttpPost]
         [Route("Marketplace/Classifieds/CategorySell/CreateSellLot")]
-        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompanyOrAdmin)]
         public async Task<IActionResult> CreateSellLot(CreateSellLotViewModel model, List<IFormFile> files, string localDate)
         {
             if (ModelState.IsValid)
@@ -487,7 +512,7 @@ namespace WebDispacher.Controellers
                 try
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                    ViewData[NavConstants.TypeNavBar] = NavConstants.NormalCompany;
+                    ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId, NavConstants.NormalCompany);
                     
                     var itemId = await marketplaceService.CreateSellLot(model, files, CompanyId, localDate);
 
@@ -508,7 +533,7 @@ namespace WebDispacher.Controellers
         
         [HttpPost]
         [Route("Marketplace/Classifieds/CategoryBuy/UpdateBuyLot")]
-        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompanyOrAdmin)]
         public async Task<IActionResult> UpdateBuyLot(BuyItemMarketPostViewModel model, List<IFormFile> files, string localDate)
         {
             if (ModelState.IsValid)
@@ -516,8 +541,7 @@ namespace WebDispacher.Controellers
                 try
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-
-                    var itemId = await marketplaceService.UpdateBuyLot(model, files, localDate);
+                    var itemId = await marketplaceService.UpdateBuyLot(model, CompanyId, files, localDate);
 
                     return Redirect($"{Config.BaseReqvesteUrl}/Marketplace/Classifieds/CategoryBuy/{itemId}");
                 }
@@ -536,7 +560,7 @@ namespace WebDispacher.Controellers
         
         [HttpPost]
         [Route("Marketplace/Classifieds/CategorySell/UpdateSellLot")]
-        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompanyOrAdmin)]
         public async Task<IActionResult> UpdateSellLot(SellItemMarketPostViewModel model, List<IFormFile> files, string localDate)
         {
             if (ModelState.IsValid)
@@ -545,7 +569,7 @@ namespace WebDispacher.Controellers
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-                    var itemId = await marketplaceService.UpdateSellLot(model, files, localDate);
+                    var itemId = await marketplaceService.UpdateSellLot(model, CompanyId, files, localDate);
 
                     return Redirect($"{Config.BaseReqvesteUrl}/Marketplace/Classifieds/CategorySell/{itemId}");
                 }
@@ -565,7 +589,7 @@ namespace WebDispacher.Controellers
         
         [HttpPost]
         [Route("Marketplace/RemoveMarketPost")]
-        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompanyOrAdmin)]
         public async Task<IActionResult> RemoveMarketPost(int postId, string localDate)
         {
             try
@@ -598,7 +622,7 @@ namespace WebDispacher.Controellers
         
         [HttpPost]
         [Route("Marketplace/CloseMarketPost")]
-        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompanyOrAdmin)]
         public async Task<IActionResult> CloseMarketPost(int postId, string localDate)
         {
             try
@@ -654,13 +678,13 @@ namespace WebDispacher.Controellers
 
         [HttpGet]
         [Route("Marketplace/Classifieds/CategorySell/CreateSellLot")]
-        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompanyOrAdmin)]
         public IActionResult CreateSellLot()
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                ViewData[NavConstants.TypeNavBar] = NavConstants.NormalCompany;
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId, NavConstants.NormalCompany);
                 var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
 
                 if (isCancelSubscribe)

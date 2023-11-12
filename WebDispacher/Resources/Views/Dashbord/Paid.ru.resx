@@ -176,4 +176,7 @@
 	<data name="AssignedTo" xml:space="preserve">
 		<value>Назначен на</value>
 	</data>
+	<data name="PickupEstimated" xml:space="preserve">
+		<value>Предполагаемая отправка</value>
+	</data>
 </root>

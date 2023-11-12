@@ -39,4 +39,7 @@
     <data name="AnswerHeader" xml:space="preserve">
         <value>Respuesta</value>
     </data>
+    <data name="IncomingMessage" xml:space="preserve">
+        <value>Mensaje Entrante</value>
+    </data>
 </root>

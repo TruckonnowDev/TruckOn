@@ -168,7 +168,12 @@
                                 </label>
                                 <label for="">
                                     @Localizer["Fax"]
-                                    <input type="text" id="faxC" asp-for="Fax" value="@Model.Fax">
+                                    <div class="intl-tel-input">
+                                        <input data-default-country="auto" type="text" id="phoneFax" asp-for="FaxNumber.Number" value="@Model.FaxNumber.Number" pattern="@PatternConstants.PhoneNumberWithoutCountryCode" placeholder="(XXX)-XXX-XXXX - @Localizer["FaxNumber"]">
+                                        <input type="hidden" id="country-code-dialcode-fax" asp-for="FaxNumber.DialCode" value="@Model.FaxNumber.DialCode">
+                                        <input type="hidden" id="country-code-iso2-fax" asp-for="FaxNumber.Iso2" value="@Model.FaxNumber.Iso2">
+                                        <input type="hidden" id="country-code-name-fax" asp-for="FaxNumber.Name" value="@Model.FaxNumber.Name">
+                                    </div>
                                 </label>
                                 <label for="">
                                     @Localizer["McNumber"]
@@ -283,11 +288,11 @@
                                 </label>
                                 <label for="">
                                     @Localizer["Price"]
-                                    <input type="number" onchange="(function(el){el.value=parseFloat(el.value).toFixed(2);})(this)" id="price" asp-for="Price" value="@Model.Price" step="0.01" />
+                                    <input type="text" oninput="validateNonNegativeNumberWithTimer(this)" id="price" asp-for="Price" value="@Model.Price" step="0.01" min="0" />
                                 </label>
                                 <label for="">
                                     @Localizer["BrokenFee"]
-                                    <input type="number" onchange="(function(el){el.value=parseFloat(el.value).toFixed(2);})(this)" id="brokerFee" asp-for="BrokerFee" value="@Model.BrokerFee" step="0.01">
+                                    <input type="text" oninput="validateNonNegativeNumberWithTimer(this)" id="brokerFee" asp-for="BrokerFee" value="@Model.BrokerFee" step="0.01" min="0">
                                 </label>
                                 <input type="hidden" id="dateTimeLocal" name="dateTimeLocal" />
                                 <input class="btn1" type="submit" value="@Localizer["Save"]" />
@@ -314,6 +319,37 @@
 
 </body>
 
+
+<script src="~/js/input-replacer.js"></script>
+<script>
+    setReplacer(document.querySelector('#iccmcC'), @ExpressionConstants.OnlyDigits);
+    var delayTimer;
+
+    function validateNonNegativeNumberWithTimer(input) {
+        clearTimeout(delayTimer);
+
+        delayTimer = setTimeout(function () { validateNonNegativeNumber(input) }, 700);
+    }
+
+    function validateNonNegativeNumber(input) {
+        var value = input.value;
+
+        if (value.startsWith("-")) {
+            value = value.substring(1);
+        }
+
+        value = value.replace(',', '.');
+
+        var numberValue = parseFloat(value).toFixed(2);
+
+        if (isNaN(numberValue) || numberValue < 0 || numberValue.split('.')[1].length > 2) {
+            input.value = '0.00';
+        } else {
+            input.value = numberValue;
+        }
+        }
+</script>
+
 <script src="~/js/auto-complite.js"></script>
 
 <script>
@@ -335,6 +371,13 @@
             $("#country-code-dialcode-contact").val("1")
             $("#country-code-name-contact").val("United States")
         }
+        
+        if(!$("#country-code-iso2-fax").val()){
+            $("#country-code-iso2-fax").val("us")
+            $("#country-code-dialcode-fax").val("1")
+            $("#country-code-name-fax").val("United States")
+        }
+
         var phoneP = $("#phoneP");
         phoneP.intlTelInput({
             initialCountry: $("#country-code-iso2-pickedup").val() ? $("#country-code-iso2-pickedup").val() : "us",
@@ -369,6 +412,18 @@
             $("#country-code-dialcode-contact").val(countryData.dialCode);
             $("#country-code-iso2-contact").val(countryData.iso2);
             $("#country-code-name-contact").val(countryData.name);
+        });
+
+        var phoneFax = $("#phoneFax");
+        phoneFax.intlTelInput({
+            initialCountry: $("#country-code-iso2-fax").val() ? $("#country-code-iso2-fax").val() : "us",
+            separateDialCode: true,
+        });
+
+        phoneFax.on("countrychange", function (e, countryData) {
+            $("#country-code-dialcode-fax").val(countryData.dialCode);
+            $("#country-code-iso2-fax").val(countryData.iso2);
+            $("#country-code-name-fax").val(countryData.name);
         });
 
         document.addEventListener("input", function (event) {
@@ -487,7 +542,7 @@
         }
     };
 
-    $('input[name="PhoneP"], input[name="PhoneD"], input[name="PhoneC"]').on('click', function () {
+    $('input[name="PhoneP"], input[name="PhoneD"], input[name="PhoneC"], input[name="PhoneFax"]').on('click', function () {
         $(this).setCursorPosition(1);
     });
     
@@ -546,13 +601,13 @@
         $("#phoneD").mask("(999)-999-9999", { placeholder: "(XXX)-XXX-XXXX" });
         $("#phoneP").mask("(999)-999-9999", { placeholder: "(XXX)-XXX-XXXX" });
         $("#phoneC").mask("(999)-999-9999", { placeholder: "(XXX)-XXX-XXXX" });
+        $("#phoneFax").mask("(999)-999-9999", { placeholder: "(XXX)-XXX-XXXX" });
 
         $('#stateD').val('@Model.Delivery.State').change();
         $('#stateP').val('@Model.PickedUp.State').change();
 
          $("#zipP").mask("99999", { placeholder: "XXXXX" });
          $("#zipD").mask("99999", { placeholder: "XXXXX" });
-
         
     });
 
@@ -594,7 +649,6 @@
             success: function (response) {
                 $("#vehiclesTableContainer").html(response);
                 SuccessAlert("@Localizer["VehFormSuccessSend"]");
-                console.log("тут вообще бывает?")
 
                 $(".car-form").submit(function (el) {
                     console.log("tyk-tyk");
@@ -604,7 +658,6 @@
                     $('input[name="localDate"]').val(GetDateTimeInFormat(new Date()));
 
                     let formElems = this.elements;
-                    console.log(formElems);
                     let body = {
                         orderId: formElems['orderIdcar'].value,
                         vehicleId: formElems['vehicleId'].value,
@@ -626,7 +679,6 @@
                         url: `/Dashbord/Order/SavaVech`,
                         success: function (response) {
                             SuccessAlert("@Localizer["VehFormInfoSuccessSend"]")
-                            console.log("Form submitted!");
                         },
                         error: function (response) {
                             ErrorAlert("@Localizer["VehFormHaveError"]");

@@ -104,7 +104,6 @@ namespace WebDispacher.Controellers
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                //ViewBag.NameCompany = GetCookieCompanyName();
                 ViewBag.CheckedCompany = await companyService.CheckCompanyRequiredDoc(CompanyId);
 
                 var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
@@ -121,7 +120,7 @@ namespace WebDispacher.Controellers
 
                 var countPages = await orderService.GetCountPage(CompanyId, OrderConstants.OrderStatusNewLoad, loadId, name, address, phone, email, price);
 
-                ViewBag.count = countPages;// orderService.GetCountPage(countPage);
+                ViewBag.count = countPages;
                     
 
                 ViewBag.LoadId = loadId;
@@ -135,7 +134,7 @@ namespace WebDispacher.Controellers
 
                 return View("NewLoad", mapper.Map<List<ShortOrderViewModel>>(orders));
             }
-            catch (Exception exception)
+            catch (Exception ex)
             {
             }
 

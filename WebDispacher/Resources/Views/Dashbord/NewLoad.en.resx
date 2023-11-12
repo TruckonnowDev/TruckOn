@@ -192,4 +192,7 @@
   <data name="DeliveryEstimated" xml:space="preserve">
     <value>Delivery Estimated</value>
   </data>
+  <data name="PickupEstimated" xml:space="preserve">
+    <value>Pickup Estimated</value>
+  </data>
 </root>

@@ -6,7 +6,7 @@
 
 <div class="modal fade" id="showPhoneNumber" tabindex="-1" role="dialog" aria-labelledby="addRequredDocLabel" aria-hidden="true">
     <content class="ng-modal-wrapper">
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog show-phone modal-lg " role="document">
             <div class="modal-content">
                 <div class="modal-header modal-title">
                     <h1 class="text-center" style="width:100%;" id="ShowNumberHeader">@Localizer["ShowNumberHeader"]</h1>
@@ -125,14 +125,14 @@
         margin-bottom: 15px;
     }
 
-    .modal-dialog {
+    .show-phone.modal-dialog {
         position: absolute;
         left: 0;
         right: 0;
         margin-left: auto;
         margin-right: auto;
         top: 16vh;
-        width: 400px !important;
+        width: 400px;
         text-align: left;
         background-color: #fff;
         -moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
@@ -144,7 +144,7 @@
         border-radius: 30px;
     }
 
-    .modal-content {
+    .show-phone .modal-content {
         border: 0px;
         border-radius: 30px;
     }
@@ -157,7 +157,7 @@
         position: relative;
     }
 
-    .modal-dialog label {
+    .modal-dialog.show-phone label {
         position: relative;
         display: inline-block;
         vertical-align: middle;

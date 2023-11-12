@@ -15,7 +15,8 @@ namespace DaoModels.DAO.Models
         public string Owner { get; set;}
         public string Plate { get; set;}
         public string Color { get; set;}
-        public string Type { get; set;}
+        public int? TruckTypeId { get; set;}
+        public TruckType TruckType { get; set;}
         public string State { get; set; }
         public int CompanyId { get; set; }
         public Company Company { get; set; }

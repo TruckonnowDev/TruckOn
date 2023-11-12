@@ -144,4 +144,7 @@
   <data name="MailControl" xml:space="preserve">
     <value>Mail Control</value>
   </data>
+  <data name="Marketplace" xml:space="preserve">
+    <value>Marketplace</value>
+  </data>
 </root>

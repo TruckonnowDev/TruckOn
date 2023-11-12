@@ -71,7 +71,8 @@ namespace WebDispacher.ViewModels.Mappings
                .ForMember(x => x.Owner, opt => opt.MapFrom(t => t.Owner))
                .ForMember(x => x.Plate, opt => opt.MapFrom(t => t.PlateTruck))
                .ForMember(x => x.Color, opt => opt.MapFrom(t => t.ColorTruck))
-               .ForMember(x => x.Type, opt => opt.MapFrom(t => t.Type))
+               .ForMember(x => x.TruckTypeId, opt => opt.MapFrom(t => t.TruckTypeId))
+               .ForPath(x => x.TruckType.VehicleCategoryId, opt => opt.MapFrom(t => t.VehicleCategoryId))
                .ReverseMap();
             CreateMap<TrailerViewModel, DaoModels.DAO.Models.Trailer>()
                 .ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id))

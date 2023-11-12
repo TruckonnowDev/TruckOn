@@ -16,38 +16,89 @@
                         <a href="#" data-rel=".shipper">@Localizer["ShipperTMS"]</a>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="">
                     <div class="try_block carrier active">
-                        <div class="white_block">
+                        <div class="white_block" id="whiteBlock1">
                             <h1>@Localizer["CarrierTMS"]</h1>
                             <p>@Localizer["CarrierTMSDescription"]</p>
                             <a href="/carrier-reg">
-                                <div class="btn1-big">@Localizer["SignUp"]</div>
+                                <div class="btn1-big">@Localizer["CarrierTMSRequestAccessButton"]</div>
                             </a>
                         </div>
-                        <ul class="plus">
-                            <li>@Localizer["CarrierFirstItem"]</li>
-                            <li>@Localizer["CarrierSecondItem"]</li>
-                            <li>@Localizer["CarrierThirdItem"]</li>
-                        </ul>
+                        
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="">
                     <div class="try_block shipper">
-                        <div class="white_block">
+                        <div class="white_block" id="whiteBlock2">
                             <h1>@Localizer["ShipperTMS"]</h1>
                             <p>@Localizer["ShipperTMSDescription"]</p>
                             <a href="/shipper-reg">
-                                <div class="btn1-big">@Localizer["RequestAccess"]</div>
+                                <div class="btn1-big">@Localizer["ShipperTMSRequestAccessButton"]</div>
                             </a>
                         </div>
-                        <ul class="plus">
-                            <li>@Localizer["ShipperFirstItem"]</li>
-                            <li>@Localizer["ShipperSecondItem"]</li>
-                        </ul>
+                        
                     </div>
+                </div>
+                <div class="">
+                    <div class="try_block broker">
+                        <div class="white_block" id="whiteBlock3">
+                            <h1>@Localizer["BrokerTMS"]</h1>
+                            <p></p>
+                            <a href="/shipper-reg">
+                                <div class="btn1-big">@Localizer["BrokerTMSRequestAccessButton"]</div>
+                            </a>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="row advantages">
+                <div class="try_block">
+                    <ul class="plus">
+                        <li>@Localizer["CarrierFirstItem"]</li>
+                        <li>@Localizer["CarrierSecondItem"]</li>
+                        <li>@Localizer["CarrierThirdItem"]</li>
+                    </ul>
+                </div>
+                <div class="try_block">
+                    <ul class="plus">
+                        <li>@Localizer["ShipperFirstItem"]</li>
+                        <li>@Localizer["ShipperSecondItem"]</li>
+                    </ul>
+                </div>
+                <div class="try_block">
+                    <ul class="plus">
+                        <li></li>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
 </body>
+
+<style>
+    .btn1-big {
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn1-big:hover {
+        transform: scale(1.04);
+        transform-origin: top top;
+    }
+
+    .try_block {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .white_block {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+</style>

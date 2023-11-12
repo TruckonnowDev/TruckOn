@@ -78,6 +78,16 @@ namespace WebDispacher.Controellers
             return Redirect(Config.BaseReqvesteUrl);
         }
 
+        [HttpGet]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierAdminCompany)]
+        [Route("GetCountNewMessages")]
+        public async Task<IActionResult> GetCountNewMessages()
+        {
+            var countNewMessages = await companyService.GetNewUserMailQuestions();
+
+            return Json(countNewMessages);
+        }
+
         [HttpPost]
         [Route("SendEmail")]
         [Authorize(Policy = PolicyIdentityConstants.CarrierAdminCompany)]
@@ -107,7 +117,7 @@ namespace WebDispacher.Controellers
         [Route("CreateCompany")]
         [Authorize(Policy = PolicyIdentityConstants.CarrierAdminCompany)]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 300)]
-        public IActionResult CreateCompany()
+        public async Task<IActionResult> CreateCompany()
         {
             try
             {
@@ -125,7 +135,7 @@ namespace WebDispacher.Controellers
                 ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
 
                 //ViewBag.Subscriptions = companyService.GetSubscriptions();
-                    
+
                 return View("CreateCommpany");
             }
             catch (Exception e)
@@ -537,6 +547,7 @@ namespace WebDispacher.Controellers
                 }
                     
                 ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+
                 //ViewBag.Users = companyService.GetUsers(idCompanySelect);
                 ViewBag.Companies = companyService.GetCompanies();
                 ViewBag.IdCompanySelect = idCompanySelect;
@@ -563,6 +574,14 @@ namespace WebDispacher.Controellers
                 ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
 
                 var userQuestionWithAnswers = await companyService.GetUserQuestionWithAnswers(id);
+                var userId = (await companyService.GetUserByCompanyId(CompanyId)).Id;
+
+                await companyService.SetViewInUserMailQuestion(new ViewUserMailQuestion
+                {
+                    UserMailQuestionId = id,
+                    DateTimeAction = DateTime.UtcNow,
+                    UserId = userId
+                });
 
                 return PartialView("~/Views/PartView/AdminAnswerQuestions/AnswerModel.cshtml", userQuestionWithAnswers);
             }

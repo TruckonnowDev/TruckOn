@@ -1,0 +1,181 @@
+﻿@using DeviceDetectorNET;
+@using MaxMind.GeoIP2;
+@using Microsoft.AspNetCore.Mvc.Localization;
+@using WebDispacher.Constants;
+@using WebDispacher.ViewModels.Marketplace;
+
+@model HistoryMarketPostActionGroup
+
+
+@inject IViewLocalizer Localizer
+
+<div class="modal-content ">
+    <div class="modal-header modal-title">
+        <h1 class="modal-h1 modal-header-2" id="DeleteDriverLabel">History for @Model.GroupAction.ToString(DateTimeFormats.DateTimeInfoUS) ( @Model.Groups.Count )</h1>
+    </div>
+    <div class="modal-body">
+        <div class="tabContent mt-0">
+            <div class="change-group">
+                @for (var i = 0; i < Model.Groups.Count; i++)
+                {
+                    var blockBackgroundColor = i % 2 == 0 ? "white" : "#dfdfdf";
+
+                    <div class="one text-info-p change-item" style="background-color:@blockBackgroundColor">
+                        <p> @Localizer["ActionType"]:
+                            <b> @Model.Groups[i].ActionType</b></p>
+                        <p>@Localizer["FieldAction"]:
+                            <b>@Model.Groups[i].ChangedField</b></p>
+                        <p>@Localizer["ContentBefore"]:
+                            <b>@Model.Groups[i].ContentBefore</b></p>
+                        <p>@Localizer["ContentAfter"]:
+                            <b>@Model.Groups[i].ContentAfter</b></p>
+                        <p>@Localizer["TimeAction"]:
+                            <b>@Model.Groups[i].DateTimeAction.ToString(DateTimeFormats.TimeInfoUS)</b></p>
+                        <p>@Localizer["AuthorName"]:
+                            <b>@Model.Groups[i].AuthorName</b></p>
+                        <p>@Localizer["ExecutorName"]:
+                            <b>@Model.Groups[i].CurrentUserName</b></p>
+                        <p>@Localizer["CurrentActionIp"]:
+                            <b>@Model.Groups[i].IpAddress</b></p>
+                        @if (Model.Groups[i].UserAgentInfoViewModel != null)
+                        {
+                                
+                            <p>@Localizer["BrowserName"]:
+                                <b> @Model.Groups[i].UserAgentInfoViewModel.BrowserName</b></p>
+                            <p>@Localizer["BrowserVersion"]:
+                                <b> @Model.Groups[i].UserAgentInfoViewModel.BrowserVersion</b></p>
+                            <p>@Localizer["OsName"]:
+                                <b> @Model.Groups[i].UserAgentInfoViewModel.OSName</b></p>
+                            <p>@Localizer["OsVersion"]:
+                                <b> @Model.Groups[i].UserAgentInfoViewModel.OSVersion</b></p>
+                            <p>@Localizer["OsPlatform"]
+                                <b> @Model.Groups[i].UserAgentInfoViewModel.OSPlatform</b></p>
+                            <p>@Localizer["Device"]:
+                                <b> @Model.Groups[i].UserAgentInfoViewModel.DeviceBrand @Model.Groups[i].UserAgentInfoViewModel.DeviceModel @Model.Groups[i].UserAgentInfoViewModel.DeviceName</b></p>
+                            <p>@Localizer["IsMobile"]:<b> @Model.Groups[i].UserAgentInfoViewModel.IsMobile</b></p>
+                            <p>@Localizer["IsDesktop"]: <b> @Model.Groups[i].UserAgentInfoViewModel.IsDesktop</b></p>
+                        }
+                        @if (Model.Groups[i].IPInfoViewModel != null)
+                        {
+                            <p>@Localizer["Region"]:
+                                <b> @Model.Groups[i].IPInfoViewModel.CountryName</b></p>
+                            <p>@Localizer["MostSpecificSubdivisionName"]:
+                                <b> @Model.Groups[i].IPInfoViewModel.MostSpecificSubdivisionName</b></p>
+                            <p>@Localizer["City"]:
+                                <b> @Model.Groups[i].IPInfoViewModel.CityName</b></p>
+                            <p>@Localizer["PostalCode"]:
+                                <b> @Model.Groups[i].IPInfoViewModel.PostalCode</b></p>
+                            @if (Model.Groups[i].IPInfoViewModel.PostalCodeСonfidence.HasValue)
+                            {
+                                <p>@Localizer["PostalCodeConfidence"]:
+                                    <b> @Model.Groups[i].IPInfoViewModel.PostalCodeСonfidence.Value %</b></p>
+                            }
+                            @if (Model.Groups[i].IPInfoViewModel.Latitude.HasValue)
+                            {
+                                <p>@Localizer["Latitude"]:
+                                    <b> @Model.Groups[i].IPInfoViewModel.Latitude.Value</b></p>
+                            }
+                            @if (Model.Groups[i].IPInfoViewModel.Longitude.HasValue)
+                            {
+                                <p>@Localizer["Longitude"]:
+                                    <b> @Model.Groups[i].IPInfoViewModel.Longitude.Value</b></p>
+                            }
+                            @if (Model.Groups[i].IPInfoViewModel.LocationAccuracyRadius.HasValue)
+                            {
+                                <p>@Localizer["LocationAccuracyRadius"]:
+                                    <b> @Model.Groups[i].IPInfoViewModel.LocationAccuracyRadius.Value Km</b></p>
+                            }
+
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="tabContent mt-0">
+        </div>
+    </div>
+</div>
+
+<style>
+
+    .change-history .modal-body {
+        padding: 1.5rem 0;
+    }
+
+    .change-history .change-group .change-item {
+        padding: 1.5rem;
+    }
+
+    .change-history .modal-content {
+        border: 0px;
+        border-radius: 30px;
+    }
+
+    .change-history .ng-modal-wrapper {
+        display: inline-block;
+        vertical-align: middle;
+        padding: 50px 0;
+        width: 100%;
+        position: relative;
+    }
+
+    .change-history .modal-dialog label {
+        position: relative;
+        display: inline-block;
+        vertical-align: middle;
+        cursor: pointer;
+        padding: 3px 10px 4px 0px;
+        -moz-border-radius: 3px;
+        -webkit-border-radius: 3px;
+        margin-top: 2px;
+        background: none;
+        font-size: 16px;
+        line-height: 19px;
+        letter-spacing: -.016em;
+        -moz-transition-property: all;
+        -o-transition-property: all;
+        -webkit-transition-property: all;
+        transition-property: all;
+        -moz-transition-duration: 300ms;
+        -o-transition-duration: 300ms;
+        -webkit-transition-duration: 300ms;
+        transition-duration: 300ms;
+        border-radius: 30px;
+    }
+
+    .change-history .modal-buttons .right-buttons {
+        float: right;
+    }
+
+    .change-history .modal-inp-text {
+        width: 100%;
+        height: 77px;
+        background: #fff;
+        border: 1px solid #c4c9d5;
+        border-radius: 10px;
+        padding: 25px 15px;
+        font-family: Montserrat;
+        font-style: normal;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 1.2;
+        color: #686f7c;
+        margin-top: 6px
+    }
+
+    .change-history .modal-title h1 {
+        font-size: 26px;
+    }
+
+    .change-history .modal-header {
+        justify-content: center;
+        padding: 1rem;
+    }
+
+    .change-history .modal-footer {
+        justify-content: center;
+        padding: 1rem;
+    }
+</style>

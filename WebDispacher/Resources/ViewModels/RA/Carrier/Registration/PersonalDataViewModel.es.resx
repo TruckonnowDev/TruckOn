@@ -66,4 +66,7 @@
     <data name="CompanyName" xml:space="preserve">
         <value>Nombre de la Empresa</value>
     </data>
+    <data name="USDOTNumberOnlyNumber" xml:space="preserve">
+        <value>El campo USDOT Number debe contener solo dígitos</value>
+    </data>
 </root>

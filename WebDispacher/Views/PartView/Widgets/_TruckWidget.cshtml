@@ -1,0 +1,15 @@
+﻿@using DaoModels.DAO.Models;
+
+@model List<TruckStatusWidget>;
+
+ @foreach(var item in Model)
+ {
+    <div class="widget" ondblclick="editTruckWidget(@item.Id)">
+        <div class="widget-item" style="background: radial-gradient(circle, #@item.StatusTheme.BackgroundColor.HexCode 40%, #@item.StatusTheme.BackgroundColor.HexCode 60%); border: 1px solid #@item.StatusTheme.BackgroundColor.HexCode">
+            <span class="big-circle"></span>
+            <span class="middle-circle"></span>
+            <span class="fas">@item.CountItemsInStatus</span>
+        </div>
+        <div class="widget-status-name" style="color: #@item.StatusTheme.BackgroundColor.HexCode">@item.Status?.Name</div>
+    </div>
+}

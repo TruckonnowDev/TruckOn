@@ -117,7 +117,7 @@
 		<value>Ежегодные ИНС</value>
 	</data>
 	<data name="EditTrailer" xml:space="preserve">
-		<value>Редактировать прицеп</value>
+		<value>Редактировать Прицеп</value>
 	</data>
 	<data name="HowLong" xml:space="preserve">
 		<value>Как долго</value>
@@ -139,5 +139,74 @@
 	</data>
 	<data name="TypeTrailer" xml:space="preserve">
 		<value>Тип Прицепа</value>
+	</data>
+	<data name="ChooseGroupType" xml:space="preserve">
+		<value>Выберите группу прицепов</value>
+	</data>
+	<data name="CreateNewGroupType" xml:space="preserve">
+		<value>Добавить новую группу</value>
+	</data>
+	<data name="TrailerGroupSuccessAdded" xml:space="preserve">
+		<value>Успешно добавлена новая группа трейлеров</value>
+	</data>
+	<data name="TrailerGroupNotAdded" xml:space="preserve">
+		<value>Не удалось добавить новую группу трейлеров</value>
+	</data>
+	<data name="GroupTrailer" xml:space="preserve">
+		<value>Группа прицепов</value>
+	</data>
+	<data name="ChooseTrailerStatus" xml:space="preserve">
+		<value>Выберите статус прицепа</value>
+	</data>
+	<data name="CreateNewTrailerStatus" xml:space="preserve">
+		<value>Добавить новый статус</value>
+	</data>
+	<data name="TrailerStatus" xml:space="preserve">
+		<value>Статус прицепа</value>
+	</data>
+	<data name="TrailerStatusNotAdded" xml:space="preserve">
+		<value>Не удалось добавить новый статус</value>
+	</data>
+	<data name="TrailerStatusSuccessAdded" xml:space="preserve">
+		<value>Успешно добавлен новый статус</value>
+	</data>
+	<data name="ChooseVehicleCategory" xml:space="preserve">
+		<value>Выберите тип авто</value>
+	</data>
+	<data name="VehicleCategory" xml:space="preserve">
+		<value>Категория Авто</value>
+	</data>
+	<data name="ChooseTrailerType" xml:space="preserve">
+		<value>Выберите группу прицепов</value>
+	</data>
+	<data name="BackToEquipment" xml:space="preserve">
+		<value>Вернуться к оборудованию</value>
+	</data>
+	<data name="TrailerLocation" xml:space="preserve">
+		<value>Добавьте местоположение объекта</value>
+	</data>
+	<data name="MannuallyLocationType" xml:space="preserve">
+		<value>Местоположение вручную</value>
+	</data>
+	<data name="GPSLocationType" xml:space="preserve">
+		<value>Местоположение по GPS</value>
+	</data>
+	<data name="LaterLocationType" xml:space="preserve">
+		<value>Местоположение позже</value>
+	</data>
+	<data name="TrailerLocationType" xml:space="preserve">
+		<value>Тип местоположения</value>
+	</data>
+	<data name="Update" xml:space="preserve">
+		<value>Обновить</value>
+	</data>
+	<data name="TrailerDocumentSuccessUpdated" xml:space="preserve">
+		<value>Документ успешно обновлен</value>
+	</data>
+	<data name="TrailerDocumentNotUpdated" xml:space="preserve">
+		<value>Документ не удалось обновить</value>
+	</data>
+	<data name="UploadDocument" xml:space="preserve">
+		<value>Загрузить документ</value>
 	</data>
 </root>

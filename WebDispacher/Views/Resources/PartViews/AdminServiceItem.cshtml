@@ -1,0 +1,85 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@model WebDispacher.ViewModels.Resources.ResourceViewModel
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = $"{Model.Name} | Resources";
+}
+
+<div id="service-item">
+    <div class="container">
+        <div class="title">
+            <a href="/Resources/admin">@Localizer["BackToResources"]</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row" style="justify-content: start">
+            <div class="col-md-1">
+                <div class="picture">
+                    <img src="@Model.UrlPicture" />
+                </div>
+            </div>
+            <div class="col-md-11" style="display:flex;align-items:center;">
+                <div class="header-name">
+                    <h1>@Model.Name</h1>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="info-service">
+                    <p>@Model.Description</p>
+                </div>
+            </div>
+            <div class="col-md-3 mt-2 ">
+                <a href="@ViewBag.BaseUrl/Resources/Admin/@Model.Id/Edit" class="btn1">@Localizer["Edit"]</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    #service-item .container{
+        margin-top: 2rem;
+    }
+
+    .title a {
+        font-size: 14px;
+    }
+
+    .picture img {
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 80px;
+        max-height: 80px;
+    }
+
+    .header-name h1 {
+        font-size: 36px;
+    }
+
+    .info-service p {
+        padding-top: 2rem;
+        font-size: 16px;
+        width: 100%;
+    }
+</style>
+<style>
+    .btn1 {
+        width: 100%;
+        font-size: 16px;
+        font-weight: 600;
+        text-align: center;
+        padding: 14px 20px;
+    }
+
+        .btn1:hover {
+            background: #f9f9f9;
+            border: 1px solid #2c5deb;
+            color: #2c5deb;
+            -webkit-transition: .3s all;
+            -o-transition: .3s all;
+            transition: .3s all
+        }
+</style>

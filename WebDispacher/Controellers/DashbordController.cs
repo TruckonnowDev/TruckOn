@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using DaoModels.DAO.DTO;
@@ -8,19 +7,14 @@ using DaoModels.DAO.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Logging;
-using Stripe;
 using WebDispacher.Business.Interfaces;
-using WebDispacher.Business.Services;
 using WebDispacher.Constants;
 using WebDispacher.Constants.Identity;
-using WebDispacher.Models;
 using WebDispacher.Service;
 using WebDispacher.ViewModels;
 using WebDispacher.ViewModels.Dashboard;
 using WebDispacher.ViewModels.Order;
-using WebDispacher.ViewModels.Vehicles;
+using WebDispacher.ViewModels.Widget;
 
 namespace WebDispacher.Controellers
 {
@@ -29,6 +23,7 @@ namespace WebDispacher.Controellers
         private readonly ICompanyService companyService;
         private readonly IDriverService driverService;
         private readonly IOrderService orderService;
+        private readonly ITruckAndTrailerService truckAndTrailerService;
         private readonly IMapper mapper;
 
         public DashbordController(
@@ -36,11 +31,13 @@ namespace WebDispacher.Controellers
             IUserService userService,
             ICompanyService companyService,
             IDriverService driverService,
+            ITruckAndTrailerService truckAndTrailerService,
             IMapper mapper) : base(userService)
         {
             this.orderService = orderService;
             this.driverService = driverService;
             this.companyService = companyService;
+            this.truckAndTrailerService = truckAndTrailerService;
             this.mapper = mapper;
         }
         private string Status { get; set; }
@@ -95,6 +92,187 @@ namespace WebDispacher.Controellers
             return Redirect(Config.BaseReqvesteUrl);
         }
 
+        [Route("Dashboard")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> Index()
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+
+                if (isCancelSubscribe)
+                {
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
+                }
+
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
+
+                var currentTruckWidgets = await truckAndTrailerService.GetCurrentCompanyTruckWidgets(CompanyId);
+                var currentTrailerWidgets = await truckAndTrailerService.GetCurrentCompanyTrailerWidgets(CompanyId);
+                var currentOrderWidgets = await orderService.GetCurrentCompanyOrderWidgets(CompanyId);
+
+                var driversExpirationDriverLicense = await driverService.GetDriversWithApproachingDriverLicenseExpiration(CompanyId, DashboardConstants.CountDaysExpiration);
+                var driversExpirationMedicalCard = await driverService.GetDriversWithApproachingMedicalCardExpiration(CompanyId, DashboardConstants.CountDaysExpiration);
+
+                var trucksExpirationPlate = await truckAndTrailerService.GetTruckWithApproachingPlateExpiration(CompanyId, DashboardConstants.CountDaysExpiration);
+                var trucksExpirationLastInspection = await truckAndTrailerService.GetTruckWithApproachingAnnualInspectionExpiration(CompanyId, DashboardConstants.CountDaysExpiration);
+
+                var trailersExpirationPlate = await truckAndTrailerService.GetTrailerWithApproachingPlateExpiration(CompanyId, DashboardConstants.CountDaysExpiration);
+                var trailersExpirationLastInspection = await truckAndTrailerService.GetTrailerWithApproachingAnnualInspectionExpiration(CompanyId, DashboardConstants.CountDaysExpiration);
+
+                return View(new DashboardViewModelList
+                {
+                    TruckWidgets = currentTruckWidgets,
+                    TrailerWidgets = currentTrailerWidgets,
+                    OrderWidgets = currentOrderWidgets,
+                    DriversExpirationDriverLicense = driversExpirationDriverLicense,
+                    DriversExpirationMedicalCard = driversExpirationMedicalCard,
+                    TrucksExpirationPlate = trucksExpirationPlate,
+                    TrucksExpirationLastInspection = trucksExpirationLastInspection,
+                    TrailersExpirationPlate = trailersExpirationPlate,
+                    TrailersExpirationLastInspection = trailersExpirationLastInspection,
+                });
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Redirect(Config.BaseReqvesteUrl);
+        }
+
+        [HttpGet]
+        [Route("Order/EditWidgetForm")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> GetWidgetForm(int id, string returnUrl)
+        {
+            var widget = await orderService.GetOrderWidgetById(id, CompanyId);
+
+            return PartialView("~/Views/PartView/Modals/EditWidget.cshtml", (widget, returnUrl));
+        }
+
+        [HttpGet]
+        [Route("Order/CreateWidgetForm")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> GetCreateWidgetForm(string returnUrl)
+        {
+            return PartialView("~/Views/PartView/Modals/CreateWidget.cshtml", (new CreateWidgetVm { TypeWidget = ViewModels.Widget.Enum.TypeWidget.Order }, returnUrl));
+        }
+
+        [HttpGet]
+        [Route("Order/GetStatusWithoutWidgetsDropdownItems")]
+        public async Task<JsonResult> GetOrderStatusWithoutWidgetsDropdownItems()
+        {
+            var truckStatuses = await orderService.GetOrderStatusWithoutWidgetsDropdownItems();
+
+            return Json(truckStatuses);
+        }
+
+        [HttpGet]
+        [Route("Order/GetEditStatusWithoutWidgetsDropdownItems")]
+        public async Task<JsonResult> GetEditOrderStatusWithoutWidgetsDropdownItems(int currentItemId)
+        {
+            var orderStatuses = await orderService.GetOrderStatusWithoutWidgetsWithCurrentDropdownItems(currentItemId, CompanyId);
+
+            return Json(orderStatuses);
+        }
+
+        [HttpPost]
+        [Route("Order/UpdateWidget")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> UpdateOrderWidget(WidgetViewModel model, string dateTimeLocalCreate, string returnUrl = "none")
+        {
+            model.TypeWidget = ViewModels.Widget.Enum.TypeWidget.Order;
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+                    await orderService.UpdateOrderWidgetInCompany(model, dateTimeLocalCreate, CompanyId);
+
+                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                    {
+                        return Redirect(returnUrl);
+                    }
+                }
+                catch (Exception e)
+                {
+                    return PartialView("~/Views/PartView/Modals/EditWidget.cshtml", (model, returnUrl));
+                }
+            }
+
+            return PartialView("~/Views/PartView/Modals/EditWidget.cshtml", (model, returnUrl));
+        }
+
+        [HttpPost]
+        [Route("Order/SaveWidget")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> SaveOrderWidget(CreateWidgetVm model, string dateTimeLocalCreate, string returnUrl = "none")
+        {
+            model.TypeWidget = ViewModels.Widget.Enum.TypeWidget.Order;
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+                        await orderService.AddOrderWidgetInCompany(model, dateTimeLocalCreate, CompanyId);
+                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                    {
+                        return Redirect(returnUrl);
+                    }
+                }
+                catch (Exception e)
+                 {
+                    return PartialView("~/Views/PartView/Modals/CreateWidget.cshtml", (model, returnUrl));
+                }
+            }
+
+            return PartialView("~/Views/PartView/Modals/CreateWidget.cshtml", (model, returnUrl));
+        }
+
+        [Route("Order/GetWidgets")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> GetOrderWidgetsInCompany()
+        {
+            var listOrderStatusThemes = await orderService.GetCurrentCompanyOrderWidgets(CompanyId);
+
+            return PartialView("~/Views/Dashbord/PartView/_OrderWidgets.cshtml", listOrderStatusThemes);
+        }
+        
+        [Route("Order/GetCurrentWidgets")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> GetCurrentOrderWidgetsInCompany()
+        {
+            var listOrderStatusThemes = await orderService.GetCurrentCompanyOrderWidgets(CompanyId);
+
+            return PartialView("~/Views/PartView/Widgets/_OrderWidget.cshtml", listOrderStatusThemes);
+        }
+
+        [HttpPost]
+        [Route("Order/RemoveWidget")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<bool> RemoveOrderWidget(int id)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+                await orderService.RemoveOrderWidget(id, CompanyId);
+
+                return true;
+            }
+            catch (Exception)
+            {
+
+            }
+
+            return false;
+        }
+
         [HttpGet]
         [Route("Dashbord/Order/NewLoad")]
         [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
@@ -121,7 +299,8 @@ namespace WebDispacher.Controellers
                 var countPages = await orderService.GetCountPage(CompanyId, OrderConstants.OrderStatusNewLoad, loadId, name, address, phone, email, price);
 
                 ViewBag.count = countPages;
-                    
+
+                var currentWidgets = await orderService.GetCurrentCompanyOrderWidgets(CompanyId);
 
                 ViewBag.LoadId = loadId;
                 ViewBag.Name = name;
@@ -132,7 +311,9 @@ namespace WebDispacher.Controellers
 
                 ViewBag.SelectedPage = page;
 
-                return View("NewLoad", mapper.Map<List<ShortOrderViewModel>>(orders));
+                var ordersVm = mapper.Map<List<ShortOrderViewModel>>(orders);
+
+                return View("NewLoad", (ordersVm, currentWidgets));
             }
             catch (Exception ex)
             {
@@ -256,6 +437,8 @@ namespace WebDispacher.Controellers
 
                 ViewBag.count = countPages;
 
+                var currentWidgets = await orderService.GetCurrentCompanyOrderWidgets(CompanyId);
+
                 ViewBag.LoadId = loadId;
                 ViewBag.Name = name;
                 ViewBag.Address = address;
@@ -265,7 +448,7 @@ namespace WebDispacher.Controellers
 
                 ViewBag.SelectedPage = page;
 
-                return View("Archived", mapper.Map<List<ShortOrderViewModel>>(shippings));
+                return View("Archived", (mapper.Map<List<ShortOrderViewModel>>(shippings), currentWidgets));
             }
             catch (Exception exception)
             {
@@ -305,7 +488,7 @@ namespace WebDispacher.Controellers
                 var countPages = await orderService.GetCountPage(CompanyId, OrderConstants.OrderStatusAssigned, loadId, name, address, phone, email, price);
 
                 ViewBag.count = countPages; //orderService.GetCountPage(countPage);
-                    
+                var currentWidgets = await orderService.GetCurrentCompanyOrderWidgets(CompanyId);
                 ViewBag.LoadId = loadId;
                 ViewBag.Name = name;
                 ViewBag.Address = address;
@@ -315,7 +498,7 @@ namespace WebDispacher.Controellers
 
                 ViewBag.SelectedPage = page;
 
-                return View("Assigned", mapper.Map<List<ShortOrderViewModel>>(shippings));
+                return View("Assigned", (mapper.Map<List<ShortOrderViewModel>>(shippings), currentWidgets));
             }
             catch (Exception)
             {
@@ -353,7 +536,7 @@ namespace WebDispacher.Controellers
                 var countPage = await orderService.GetCountPage(CompanyId, OrderConstants.OrderStatusDeliveredBilled, loadId, name, address, phone, email, price);
 
                 ViewBag.count = orderService.GetCountPage(countPage);
-                    
+                var currentWidgets = await orderService.GetCurrentCompanyOrderWidgets(CompanyId);
                 ViewBag.LoadId = loadId;
                 ViewBag.Name = name;
                 ViewBag.Address = address;
@@ -363,7 +546,7 @@ namespace WebDispacher.Controellers
 
                 ViewBag.SelectedPage = page;
 
-                return View("Billed", mapper.Map<List<ShortOrderViewModel>>(shippings));
+                return View("Billed", (mapper.Map<List<ShortOrderViewModel>>(shippings), currentWidgets));
             }
             catch (Exception exception)
             {
@@ -417,7 +600,7 @@ namespace WebDispacher.Controellers
                 countPages += await orderService.GetCountPage(CompanyId, OrderConstants.OrderStatusDeletedPaid, loadId, name, address, phone, email, price);
 
                 ViewBag.count = countPages;
-                    
+                var currentWidgets = await orderService.GetCurrentCompanyOrderWidgets(CompanyId);
                 ViewBag.LoadId = loadId;
                 ViewBag.Name = name;
                 ViewBag.Address = address;
@@ -427,7 +610,7 @@ namespace WebDispacher.Controellers
 
                 ViewBag.SelectedPage = page;
 
-                return View("Deleted", mapper.Map<List<ShortOrderViewModel>>(shippings));
+                return View("Deleted", (mapper.Map<List<ShortOrderViewModel>>(shippings), currentWidgets));
             }
             catch (Exception)
             {
@@ -478,7 +661,7 @@ namespace WebDispacher.Controellers
 
                 countPages += await orderService.GetCountPage(CompanyId, OrderConstants.OrderStatusDeliveredPaid, loadId, name, address, phone, email, price);
                 countPages += await orderService.GetCountPage(CompanyId, OrderConstants.OrderStatusDelivered, loadId, name, address, phone, email, price);
-
+                var currentWidgets = await orderService.GetCurrentCompanyOrderWidgets(CompanyId);
                 ViewBag.count = countPages;
                     
                 ViewBag.LoadId = loadId;
@@ -490,7 +673,7 @@ namespace WebDispacher.Controellers
 
                 ViewBag.SelectedPage = page;
 
-                return View("Delivered", mapper.Map<List<ShortOrderViewModel>>(shippings));
+                return View("Delivered", (mapper.Map<List<ShortOrderViewModel>>(shippings), currentWidgets));
             }
             catch (Exception)
             {
@@ -528,7 +711,7 @@ namespace WebDispacher.Controellers
 
                 var countPages = await 
                     orderService.GetCountPage(CompanyId, OrderConstants.OrderStatusDeliveredPaid, loadId, name, address, phone, email, price);
-
+                var currentWidgets = await orderService.GetCurrentCompanyOrderWidgets(CompanyId);
                 ViewBag.count = countPages;
 
                 ViewBag.LoadId = loadId;
@@ -540,7 +723,7 @@ namespace WebDispacher.Controellers
 
                 ViewBag.SelectedPage = page;
 
-                return View("Paid", mapper.Map<List<ShortOrderViewModel>>(shippings));
+                return View("Paid", (mapper.Map<List<ShortOrderViewModel>>(shippings), currentWidgets));
             }
             catch (Exception)
             {
@@ -576,7 +759,7 @@ namespace WebDispacher.Controellers
                 ViewBag.Drivers = drivers;
 
                 var countPages = await orderService.GetCountPage(CompanyId, OrderConstants.OrderStatusPickedUp, loadId, name, address, phone, email, price);
-
+                var currentWidgets = await orderService.GetCurrentCompanyOrderWidgets(CompanyId);
                 ViewBag.count = countPages;
 
                 ViewBag.LoadId = loadId;
@@ -588,7 +771,7 @@ namespace WebDispacher.Controellers
 
                 ViewBag.SelectedPage = page;
 
-                return View("Pickedup", mapper.Map<List<ShortOrderViewModel>>(shippings));
+                return View("Pickedup", (mapper.Map<List<ShortOrderViewModel>>(shippings), currentWidgets));
             }
             catch (Exception)
             {
@@ -864,7 +1047,7 @@ namespace WebDispacher.Controellers
 
                     var updatedOrder = await orderService.UpdateOrder(model, dateTimeLocal);
 
-                    var navReturnPage = updatedOrder.CurrentStatus.StatusName.Replace(" ", "");
+                    var navReturnPage = updatedOrder.OrderStatus.Name.Replace(" ", "");
 
                     return Redirect(updatedOrder == null
                         ? $"{Config.BaseReqvesteUrl}/Dashbord/Order/NewLoad"

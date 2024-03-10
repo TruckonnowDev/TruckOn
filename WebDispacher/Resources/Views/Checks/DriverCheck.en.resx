@@ -40,7 +40,7 @@
         <value>Last Name</value>
     </data>
     <data name="DriverLicenseSearch" xml:space="preserve">
-        <value>Driver’s Licence Number</value>
+        <value>Driver’s License Number</value>
     </data>
     <data name="DateOfBirth" xml:space="preserve">
         <value>Date of Birth</value>

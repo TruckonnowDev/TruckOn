@@ -133,13 +133,13 @@
     <value>Password</value>
   </data>
   <data name="PhoneNumber" xml:space="preserve">
-    <value>Phone number</value>
+    <value>Phone Number</value>
   </data>
   <data name="TrailerCapacity" xml:space="preserve">
     <value>Trailer capacity</value>
   </data>
   <data name="DriverLicenseNumber" xml:space="preserve">
-    <value>Driver’s Licence Number</value>
+    <value>Driver’s License Number</value>
   </data>
   <data name="DocumentDL" xml:space="preserve">
     <value>Upload DL</value>
@@ -151,22 +151,22 @@
     <value>You can upload files only in pdf, jpg, and jpeg (Max upload file size is 5Mb)</value>
   </data>
   <data name="DocumentMedicalCard" xml:space="preserve">
-    <value>Upload medical card</value>
+    <value>Upload Medical Card</value>
   </data>
   <data name="DocumentSSN" xml:space="preserve">
     <value>Upload SSN</value>
   </data>
   <data name="DocumentProofOfWork" xml:space="preserve">
-    <value>Upload proof of work authorization</value>
+    <value>Upload Proof of Work Authorization</value>
   </data>
   <data name="DocumentDQL" xml:space="preserve">
     <value>Upload DQL (driver qualification file)</value>
   </data>
   <data name="DocumentContract" xml:space="preserve">
-    <value>Upload contract (company and driver)</value>
+    <value>Upload Contract (company and driver)</value>
   </data>
   <data name="DocumentDrugTest" xml:space="preserve">
-    <value>Upload Drug test results (optional for 26000+)</value>
+    <value>Upload Drug Test Results (optional for 26000+)</value>
   </data>
   <data name="SaveInfo" xml:space="preserve">
     <value>Save Info</value>
@@ -175,15 +175,84 @@
     <value>Please put email in correct format</value>
   </data>
   <data name="FirstName" xml:space="preserve">
-    <value>First name</value>
+    <value>First Name</value>
   </data>
   <data name="LastName" xml:space="preserve">
-    <value>Last name</value>
+    <value>Last Name</value>
   </data>
   <data name="DateOfBirth" xml:space="preserve">
     <value>Date of Birth</value>
   </data>
   <data name="DriverLicenseNumberInfoLabel" xml:space="preserve">
     <value>Put DL# without dashes ( - )</value>
+  </data>
+  <data name="DriverLicenseState" xml:space="preserve">
+    <value>Driver’s License State</value>
+  </data>
+  <data name="DriverLicenseExpiration" xml:space="preserve">
+    <value>Driver’s License Expiration</value>
+  </data>
+  <data name="MedicalCardExpiration" xml:space="preserve">
+    <value>Medical Card Expiration</value>
+  </data>
+  <data name="OwnerOperator" xml:space="preserve">
+    <value>Owner Operator</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="City" xml:space="preserve">
+    <value>City</value>
+  </data>
+  <data name="DriverLicenseInfo" xml:space="preserve">
+    <value>Driver License Info</value>
+  </data>
+  <data name="DriverLicenseIssued" xml:space="preserve">
+    <value>Driver License Issued</value>
+  </data>
+  <data name="Endorsements" xml:space="preserve">
+    <value>Endorsements</value>
+  </data>
+  <data name="Restrictions" xml:space="preserve">
+    <value>Restrictions</value>
+  </data>
+  <data name="SocialSecurity" xml:space="preserve">
+    <value>Social Security</value>
+  </data>
+  <data name="EmergencyContact" xml:space="preserve">
+    <value>Emergency Contact</value>
+  </data>
+  <data name="EmergencyContactName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="EmergencyContactRelationship" xml:space="preserve">
+    <value>Relationship</value>
+  </data>
+  <data name="EmergencyPhoneNumber" xml:space="preserve">
+    <value>Phone Number</value>
+  </data>
+  <data name="PersonalInfo" xml:space="preserve">
+    <value>Driver’s Personal Info</value>
+  </data>
+  <data name="CompanyName" xml:space="preserve">
+    <value>Company Name</value>
+  </data>
+  <data name="ZipCode" xml:space="preserve">
+    <value>Zip Code</value>
+  </data>
+  <data name="UploadMVR" xml:space="preserve">
+    <value>Upload MVR</value>
+  </data>
+  <data name="UploadFuelCard" xml:space="preserve">
+    <value>Upload Fuel Card</value>
+  </data>
+  <data name="UploadW9W2" xml:space="preserve">
+    <value>Upload W9/W2</value>
+  </data>
+  <data name="UploadCorpDocuments" xml:space="preserve">
+    <value>Upload Corp Documents</value>
   </data>
 </root>

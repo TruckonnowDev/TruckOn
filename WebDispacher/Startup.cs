@@ -263,6 +263,7 @@ namespace WebDispacher
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseCheckUserActive();
+            app.CleanupUnusedFiles();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

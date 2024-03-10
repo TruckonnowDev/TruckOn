@@ -1,6 +1,7 @@
 ﻿using DaoModels.DAO.Enum;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace DaoModels.DAO.Models
@@ -11,10 +12,10 @@ namespace DaoModels.DAO.Models
         public string UserId { get; set; }
         public User User { get; set; }
         public ConditionPost ConditionPost { get;set;}
+        public ApprovalStatus ApprovalStatus { get; set; }
         public bool ShowView { get; set; }
         public bool ShowComment { get; set; }
         public DateTime DateTimeLastUpdate { get; set; }
         public DateTime DateTimeCreate { get; set; }
-
     }
 }

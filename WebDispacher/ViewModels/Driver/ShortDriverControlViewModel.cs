@@ -6,10 +6,7 @@ namespace WebDispacher.ViewModels.Driver
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "PasswordRequired")]
+        //[Required(ErrorMessage = "PasswordRequired")]
         public string Password { get; set; }
-
-        [Required(ErrorMessage = "TrailerCapacityRequired")]
-        public string TrailerCapacity { get; set; }
     }
 }

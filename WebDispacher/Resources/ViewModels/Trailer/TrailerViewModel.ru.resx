@@ -134,4 +134,13 @@
 	<data name="Type" xml:space="preserve">
 		<value>Тип</value>
 	</data>
+	<data name="TrailerGroupRequired" xml:space="preserve">
+		<value>Пожалуйста, сделайте выбор</value>
+	</data>
+	<data name="TrailerStatusRequired" xml:space="preserve">
+		<value>Пожалуйста, сделайте выбор</value>
+	</data>
+	<data name="TrailerLocationRequired" xml:space="preserve">
+		<value>Локация должна быть заполнена</value>
+	</data>
 </root>

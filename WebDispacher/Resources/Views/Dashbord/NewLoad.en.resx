@@ -195,4 +195,13 @@
   <data name="PickupEstimated" xml:space="preserve">
     <value>Pickup Estimated</value>
   </data>
+  <data name="MessageSuccessRemoveOrderWidget" xml:space="preserve">
+    <value>Order Widget successfully deleted</value>
+  </data>
+  <data name="MessageErrorRemoveOrderWidget" xml:space="preserve">
+    <value>Order Widget could not deleted</value>
+  </data>
+  <data name="MessageErrorRequestRemoveOrderWidget" xml:space="preserve">
+    <value>An error occurred during the operation, please try again later</value>
+  </data>
 </root>

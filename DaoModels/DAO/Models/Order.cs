@@ -23,8 +23,8 @@ namespace DaoModels.DAO.Models
         public Driver Driver { get; set; }
         public int CompanyId { get; set; }
         public Company Company { get; set; }
-        public int CurrentStatusId { get; set; }
-        public CurrentStatus CurrentStatus { get; set; }
+        public int OrderStatusId { get; set; }
+        public OrderStatus OrderStatus { get; set; }
         public int? PickedUpId { get;set; }
         public AddressInformation PickedUp { get; set; }
         public DateTime DateTimePickedUp { get; set; }

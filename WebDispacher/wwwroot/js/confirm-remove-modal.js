@@ -15,6 +15,9 @@
                 success: function () {
                     window.location.href = responseUrl;
                     localStorage.setItem('notification', 'successRemove');
+                },
+                error: function () {
+                    WarningAlert("The record could not be deleted");
                 }
             });
 
@@ -49,6 +52,18 @@ function ShowAlert() {
         }
         else if (notif === 'successRemoveMarketPostMessage') {
             SuccessAlert("The ad was successfully removed");
+            localStorage.removeItem('notification');
+        }
+        else if (notif === 'successRemoveTruckGroup') {
+            SuccessAlert("The truck group was successfully removed");
+            localStorage.removeItem('notification');
+        }
+        else if (notif === 'successCreateTruckGroup') {
+            SuccessAlert("New Group was Added. Please click “Add Truck” to Continue");
+            localStorage.removeItem('notification');
+        }
+        else if (notif === 'successCreateTrailerGroup') {
+            SuccessAlert("New Group was Added. Please click “Add Trailer” to Continue");
             localStorage.removeItem('notification');
         }
     }

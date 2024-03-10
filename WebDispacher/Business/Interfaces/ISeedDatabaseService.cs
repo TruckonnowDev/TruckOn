@@ -14,6 +14,14 @@ namespace WebDispacher.Business.Interfaces
         Task CreateEntityPhotoTypes();
         Task InitVehiclesCategories();
         Task InitTrucksTypesInVehicliesCategories();
+        Task InitTrailersTypesInVehicliesCategories();
         Task InitSlugsByTruckTypesNames();
+        Task InitResourcesItems();
+        Task InitColors();
+        Task InitTruckThemesDefault();
+        Task InitTruckStatuses();
+        Task InitTrailerThemesDefault();
+        Task InitTrailerStatuses();
+        Task InitSlugsByTrailerTypesNames();
     }
 }

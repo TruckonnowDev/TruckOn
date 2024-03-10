@@ -20,11 +20,13 @@
                         <form action="" method="post" enctype="multipart/form-data">
                             <label class="big-label" for="">
                                 @Localizer["NameCompany"]
+                                <span><abbr data-title="@Localizer["NameCompanyLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                 <input class="height-input" id="name" type="text" asp-for="Name" required>
                                 <span asp-validation-for="Name" class="text-danger"></span>
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["PhoneCompany"]
+                                <span><abbr data-title="@Localizer["PhoneCompanyLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                 <input class="height-input" type="text" id="phone" asp-for="PhoneNumber.Number" pattern="@PatternConstants.PhoneNumberWithoutCountryCode" placeholder="(XXX)-XXX-XXXX" required>
                                 <input type="hidden" id="country-code-dialcode" name="PhoneNumber.DialCode">
                                 <input type="hidden" id="country-code-iso2" name="PhoneNumber.Iso2">
@@ -33,16 +35,19 @@
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["EmailCompany"]
+                                <span><abbr data-title="@Localizer["EmailCompanyLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                 <input class="height-input" pattern="@PatternConstants.Email" type="email" id="email" asp-for="Email" required>
                                 <span asp-validation-for="Email" class="text-danger"></span>
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["PasswordCompany"]
+                                <span><abbr data-title="@Localizer["PasswordCompanyLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                 <input class="height-input" type="text" id="password" asp-for="Password" required>
                                 <span asp-validation-for="Password" class="text-danger"></span>
                             </label>
                             <label class="big-label" for="">
-                                @Localizer["TypeCompany"] <br />
+                                @Localizer["TypeCompany"]
+                                <span><abbr data-title="@Localizer["TypeCompanyLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span> <br />
                                 <select class="height-input input-select" asp-for="CompanyType">
                                     <option selected value="@CompanyType.Carrier">@Localizer["Carrier"]</option>
                                     <option value="@CompanyType.Shipper">@Localizer["Shipper"]</option>

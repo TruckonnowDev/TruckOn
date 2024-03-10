@@ -82,12 +82,10 @@
                                 </label>
                                 <label for="">
                                     @Html.DisplayNameFor(x => x.Number)
-                                    <div class="mt-2">
-                                        <input type="text" id="phoneC" asp-for="Number" pattern="@PatternConstants.PhoneNumberWithoutCountryCode" placeholder="(XXX)-XXX-XXXX" required>
-                                    <input type="hidden" id="country-code-dialcode" asp-for="DialCode">
-                                    <input type="hidden" id="country-code-iso2" asp-for="Iso2">
-                                    <input type="hidden" id="country-code-name" asp-for="Name">
-                                    </div>
+                                        <input style="position: relative; z-index: 0" type="text" id="phoneD" asp-for="Number" pattern="@PatternConstants.PhoneNumberWithoutCountryCode" placeholder="(XXX)-XXX-XXXX" required>
+                                        <input type="hidden" id="country-code-dialcode" asp-for="DialCode">
+                                        <input type="hidden" id="country-code-iso2" asp-for="Iso2">
+                                        <input type="hidden" id="country-code-name" asp-for="Name">
                                     @Html.ValidationMessageFor(model => model.Number, "", new { @class = "text-danger" })
                                 </label>
                                 <input class="btn1-big" type="submit" value="@Localizer["Next"]" />
@@ -120,7 +118,7 @@
     setReplacer(document.querySelector('#lastName'), /\d/g);
     setReplacer(document.querySelector('#usdot'), @ExpressionConstants.OnlyDigits);
 
-    $('#phoneC').on('input invalid', function () {
+    $('#phoneD').on('input invalid', function () {
         this.setCustomValidity('')
         if (this.validity.valueMissing) {
             this.setCustomValidity("@Localizer["OnlyNumbersValidMessage"]")
@@ -147,7 +145,7 @@
     })
 
     $(document).ready(function () {
-        $("#phoneC").mask("(999)-999-9999", { placeholder: "(XXX)-XXX-XXXX" });
+        $("#phoneD").mask("(999)-999-9999", { placeholder: "(XXX)-XXX-XXXX" });
 
          if(!$("#country-code-iso2").val()){
             $("#country-code-iso2").val("us")
@@ -155,13 +153,13 @@
             $("#country-code-name").val("United States")
         }
 
-         var phoneC = $("#phoneC");
-        phoneC.intlTelInput({
+        var phoneD = $("#phoneD");
+        phoneD.intlTelInput({
             initialCountry: $("#country-code-iso2").val() ? $("#country-code-iso2").val() : "us",
             separateDialCode: true,
         });
 
-        phoneC.on("countrychange", function (e, countryData) {
+        phoneD.on("countrychange", function (e, countryData) {
             $("#country-code-dialcode").val(countryData.dialCode);
             $("#country-code-iso2").val(countryData.iso2);
             $("#country-code-name").val(countryData.name);

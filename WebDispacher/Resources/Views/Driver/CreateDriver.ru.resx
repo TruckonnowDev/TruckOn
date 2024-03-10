@@ -186,4 +186,73 @@
   <data name="DriverLicenseNumberInfoLabel" xml:space="preserve">
     <value>Поставьте DL# без тире ( - )</value>
   </data>
+  <data name="DriverLicenseState" xml:space="preserve">
+    <value>Штат водительских прав</value>
+  </data>
+  <data name="DriverLicenseExpiration" xml:space="preserve">
+    <value>Истечение срока водительских прав</value>
+  </data>
+  <data name="MedicalCardExpiration" xml:space="preserve">
+    <value>Истечение срока медицинской карты</value>
+  </data>
+  <data name="PersonalInfo" xml:space="preserve">
+    <value />
+  </data>
+  <data name="OwnerOperator" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value />
+  </data>
+  <data name="City" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DriverLicenseInfo" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DriverLicenseIssued" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Endorsements" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Restrictions" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SocialSecurity" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EmergencyContact" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EmergencyContactName" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EmergencyContactRelationship" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EmergencyPhoneNumber" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CompanyName" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ZipCode" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UploadMVR" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UploadFuelCard" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UploadW9W2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UploadCorpDocuments" xml:space="preserve">
+    <value />
+  </data>
 </root>

@@ -37,5 +37,6 @@ namespace WebDispacher.Business.Interfaces
         int CreateKey(string login, string password);
         bool CheckKey(string key);
         int CheckTokenFoUser(string idUser, string token);
+        Task SendEmailConfirmEmailCarrierRegistration(string email, string link);
     }
 }

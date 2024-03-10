@@ -67,69 +67,6 @@ namespace WebDispacher.Controellers.Settings
         }
 
         [HttpGet]
-        [Route("Trucks")]
-        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
-        public async Task<IActionResult> GetTrucks(int page = 1)
-        {
-            try
-            {
-                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                
-                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
-                    
-                if (isCancelSubscribe)
-                {
-                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                }
-                    
-                ViewData[NavConstants.TypeNavBar] = 
-                    companyService.GetTypeNavBar(CompanyId, NavConstants.TypeNavSettings);
-                    
-                //ViewBag.NameCompany = GetCookieCompanyName();
-
-                var trucks = await truckAndTrailerService.GetTrucks(page, CompanyId);
-                    
-                return View("~/Views/Settings/Trucks.cshtml", trucks);
-            }
-            catch (Exception e)
-            {
-
-            }
-            
-            return Redirect(Config.BaseReqvesteUrl);
-        }
-
-        [HttpGet]
-        [Route("Trailers")]
-        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
-        public async Task<IActionResult> GetTrailers(int page = 1)
-        {
-            try
-            {
-                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                
-                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
-                    
-                if (isCancelSubscribe)
-                {
-                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                }
-                    
-                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId, NavConstants.TypeNavSettings);
-                //ViewBag.NameCompany = GetCookieCompanyName();
-                var trailers = await truckAndTrailerService.GetTrailers(page, CompanyId);
-                    
-                return View("~/Views/Settings/Trailers.cshtml", trailers);
-            }
-            catch (Exception e)
-            {
-
-            }
-            
-            return Redirect(Config.BaseReqvesteUrl);
-        }
-
-        [HttpGet]
         [Route("AddProfile")]
         [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         public async Task<IActionResult> AddProfile(int idTr, string typeTransport)

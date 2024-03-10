@@ -1,6 +1,8 @@
-﻿@using Microsoft.AspNetCore.Mvc.Localization
+﻿@using DaoModels.DAO.Enum;
+@using Microsoft.AspNetCore.Mvc.Localization
 @using WebDispacher.Constants;
 @using WebDispacher.Service;
+@using WebDispacher.ViewModels.Equipment.Enum;
 
 @model WebDispacher.ViewModels.Truck.TruckViewModel
 
@@ -14,171 +16,278 @@
     var bobTailPhysicalDamageDocName = string.Empty;
     var nYHUTDocName = string.Empty;
 
-    @if(ViewBag.TruckDocs.TryGetValue(DocAndFileConstants.TruckRegistration,out regDocName));
-    @if(ViewBag.TruckDocs.TryGetValue(DocAndFileConstants.TruckAgreement,out leaseAgrDocName));
-    @if(ViewBag.TruckDocs.TryGetValue(DocAndFileConstants.TruckInspection,out annualInsDocName));
-    @if(ViewBag.TruckDocs.TryGetValue(DocAndFileConstants.BobTailPhysicalDamage,out bobTailPhysicalDamageDocName));
-    @if(ViewBag.TruckDocs.TryGetValue(DocAndFileConstants.NyHit,out nYHUTDocName));
-   
+    @if (ViewBag.TruckDocs.TryGetValue(DocAndFileConstants.TruckRegistration, out regDocName))
+    @if (ViewBag.TruckDocs.TryGetValue(DocAndFileConstants.TruckAgreement, out leaseAgrDocName))
+    @if (ViewBag.TruckDocs.TryGetValue(DocAndFileConstants.TruckInspection, out annualInsDocName))
+    @if (ViewBag.TruckDocs.TryGetValue(DocAndFileConstants.BobTailPhysicalDamage, out bobTailPhysicalDamageDocName))
+    @if (ViewBag.TruckDocs.TryGetValue(DocAndFileConstants.NyHit, out nYHUTDocName))
+
 }
 
+<link rel="stylesheet" href="~/css/equipment/equipment.css" />
 <body>
     <div class="admin truc">
         <div class="container">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <div class="tabContent">
                         <div class="title">
-                            <a href="#" onclick="history.back();">@Localizer["BackToEquipment"]</a>
+                            <a href="/Equipment/Trucks">@Localizer["BackToEquipment"]</a>
                         </div>
                         <div class="title">
                             <h1 class="text-info-header-1">@Localizer["EditTruck"]</h1>
                         </div>
                         <form onsubmit="formatBeforeSubmit();" action="" method="post" enctype="multipart/form-data">
                             @Html.ValidationSummary()
-                            <input type="text" name="Id" required value="@Model.Id" style="display:none;" />
-                            <label class="big-label" for="">
-                                @Localizer["NameTruck"]
-                                <input class="height-input" id="name" type="text" asp-for="NameTruck" value="@Model.NameTruck" maxlength="25">
-                                @Html.ValidationMessageFor(model => model.NameTruck, "", new { @class = "text-danger" })
-                            </label>
-                            <label class="big-label" for="">
-                                @Localizer["Year"]
-                                @{
-                                    string yearString = Convert.ToInt32(Model.Year) != 0
-                                    ? Model.Year
-                                    : string.Empty;
-                                }
-                                <input class="height-input" type="text" asp-for="Year" value="@yearString" maxlength="4" />
-                                @Html.ValidationMessageFor(model => model.Year, "", new { @class = "text-danger" })
-                            </label>
-                            <label class="big-label" for="">
-                                @Localizer["Make"]
-                                <input class="height-input" id="make" type="text" asp-for="Make" value="@Model.Make" maxlength="15"/>
-                                @Html.ValidationMessageFor(model => model.Make, "", new { @class = "text-danger" })
-                            </label>
-                            <label class="big-label" for="">
-                                @Localizer["Model"]
-                                <input class="height-input" id="model" type="text" asp-for="Model" value="@Model.Model" maxlength="20" />
-                                @Html.ValidationMessageFor(model => model.Model, "", new { @class = "text-danger" })
-                            </label>
-                            <label class="big-label" for="">
-                                @Localizer["VehicleCategory"] <br />
-                                <select class="height-input input-select" asp-for="VehicleCategoryId" id="vehicleCategoryDropdown">
-                                    <option value="">@Localizer["ChooseVehicleCategory"]</option>
-                                </select>
-                                @Html.ValidationMessageFor(model => model.VehicleCategoryId, "", new { @class = "text-danger" })
-                            </label>
-                            <label class="big-label" for="">
-                                @Localizer["TypeTruck"] <br />
-                                <select class="height-input input-select" asp-for="TruckTypeId" id="truckTypeDropdown">
-                                    <option value="">@Localizer["ChooseTruckType"]</option>
-                                </select>
-                                @Html.ValidationMessageFor(model => model.TruckTypeId, "", new { @class = "text-danger" })
-                            </label>
-                            <label class="big-label" for="">
-                                @Localizer["Vin"]#
-                                <input class="height-input" type="text" asp-for="Vin" value="@Model.Vin" maxlength="17" />
-                                @Html.ValidationMessageFor(model => model.Vin, "", new { @class = "text-danger" })
-                            </label>
-                            <label class="big-label" for="">
-                                @Localizer["PlateTruck"]
-                                <input class="height-input" type="text" asp-for="PlateTruck" value="@Model.PlateTruck"  maxlength="10"/>
-                                @Html.ValidationMessageFor(model => model.PlateTruck, "", new { @class = "text-danger" })
-                            </label>
-                            <label class="big-label" for="">
-                                @Localizer["PlateExp"]
-                                @{
-                                    string plateExpiresString = Model.Exp.HasValue
-                                    ? Model.Exp.Value.ToString("MM/yy")
-                                    : string.Empty;
-                                }
-                                <input class="height-input" type="text" asp-for="Exp" id="plateExp" value="@plateExpiresString" />
-                                @Html.ValidationMessageFor(model => model.Exp, "", new { @class = "text-danger" })
-                            </label>
-                            <label class="big-label" for="">
-                                @Localizer["State"]
-                                <select class="height-input input-select" id="stateP" asp-for="State" value="@Model.State">
-                                    <option value="AL">Alabama</option>
-                                    <option value="AK">Alaska</option>
-                                    <option value="AZ">Arizona</option>
-                                    <option value="AR">Arkansas</option>
-                                    <option value="CA">California</option>
-                                    <option value="CO">Colorado</option>
-                                    <option value="CT">Connecticut</option>
-                                    <option value="DE">Delaware</option>
-                                    <option value="DC">District Of Columbia</option>
-                                    <option value="FL">Florida</option>
-                                    <option value="GA">Georgia</option>
-                                    <option value="HI">Hawaii</option>
-                                    <option value="ID">Idaho</option>
-                                    <option value="IL">Illinois</option>
-                                    <option value="IN">Indiana</option>
-                                    <option value="IA">Iowa</option>
-                                    <option value="KS">Kansas</option>
-                                    <option value="KY">Kentucky</option>
-                                    <option value="LA">Louisiana</option>
-                                    <option value="ME">Maine</option>
-                                    <option value="MD">Maryland</option>
-                                    <option value="MA">Massachusetts</option>
-                                    <option value="MI">Michigan</option>
-                                    <option value="MN">Minnesota</option>
-                                    <option value="MS">Mississippi</option>
-                                    <option value="MO">Missouri</option>
-                                    <option value="MT">Montana</option>
-                                    <option value="NE">Nebraska</option>
-                                    <option value="NV">Nevada</option>
-                                    <option value="NH">New Hampshire</option>
-                                    <option value="NJ">New Jersey</option>
-                                    <option value="NM">New Mexico</option>
-                                    <option value="NY">New York</option>
-                                    <option value="NC">North Carolina</option>
-                                    <option value="ND">North Dakota</option>
-                                    <option value="OH">Ohio</option>
-                                    <option value="OK">Oklahoma</option>
-                                    <option value="OR">Oregon</option>
-                                    <option value="PA">Pennsylvania</option>
-                                    <option value="RI">Rhode Island</option>
-                                    <option value="SC">South Carolina</option>
-                                    <option value="SD">South Dakota</option>
-                                    <option value="TN">Tennessee</option>
-                                    <option value="TX">Texas</option>
-                                    <option value="UT">Utah</option>
-                                    <option value="VT">Vermont</option>
-                                    <option value="VA">Virginia</option>
-                                    <option value="WA">Washington</option>
-                                    <option value="WV">West Virginia</option>
-                                    <option value="WI">Wisconsin</option>
-                                    <option value="WY">Wyoming</option>
-                                </select>
-                            </label>
-                            <label class="big-label" for="">
-                                @Localizer["Color"]
-                                <input class="height-input" id="color" type="text" asp-for="ColorTruck" value="@Model.ColorTruck" maxlength="15">
-                                @Html.ValidationMessageFor(model => model.ColorTruck, "", new { @class = "text-danger" })
-                            </label>
-                            <label class="big-label" for="">
-                                @Localizer["Owner"]
-                                <input class="height-input" id="owner" type="text" asp-for="Owner" value="@Model.Owner" maxlength="25" />
-                                @Html.ValidationMessageFor(model => model.Owner, "", new { @class = "text-danger" })
-                            </label>
-                            <div class="big-label">
+                            <div class="col-md-6 pl-0">
+                                <input type="text" name="Id" required value="@Model.Id" style="display:none;" />
+                                <label class="big-label" for="">
+                                    @Localizer["NameTruck"]
+                                    <span><abbr data-title="@Localizer["NameTruckLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                    <input class="height-input" id="name" type="text" asp-for="NameTruck" value="@Model.NameTruck" maxlength="25">
+                                    @Html.ValidationMessageFor(model => model.NameTruck, "", new { @class = "text-danger" })
+                                </label>
+                                <label class="big-label" for="">
+                                    @Localizer["Year"]
+                                    <span><abbr data-title="@Localizer["YearLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                    @{
+                                        string yearString = Convert.ToInt32(Model.Year) != 0
+                                        ? Model.Year
+                                        : string.Empty;
+                                    }
+                                    <input class="height-input" type="text" asp-for="Year" value="@yearString" maxlength="4" />
+                                    @Html.ValidationMessageFor(model => model.Year, "", new { @class = "text-danger" })
+                                </label>
+                                <label class="big-label" for="">
+                                    @Localizer["Make"]
+                                    <span><abbr data-title="@Localizer["MakeLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                    <input class="height-input" id="make" type="text" asp-for="Make" value="@Model.Make" maxlength="15" />
+                                    @Html.ValidationMessageFor(model => model.Make, "", new { @class = "text-danger" })
+                                </label>
+                                <label class="big-label" for="">
+                                    @Localizer["Model"]
+                                    <span><abbr data-title="@Localizer["ModelLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                    <input class="height-input" id="model" type="text" asp-for="Model" value="@Model.Model" maxlength="20" />
+                                    @Html.ValidationMessageFor(model => model.Model, "", new { @class = "text-danger" })
+                                </label>
+                            </div>
+                            <div class="col-md-12 pl-0">
+                                <div class="row pb-2">
+                                    <div class="col-md-6 pr-1">
+                                        <label class="big-label" for="">
+                                            @Localizer["VehicleCategory"]<span><abbr data-title="@Localizer["VehicleCategoryLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                            <br />
+                                            <select class="height-input input-select" asp-for="VehicleCategoryId" id="vehicleCategoryDropdown">
+                                                <option value="">@Localizer["ChooseVehicleCategory"]</option>
+                                            </select>
+                                            @Html.ValidationMessageFor(model => model.VehicleCategoryId, "", new { @class = "text-danger" })
+                                        </label>
+                                        <label class="big-label" for="">
+                                            @Localizer["TypeTruck"]<span><abbr data-title="@Localizer["TruckTypeLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span> <br />
+                                            <select class="height-input input-select" asp-for="TruckTypeId" id="truckTypeDropdown">
+                                                <option value="">@Localizer["ChooseTruckType"]</option>
+                                            </select>
+                                            @Html.ValidationMessageFor(model => model.TruckTypeId, "", new { @class = "text-danger" })
+                                        </label>
+                                        <label class="big-label" for="">
+                                            @Localizer["GroupTruck"] <span><abbr data-title="@Localizer["GroupTruckLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span><br />
+                                            <select required class="height-input input-select" asp-for="TruckGroupId" id="truckGroupDropdown">
+                                                <option value="">@Localizer["ChooseGroupType"]</option>
+                                                <option value="CreateGroup">@Localizer["CreateNewGroupType"]</option>
+                                            </select>
+                                            @Html.ValidationMessageFor(model => model.TruckTypeId, "", new { @class = "text-danger" })
+                                        </label>
+                                    </div>
+                                    <div class="col-md-6 image-col-place">
+                                        <div class="swiper mySwiper">
+                                            <div class="swiper-wrapper">
+                                            </div>
+                                            <div class="swiper-pagination"></div>
+                                            <div class="swiper-button-next"></div>
+                                            <div class="swiper-button-prev"></div>
+                                        </div>
+                                        <div class="single-img"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 pl-0">
+                                <label class="big-label" for="">
+                                    @Localizer["Vin"]#
+                                    <span><abbr data-title="@Localizer["VinLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                    <input class="height-input" type="text" asp-for="Vin" value="@Model.Vin" maxlength="17" />
+                                    @Html.ValidationMessageFor(model => model.Vin, "", new { @class = "text-danger" })
+                                </label>
+                                <label class="big-label" for="">
+                                    @Localizer["PlateTruck"]
+                                    <span><abbr data-title="@Localizer["PlateTruckLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                    <input class="height-input" type="text" asp-for="PlateTruck" value="@Model.PlateTruck" maxlength="10" />
+                                    @Html.ValidationMessageFor(model => model.PlateTruck, "", new { @class = "text-danger" })
+                                </label>
+                                <label class="big-label" for="">
+                                    @Localizer["PlateExp"]
+                                    @{
+                                        string plateExpiresString = Model.Exp.HasValue
+                                        ? Model.Exp.Value.ToString("MM/yy")
+                                        : string.Empty;
+                                    }
+                                    <span><abbr data-title="@Localizer["PlateExpLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                    <div class="input-block">
+                                        <input class="height-input disabled-input" type="text" asp-for="Exp" id="plateExp" value="@plateExpiresString" disabled="true" />
+                                        <div class="update-button" id="updatePlateExpires" data-toggle="modal" data-modal-selector="#confirmUpdateModal" onclick="setDocumentType('@TypeChangeDocument.Plate', '@Localizer["PlateExp"]', @Model.Id, '99/99', 'MM/YY' )" href="#confirmUpdateModal">
+                                            @Localizer["Update"]
+                                        </div>
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.Exp, "", new { @class = "text-danger" })
+                                </label>
+                                <label class="big-label" for="">
+                                    @Localizer["State"]
+                                    <span><abbr data-title="@Localizer["StateLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                    <select class="height-input input-select" id="stateP" asp-for="State" value="@Model.State">
+                                        <option value="AL">Alabama</option>
+                                        <option value="AK">Alaska</option>
+                                        <option value="AZ">Arizona</option>
+                                        <option value="AR">Arkansas</option>
+                                        <option value="CA">California</option>
+                                        <option value="CO">Colorado</option>
+                                        <option value="CT">Connecticut</option>
+                                        <option value="DE">Delaware</option>
+                                        <option value="DC">District Of Columbia</option>
+                                        <option value="FL">Florida</option>
+                                        <option value="GA">Georgia</option>
+                                        <option value="HI">Hawaii</option>
+                                        <option value="ID">Idaho</option>
+                                        <option value="IL">Illinois</option>
+                                        <option value="IN">Indiana</option>
+                                        <option value="IA">Iowa</option>
+                                        <option value="KS">Kansas</option>
+                                        <option value="KY">Kentucky</option>
+                                        <option value="LA">Louisiana</option>
+                                        <option value="ME">Maine</option>
+                                        <option value="MD">Maryland</option>
+                                        <option value="MA">Massachusetts</option>
+                                        <option value="MI">Michigan</option>
+                                        <option value="MN">Minnesota</option>
+                                        <option value="MS">Mississippi</option>
+                                        <option value="MO">Missouri</option>
+                                        <option value="MT">Montana</option>
+                                        <option value="NE">Nebraska</option>
+                                        <option value="NV">Nevada</option>
+                                        <option value="NH">New Hampshire</option>
+                                        <option value="NJ">New Jersey</option>
+                                        <option value="NM">New Mexico</option>
+                                        <option value="NY">New York</option>
+                                        <option value="NC">North Carolina</option>
+                                        <option value="ND">North Dakota</option>
+                                        <option value="OH">Ohio</option>
+                                        <option value="OK">Oklahoma</option>
+                                        <option value="OR">Oregon</option>
+                                        <option value="PA">Pennsylvania</option>
+                                        <option value="RI">Rhode Island</option>
+                                        <option value="SC">South Carolina</option>
+                                        <option value="SD">South Dakota</option>
+                                        <option value="TN">Tennessee</option>
+                                        <option value="TX">Texas</option>
+                                        <option value="UT">Utah</option>
+                                        <option value="VT">Vermont</option>
+                                        <option value="VA">Virginia</option>
+                                        <option value="WA">Washington</option>
+                                        <option value="WV">West Virginia</option>
+                                        <option value="WI">Wisconsin</option>
+                                        <option value="WY">Wyoming</option>
+                                    </select>
+                                </label>
+                                <label class="big-label" for="">
+                                    @Localizer["Color"]
+                                    <span><abbr data-title="@Localizer["ColorLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                    <input class="height-input" id="color" type="text" asp-for="ColorTruck" value="@Model.ColorTruck" maxlength="15">
+                                    @Html.ValidationMessageFor(model => model.ColorTruck, "", new { @class = "text-danger" })
+                                </label>
+                                <label class="big-label" for="">
+                                    @Localizer["AnnualIns"]
+                                    @{
+                                        string annualInsString = Model.AnnualIns.HasValue
+                                        ? Model.AnnualIns.Value.ToString(DateTimeFormats.DocExp)
+                                        : string.Empty;
+                                    }
+                                    <span><abbr data-title="@Localizer["AnnualInsLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                    <div class="input-block">
+                                        <input class="height-input disabled-input" type="text" asp-for="AnnualIns" id="annualIns" value="@annualInsString" maxlength="12" disabled="true" />
+                                        <div class="update-button" id="updateAnnualInspection" data-toggle="modal" data-modal-selector="#confirmUpdateModal" onclick="setDocumentType('@TypeChangeDocument.AnnualInspection', '@Localizer["AnnualIns"]', @Model.Id, '99/99/99', 'MM/DD/YY' )" href="#confirmUpdateModal">
+                                        @Localizer["Update"]
+                                        </div>
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.AnnualIns, "", new { @class = "text-danger" })
+                                </label>
+                                <label class="big-label" for="">
+                                    @Localizer["Owner"]
+                                    <span><abbr data-title="@Localizer["OwnerLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                    <input class="height-input" id="owner" type="text" asp-for="Owner" value="@Model.Owner" maxlength="25" />
+                                    @Html.ValidationMessageFor(model => model.Owner, "", new { @class = "text-danger" })
+                                </label>
+                                <label class="big-label" for="">
+                                    @Localizer["TruckStatus"]
+                                    <span><abbr data-title="@Localizer["TruckStatusLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span><br />
+                                    <select required class="height-input input-select" asp-for="TruckStatusId" id="truckStatusDropdown">
+                                    </select>
+                                    @Html.ValidationMessageFor(model => model.TruckStatusId, "", new { @class = "text-danger" })
+                                </label>
+                                <label class="big-label" for="">
+                                    @Localizer["TruckLocationType"]
+                                    <span><abbr data-title="@Localizer["TruckLocationTypeInfo"]"><i class="bi bi-info-circle"></i></abbr></span><br />
+                                    <select required class="height-input input-select" asp-for="LocationType" id="truckLocationTypeDropdown">
+                                        <option value="@LocationType.Mannually">@Localizer["MannuallyLocationType"]</option>
+                                        <option value="@LocationType.GPS">@Localizer["GPSLocationType"]</option>
+                                        <option value="@LocationType.Later">@Localizer["LaterLocationType"]</option>
+                                    </select>
+                                </label>
+                                <label id="truckLocationLabel" class="big-label" for="">
+                                    @Localizer["TruckLocation"]
+                                    <span><abbr data-title="@Localizer["TruckLocationLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span><br />
+                                    <input class="height-input" id="truckLocation" type="text" asp-for="LocationAddress" required>
+                                    @Html.ValidationMessageFor(model => model.LocationAddress, "", new { @class = "text-danger" })
+                                </label>
+                                <div class="big-label">
+                                    <div class="full-label">
+                                        <p class="a-label">@Localizer["TruckRegistration"]</p>
+                                        <a class="pt-1 pb-1">@Localizer["InfoMessageUploadFiles"]</a>
+                                        <div>
+                                            <div class="file-group big-label">
+                                                <div class="row">
+                                                    <div class="col-8 label-input d-flex align-items-center">
+                                                        <div onclick="ClearFile(`fi1`, 'fl1');" class="fi" id="fl1">
+                                                            @regDocName
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-4 select-doc">
+                                                        <div class="select-button-1 d-flex justify-content-end">
+                                                            <label>
+                                                                @Localizer["SelectDoc"]
+                                                                <input class="height-input" id="fi1" onchange="GetFileName(this.value, 'fl1');" type="file" name="truckRegistrationDoc" accept="application/pdf, image/jpeg, image/jpg">
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <p class="file-limit-exceeded text-danger"></p>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="full-label">
-                                    <p class="a-label">@Localizer["TruckRegistration"]</p>
+                                    <p class="a-label">@Localizer["TruckLeaseAgreement"]</p>
                                     <a class="pt-1 pb-1">@Localizer["InfoMessageUploadFiles"]</a>
                                     <div>
                                         <div class="file-group big-label">
                                             <div class="row">
                                                 <div class="col-8 label-input d-flex align-items-center">
-                                                    <div onclick="ClearFile(`fi1`, 'fl1');" class="fi" id="fl1">
-                                                        @regDocName
+                                                    <div onclick="ClearFile(`fi2`, 'fl2');" class="fi" id="fl2">
+                                                        @leaseAgrDocName
                                                     </div>
                                                 </div>
                                                 <div class="col-4 select-doc">
                                                     <div class="select-button-1 d-flex justify-content-end">
                                                         <label>
                                                             @Localizer["SelectDoc"]
-                                                            <input class="height-input" id="fi1" onchange="GetFileName(this.value, 'fl1');" type="file" name="truckRegistrationDoc" accept="application/pdf, image/jpeg, image/jpg">
+                                                            <input class="height-input" id="fi2" onchange="GetFileName(this.value, 'fl2');" type="file" name="truckLeaseAgreementDoc" accept="application/pdf, image/jpeg, image/jpg">
                                                         </label>
                                                     </div>
                                                 </div>
@@ -187,137 +296,135 @@
                                         <p class="file-limit-exceeded text-danger"></p>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="full-label">
-                                <p class="a-label">@Localizer["TruckLeaseAgreement"]</p>
-                                <a class="pt-1 pb-1">@Localizer["InfoMessageUploadFiles"]</a>
-                                <div>
-                                    <div class="file-group big-label">
-                                        <div class="row">
-                                            <div class="col-8 label-input d-flex align-items-center">
-                                                <div onclick="ClearFile(`fi2`, 'fl2');" class="fi" id="fl2">
-                                                    @leaseAgrDocName
+                                <div class="full-label">
+                                    <p class="a-label">@Localizer["TruckAnnualIns"]</p>
+                                    <a class="pt-1 pb-1">@Localizer["InfoMessageUploadFiles"]</a>
+                                    <div>
+                                        <div class="file-group big-label">
+                                            <div class="row">
+                                                <div class="col-8 label-input d-flex align-items-center">
+                                                    <div onclick="ClearFile(`fi3`, 'fl3');" class="fi" id="fl3">
+                                                        @annualInsDocName
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-4 select-doc">
-                                                <div class="select-button-1 d-flex justify-content-end">
-                                                    <label>
-                                                        @Localizer["SelectDoc"]
-                                                        <input class="height-input" id="fi2" onchange="GetFileName(this.value, 'fl2');" type="file" name="truckLeaseAgreementDoc" accept="application/pdf, image/jpeg, image/jpg">
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <p class="file-limit-exceeded text-danger"></p>
-                                </div>
-                            </div>
-                            <div class="full-label">
-                                <p class="a-label">@Localizer["TruckAnnualIns"]</p>
-                                <a class="pt-1 pb-1">@Localizer["InfoMessageUploadFiles"]</a>
-                                <div>
-                                    <div class="file-group big-label">
-                                        <div class="row">
-                                            <div class="col-8 label-input d-flex align-items-center">
-                                                <div onclick="ClearFile(`fi3`, 'fl3');" class="fi" id="fl3">
-                                                    @annualInsDocName
-                                                </div>
-                                            </div>
-                                            <div class="col-4 select-doc">
-                                                <div class="select-button-1 d-flex justify-content-end">
-                                                    <label>
-                                                        @Localizer["SelectDoc"]
-                                                        <input class="height-input" id="fi3" onchange="GetFileName(this.value, 'fl3');" type="file" name="truckAnnualInspection" accept="application/pdf, image/jpeg, image/jpg">
-                                                    </label>
+                                                <div class="col-4 select-doc">
+                                                    <div class="select-button-1 d-flex justify-content-end">
+                                                        <label>
+                                                            @Localizer["SelectDoc"]
+                                                            <input class="height-input" id="fi3" onchange="GetFileName(this.value, 'fl3');" type="file" name="truckAnnualInspection" accept="application/pdf, image/jpeg, image/jpg">
+                                                        </label>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
+                                        <p class="file-limit-exceeded text-danger"></p>
                                     </div>
-                                    <p class="file-limit-exceeded text-danger"></p>
                                 </div>
-                            </div>
-                            <div class="full-label">
-                                <p class="a-label">@Localizer["BobTailPhysicalDamage"]</p>
-                                <a class="pt-1 pb-1">@Localizer["InfoMessageUploadFiles"]</a>
-                                <div>
-                                    <div class="file-group big-label">
-                                        <div class="row">
-                                            <div class="col-8 label-input d-flex align-items-center">
-                                                <div onclick="ClearFile(`fi4`, 'fl4');" class="fi" id="fl4"></div>
-                                            </div>
-                                            <div class="col-4 select-doc">
-                                                <div class="select-button-1 d-flex justify-content-end">
-                                                    <label>
-                                                        @Localizer["SelectDoc"]
-                                                        <input class="height-input" id="fi4" onchange="GetFileName(this.value, 'fl4');" type="file" name="bobTailPhysicalDamage" accept="application/pdf, image/jpeg, image/jpg">
-                                                    </label>
+                                <div class="full-label">
+                                    <p class="a-label">@Localizer["BobTailPhysicalDamage"]</p>
+                                    <a class="pt-1 pb-1">@Localizer["InfoMessageUploadFiles"]</a>
+                                    <div>
+                                        <div class="file-group big-label">
+                                            <div class="row">
+                                                <div class="col-8 label-input d-flex align-items-center">
+                                                    <div onclick="ClearFile(`fi4`, 'fl4');" class="fi" id="fl4"></div>
+                                                </div>
+                                                <div class="col-4 select-doc">
+                                                    <div class="select-button-1 d-flex justify-content-end">
+                                                        <label>
+                                                            @Localizer["SelectDoc"]
+                                                            <input class="height-input" id="fi4" onchange="GetFileName(this.value, 'fl4');" type="file" name="bobTailPhysicalDamage" accept="application/pdf, image/jpeg, image/jpg">
+                                                        </label>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
+                                        <p class="file-limit-exceeded text-danger"></p>
                                     </div>
-                                    <p class="file-limit-exceeded text-danger"></p>
                                 </div>
-                            </div>
-                            <div class="full-label">
-                                <p class="a-label">@Localizer["NyHut"] (@Localizer["OptionalForNyRolling"])</p>
-                                <a class="pt-1 pb-1">@Localizer["InfoMessageUploadFiles"]</a>
-                                <div>
-                                    <div class="file-group big-label">
-                                        <div class="row">
-                                            <div class="col-8 label-input d-flex align-items-center">
-                                                <div onclick="ClearFile(`fi5`, 'fl5');" class="fi" id="fl5"></div>
-                                            </div>
-                                            <div class="col-4 select-doc">
-                                                <div class="select-button-1 d-flex justify-content-end">
-                                                    <label>
-                                                        @Localizer["SelectDoc"]
-                                                        <input class="height-input" id="fi5" onchange="GetFileName(this.value, 'fl5');" type="file" accept="application/pdf, image/jpeg, image/jpg" name="nYHUTDoc">
-                                                    </label>
+                                <div class="full-label">
+                                    <p class="a-label">@Localizer["NyHut"] (@Localizer["OptionalForNyRolling"])</p>
+                                    <a class="pt-1 pb-1">@Localizer["InfoMessageUploadFiles"]</a>
+                                    <div>
+                                        <div class="file-group big-label">
+                                            <div class="row">
+                                                <div class="col-8 label-input d-flex align-items-center">
+                                                    <div onclick="ClearFile(`fi5`, 'fl5');" class="fi" id="fl5"></div>
+                                                </div>
+                                                <div class="col-4 select-doc">
+                                                    <div class="select-button-1 d-flex justify-content-end">
+                                                        <label>
+                                                            @Localizer["SelectDoc"]
+                                                            <input class="height-input" id="fi5" onchange="GetFileName(this.value, 'fl5');" type="file" accept="application/pdf, image/jpeg, image/jpg" name="nYHUTDoc">
+                                                        </label>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
+                                        <p class="file-limit-exceeded text-danger"></p>
                                     </div>
-                                    <p class="file-limit-exceeded text-danger"></p>
                                 </div>
+                                <input type="hidden" value="" name="localDate" />
+                                <button class="btn1 big-label height-input big-font-size">@Localizer["SaveInfo"]</button>
                             </div>
-                            <input type="hidden" value="" name="localDate" />
-                            <button class="btn1 big-label height-input big-font-size">@Localizer["SaveInfo"]</button>
                         </form>
                     </div>
                 </div>
                 <div class="col-md-6 image-col-place">
-                    
                 </div>
             </div>
         </div>
     </div>
+    <div id="confirmUpdateModalContainer"></div>
+    <div id="modalTruckGroupFormContainer"></div>
+    <div id="modalTruckStatusFormContainer"></div>
 </body>
 
 <script>
     $(document).ready(function () {
+        var swiper = new Swiper(".mySwiper", {
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+            pagination: {
+                el: ".swiper-pagination",
+            },
+        });
+
         $("#truckTypeDropdown").change(function () {
             var selectedText = $("#truckTypeDropdown option:selected").text();
+
+            var imageColPlaceWrapper = $(".image-col-place .swiper-wrapper");
+            imageColPlaceWrapper.empty();
+
+            var imageColPlace = $(".image-col-place .swiper");
+            imageColPlace.css("display", "none");
+
+            var singleImage = $(".image-col-place .single-img");
+            singleImage.empty();
+
+            swiper.removeAllSlides();
+
             if (selectedText) {
                 $.ajax({
                     url: `/Equipment/GetTruckSlug?vehicleName=${selectedText}`,
                     method: 'GET',
                     success: function (data) {
+                        imageColPlace.css("display", "block");
                         var slug = data;
 
-                        // Теперь, когда у нас есть slug, делаем второй запрос
                         $.ajax({
-                            url: `/Equipment/GetImages?vehicleSlug=${slug}`,
+                            url: `/Equipment/GetTruckImages?vehicleSlug=${slug}`,
                             method: 'GET',
                             success: function (data) {
-                                console.log(data);
-                                var imageColPlace = $(".image-col-place");
-                                imageColPlace.empty();
-
                                 data.forEach(function (fileName) {
                                     var srcPhoto = `@Config.BaseReqvesteUrl/Equipment/Image?name=../TruckPattern/${slug}/${fileName}&type=png`;
-                                    var imageElement = `<div class="col-md-auto m-2"><img src="${srcPhoto}" alt=""></div>`;
-                                    imageColPlace.append(imageElement);
+
+                                    swiper.appendSlide(`<div class="swiper-slide"><img src="${srcPhoto}" alt=""></div>`);
                                 });
+
+                                swiper.update();
                             },
                             error: function () {
                             }
@@ -333,21 +440,37 @@
 
         $("#vehicleCategoryDropdown").change(function () {
             var categoryId = $(this).val();
-            console.log("сработало событие изменения категории авто")
+
+            var imageColPlaceWrapper = $(".image-col-place .swiper-wrapper");
+            imageColPlaceWrapper.empty();
+
+            var imageColPlace = $(".image-col-place .swiper");
+            imageColPlace.css("display", "none");
+
+            var singleImage = $(".image-col-place .single-img");
+            singleImage.empty();
+
+            swiper.removeAllSlides();
+            var truckTypeDropdown = $('#truckTypeDropdown');
+            truckTypeDropdown.empty();
+
+            truckTypeDropdown.append($('<option>', {
+                value: '',
+                text: '@Localizer["ChooseTruckType"]',
+            }));
+
+            if (categoryId === null || categoryId === undefined || categoryId === '') {
+                return;
+            }
+
             $.ajax({
                 url: loadTruckTypesUrl,
                 data: { categoryId: categoryId },
                 method: 'GET',
-                success: function (data) {
+                success: function (trucks) {
                     var truckTypeDropdown = $('#truckTypeDropdown');
-                    truckTypeDropdown.empty();
 
-                    truckTypeDropdown.append($('<option>', {
-                        value: '',
-                        text: '@Localizer["ChooseTruckType"]'
-                    }));
-
-                    $.each(data, function (index, item) {
+                    $.each(trucks, function (index, item) {
                         truckTypeDropdown.append($('<option>', {
                             value: item.id,
                             text: item.name
@@ -359,16 +482,31 @@
                             truckTypeDropdown.val(selectedTruckTypeId);
                             truckTypeDropdown.change();
                         }
+                    } else { 
+
+                    $.ajax({
+                            url: `/Equipment/GetTruckImages?vehicleSlug=${trucks[0].slug}`,
+                        method: 'GET',
+                        success: function (data) {
+                            var srcPhoto = `@Config.BaseReqvesteUrl/Equipment/Image?name=../TruckPattern/${trucks[0].slug}/${data[0]}&type=png`;
+                            var imageElement = `<img src="${srcPhoto}" alt="">`;
+                            singleImage.append(imageElement);
+                        },
+                        error: function () {
+                        }
+                        });
                     }
-                }
+                },
             });
         });
 
         var selectedVehicleCategoryId = "@ViewData["SelectedVehicleCategoryId"]";
         var selectedTruckTypeId = "@ViewData["SelectedTruckTypeId"]";
+        var selectedTruckGroupId = "@ViewData["SelectedTruckGroupId"]";
+        var selectedTruckStatusId = "@ViewData["SelectedTrucStatusId"]";
 
         $.ajax({
-            url: '/Equipment/GetVehicleCategiries',
+            url: '/Equipment/Truck/GetVehicleCategiries',
             type: 'GET',
             dataType: 'json',
             success: function (data) {
@@ -379,6 +517,8 @@
                     text: '@Localizer["ChooseVehicleCategory"]'
                 }));
 
+                var imageColPlace = $(".image-col-place .swiper-wrapper");
+                imageColPlace.empty();
 
                 $.each(data, function (index, item) {
                     categoryDropdown.append($('<option>', {
@@ -397,23 +537,334 @@
             error: function () {
             }
         });
+
+        $.ajax({
+            url: '@Url.Action("GetTruckGroupsDropdownItems", "Equipment")',
+            type: 'GET',
+            success: function (result) {
+                var dropdown = $('#truckGroupDropdown');
+                dropdown.empty();
+
+                dropdown.append($('<option>', {
+                    value: '',
+                    text: '@Localizer["ChooseGroupType"]'
+                }));
+
+                result.forEach(function (item) {
+                    dropdown.append($('<option>', {
+                        value: item.id,
+                        text: item.name
+                    }));
+                });
+
+                dropdown.append($('<option>', {
+                    value: 'CreateGroup',
+                    text: '@Localizer["CreateNewGroupType"]',
+                    class: 'font-weight-bold'
+                }));
+
+                if (selectedTruckGroupId) {
+                    if (dropdown.find('option[value="' + selectedTruckGroupId + '"]').length > 0) {
+                        dropdown.val(selectedTruckGroupId);
+                    }
+                }
+            },
+            error: function () {
+                console.error("Ошибка при загрузке элементов дропдауна.");
+            }
+        });
+
+        $.ajax({
+            url: '@Url.Action("GetTruckStatusDropdownItems", "Equipment")',
+            type: 'GET',
+            success: function (result) {
+                var dropdown = $('#truckStatusDropdown');
+                dropdown.empty();
+
+                dropdown.append($('<option>', {
+                    value: '',
+                    text: '@Localizer["ChooseTruckStatus"]'
+                }));
+
+                result.forEach(function (item) {
+                    dropdown.append($('<option>', {
+                        value: item.id,
+                        text: item.name
+                    }));
+                });
+
+                dropdown.append($('<option>', {
+                    value: 'CreateTruckStatus',
+                    text: '@Localizer["CreateNewTruckStatus"]',
+                    class: 'font-weight-bold'
+                }));
+
+                if (selectedTruckStatusId) {
+                    if (dropdown.find('option[value="' + selectedTruckStatusId + '"]').length > 0) {
+                        dropdown.val(selectedTruckStatusId);
+                    }
+                }
+            },
+            error: function () {
+                console.error("Ошибка при загрузке элементов дропдауна.");
+            }
+        });
+
+        var truckLocationLabel = $('#truckLocationLabel');
+        var truckLocationTypeVal = $('#truckLocationTypeDropdown').val();
+
+        shouldBeVisible(truckLocationTypeVal).then(result => {
+            if (result) {
+                truckLocationLabel.show();
+                $('#truckLocation').prop('required', true);
+                $('#truckLocation').val('@Model?.LocationAddress');
+            } else {
+                truckLocationLabel.hide();
+                $('#truckLocation').prop('required', false);
+            }
+        });
+
+        $('#truckGroupDropdown').change(function () {
+            var selectedValue = $(this).val();
+
+            if (selectedValue === "CreateGroup") {
+                checkAndRedirect('', function () {
+                    $('#truckGroupDropdown').val($('#truckGroupDropdown option:first').val());
+                });
+            }
+        });
+
+        $('#truckStatusDropdown').change(function () {
+            var selectedValue = $(this).val();
+
+            if (selectedValue === "CreateTruckStatus") {
+                checkAndRedirectTruckStatus('', function () {
+                    $('#truckStatusDropdown').val($('#truckStatusDropdown option:first').val());
+                });
+            }
+        });
+
+        $('#truckLocationTypeDropdown').change(function () {
+            var selectedValue = $(this).val();
+            var truckLocationLabel = $('#truckLocationLabel');
+            shouldBeVisible(selectedValue).then(result => {
+                if (result) {
+                    truckLocationLabel.show(); 
+                    $('#truckLocation').prop('required', true);
+                } else {
+                    truckLocationLabel.hide(); 
+                    $('#truckLocation').prop('required', false);
+                    $('#truckLocation').val('');
+                }
+            });
+        });
     });
+
+    async function shouldBeVisible(selectedLocationType) {
+        try {
+            const response = await $.ajax({
+                url: '@Url.Action("IsVisibleTruckLocation", "Equipment")',
+                type: 'GET',
+                data: { selectedLocationType }
+            });
+
+            return response;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    function loadDropdownItems() {
+        $.ajax({
+            url: '@Url.Action("GetTruckGroupsDropdownItems", "Equipment")',
+            type: 'GET',
+            success: function (result) {
+                var dropdown = $('#truckGroupDropdown');
+                dropdown.empty();
+
+                dropdown.append($('<option>', {
+                    value: '',
+                    text: '@Localizer["ChooseGroupType"]'
+                }));
+
+                result.forEach(function (item) {
+                    dropdown.append($('<option>', {
+                        value: item.id,
+                        text: item.name
+                    }));
+                });
+
+                dropdown.append($('<option>', {
+                    value: 'CreateGroup',
+                    text: '@Localizer["CreateNewGroupType"]',
+                    class: 'font-weight-bold'
+                }));
+            },
+            error: function () {
+            }
+        });
+    }
+    function loadTruckStatusDropdownItems() {
+        $.ajax({
+            url: '@Url.Action("GetTruckStatusDropdownItems", "Equipment")',
+            type: 'GET',
+            success: function (result) {
+                var dropdown = $('#truckStatusDropdown');
+                dropdown.empty();
+
+                dropdown.append($('<option>', {
+                    value: '',
+                    text: '@Localizer["ChooseTruckStatus"]'
+                }));
+
+                result.forEach(function (item) {
+                    dropdown.append($('<option>', {
+                        value: item.id,
+                        text: item.name
+                    }));
+                });
+
+                dropdown.append($('<option>', {
+                    value: 'CreateTruckStatus',
+                    text: '@Localizer["CreateNewTruckStatus"]',
+                    class: 'font-weight-bold'
+                }));
+            },
+            error: function () {
+                console.error("Ошибка при загрузке элементов дропдауна.");
+            }
+        });
+    }
+
+    function checkAndRedirect(url, callback) {
+        var modalContainer = $('#modalTruckGroupFormContainer');
+
+        if (modalContainer.length === 0 || modalContainer.html().trim() === '') {
+            modalContainer.load('@Url.Action("GetCreateTruckGroupForm", "Equipment")', function () {
+                $("#addFirstGroup").modal('show');
+
+                $('#addFirstGroup form').submit(function (event) {
+                    event.preventDefault();
+                    saveGroupAndRefreshDropdown(url, callback);
+                });
+
+                $('#addFirstGroup').on('hidden.bs.modal', function () {
+                    if (typeof callback === 'function') {
+                        callback();
+                    }
+                });
+            });
+        }
+        else {
+            $("#addFirstGroup").modal('show');
+        }
+    } 
+    
+    function checkAndRedirectTruckStatus(url, callback) {
+        var modalContainer = $('#modalTruckStatusFormContainer');
+
+        if (modalContainer.length === 0 || modalContainer.html().trim() === '') {
+            modalContainer.load('@Url.Action("GetCreateTruckStatusForm", "Equipment")', function () {
+                $("#addTruckStatus").modal('show');
+
+                $('#addTruckStatus form').submit(function (event) {
+                    event.preventDefault();
+                    saveTruckStatusAndRefreshDropdown(url, callback);
+                });
+
+                $('#addTruckStatus').on('hidden.bs.modal', function () {
+                    if (typeof callback === 'function') {
+                        callback();
+                    }
+                });
+            });
+        }
+        else {
+            $("#addTruckStatus").modal('show');
+        }
+    }
+
+    function saveGroupAndRefreshDropdown(url, callback) {
+        var form = $('#addFirstGroup form');
+
+        $.ajax({
+            url: form.attr('action'),
+            type: 'POST',
+            data: form.serialize(),
+            success: function (result) {
+                loadDropdownItems();
+
+                $('#addFirstGroup').modal('hide');
+                $('#groupName').val('');
+                SuccessAlert("@Localizer["TruckGroupSuccessAdded"]");
+
+                if (typeof callback === 'function') {
+                    callback();
+                }
+            },
+            error: function () {
+                WarningAlert("@Localizer["TruckGroupNotAdded"]")
+                console.error("Ошибка при сохранении группы.");
+            }
+        });
+    }
+
+    function saveTruckStatusAndRefreshDropdown(url, callback) {
+        var form = $('#addTruckStatus form');
+
+        $.ajax({
+            url: form.attr('action'),
+            type: 'POST',
+            data: form.serialize(),
+            success: function (result) {
+                loadTruckStatusDropdownItems();
+
+                $('#addTruckStatus').modal('hide');
+                $('#statusName').val('');
+                SuccessAlert("@Localizer["TruckStatusSuccessAdded"]");
+
+                if (typeof callback === 'function') {
+                    callback();
+                }
+            },
+            error: function () {
+                WarningAlert("@Localizer["TruckStatusNotAdded"]")
+                console.error("Ошибка при сохранении группы.");
+            }
+        });
+    }
 </script>
 <script>
     function formatBeforeSubmit() {
-        const input = document.getElementById('plateExp');
-        const parts = input.value.split('/');
-        if (parts.length === 2) {
-            input.value = '01.' + parts[0] + '.20' + parts[1];
+        const truckLocationTypeSelected = $("#truckLocationTypeDropdown").val();
+        if (truckLocationTypeSelected === '@LocationType.Later') {
+            $("#truckLocation").val('none');
+        }
+
+        const inputPlateExp = document.getElementById('plateExp');
+        const partsPlateExp = inputPlateExp.value.split('/');
+        if (partsPlateExp.length === 2) {
+            const monthPlateExp = parseInt(partsPlateExp[0], 10);
+            const yearPlateExp = parseInt('20' + partsPlateExp[1], 10);
+            const lastDayOfMonthPlateExp = new Date(yearPlateExp, monthPlateExp, 0).getDate();
+
+            const formattedDate = partsPlateExp[0] + '.' + lastDayOfMonthPlateExp + '.' + '20' + partsPlateExp[1];
+
+            inputPlateExp.value = formattedDate;
+        }
+
+        const inputAnnualIns = document.getElementById('annualIns');
+        const partsAnnualIns = inputAnnualIns.value.split('/');
+        if (partsAnnualIns.length === 3) {
+            const formattedDate = partsAnnualIns[0] + '.' + partsAnnualIns[1] + '.' + '20' + partsAnnualIns[2];
+            inputAnnualIns.value = formattedDate;
         }
     }
 </script>
 <script src="~/js/input-replacer.js"></script>
 <script>
-
-    setReplacer(document.querySelector('#name'), @ExpressionConstants.OnlyLetters);
     setReplacer(document.querySelector('#make'), @ExpressionConstants.OnlyLetters);
-    setReplacer(document.querySelector('#model'), @ExpressionConstants.OnlyLetters);
+    setReplacer(document.querySelector('#model'), @ExpressionConstants.OnlyLettersDigitsDashes);
     setReplacer(document.querySelector('#color'), @ExpressionConstants.OnlyLetters);
     setReplacer(document.querySelector('#owner'), @ExpressionConstants.OnlyLetters);
     const dateInput = document.querySelector("[name='localDate']");
@@ -429,11 +880,11 @@
     $("#fi3").change(function () {
         CheckValid('fl3', 'fi3');
     });
-    
+
     $("#fi4").change(function () {
         CheckValid('fl4', 'fi4');
     });
-    
+
     $("#fi5").change(function () {
         CheckValid('fl5', 'fi5');
     });
@@ -450,6 +901,8 @@
 
     $(function () {
         $("#plateExp").mask("99/99", { placeholder: "MM/YY" });
+        $("#annualIns").mask("99/99/99", { placeholder: "MM/DD/YY" });
+       
     });
 
     var curentSelectPattern;
@@ -459,15 +912,15 @@
         $('#stateP').val('@Model.State').change();
 
 
-            GetFileName('@regDocName', 'fl1');
+        GetFileName('@regDocName', 'fl1');
 
-            GetFileName('@annualInsDocName', 'fl2');
+        GetFileName('@annualInsDocName', 'fl2');
 
-            GetFileName('@annualInsDocName', 'fl3');
+        GetFileName('@annualInsDocName', 'fl3');
 
-            GetFileName('@bobTailPhysicalDamageDocName', 'fl4');
+        GetFileName('@bobTailPhysicalDamageDocName', 'fl4');
 
-            GetFileName('@nYHUTDocName', 'fl5');
+        GetFileName('@nYHUTDocName', 'fl5');
 
     });
 
@@ -487,3 +940,168 @@
         }
     }
 </script>
+
+
+<script>
+    $(document).ready(function () {
+        $('#confirmUpdateModalContainer').load('@Url.Action("GetUploadExpDocForm", "Equipment")?modelId=' + `confirmUpdateModal`, function () {
+            $('#confirmUpdateModalContainer').on('submit', '#confirmUpdateModal form', function (event) {
+                event.preventDefault();
+                const lastFormat = document.getElementById('inputUpdate').value;
+
+                if ('@TypeChangeDocument.AnnualInspection' === $("#fiUpdateTypeDocument").val()) {
+                    const inputAnnualIns = document.getElementById('inputUpdate');
+                    const partsAnnualIns = inputAnnualIns.value.split('/');
+                    if (partsAnnualIns.length === 3) {
+                        const formattedDate = partsAnnualIns[0] + '.' + partsAnnualIns[1] + '.' + '20' + partsAnnualIns[2];
+                        inputAnnualIns.value = formattedDate;
+                    }
+                    CheckValid('flUpdate', 'fiUpdate');
+                    saveNewDocument(lastFormat);
+                }
+                else if ('@TypeChangeDocument.Plate' === $("#fiUpdateTypeDocument").val()) {
+                    const inputPlateExp = document.getElementById('inputUpdate');
+                    const partsPlateExp = inputPlateExp.value.split('/');
+                    if (partsPlateExp.length === 2) {
+                        const monthPlateExp = parseInt(partsPlateExp[0], 10);
+                        const yearPlateExp = parseInt('20' + partsPlateExp[1], 10);
+                        const lastDayOfMonthPlateExp = new Date(yearPlateExp, monthPlateExp, 0).getDate();
+
+                        const formattedDate = partsPlateExp[0] + '.' + lastDayOfMonthPlateExp + '.' + '20' + partsPlateExp[1];
+
+                        inputPlateExp.value = formattedDate;
+                    }
+                    CheckValid('flUpdate', 'fiUpdate');
+                    saveNewDocument(lastFormat);
+                }
+            });
+        });
+    });
+
+
+    function saveNewDocument(lastFormat) {
+        var form = $('#confirmUpdateModal form')[0];
+        var formData = new FormData(form);
+
+        $.ajax({
+            url: '/Equipment/Truck/UpdateDoc',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                SuccessAlert("@Localizer["TruckDocumentSuccessUpdated"]");
+                $("#confirmUpdateModal").modal('hide');
+
+                if ('@TypeChangeDocument.AnnualInspection' === $("#fiUpdateTypeDocument").val()) {
+                    $("#annualIns").val(lastFormat);
+                }
+                else if ('@TypeChangeDocument.Plate' === $("#fiUpdateTypeDocument").val()) {
+                    $("#plateExp").val(lastFormat);
+                }
+                $("#inputUpdate").val(''); 
+                ClearFile(`fiUpdate`, 'flUpdate');
+            },
+            error: function () {
+                WarningAlert("@Localizer["TruckDocumentNotUpdated"]")
+            }
+        });
+    }
+</script>
+<style>
+    .full-label {
+        padding: 3px 0px 4px;
+    }
+
+    .thd {
+        width: 100%;
+        display: flex;
+    }
+
+    .tabContent form label {
+        width: 100% !important;
+    }
+
+    .image-col-place {
+        height: 264px;
+    }
+
+        .image-col-place img {
+            height: auto;
+            width: auto;
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+
+        .image-col-place .swiper {
+            width: 100%;
+            height: 100%;
+        }
+
+        .image-col-place .single-img {
+            vertical-align: middle;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            display: flex;
+        }
+
+        .image-col-place .swiper .swiper-wrapper {
+            width: 100%;
+            height: 100%;
+        }
+
+            .image-col-place .swiper .swiper-wrapper .swiper-slide {
+                width: 100%;
+                height: 100%;
+                text-align: center;
+                font-size: 18px;
+                background: #fff;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .image-col-place .swiper .swiper-wrapper .swiper-slide img {
+                display: block;
+                width: auto;
+                height: auto;
+                object-fit: cover;
+                max-height: 100%;
+                max-width: 100%;
+            }
+
+        .image-col-place .swiper .swiper-button-next, .swiper-button-prev {
+            width: calc(var(--swiper-navigation-size)/ 23 * 23);
+        }
+
+        .font-weight-bold {
+        font-weight: 700;
+    }
+
+    :root {
+        --swiper-navigation-size: 44px;
+    }
+
+    .input-block {
+        position: relative;
+    }
+
+    .tabContent form label input.disabled-input {
+        background: #e3e3e3;
+        pointer-events: none;
+    }
+
+    .update-button {
+        cursor: pointer;
+        position: absolute;
+        top: 36%;
+        right: 1rem;
+        color: #2c5deb;
+    }
+
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>

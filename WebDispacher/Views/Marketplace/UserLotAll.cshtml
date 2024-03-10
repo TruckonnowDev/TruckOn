@@ -1,0 +1,211 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using System.Globalization;
+@using WebDispacher.Constants;
+@using WebDispacher.ViewModels.Marketplace;
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "User Lot | All";
+}
+
+@model List<ItemMarketPostShortViewModel>
+
+<body>
+    <div class="admin">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="title">
+                        <h1>@Localizer["MarketplaceNewItems"]</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="tabs">
+                        <div class="tabContent">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>@Localizer["TypeLot"]</th>
+                                        <th>@Localizer["DateReceived"]</th>
+                                        <th>@Localizer["Title"]</th>
+                                        <th>@Localizer["Description"]</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            @{
+                                                var typeLot = @item.Price.HasValue ? "Sell" : "Buy";
+                                            }
+                                            <td style="white-space:nowrap;">
+                                                @if (item.Price.HasValue)
+                                                {
+                                                    <span class="badge bg-success">@Localizer["SellItem"]</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-primary">@Localizer["BuyItem"]</span>
+                                                }
+                                            </td>
+                                            <td style="white-space:nowrap;">@item.DateTimeLastUpdate.ToString(DateTimeFormats.FullDateTimeInfo)</td>
+                                            <td style="white-space:nowrap;">@item.Title</td>
+                                            @{
+                                                var description = item.Description.Length > 50 ? item.Description.Substring(0, 50 - 2) + ".." : item.Description;
+                                            }
+                                            <td style="white-space:nowrap;">@description</td>
+                                            
+                                            <td style="padding-bottom: 14px;padding-top: 14px;">
+                                                @if (item.Price.HasValue)
+                                                {
+                                                    <a class="btn1 modalClick" href="@Url.Action("CheckSell","Marketplace", new { id = item.MarketPostId})" target="_blank">@Localizer["CheckItem"]</a>
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn1 modalClick" href="@Url.Action("CheckBuy","Marketplace",  new { id = item.MarketPostId})" target="_blank">@Localizer["CheckItem"]</a>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                            <pagination-list actual-pages="functions.GetPages(ViewBag.SelectedPage, ViewBag.CountPages)" selected-page="ViewBag.SelectedPage" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+<script>
+    $(document).ready(function () {
+        ShowAlert();
+    });
+</script>
+
+<style>
+
+    .badge {
+        padding: 8px 12px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .admin #tabs .tabContent table tbody tr td {
+        font-size: 15px;
+    }
+    
+    .tabContent form {
+        margin-bottom: 10px;
+        margin-top: 10px;
+    }
+
+    p {
+        font-size: 12px;
+    }
+
+    .btn1 {
+        padding: 12px 20px;
+        font-size: 14px;
+        font-weight: 600;
+        width: 150px !important;
+    }
+</style>
+
+<style>
+    .modal-dialog {
+        position: absolute;
+        left: 0;
+        right: 0;
+        margin-left: auto;
+        margin-right: auto;
+        top: 100px;
+        width: 520px !important;
+        text-align: left;
+        background-color: #fff;
+        -moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
+        -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
+        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
+        transition: height 0.25s linear;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        border-radius: 30px;
+    }
+
+    .modal-content {
+        border: 0px;
+        border-radius: 30px;
+    }
+
+    .ng-modal-wrapper {
+        display: inline-block;
+        vertical-align: middle;
+        padding: 50px 0;
+        width: 100%;
+        position: relative;
+    }
+
+    .modal-dialog label {
+        position: relative;
+        display: inline-block;
+        vertical-align: middle;
+        cursor: pointer;
+        padding: 3px 10px 4px 0px;
+        -moz-border-radius: 3px;
+        -webkit-border-radius: 3px;
+        margin-top: 2px;
+        background: none;
+        font-size: 16px;
+        line-height: 19px;
+        letter-spacing: -.016em;
+        -moz-transition-property: all;
+        -o-transition-property: all;
+        -webkit-transition-property: all;
+        transition-property: all;
+        -moz-transition-duration: 300ms;
+        -o-transition-duration: 300ms;
+        -webkit-transition-duration: 300ms;
+        transition-duration: 300ms;
+        border-radius: 30px;
+    }
+
+    .modal-buttons .right-buttons {
+        float: right;
+    }
+
+    .modal-inp-text {
+        width: 100%;
+        height: 77px;
+        background: #fff;
+        border: 1px solid #c4c9d5;
+        border-radius: 10px;
+        padding: 25px 15px;
+        font-family: Montserrat;
+        font-style: normal;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 1.2;
+        color: #686f7c;
+        margin-top: 6px
+    }
+
+    .modal-title h1 {
+        font-size: 26px;
+    }
+
+    .modal-header {
+        justify-content: center;
+        padding: 1rem;
+    }
+
+    .modal-footer {
+        justify-content: center;
+        padding: 1rem;
+    }
+</style>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="DashbordMainHeader" xml:space="preserve">
+        <value>Приборная панель</value>
+    </data>
+    <data name="WidgetsEquipmentHeader" xml:space="preserve">
+        <value>Виджеты оборудования</value>
+    </data>
+    <data name="TruckWidgetsHeader" xml:space="preserve">
+        <value>Грузовики</value>
+    </data>
+    <data name="TrailerWidgetsHeader" xml:space="preserve">
+        <value>Прицепы</value>
+    </data>
+    <data name="WidgetsDriverHeader" xml:space="preserve">
+        <value>Виджеты драйвера и документ</value>
+    </data>
+    <data name="MedicalDocsDriverHeader" xml:space="preserve">
+        <value>Медицинская карточка</value>
+    </data>
+    <data name="DriverLicenseHeader" xml:space="preserve">
+        <value>Водительские права</value>
+    </data>
+    <data name="Show" xml:space="preserve">
+        <value>Посмотреть</value>
+    </data>
+    <data name="PlateExpirationAndInspectionHeader" xml:space="preserve">
+        <value>Истечение срока действия номерных знаков грузовых автомобилей и прицепов и техосмотра</value>
+    </data>
+    <data name="TruckLicenseHeader" xml:space="preserve">
+        <value>Срок действия номерного знака грузовика</value>
+    </data>
+    <data name="TruckLastInspectionHeader" xml:space="preserve">
+        <value>Последние проверки грузовиков</value>
+    </data>
+    <data name="TrailerLicenseHeader" xml:space="preserve">
+        <value>Срок действия номерного знака прицепа</value>
+    </data>
+    <data name="TrailerLastInspectionHeader" xml:space="preserve">
+        <value>Последние проверки прицепа</value>
+    </data>
+    <data name="WidgetsOrderHeader" xml:space="preserve">
+        <value>Виджеты заказов</value>
+    </data>
+    <data name="MessageSuccessRemoveWidget" xml:space="preserve">
+        <value>Виджет успешно удален</value>
+    </data>
+    <data name="MessageErrorRemoveWidget" xml:space="preserve">
+        <value>Виджет не удалось удалить</value>
+    </data>
+    <data name="MessageErrorRequestRemoveWidget" xml:space="preserve">
+        <value>Во время операции произошла ошибка, пожалуйста, повторите попытку позже</value>
+    </data>
+    <data name="OrderWidgetSuccessUpdated" xml:space="preserve">
+        <value>Виджет заказа успешно обновлен</value>
+    </data>
+    <data name="OrderWidgetNotUpdated" xml:space="preserve">
+        <value>Не удалось обновить виджет заказа</value>
+    </data>
+    <data name="TrailerWidgetSuccessUpdated" xml:space="preserve">
+        <value>Виджет трейлера успешно обновлен</value>
+    </data>
+    <data name="TrailerWidgetNotUpdated" xml:space="preserve">
+        <value>Не удалось обновить виджет трейлера</value>
+    </data>
+    <data name="TruckWidgetSuccessUpdated" xml:space="preserve">
+        <value>Виджет грузовика успешно обновлен</value>
+    </data>
+    <data name="TruckWidgetNotUpdated" xml:space="preserve">
+        <value>Не удалось обновить виджет грузовика</value>
+    </data>
+    <data name="UnitTableHeader" xml:space="preserve">
+        <value>Имя</value>
+    </data>
+    <data name="MakeTableHeader" xml:space="preserve">
+        <value>Производитель</value>
+    </data>
+    <data name="ModelTableHeader" xml:space="preserve">
+        <value>Модель</value>
+    </data>
+    <data name="ExpirationTableHeader" xml:space="preserve">
+        <value>Истечение</value>
+    </data>
+    <data name="TrailerPlateExpirationAndInspectionHeader" xml:space="preserve">
+        <value>Срок действия номерного знака прицепа и техосмотра истек</value>
+    </data>
+    <data name="TruckPlateExpirationAndInspectionHeader" xml:space="preserve">
+        <value>Срок действия номерного знака грузовика и техосмотра истек</value>
+    </data>
+    <data name="NoActionRequired" xml:space="preserve">
+        <value>На данный момент никаких действий не требуется</value>
+    </data>
+</root>

@@ -46,17 +46,6 @@
                             </ul>
                             <div class="step">
                                 <label for="">
-                                    @Html.DisplayNameFor(x => x.Type)
-                                    @Html.ValidationMessageFor(model => model.SelectedType, "", new {@class = "text-danger"})
-                                    @foreach (var item in Model.Type)
-                                        {
-                                            <div class="mt-2 value-elem">
-                                                <input style="height: 13px; width: 16px;" asp-for="SelectedType" type="radio" value="@item.Id" />
-                                            <span style="text-align: center">@item.TypeName</span>
-                                            </div>
-                                        }
-                                </label>
-                                <label for="">
                                     @Html.DisplayNameFor(x => x.Units)
                                     <div class="mt-2">
                                         <input asp-for="Units" min="1" value="@Model.Units" value="1" required>

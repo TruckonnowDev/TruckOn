@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="AlcoholTendency" xml:space="preserve">
+        <value>Склонность к употреблению алкоголя</value>
+    </data>
+    <data name="BackToDrivers" xml:space="preserve">
+        <value>Назад к Водителям</value>
+    </data>
+    <data name="Comment" xml:space="preserve">
+        <value>Комментарий</value>
+    </data>
+    <data name="DateDriverLicenseExpiration" xml:space="preserve">
+        <value>Дата истечения срока водительских прав</value>
+    </data>
+    <data name="DateFired" xml:space="preserve">
+        <value>Дата увольнения</value>
+    </data>
+    <data name="DateLastUpdate" xml:space="preserve">
+        <value>Дата последнего обновления</value>
+    </data>
+    <data name="DateMedicalCardExpiration" xml:space="preserve">
+        <value>Дата истечения срока медицинской карты</value>
+    </data>
+    <data name="DateOfBirth" xml:space="preserve">
+        <value>Дата Рождения</value>
+    </data>
+    <data name="DateRegistration" xml:space="preserve">
+        <value>Дата регистрации</value>
+    </data>
+    <data name="DotViolations" xml:space="preserve">
+        <value>Точечные нарушения</value>
+    </data>
+    <data name="DriverCompany" xml:space="preserve">
+        <value>Компания водителя</value>
+    </data>
+    <data name="DriverFired" xml:space="preserve">
+        <value>Информация об увольнении</value>
+    </data>
+    <data name="DriverInspection" xml:space="preserve">
+        <value>Осмотр водителя</value>
+    </data>
+    <data name="DriverLicense" xml:space="preserve">
+        <value>Водительские права</value>
+    </data>
+    <data name="DriverLicenseNumber" xml:space="preserve">
+        <value>Номер водительского удостоверения</value>
+    </data>
+    <data name="DriverLicenseState" xml:space="preserve">
+        <value>Штат водительских прав</value>
+    </data>
+    <data name="DriverSkills" xml:space="preserve">
+        <value>Навыки водителя</value>
+    </data>
+    <data name="DrugTendency" xml:space="preserve">
+        <value>Склонность к употреблению наркотиков</value>
+    </data>
+    <data name="Edit" xml:space="preserve">
+        <value>Редактировать</value>
+    </data>
+    <data name="EldKnowledge" xml:space="preserve">
+        <value>Знания в этой области</value>
+    </data>
+    <data name="Email" xml:space="preserve">
+        <value>Электронная почта</value>
+    </data>
+    <data name="English" xml:space="preserve">
+        <value>Уровень владения английским языком</value>
+    </data>
+    <data name="Experience" xml:space="preserve">
+        <value>Опыт</value>
+    </data>
+    <data name="Geolocation" xml:space="preserve">
+        <value>Геолокация</value>
+    </data>
+    <data name="IsActive" xml:space="preserve">
+        <value>Активен</value>
+    </data>
+    <data name="IsInspectionDriver" xml:space="preserve">
+        <value>Является инспекционным водителем</value>
+    </data>
+    <data name="IsInspectionToDayDriver" xml:space="preserve">
+        <value>Проходит ли сегодня техосмотр водитель</value>
+    </data>
+    <data name="LastDateInspaction" xml:space="preserve">
+        <value>Даты последней проверки</value>
+    </data>
+    <data name="Login" xml:space="preserve">
+        <value>Логин</value>
+    </data>
+    <data name="NumberAccidents" xml:space="preserve">
+        <value>Количество несчастных случаев</value>
+    </data>
+    <data name="Password" xml:space="preserve">
+        <value>Пароль</value>
+    </data>
+    <data name="PaymentHandling" xml:space="preserve">
+        <value>Обработка платежей</value>
+    </data>
+    <data name="Phone" xml:space="preserve">
+        <value>Телефон</value>
+    </data>
+    <data name="ReturnEquipment" xml:space="preserve">
+        <value>Возвращаемое оборудование</value>
+    </data>
+    <data name="Terminated" xml:space="preserve">
+        <value>Завершенный</value>
+    </data>
+    <data name="WorkEffeciency" xml:space="preserve">
+        <value>Эффективность работы</value>
+    </data>
+    <data name="Emergency" xml:space="preserve">
+        <value>Экстренный контакт</value>
+    </data>
+    <data name="EmergencyContactName" xml:space="preserve">
+        <value>Контакт</value>
+    </data>
+    <data name="EmergencyContactRelationship" xml:space="preserve">
+        <value>Отношение</value>
+    </data>
+    <data name="Endorsements" xml:space="preserve">
+        <value>Одобрений</value>
+    </data>
+    <data name="HomeAddress" xml:space="preserve">
+        <value>Домашний адрес</value>
+    </data>
+    <data name="Language" xml:space="preserve">
+        <value>Язык</value>
+    </data>
+    <data name="MainInfo" xml:space="preserve">
+        <value>Основная информация</value>
+    </data>
+    <data name="OwnerOperator" xml:space="preserve">
+        <value>Владелец Оператор</value>
+    </data>
+    <data name="PhoneEmergency" xml:space="preserve">
+        <value>Телефон</value>
+    </data>
+    <data name="Restrictions" xml:space="preserve">
+        <value>Ограничения</value>
+    </data>
+    <data name="SocialSecurity" xml:space="preserve">
+        <value>Социальное обеспечение</value>
+    </data>
+    <data name="DateDriverLicenseIssued" xml:space="preserve">
+        <value>Дата выдачи водительских прав</value>
+    </data>
+</root>

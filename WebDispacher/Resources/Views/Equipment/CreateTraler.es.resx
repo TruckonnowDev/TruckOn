@@ -157,7 +157,7 @@
     <value>Modelo</value>
   </data>
   <data name="NameTrailer" xml:space="preserve">
-    <value>Tráiler de Nombre</value>
+    <value>Unidad</value>
   </data>
   <data name="Optional" xml:space="preserve">
     <value>opcional</value>
@@ -178,9 +178,60 @@
     <value>Seleccionar documento</value>
   </data>
   <data name="TypeTrailer" xml:space="preserve">
-    <value>Tipo Remolque</value>
+    <value>Tipo de Unidad</value>
   </data>
   <data name="Year" xml:space="preserve">
     <value>Año</value>
+  </data>
+  <data name="ChooseGroupType" xml:space="preserve">
+    <value>Elija un grupo de remolques</value>
+  </data>
+  <data name="CreateNewGroupType" xml:space="preserve">
+    <value>Crear un nuevo grupo de tráileres</value>
+  </data>
+  <data name="TrailerGroupSuccessAdded" xml:space="preserve">
+    <value>Se ha agregado con éxito un nuevo grupo de remolques</value>
+  </data>
+  <data name="TrailerGroupNotAdded" xml:space="preserve">
+    <value>Error al agregar un nuevo grupo de tráileres</value>
+  </data>
+  <data name="GroupTrailer" xml:space="preserve">
+    <value>Grupo de Remolques</value>
+  </data>
+  <data name="TrailerStatus" xml:space="preserve">
+    <value>Tráiler de Estado</value>
+  </data>
+  <data name="CreateNewTrailerStatus" xml:space="preserve">
+    <value>Agregar un Nuevo Estado</value>
+  </data>
+  <data name="ChooseTrailerStatus" xml:space="preserve">
+    <value>Seleccione el estado del tráiler</value>
+  </data>
+  <data name="TrailerStatusNotAdded" xml:space="preserve">
+    <value>Error al agregar un nuevo estado</value>
+  </data>
+  <data name="TrailerStatusSuccessAdded" xml:space="preserve">
+    <value>Se ha agregado con éxito un nuevo estado</value>
+  </data>
+  <data name="VehicleCategoryTrailer" xml:space="preserve">
+    <value>Clase de Unidad</value>
+  </data>
+  <data name="ChooseVehicleCategory" xml:space="preserve">
+    <value>Elija un tipo de vehículo</value>
+  </data>
+  <data name="TrailerLocation" xml:space="preserve">
+    <value>Agregar Ubicación de la Unidad</value>
+  </data>
+  <data name="MannuallyLocationType" xml:space="preserve">
+    <value>Ubicación Manualmente</value>
+  </data>
+  <data name="GPSLocationType" xml:space="preserve">
+    <value>Ubicación GPS</value>
+  </data>
+  <data name="LaterLocationType" xml:space="preserve">
+    <value>Ubicación Más Tarde</value>
+  </data>
+  <data name="TrailerLocationType" xml:space="preserve">
+    <value>Tipo de Ubicación</value>
   </data>
 </root>

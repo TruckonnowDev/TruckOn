@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DaoModels.DAO.Models;
+using WebDispacher.Constants;
 using WebDispacher.Models;
 using WebDispacher.ViewModels.Company;
 using WebDispacher.ViewModels.Contact;
@@ -8,10 +9,13 @@ using WebDispacher.ViewModels.Driver;
 using WebDispacher.ViewModels.Marketplace;
 using WebDispacher.ViewModels.Order;
 using WebDispacher.ViewModels.RA.Carrier.Registration;
+using WebDispacher.ViewModels.Resources;
 using WebDispacher.ViewModels.Settings;
 using WebDispacher.ViewModels.Trailer;
 using WebDispacher.ViewModels.Truck;
 using WebDispacher.ViewModels.Vehicles;
+using WebDispacher.ViewModels.Widget;
+using WebDispacher.ViewModels.Widget.Enum;
 
 namespace WebDispacher.ViewModels.Mappings
 {
@@ -46,6 +50,15 @@ namespace WebDispacher.ViewModels.Mappings
                 .ReverseMap();
             CreateMap<MarketPostViewModel, MarketPost>()
                 .ReverseMap();
+            CreateMap<TruckStatusWidget, WidgetViewModel>()
+                .BeforeMap((src, dest) => dest.TypeWidget = TypeWidget.Truck)
+                .ReverseMap();
+            CreateMap<TrailerStatusWidget, WidgetViewModel>()
+                .BeforeMap((src, dest) => dest.TypeWidget = TypeWidget.Trailer)
+                .ReverseMap();
+            CreateMap<OrderStatusWidget, WidgetViewModel>()
+                .BeforeMap((src, dest) => dest.TypeWidget = TypeWidget.Order)
+                .ReverseMap();
 
             CreateMap<DriverReport, DriverReportViewModel>()
                 .ForMember(x => x.Id, opt => opt.MapFrom(d => d.Id))
@@ -60,7 +73,6 @@ namespace WebDispacher.ViewModels.Mappings
                 .ReverseMap();
             CreateMap<TruckViewModel, DaoModels.DAO.Models.Truck>()
                .ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id))
-               .ForMember(x => x.CompanyId, opt => opt.MapFrom(t => t.CompanyId))
                .ForMember(x => x.Name, opt => opt.MapFrom(t => t.NameTruck))
                .ForMember(x => x.Year, opt => opt.MapFrom(t => t.Year))
                .ForMember(x => x.Brand, opt => opt.MapFrom(t => t.Make))
@@ -76,7 +88,6 @@ namespace WebDispacher.ViewModels.Mappings
                .ReverseMap();
             CreateMap<TrailerViewModel, DaoModels.DAO.Models.Trailer>()
                 .ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id))
-                .ForMember(x => x.CompanyId, opt => opt.MapFrom(t => t.CompanyId))
                 .ForMember(x => x.Name, opt => opt.MapFrom(t => t.Name))
                 .ForMember(x => x.Year, opt => opt.MapFrom(t => t.Year))
                 .ForMember(x => x.Brand, opt => opt.MapFrom(t => t.Make))
@@ -86,10 +97,19 @@ namespace WebDispacher.ViewModels.Mappings
                 .ForMember(x => x.Owner, opt => opt.MapFrom(t => t.Owner))
                 .ForMember(x => x.Color, opt => opt.MapFrom(t => t.Color))
                 .ForMember(x => x.Plate, opt => opt.MapFrom(t => t.Plate))
+                .ForMember(x => x.TrailerTypeId, opt => opt.MapFrom(t => t.TrailerTypeId))
+                .ForPath(x => x.TrailerType.VehicleCategoryId, opt => opt.MapFrom(t => t.VehicleCategoryId))
                 .ForMember(x => x.PlateExpires, opt => opt.MapFrom(t => t.Exp))
                 .ForMember(x => x.AnnualIns, opt => opt.MapFrom(t => t.AnnualIns))
                 .ForMember(x => x.Type, opt => opt.MapFrom(t => t.Type))
                 .ReverseMap();
+
+            CreateMap<Resource, ResourceViewModel>()
+                .ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id))
+                .ForMember(x => x.Name, opt => opt.MapFrom(t => t.Title))
+                .ForMember(x => x.Description, opt => opt.MapFrom(t => t.Description))
+                .ForMember(x => x.PositionIndex, opt => opt.MapFrom(t => t.PositionIndex))
+                .ForMember(dest => dest.UrlPicture, opt => opt.MapFrom(src => ResourcesConstants.UrlToPicture + src.ImgName));
             /*CreateMap<DriverReportModel, DriverReport>()
                 .ForMember(x => x.Id, opt => opt.MapFrom(dr => dr.Id))
                 .ForMember(x => x.Comment, opt => opt.MapFrom(dr => dr.Description))

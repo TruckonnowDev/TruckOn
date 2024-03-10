@@ -1,0 +1,837 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization;
+@using WebDispacher.Constants;
+@using WebDispacher.ViewModels.Dashboard;
+@using WebDispacher.ViewModels.Widget.Enum;
+
+@model DashboardViewModelList
+
+@inject IViewLocalizer Localizer
+
+<link rel="stylesheet" href="~/css/Dashboard/styles.css">
+@{
+    ViewData["Title"] = "Dashboard";
+}
+<div class="admin">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="title">
+                    <h1>@Localizer["DashbordMainHeader"]</h1>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6 pl-0 pr-3 margin-block">
+                        <div class="content-block">
+                            <div class="block-header">
+                                <h3>@Localizer["WidgetsEquipmentHeader"]</h3>
+                            </div>
+                            <div id="widgets-block" class="widget-block">
+                                <div class="truck-block">
+                                    <div class="sub-block-header">
+                                        <h3>@Localizer["TruckWidgetsHeader"]</h3>
+                                    </div>
+                                    <div class="sub-block-body">
+                                        <div class="widgets">
+                                            <div class="group-widgets" id="truckWidgetBlock">
+                                                @await Html.PartialAsync("~/Views/PartView/Widgets/_TruckWidget.cshtml", Model.TruckWidgets)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="trailer-block">
+                                    <div class="sub-block-header">
+                                        <h3>@Localizer["TrailerWidgetsHeader"]</h3>
+                                    </div>
+                                    <div class="sub-block-body">
+                                        <div class="widgets">
+                                            <div class="group-widgets" id="trailerWidgetBlock">
+                                                @await Html.PartialAsync("~/Views/PartView/Widgets/_TrailerWidget.cshtml", Model.TrailerWidgets)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 pr-0 pl-3 margin-block">
+                        <div class="content-block">
+                            <div class="block-header">
+                                <h3>@Localizer["WidgetsDriverHeader"]</h3>
+                            </div>
+                            <div class="widget-block">
+                                <div class="driver-block">
+                                    <div class="sub-block-header">
+                                        <h3></h3>
+                                    </div>
+                                </div>
+                                <div class="driver-doc-expirate">
+                                    <div class="sub-block-header">
+                                        <h3>@Localizer["MedicalDocsDriverHeader"]</h3>
+                                    </div>
+                                    <div class="sub-block-body">
+                                        @foreach (var item in Model.DriversExpirationMedicalCard)
+                                        {
+                                            <div style="padding-left:0px;border-left: none; border-right:none;" class="doc-expires @((item.DateMedicalCardExpiration >= DateTime.Today) ? "warning" : "")">
+                                                <div>
+                                                    @if (item.DateMedicalCardExpiration >= DateTime.Today)
+                                                    {
+                                                        <span style="padding: 12px; font-size: 14px; border-radius: 8px;" class="badge bg-warning text-dark">EXPIRING</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span style="padding: 12px; font-size: 14px; border-radius: 8px;" class="badge bg-danger">EXPIRED</span>
+                                                    }
+                                                </div>
+                                                <div>
+                                                    <span class="driver-name">@item.LastName, @item.FirstName</span>
+                                                </div>
+                                                <div>
+                                                    <span class="driver-date">@item?.DateMedicalCardExpiration?.ToString(DateTimeFormats.DateOfBirth)</span>
+                                                    @if (item?.DateMedicalCardExpiration >= DateTime.Today)
+                                                    {
+                                                        <span class="count-days-to-expires">(@item?.DateMedicalCardExpiration?.Subtract(DateTime.Today).Days)</span>
+                                                    }
+                                                    <span class="dropdown">
+                                                        <i class="bi bi-three-dots-vertical"></i>
+                                                        <span class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                                            <a class="dropdown-item" asp-controller="Driver" asp-action="DriverInfo" asp-route-id="@item.Id" target="_blank">@Localizer["Show"]</a>
+                                                        </span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        }
+                                        @if(Model.DriversExpirationMedicalCard.Count == 0)
+                                        {
+                                            <div class="no-action">
+                                                <i>@Localizer["NoActionRequired"]</i>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="driver-doc-expirate">
+                                    <div class="sub-block-header">
+                                        <h3>@Localizer["DriverLicenseHeader"]</h3>
+                                    </div>
+                                    <div class="sub-block-body">
+                                        @foreach (var item in Model.DriversExpirationDriverLicense)
+                                        {
+                                            <div style="padding-left:0px;border-left: none; border-right:none;" class="doc-expires @((item.DateDriverLicenseExpiration >= DateTime.Today) ? "warning" : "")">
+                                                <div>
+                                                    @if (item.DateDriverLicenseExpiration >= DateTime.Today)
+                                                    {
+                                                        <span style="padding: 12px; font-size: 14px; border-radius: 8px;" class="badge bg-warning text-dark">EXPIRING</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span style="padding: 12px; font-size: 14px; border-radius: 8px;" class="badge bg-danger">EXPIRED</span>
+                                                    }
+                                                </div>
+                                                <div>
+                                                    <span class="driver-name">@item.LastName, @item.FirstName</span>
+                                                </div>
+                                                <div>
+                                                    <span class="driver-date">@item?.DateDriverLicenseExpiration?.ToString(DateTimeFormats.DateOfBirth)</span>
+                                                    @if (item?.DateDriverLicenseExpiration >= DateTime.Today)
+                                                    {
+                                                        <span class="count-days-to-expires">(@item?.DateDriverLicenseExpiration?.Subtract(DateTime.Today).Days)</span>
+                                                    }
+                                                    <span class="dropdown">
+                                                        <i class="bi bi-three-dots-vertical"></i>
+                                                        <span class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                                            <a class="dropdown-item" asp-controller="Driver" asp-action="DriverInfo" asp-route-id="@item.Id" target="_blank">@Localizer["Show"]</a>
+                                                        </span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        }
+                                        @if (Model.DriversExpirationDriverLicense.Count == 0)
+                                        {
+                                            <div class="no-action">
+                                                <i>@Localizer["NoActionRequired"]</i>
+                                            </div>
+                                        }
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 pl-0 pr-3 margin-block">
+                        <div class="content-block">
+                            <div class="block-header">
+                                <h3>@Localizer["TruckPlateExpirationAndInspectionHeader"]</h3>
+                            </div>
+                            <div class="truck-block">
+                                <div class="equipment-doc-expirate">
+                                    <div class="sub-block-header">
+                                        <h3>@Localizer["TruckLicenseHeader"]</h3>
+                                    </div>
+                                    <div class="sub-block-body">
+                                        @if (Model.TrucksExpirationPlate.Count != 0)
+                                        {
+                                            <div id="tabs" class="mt-0">
+                                                <div class="tabContent mt-0">
+                                                    <table class="truck-trailer-tab" style="width: 100%;margin-left: auto; margin-right: auto; margin-bottom: 0px; margin-top: 0px;">
+                                                        <thead>
+                                                            <tr>
+                                                                <th style="width: 40px;text-align:center">#</th>
+                                                                <th>@Localizer["UnitTableHeader"]</th>
+                                                                <th>@Localizer["MakeTableHeader"]</th>
+                                                                <th>@Localizer["ModelTableHeader"]</th>
+                                                                <th>@Localizer["ExpirationTableHeader"]</th>
+                                                                <th style="width: 40px"></th>
+                                                                <th style="width: 40px"></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @{
+                                                                var truckExpPlateCounter = 1;
+                                                            }
+                                                            @foreach (var item in Model.TrucksExpirationPlate)
+                                                            {
+                                                                <tr>
+                                                                    <td>
+                                                                        <div class="value-td">@(truckExpPlateCounter++)</div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="value-td">@item.Name</div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="value-td">@item.Brand</div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="value-td">@item.Model</div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="value-td">@item.PlateExpires?.ToString(DateTimeFormats.DateOfBirth)</div>
+                                                                    </td>
+                                                                    <td>
+                                                                        @if (item.PlateExpires >= DateTime.Today)
+                                                                        {
+                                                                            <div class="count-days-to-expires">(@item.PlateExpires?.Subtract(DateTime.Today).Days)</div>
+                                                                        }
+                                                                    </td>
+                                                                    <td>
+                                                                        <span class="dropdown">
+                                                                            <i class="bi bi-three-dots-vertical"></i>
+                                                                            <span class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                                                                <a class="dropdown-item" asp-controller="Equipment" asp-action="EditTruck" asp-route-truckId="@item.Id" target="_blank">@Localizer["Show"]</a>
+                                                                            </span>
+                                                                        </span>
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="no-action">
+                                                <i>@Localizer["NoActionRequired"]</i>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="equipment-doc-expirate">
+                                    <div class="sub-block-header">
+                                        <h3>
+                                            @Localizer["TruckLastInspectionHeader"]
+                                        </h3>
+                                    </div>
+                                    <div class="sub-block-body">
+                                        @if (Model.TrucksExpirationLastInspection.Count != 0)
+                                        {
+                                            <div id="tabs" class="mt-0">
+                                                <div class="tabContent mt-0">
+                                                    <table class="truck-trailer-tab" style="width: 100%;margin-left: auto; margin-right: auto; margin-bottom: 0px;margin-top:0px;">
+                                                        <thead>
+                                                            <tr>
+                                                                <th style="width: 40px;text-align:center">#</th>
+                                                                <th>@Localizer["UnitTableHeader"]</th>
+                                                                <th>@Localizer["MakeTableHeader"]</th>
+                                                                <th>@Localizer["ModelTableHeader"]</th>
+                                                                <th>@Localizer["ExpirationTableHeader"]</th>
+                                                                <th style="width: 40px"></th>
+                                                                <th style="width: 40px"></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @{
+                                                                var truckExpLastInspectionCounter = 1;
+                                                            }
+                                                            @foreach (var item in Model.TrucksExpirationLastInspection)
+                                                            {
+                                                                <tr>
+                                                                    <td>
+                                                                        <div class="value-td">@(truckExpLastInspectionCounter++)</div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="value-td">@item.Name</div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="value-td">@item.Brand</div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="value-td">@item.Model</div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="value-td">@item.AnnualIns?.ToString(DateTimeFormats.DateOfBirth)</div>
+                                                                    </td>
+                                                                    <td>
+                                                                        @if (item.AnnualIns >= DateTime.Today)
+                                                                        {
+                                                                            <div class="count-days-to-expires">(@item.AnnualIns?.Subtract(DateTime.Today).Days)</div>
+                                                                        }
+                                                                    </td>
+                                                                    <td>
+                                                                        <span class="dropdown">
+                                                                            <i class="bi bi-three-dots-vertical"></i>
+                                                                            <span class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                                                                <a class="dropdown-item" asp-controller="Equipment" asp-action="EditTruck" asp-route-truckId="@item.Id" target="_blank">@Localizer["Show"]</a>
+                                                                            </span>
+                                                                        </span>
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="no-action">
+                                                <i>@Localizer["NoActionRequired"]</i>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 pr-0 pl-3 margin-block">
+                        <div class="content-block">
+                            <div class="block-header">
+                                <h3>@Localizer["TrailerPlateExpirationAndInspectionHeader"]</h3>
+                            </div>
+                            <div class="trailer-block">
+                                <div class="equipment-doc-expirate">
+                                    <div class="sub-block-header">
+                                        <h3>@Localizer["TrailerLicenseHeader"]</h3>
+                                    </div>
+                                    <div class="sub-block-body">
+                                        @if (Model.TrailersExpirationPlate.Count != 0)
+                                        {
+                                            <div id="tabs" class="mt-0">
+                                                <div class="tabContent mt-0">
+                                                    <table class="truck-trailer-tab" style="width: 100%;margin-left: auto; margin-right: auto;margin-bottom: 0px;margin-top:0px;">
+                                                        <thead>
+                                                            <tr>
+                                                                <th style="width: 40px;text-align:center">#</th>
+                                                                <th>@Localizer["UnitTableHeader"]</th>
+                                                                <th>@Localizer["MakeTableHeader"]</th>
+                                                                <th>@Localizer["ModelTableHeader"]</th>
+                                                                <th>@Localizer["ExpirationTableHeader"]</th>
+                                                                <th style="width: 40px"></th>
+                                                                <th style="width: 40px"></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @{
+                                                                var trailerExpPlateCounter = 1;
+                                                            }
+                                                            @foreach (var item in Model.TrailersExpirationPlate)
+                                                            {
+                                                                <tr>
+                                                                    <td>
+                                                                        <div class="value-td">@(trailerExpPlateCounter++)</div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="value-td">@item.Name</div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="value-td">@item.Brand</div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="value-td">@item.Model</div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="value-td">@item.PlateExpires?.ToString(DateTimeFormats.DateOfBirth)</div>
+                                                                    </td>
+                                                                    <td>
+                                                                        @if (item.PlateExpires >= DateTime.Today)
+                                                                        {
+                                                                            <div class="count-days-to-expires">(@item.PlateExpires?.Subtract(DateTime.Today).Days)</div>
+                                                                        }
+                                                                    </td>
+                                                                    <td>
+                                                                        <span class="dropdown">
+                                                                            <i class="bi bi-three-dots-vertical"></i>
+                                                                            <span class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                                                                <a class="dropdown-item" asp-controller="Equipment" asp-action="EditTrailer" asp-route-trailerId="@item.Id" target="_blank">@Localizer["Show"]</a>
+                                                                            </span>
+                                                                        </span>
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="no-action">
+                                                <i>@Localizer["NoActionRequired"]</i>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="equipment-doc-expirate">
+                                    <div class="sub-block-header">
+                                        <h3>@Localizer["TrailerLastInspectionHeader"]</h3>
+                                    </div>
+                                    <div class="sub-block-body">
+                                        @if (Model.TrailersExpirationLastInspection.Count != 0)
+                                        {
+                                            <div id="tabs" class="mt-0">
+                                                <div class="tabContent mt-0">
+                                                    <table class="truck-trailer-tab" style="width: 100%;margin-left: auto; margin-right: auto; margin-bottom: 0px;margin-top:0px;">
+                                                        <thead>
+                                                            <tr>
+                                                                <th style="width: 40px;text-align:center">#</th>
+                                                                <th>@Localizer["UnitTableHeader"]</th>
+                                                                <th>@Localizer["MakeTableHeader"]</th>
+                                                                <th>@Localizer["ModelTableHeader"]</th>
+                                                                <th>@Localizer["ExpirationTableHeader"]</th>
+                                                                <th style="width: 40px"></th>
+                                                                <th style="width: 40px"></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @{
+                                                                var trailerExpLastInsCounter = 1;
+                                                            }
+                                                            @foreach (var item in Model.TrailersExpirationLastInspection)
+                                                            {
+                                                                <tr>
+                                                                    <td>
+                                                                        <div class="value-td">@(trailerExpLastInsCounter++)</div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="value-td">@item.Name</div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="value-td">@item.Brand</div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="value-td">@item.Model</div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="value-td">@item.AnnualIns?.ToString(DateTimeFormats.DateOfBirth)</div>
+                                                                    </td>
+                                                                    <td>
+                                                                        @if (item.AnnualIns >= DateTime.Today)
+                                                                        {
+                                                                            <div class="count-days-to-expires">(@item.AnnualIns?.Subtract(DateTime.Today).Days)</div>
+                                                                        }
+                                                                    </td>
+                                                                    <td>
+                                                                        <span class="dropdown">
+                                                                            <i class="bi bi-three-dots-vertical"></i>
+                                                                            <span class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                                                                <a class="dropdown-item" asp-controller="Equipment" asp-action="EditTrailer" asp-route-trailerId="@item.Id" target="_blank">@Localizer["Show"]</a>
+                                                                            </span>
+                                                                        </span>
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="no-action">
+                                                <i>@Localizer["NoActionRequired"]</i>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 p-0 margin-block">
+                        <div class="content-block">
+                            <div class="block-header">
+                                <h3>@Localizer["WidgetsOrderHeader"]</h3>
+                            </div>
+                            <div class="block-body">
+                                <div class="order-block">
+                                    <div class="sub-block-body">
+                                        <div class="widgets">
+                                            <div class="group-widgets" id="orderWidgetBlock">
+                                                @await Html.PartialAsync("~/Views/PartView/Widgets/_OrderWidget.cshtml", Model.OrderWidgets)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalCreateWidgetFormContainer"></div>
+    <div id="modalEditWidgetFormContainer"></div>
+</div>
+
+<script>
+    function ConfirmRemoveWidgetEntry(id, type) {
+        var body = {
+            id: id,
+        };
+        var url = '@Url.Action("RemoveTrailerWidget", "Equipment")';
+
+        if (type === '@TypeWidget.Truck') {
+            url = '@Url.Action("RemoveTruckWidget", "Equipment")';
+
+        } else if (type === '@TypeWidget.Order') {
+            url = '@Url.Action("RemoveOrderWidget", "Dashbord")';
+        }
+
+        $.ajax({
+            type: "post",
+            async: true,
+            data: body,
+            url: url,
+            dataType: 'json',
+            success: function (result) {
+                if (result) {
+                    switch (type) {
+                        case '@TypeWidget.Truck':
+                            updateTruckWidgets()
+                            break;
+                        case '@TypeWidget.Trailer':
+                            updateTrailerWidgets();
+                            break;
+                        case '@TypeWidget.Order':
+                            updateOrderWidgets();
+                            break;
+                    }
+                    SuccessAlert('@Localizer["MessageSuccessRemoveWidget"]');
+                } else {
+                    WarningAlert('@Localizer["MessageErrorRemoveWidget"]');
+                }
+                $('#editWidget').modal('hide');
+            },
+            error: function (result) {
+                ErrorAlert('@Localizer["MessageErrorRequestRemoveWidget"]');
+                $('#editWidget').modal('hide');
+            },
+        });
+    }
+
+    function updateTruckWidgets() {
+        $.ajax({
+            url: '@Url.Action("GetCurrentTruckWidgetsInCompany", "Equipment")',
+            type: 'GET',
+            success: function (result) {
+                $("#truckWidgetBlock").html(result);
+            },
+            error: function () {
+            }
+        });
+    }
+
+    function updateTrailerWidgets() {
+        $.ajax({
+            url: '@Url.Action("GetCurrentTrailerWidgetsInCompany", "Equipment")',
+            type: 'GET',
+            success: function (result) {
+                $("#trailerWidgetBlock").html(result);
+            },
+            error: function () {
+            }
+        });
+    }
+
+    function updateOrderWidgets() {
+        $.ajax({
+            url: '@Url.Action("GetCurrentOrderWidgetsInCompany", "Dashbord")',
+            type: 'GET',
+            success: function (result) {
+                $("#orderWidgetBlock").html(result);
+            },
+            error: function () {
+            }
+        });
+    }
+
+    function editTruckWidget(id) {
+        var modalContainer = $('#modalEditWidgetFormContainer');
+
+        $('#modalEditWidgetFormContainer').off('submit', '#editWidget form');
+        $('#editWidget').off('hidden.bs.modal');
+
+        modalContainer.load('@Url.Action("GetWidgetForm", "Equipment")?id=' + id, function () {
+            $("#editWidget").modal('show');
+
+            $('#modalEditWidgetFormContainer').on('submit', '#editWidget form', function (event) {
+                event.preventDefault();
+                saveTruckWidgetAndRefreshItems();
+            });
+
+            $('#addWidget').on('hidden.bs.modal', function () {
+
+            });
+        });
+    }
+    function editTrailerWidget(id) {
+        var modalContainer = $('#modalEditWidgetFormContainer');
+
+        $('#modalEditWidgetFormContainer').off('submit', '#editWidget form');
+        $('#editWidget').off('hidden.bs.modal');
+
+        modalContainer.load('@Url.Action("GetTrailerWidgetForm", "Equipment")?id=' + id, function () {
+            $("#editWidget").modal('show');
+
+            $('#modalEditWidgetFormContainer').on('submit', '#editWidget form', function (event) {
+                event.preventDefault();
+                saveTrailerWidgetAndRefreshItems();
+            });
+
+            $('#addWidget').on('hidden.bs.modal', function () {
+
+            });
+        });
+    }
+    function editOrderWidget(id) {
+        var modalContainer = $('#modalEditWidgetFormContainer');
+
+        $('#modalEditWidgetFormContainer').off('submit', '#editWidget form');
+        $('#editWidget').off('hidden.bs.modal');
+
+        modalContainer.load('@Url.Action("GetWidgetForm", "Dashbord")?id=' + id, function () {
+            $("#editWidget").modal('show');
+
+            $('#modalEditWidgetFormContainer').on('submit', '#editWidget form', function (event) {
+                event.preventDefault();
+                saveOrderWidgetAndRefreshItems();
+            });
+
+            $('#addWidget').on('hidden.bs.modal', function () {
+
+            });
+        });
+    }
+
+    function saveOrderWidgetAndRefreshItems() {
+        var form = $('#editWidget form');
+        $.ajax({
+            url: '/Order/UpdateWidget',
+            type: 'POST',
+            data: form.serialize(),
+            success: function (data) {
+                var newBody = $('.modal-body', data);
+
+                var isValid = newBody.find('[name="IsValid"]').val() == 'True';
+
+                if (isValid) {
+                    $('#editWidget').modal('hide');
+                    $('#statusName').val('');
+                    SuccessAlert("@Localizer["OrderWidgetSuccessUpdated"]");
+                    updateOrderWidgets();
+                } else {
+                    $('#modalEditWidgetFormContainer').find('.modal-body').replaceWith(newBody);
+                    InitializeEditTruck();
+                }
+            },
+            error: function () {
+                WarningAlert("@Localizer["OrderWidgetNotUpdated"]")
+            }
+        });
+    }
+
+    function saveTrailerWidgetAndRefreshItems() {
+        var form = $('#editWidget form');
+        $.ajax({
+            url: '/Equipment/Trailer/UpdateWidget',
+            type: 'POST',
+            data: form.serialize(),
+            success: function (data) {
+                var newBody = $('.modal-body', data);
+
+                var isValid = newBody.find('[name="IsValid"]').val() == 'True';
+
+                if (isValid) {
+                    $('#editWidget').modal('hide');
+                    $('#statusName').val('');
+                    SuccessAlert("@Localizer["TrailerWidgetSuccessUpdated"]");
+                    updateTrailerWidgets();
+                } else {
+                    $('#modalEditWidgetFormContainer').find('.modal-body').replaceWith(newBody);
+                    InitializeEditTruck();
+                }
+            },
+            error: function () {
+                WarningAlert("@Localizer["TrailerWidgetNotUpdated"]")
+            }
+        });
+    }
+
+    function saveTruckWidgetAndRefreshItems() {
+        var form = $('#editWidget form');
+        $.ajax({
+            url: '/Equipment/Truck/UpdateWidget',
+            type: 'POST',
+            data: form.serialize(),
+            success: function (data) {
+                var newBody = $('.modal-body', data);
+
+                var isValid = newBody.find('[name="IsValid"]').val() == 'True';
+
+                if (isValid) {
+                    $('#editWidget').modal('hide');
+                    $('#statusName').val('');
+                    SuccessAlert("@Localizer["TruckWidgetSuccessUpdated"]");
+                    updateTruckWidgets();
+                } else {
+                    $('#modalEditWidgetFormContainer').find('.modal-body').replaceWith(newBody);
+                    InitializeEditTruck();
+                }
+            },
+            error: function () {
+                WarningAlert("@Localizer["TruckWidgetNotUpdated"]")
+            }
+        });
+    }
+</script>
+
+<style>
+    .admin .title {
+        margin-top: 90px;
+    }
+
+    .dropdown-menu {
+        display: none;
+        position: absolute;
+        background-color: #fff;
+        min-width: 120px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        z-index: 1;
+        font-size: 12px;
+        top: -54px;
+        bottom: 20px;
+        left: -76px;
+    }
+
+    .dropdown-item {
+        display: block;
+        width: 100%;
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+    }
+    /* Показываем выпадающий список при наведении на иконку */
+    .dropdown:hover .dropdown-menu {
+        display: block;
+    }
+
+
+    .group-widgets .widget {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0;
+    }
+
+        .group-widgets .widget .widget-status-name {
+            color: #4CAF50;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+    .group-widgets .widget-item {
+        -webkit-appearance: none;
+        appearance: none;
+        height: 50px;
+        width: 50px;
+        background: radial-gradient(circle, #3e9d42 40%, #4CAF50 60%);
+        border: 1px solid green;
+        position: relative;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-radius: 50%;
+        cursor: pointer;
+        outline: none;
+        margin: 12px 12px;
+        box-shadow: inset 5px 5px 10px rgb(6 6 6 / 30%);
+        margin-left: 12px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        -o-user-select: none;
+        user-select: none;
+    }
+
+        .group-widgets .widget-item .big-circle {
+            position: absolute;
+            content: "";
+            height: 70px;
+            width: 70px;
+            background: linear-gradient( 215deg, #7e7e7e, #e9e9e9, #7e7e7e );
+            bottom: -11px;
+            left: -11px;
+            z-index: -2;
+            border-radius: 50%;
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.2);
+        }
+
+        .group-widgets .widget-item .middle-circle {
+            position: absolute;
+            content: "";
+            height: 58px;
+            width: 58px;
+            background: linear-gradient( 80deg, #ededed, #f7f7f7);
+            bottom: -5px;
+            border: 1px solid #bdbdbd;
+            left: -5px;
+            z-index: -1;
+            border-radius: 50%;
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.2);
+        }
+
+        .group-widgets .widget-item .fas {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-shadow: 0px 1px 0 #bbbbbb, 0 2px 3px #e7e7e7;
+            font-family: Helvetica, Arial, Sans-Serif;
+            text-decoration: none;
+            font-weight: bold;
+            color: #ffffff;
+            font-size: 42px;
+        }
+
+        .no-action i {
+            font-weight: 400;
+            color: gray;
+        }
+</style>

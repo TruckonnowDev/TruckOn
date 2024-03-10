@@ -1,0 +1,53 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = @Localizer["SorryNoContentHeader"];
+}
+<div class="block">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+            <div class="main">
+                <div class="main-header">
+                        <h1>@Localizer["SorryNoContentHeader"]</h1>
+                    </div>
+                <div class="main-body">
+                    <p>
+                            @Localizer["SorryNoContentBody"]
+                    </p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    header {
+        position: unset;
+    }
+
+    .block .main {
+        min-height: 100%;
+        padding: 14vh 0;
+    }
+
+    .block .main {
+        text-align: center;
+    }
+
+
+    .block .main .main-header h1 {
+        font-size: 36px;
+        font-weight: 700;
+        color: #2c5deb;
+        display: inline-block;
+    }
+
+    .block .main .main-body p {
+        font-size: 24px;
+        font-weight: 500;
+    }
+
+</style>

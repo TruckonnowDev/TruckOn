@@ -13,11 +13,13 @@ using WebDispacher.ViewModels.Contact;
 using WebDispacher.ViewModels.Dispatcher;
 using WebDispacher.ViewModels.Payment;
 using WebDispacher.ViewModels.RA.Carrier.Registration;
+using WebDispacher.ViewModels.Resources;
 
 namespace WebDispacher.Business.Interfaces
 {
     public interface ICompanyService
     {
+        Task<int> GetCountCompaniesByStatus(CompanyStatus status);
         Task<UserMailQuestion> GetUserQuestionWithAnswers(int id);
         Task<List<UserMailQuestion>> GetUserQuestions();
         Task<List<UserMailQuestion>> GetUserQuestionsWithoutAnswers(int page);
@@ -86,5 +88,9 @@ namespace WebDispacher.Business.Interfaces
         CustomerST GetCustomer_STByIdCompany(string companyId);
         Task SaveDocCompany(IFormFile uploadedFile, string nameDoc, int companyId, string localDate);
         Task SetViewInUserMailQuestion(ViewUserMailQuestion model);
+        Task<ResourceViewModel> GetResourceById(int id);
+        Task<List<ResourceViewModel>> GetAllResources();
+        Task<ResourceViewModel> EditResource(ResourceViewModel model, string localDate);
+        Task UpdatePositionResources(List<ResourceViewModel> updates);
     }
 }

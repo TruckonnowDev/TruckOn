@@ -30,16 +30,19 @@
                                 <input style="display:none;" name="Experience" id="experienceInp" /><br />
                                 <label class="big-label" for="">
                                     @Localizer["FirstName"]
+                                    <span><abbr data-title="@Localizer["FirstNameLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                     <input class="height-input" asp-for="FirstName" type="text" id="firstName" value="@Model.FirstName" maxlength="25" required>
                                     @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
                                 </label>
                                 <label class="big-label" for="">
                                     @Localizer["LastName"]
+                                    <span><abbr data-title="@Localizer["LastNameLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                     <input class="height-input" asp-for="LastName" id="lastName" value="@Model.LastName" type="text" maxlength="25" required>
                                     @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
                                 </label>
                                 <label class="big-label" id="dateOfBirthLabel" for="">
                                     @Localizer["DateOfBirth"]
+                                    <span><abbr data-title="@Localizer["DateOfBirthLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                     @{
                                         var date = Model.DateOfBirth == DateTime.MinValue ? DateTime.Today : Model.DateOfBirth;
                                     }
@@ -48,17 +51,20 @@
                                 </label>
                                 <label class="big-label" for="">
                                     @Localizer["DriverLicenseNumber"]
+                                    <span><abbr data-title="@Localizer["DriverLicenseNumberLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                     <input class="height-input" asp-for="DriverLicenseNumber" value="@Model.DriverLicenseNumber" id="driverNumber" maxlength="30" type="text" required>
                                     <span class="info-gray-message">@Localizer["DriverLicenseNumberInfoLabel"]</span>
                                     @Html.ValidationMessageFor(model => model.DriverLicenseNumber, "", new { @class = "text-danger" })
                                 </label>
                                 <label class="big-label" for="">
                                     @Localizer["NumberOfAccidents"]
+                                    <span><abbr data-title="@Localizer["NumberOfAccidentsLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                     <input class="height-input" name="NumberOfAccidents" value="@Model.NumberOfAccidents" type="text" required>
                                     @Html.ValidationMessageFor(model => model.NumberOfAccidents, "", new { @class = "text-danger" })
                                 </label>
                                 <label class="big-label" for="">
                                     @Localizer["DotViolations"]
+                                    <span><abbr data-title="@Localizer["DotViolationsLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                     <input class="height-input" name="DotViolations" type="text" value="@Model.DotViolations" required>
                                     @Html.ValidationMessageFor(model => model.DotViolations, "", new { @class = "text-danger" })
                                 </label>

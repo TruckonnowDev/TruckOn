@@ -176,4 +176,13 @@
 	<data name="PickupEstimated" xml:space="preserve">
 		<value>Recogida Estimada</value>
 	</data>
+	<data name="MessageErrorRequestRemoveOrderWidget" xml:space="preserve">
+		<value>Se produjo un error durante la operación, inténtelo de nuevo más tarde.</value>
+	</data>
+	<data name="MessageErrorRemoveOrderWidget" xml:space="preserve">
+		<value>El widget de pedido no se pudo eliminar</value>
+	</data>
+	<data name="MessageSuccessRemoveOrderWidget" xml:space="preserve">
+		<value>Widget de pedido eliminado correctamente</value>
+	</data>
 </root>

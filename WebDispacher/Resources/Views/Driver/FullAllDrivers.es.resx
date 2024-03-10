@@ -242,4 +242,37 @@
 	<data name="LastUpdate" xml:space="preserve">
 		<value>Última Actualización</value>
 	</data>
+	<data name="FirstName" xml:space="preserve">
+		<value>Nombre</value>
+	</data>
+	<data name="LastName" xml:space="preserve">
+		<value>Apellido</value>
+	</data>
+	<data name="Search" xml:space="preserve">
+		<value>Buscar</value>
+	</data>
+	<data name="FirstNameLabel" xml:space="preserve">
+		<value>Nombre</value>
+	</data>
+	<data name="LastNameLabel" xml:space="preserve">
+		<value>Apellido</value>
+	</data>
+	<data name="ViewDriver" xml:space="preserve">
+		<value>Vista</value>
+	</data>
+	<data name="AddEmailAll" xml:space="preserve">
+		<value>Envíe un Correo Electrónico a Todos</value>
+	</data>
+	<data name="AllEmailMessage" xml:space="preserve">
+		<value>Todos los Correos Electrónicos</value>
+	</data>
+	<data name="AddEmail" xml:space="preserve">
+		<value>Añadir Correo Electrónico</value>
+	</data>
+	<data name="EmailNotSend" xml:space="preserve">
+		<value>El correo electrónico no se pudo enviar</value>
+	</data>
+	<data name="EmailSuccessSend" xml:space="preserve">
+		<value>Envío de correo electrónico con éxito</value>
+	</data>
 </root>

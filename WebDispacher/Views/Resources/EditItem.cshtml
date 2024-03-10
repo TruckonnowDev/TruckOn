@@ -1,0 +1,70 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using WebDispacher.Constants;
+
+@model WebDispacher.ViewModels.Resources.ResourceViewModel;
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Edit Resource Item";
+}
+
+<body>
+    <div class="admin">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="tabContent">
+                        <div class="header-block">
+                            <div class="picture">
+                                <img src="@Model.UrlPicture" />
+                            </div>
+                            <h2>@Localizer["InfoAboutResourceItem"]</h2>
+
+                        </div>
+                        <form action="" method="post">
+                            <div class="validation" asp-validation-summary="ModelOnly"></div>
+                            <label for="">
+                                <label class="mb-0" asp-for="Name"></label>
+                                <input type="text" id="name" name="Name" value="@Model.Name" required>
+                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                            </label>
+                            <label for="">
+                                <label class="mb-0" asp-for="Description"></label>
+                                <input type="text" name="Description" id="description" value="@Model.Description">
+                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                            </label>
+                            <input name="Id" value="@Model.Id" style="display:none" />
+                            <input type="hidden" value="" name="localDate" />
+                            <input class="btn1" type="submit" value="@Localizer["Save"]" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script src="~/js/input-replacer.js"></script>
+<script>
+    setReplacer(document.querySelector('#name'), @ExpressionConstants.OnlyLetters);
+
+    const dateInput = document.querySelector("[name='localDate']");
+
+    $("input[type=submit]").on('click', function (e) {
+        dateInput.value = GetDateTimeInFormat(new Date());
+    });
+</script>
+
+
+<style>
+    .header-block .picture img {
+        max-width: 60px;
+    }
+
+    .header-block {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+    }
+</style>

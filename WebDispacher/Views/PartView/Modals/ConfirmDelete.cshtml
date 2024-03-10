@@ -8,7 +8,6 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header modal-title">
-
                     @switch (ViewData["ConfirmMessage"])
                     {
                         case "CompanyDeactivate":
@@ -28,21 +27,27 @@
                         case "CloseMarketPost":
                             <h1 class="text-center" style="width:100%" id="DeleteLabel">@Localizer["ConfirmMessageCloseMarketPost"]</h1>
                             break;
+                        case "DeleteTruckGroup":
+                            <h1 class="text-center" style="width:100%" id="DeleteLabel">@Localizer["ConfirmMessagDeleteTruckGroup"]</h1>
+                            break;
+                            case "DeleteTrailerGroup":
+                            <h1 class="text-center" style="width:100%" id="DeleteLabel">@Localizer["ConfirmMessagDeleteTrailerGroup"]</h1>
+                            break;
 
                         default:
                             <h1 class="text-center" style="width:100%" id="DeleteLabel">@Localizer["ConfirmMessage"]</h1>
                             break;
                     }
                         
-                    <button type="button" style="font-size:22px;" class="close text-right" data-dismiss="modal" aria-label="Close">
+                    <button type="button" style="font-size:18px;" class="close text-right" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&#9587;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    <div class="form-group full-label">
+                <div class="modal-body pt-3" style="display: flex;">
+                    <div class="form-group full-label mb-0" style="width:50%;">
                         <button class="button-custom submit-add" id="remove-entry-button">@Localizer["ButtonAgreee"]</button>
                     </div>
-                    <div class="form-group full-label">
+                    <div class="form-group full-label mb-0" style="width:50%;">
                         <button data-dismiss="modal" class="button-custom-2">@Localizer["ButtonNo"]</button>
                     </div>
                 </div>
@@ -64,33 +69,33 @@
 </script>
 
 <style>
-    .full-label {
+    #@ViewData["ModalId"] .full-label {
         padding: 3px 10px 4px;
     }
 
-    .modal-body {
+    #@ViewData["ModalId"] .modal-body {
         padding: 1.5rem;
     }
 
-    .modal-header {
+    #@ViewData["ModalId"] .modal-header {
         padding: 1.25rem;
     }
 
-    .button-custom {
+    #@ViewData["ModalId"]  .button-custom {
         background: #f44336;
         color: #f9f9f9;
         width: 100%;
         font-style: normal;
         font-weight: 700;
-        font-size: 22px;
+        font-size: 16px;
         line-height: 1.75;
         border-radius: 10px;
-        padding: 12px 20px;
+        padding: 6px 12px;
         display: inline-block;
         border: 1px solid #f44336
     }
 
-    .button-custom:hover {
+    #@ViewData["ModalId"] .button-custom:hover {
         background: #f9f9f9;
         border: 1px solid #f44336;
         color: #f44336;
@@ -99,21 +104,21 @@
         transition: .3s all
     }
 
-    .button-custom-2 {
+    #@ViewData["ModalId"] .button-custom-2 {
         background: #f9f9f9;
         color: #686F7C;
         width: 100%;
         font-style: normal;
         font-weight: 700;
-        font-size: 22px;
+        font-size: 16px;
         line-height: 1.75;
         border-radius: 10px;
-        padding: 12px 20px;
+        padding: 6px 12px;
         display: inline-block;
         border: 1px solid #686F7C
     }
 
-    .button-custom-2:hover {
+    #@ViewData["ModalId"] .button-custom-2:hover {
             background: #686F7C;
             border: 1px solid #686F7C;
             color: #f9f9f9;
@@ -122,7 +127,7 @@
         transition: .3s all
     }
 
-    .form-group label {
+    #@ViewData["ModalId"] .form-group label {
         width: 100%;
         font-family: Montserrat;
         font-style: normal;
@@ -136,14 +141,14 @@
         margin-bottom: 15px;
     }
 
-    .modal-dialog {
+    #@ViewData["ModalId"] .modal-dialog {
         position: absolute;
         left: 0;
         right: 0;
         margin-left: auto;
         margin-right: auto;
-        top: 200px;
-        width: 520px !important;
+        top: 130px;
+        width: 450px !important;
         text-align: left;
         background-color: #fff;
         -moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
@@ -155,12 +160,12 @@
         border-radius: 30px;
     }
 
-    .modal-content {
+    #@ViewData["ModalId"] .modal-content {
         border: 0px;
         border-radius: 30px;
     }
 
-    .ng-modal-wrapper {
+    #@ViewData["ModalId"] .ng-modal-wrapper {
         display: inline-block;
         vertical-align: middle;
         padding: 50px 0;
@@ -168,7 +173,7 @@
         position: relative;
     }
 
-    .modal-dialog label {
+    #@ViewData["ModalId"] .modal-dialog label {
         position: relative;
         display: inline-block;
         vertical-align: middle;
@@ -192,11 +197,11 @@
         border-radius: 30px;
     }
 
-    .modal-buttons .right-buttons {
+    #@ViewData["ModalId"] .modal-buttons .right-buttons {
         float: right;
     }
 
-    .modal-inp-text {
+    #@ViewData["ModalId"] .modal-inp-text {
         width: 100%;
         height: 77px;
         background: #fff;
@@ -212,11 +217,11 @@
         margin-top: 6px
     }
 
-    .modal-title h1 {
-        font-size: 26px;
+    #@ViewData["ModalId"] .modal-title h1 {
+        font-size: 18px;
     }
 
-    .modal-header {
+    #@ViewData["ModalId"] .modal-header {
         justify-content: center;
         padding: 2rem;
         border-bottom: 0;

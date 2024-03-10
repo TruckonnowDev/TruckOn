@@ -18,7 +18,7 @@ namespace DaoModels.DAO
         public DbSet<Company> Companies { get; set; }
         public DbSet<CompanyUser> CompanyUsers { get; set; }
         public DbSet<Contact> Contacts { get; set; }
-        public DbSet<CurrentStatus> CurrentStatuses { get; set; }
+        public DbSet<OrderStatus> OrderStatuses { get; set; }
         public DbSet<CustomerST> CustomerST { get; set; }
         public DbSet<Damage> Damages { get; set; }
         public DbSet<DamageForUser> DamageForUsers { get; set; }
@@ -51,8 +51,19 @@ namespace DaoModels.DAO
         public DbSet<RecoveryType> RecoveriesTypes { get; set; }
         public DbSet<SubscribeST> SubscribeST { get; set; }
         public DbSet<Trailer> Trailers { get; set; }
+        public DbSet<TrailerGroup> TrailerGroups { get; set; }
+        public DbSet<TrailerStatus> TrailerStatuses { get; set; }
+        public DbSet<OrderStatusWidget> OrderStatusWidgets { get; set; }
+        public DbSet<TruckStatusWidget> TruckStatusWidgets { get; set; }
+        public DbSet<TrailerStatusWidget> TrailerStatusWidgets { get; set; }
         public DbSet<Truck> Trucks { get; set; }
+        public DbSet<TruckGroup> TruckGroups { get; set; }
         public DbSet<TruckType> TruckTypes { get; set; }
+        public DbSet<TrailerType> TrailerTypes { get; set; }
+        public DbSet<TruckStatus> TruckStatuses { get; set; }
+        public DbSet<TrailerStatusTheme> TrailerStatusThemes { get; set; }
+        public DbSet<TruckStatusTheme> TruckStatusThemes { get; set; }
+        public DbSet<Color> Colors { get; set; }
         public DbSet<VehicleCategory> VehiclesCategories { get; set; }
         public DbSet<UserAnswer> UsersAnswers { get; set; }
         public DbSet<UserMailQuestion> UsersMailsQuestions { get; set; }
@@ -71,7 +82,10 @@ namespace DaoModels.DAO
         public DbSet<ProfileSettings> ProfileSettings { get; set; }
         public DbSet<TransportVehicle> TransportVehicles { get; set; }
         public DbSet<PhoneNumber> PhonesNumbers { get; set; }
+        public DbSet<Resource> Resources { get; set; }
         public DbSet<MarketPost> MarketPosts { get; set; }
+        public DbSet<DriverMail> DriverMails { get; set; }
+        public DbSet<PostApprovalHistory> PostApprovalHistories { get; set; }
         public DbSet<ViewMarketPost> ViewsMarketsPosts { get; set; }
         public DbSet<SellItemMarketPost> SellItemsMarketsPosts { get; set; }
         public DbSet<BuyItemMarketPost> BuyItemsMarketsPosts { get; set; }

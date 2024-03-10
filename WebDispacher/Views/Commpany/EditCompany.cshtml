@@ -19,12 +19,20 @@
                         <form action="" method="post" id="company-form">
                             <div class="validation" asp-validation-summary="ModelOnly"></div>
                             <label class="big-label" for="">
-                                <label class="mb-0" asp-for="Name"></label>
+                                
+                                <label class="mb-0" asp-for="Name">
+                                    @Html.DisplayNameFor(model => model.Name)
+                                    <span><abbr data-title="@Localizer["NameLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                </label>
+                                
                                 <input class="height-input" type="text" id="name" name="name" value="@Model.Name" required>
                                 @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
                             </label>
                             <label class="big-label" for="">
-                                <label class="mb-0" asp-for="PhoneNumber.Number"></label>
+                                <label class="mb-0" asp-for="PhoneNumber.Number">
+                                    @Html.DisplayNameFor(model => model.PhoneNumber.Number)
+                                    <span><abbr data-title="@Localizer["PhoneNumberLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                </label>
                                 <input class="height-input" type="text" name="phone" placeholder="(XXX)-XXX-XXXX" id="phoneC" pattern="@PatternConstants.PhoneNumberWithoutCountryCode" value="@Model.PhoneNumber.Number" required>
                                 <input type="hidden" id="country-code-dialcode" asp-for="PhoneNumber.DialCode" value="@Model.PhoneNumber.DialCode">
                                 <input type="hidden" id="country-code-iso2" asp-for="PhoneNumber.Iso2" value="@Model.PhoneNumber.Iso2">
@@ -32,17 +40,24 @@
                                 @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
                             </label>
                             <label class="big-label" for="">
-                                <label class="mb-0" asp-for="Email"></label>
+                                <label class="mb-0" asp-for="Email">
+                                    @Html.DisplayNameFor(model => model.Email)
+                                    <span><abbr data-title="@Localizer["EmailLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                </label>
                                 <input class="height-input" type="text" name="email" pattern="@PatternConstants.Email" value="@Model.Email" required>
                                 @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
                             </label>
                             <label class="big-label" for="">
-                                <label class="mb-0" asp-for="Password"></label>
+                                <label class="mb-0" asp-for="Password">
+                                    @Html.DisplayNameFor(model => model.Password)
+                                    <span><abbr data-title="@Localizer["PasswordLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                </label>
                                 <input class="height-input" type="text" name="password" value="@Model.Password">
                                 @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
                             </label>
                             <label class="big-label" for="">
-                                @Localizer["TypeCompany"] <br />
+                                @Localizer["TypeCompany"]
+                                <span><abbr data-title="@Localizer["TypeCompanyLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span> <br />
                                 <select class="height-input input-select" name="Type">
                                     <option selected value="Carrier">@Localizer["Carrier"]</option>
                                     <option value="Shipper">@Localizer["Shipper"]</option>

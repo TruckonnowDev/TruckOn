@@ -118,13 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="EditTrailer" xml:space="preserve">
-    <value>Edit trailer</value>
+    <value>Edit Trailer</value>
   </data>
   <data name="NameTrailer" xml:space="preserve">
-    <value>Trailer Name</value>
+    <value>Unit</value>
   </data>
   <data name="TypeTrailer" xml:space="preserve">
-    <value>Trailer Type</value>
+    <value>Unit Type</value>
   </data>
   <data name="Year" xml:space="preserve">
     <value>Year</value>
@@ -154,9 +154,78 @@
     <value>Plate Exp</value>
   </data>
   <data name="AnnualIns" xml:space="preserve">
-    <value>Annual Insp</value>
+    <value>Annual Inspection Expiration Date</value>
   </data>
   <data name="SaveInfo" xml:space="preserve">
     <value>Save Info</value>
+  </data>
+  <data name="ChooseGroupType" xml:space="preserve">
+    <value>Choose a trailer group</value>
+  </data>
+  <data name="CreateNewGroupType" xml:space="preserve">
+    <value>Add a New Group</value>
+  </data>
+  <data name="TrailerGroupSuccessAdded" xml:space="preserve">
+    <value>A New Trailer Group was Added</value>
+  </data>
+  <data name="TrailerGroupNotAdded" xml:space="preserve">
+    <value>Failed to add a new trailer group</value>
+  </data>
+  <data name="GroupTrailer" xml:space="preserve">
+    <value>Trailer Group</value>
+  </data>
+  <data name="ChooseTrailerStatus" xml:space="preserve">
+    <value>Select the status of the trailer</value>
+  </data>
+  <data name="CreateNewTrailerStatus" xml:space="preserve">
+    <value>Add a New Status</value>
+  </data>
+  <data name="TrailerStatus" xml:space="preserve">
+    <value>Trailer Status</value>
+  </data>
+  <data name="TrailerStatusNotAdded" xml:space="preserve">
+    <value>Failed to add a new status</value>
+  </data>
+  <data name="TrailerStatusSuccessAdded" xml:space="preserve">
+    <value>A New Trailer Status was Added</value>
+  </data>
+  <data name="ChooseVehicleCategory" xml:space="preserve">
+    <value>Choose a trailer class</value>
+  </data>
+  <data name="ChooseTrailerType" xml:space="preserve">
+    <value>Choose a trailer type</value>
+  </data>
+  <data name="VehicleCategory" xml:space="preserve">
+    <value>Unit Class</value>
+  </data>
+  <data name="BackToEquipment" xml:space="preserve">
+    <value>Back to Equipment</value>
+  </data>
+  <data name="TrailerLocation" xml:space="preserve">
+    <value>Add Location of the Unit</value>
+  </data>
+  <data name="MannuallyLocationType" xml:space="preserve">
+    <value>Add Location Manually</value>
+  </data>
+  <data name="GPSLocationType" xml:space="preserve">
+    <value>Add GPS Location</value>
+  </data>
+  <data name="LaterLocationType" xml:space="preserve">
+    <value>Add Location Later</value>
+  </data>
+  <data name="TrailerLocationType" xml:space="preserve">
+    <value>Location Type</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="TrailerDocumentSuccessUpdated" xml:space="preserve">
+    <value>Document successfully updated</value>
+  </data>
+  <data name="TrailerDocumentNotUpdated" xml:space="preserve">
+    <value>Document could not updated</value>
+  </data>
+  <data name="UploadDocument" xml:space="preserve">
+    <value>Upload Document</value>
   </data>
 </root>

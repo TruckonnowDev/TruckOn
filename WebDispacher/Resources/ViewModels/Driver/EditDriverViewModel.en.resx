@@ -33,4 +33,7 @@
     <data name="DriverLicenseNumberRequired" xml:space="preserve">
         <value>Drivers License Number field is required</value>
     </data>
+    <data name="DateOfBirthRequired" xml:space="preserve">
+        <value>The Date of Birth  field is required</value>
+    </data>
 </root>

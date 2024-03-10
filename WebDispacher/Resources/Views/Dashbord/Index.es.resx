@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="MessageErrorRequestRemoveWidget" xml:space="preserve">
+        <value>Se produjo un error durante la operación, inténtelo de nuevo más tarde.</value>
+    </data>
+    <data name="DashbordMainHeader" xml:space="preserve">
+        <value>Panel de Control</value>
+    </data>
+    <data name="DriverLicenseHeader" xml:space="preserve">
+        <value>Licencia de Conducir</value>
+    </data>
+    <data name="MedicalDocsDriverHeader" xml:space="preserve">
+        <value>Tarjeta Médica</value>
+    </data>
+    <data name="MessageErrorRemoveWidget" xml:space="preserve">
+        <value>El widget no se pudo eliminar</value>
+    </data>
+    <data name="MessageSuccessRemoveWidget" xml:space="preserve">
+        <value>Widget eliminado correctamente</value>
+    </data>
+    <data name="OrderWidgetNotUpdated" xml:space="preserve">
+        <value>El widget de pedido no se pudo actualizar</value>
+    </data>
+    <data name="OrderWidgetSuccessUpdated" xml:space="preserve">
+        <value>Widget de pedido actualizado correctamente</value>
+    </data>
+    <data name="PlateExpirationAndInspectionHeader" xml:space="preserve">
+        <value>Caducidad de matrículas de camiones y Remolques e inspección de caducidad</value>
+    </data>
+    <data name="Show" xml:space="preserve">
+        <value>Vista</value>
+    </data>
+    <data name="TrailerLastInspectionHeader" xml:space="preserve">
+        <value>Últimas Inspecciones de Remolques</value>
+    </data>
+    <data name="TrailerLicenseHeader" xml:space="preserve">
+        <value>La Placa del Remolque Expira</value>
+    </data>
+    <data name="TruckLicenseHeader" xml:space="preserve">
+        <value>Placa de Camión Expira</value>
+    </data>
+    <data name="TrailerWidgetNotUpdated" xml:space="preserve">
+        <value>El widget de tráiler no se pudo actualizar</value>
+    </data>
+    <data name="TrailerWidgetsHeader" xml:space="preserve">
+        <value>Remolques</value>
+    </data>
+    <data name="TrailerWidgetSuccessUpdated" xml:space="preserve">
+        <value>Widget de Tráiler actualizado correctamente</value>
+    </data>
+    <data name="TruckLastInspectionHeader" xml:space="preserve">
+        <value>Últimas Inspecciones de Camiones</value>
+    </data>
+    <data name="TruckWidgetNotUpdated" xml:space="preserve">
+        <value>El widget de camión no se pudo actualizar</value>
+    </data>
+    <data name="TruckWidgetsHeader" xml:space="preserve">
+        <value>Camiones</value>
+    </data>
+    <data name="TruckWidgetSuccessUpdated" xml:space="preserve">
+        <value>Widget de Camión actualizado con éxito</value>
+    </data>
+    <data name="WidgetsDriverHeader" xml:space="preserve">
+        <value>Widgets y Documentos del Controlador</value>
+    </data>
+    <data name="WidgetsEquipmentHeader" xml:space="preserve">
+        <value>Equipo</value>
+    </data>
+    <data name="WidgetsOrderHeader" xml:space="preserve">
+        <value>Pedido</value>
+    </data>
+    <data name="UnitTableHeader" xml:space="preserve">
+        <value>Unidad</value>
+    </data>
+    <data name="MakeTableHeader" xml:space="preserve">
+        <value>Hacer</value>
+    </data>
+    <data name="ModelTableHeader" xml:space="preserve">
+        <value>Modelo</value>
+    </data>
+    <data name="ExpirationTableHeader" xml:space="preserve">
+        <value>Caducidad</value>
+    </data>
+    <data name="TrailerPlateExpirationAndInspectionHeader" xml:space="preserve">
+        <value>Caducidad de la Placa de Matrícula y la Inspección del Remolque</value>
+    </data>
+    <data name="TruckPlateExpirationAndInspectionHeader" xml:space="preserve">
+        <value>Caducidad de Placas de Matrícula e Inspección de Camiones</value>
+    </data>
+    <data name="NoActionRequired" xml:space="preserve">
+        <value>No se requiere acción en este momento</value>
+    </data>
+</root>

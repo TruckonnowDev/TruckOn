@@ -2,7 +2,7 @@
     notie.alert({
         type: 'info',
         text: messageText,
-        time: 5,
+        time: 10,
         position: 'top'
     });
 }
@@ -11,7 +11,7 @@ function WarningAlert(messageText) {
     notie.alert({
         type: 'warning',
         text: messageText,
-        time: 6,
+        time: 10,
         position: 'top'
     });
 }

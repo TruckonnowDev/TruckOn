@@ -33,17 +33,23 @@
                     <div class="tabContent">
                         <h2>@Localizer["SellItemLotHeader"]</h2>
                         <form action="" enctype="multipart/form-data" id="createSellItem" method="post">
+                            <input type="hidden" id="uploadedFiles" name="uploadedFiles" value="">
                             <div class="validation" asp-validation-summary="ModelOnly"></div>
                             <label for="">
-                                <label class="mb-0">@Localizer["TitleLabel"]</label>
+                                <label class="mb-0">@Localizer["TitleLabel"]
+                                    <span><abbr data-title="@Localizer["TitleLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                </label>
                                 <input type="text" id="title" asp-for="Title" required>
                             </label>
                             <label for="">
                                 @Localizer["PriceLabel"]
+                                <span><abbr data-title="@Localizer["PriceLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                 <input type="number" onchange="(function(el){el.value=parseFloat(el.value).toFixed(2);})(this)" id="price" asp-for="Price" name="Price" step="0.01"  required/> 
                             </label>
                             <label for="">
-                                <label class="mb-0">@Localizer["ConditionLabel"]</label>
+                                <label class="mb-0">@Localizer["ConditionLabel"]
+                                    <span><abbr data-title="@Localizer["ConditionLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                </label>
                                 <select class="height-input input-select" id="conditionItemsFilterInput" asp-for="ConditionItem">
                                     <option value=@ConditionItem.New>@Localizer["NewConditionItemFiler"]</option>
                                     <option value=@ConditionItem.LikeNew>@Localizer["LikeNewConditionItemFiler"]</option>
@@ -52,22 +58,30 @@
                                 </select>
                             </label>
                             <label for="">
-                                <label class="mb-0">@Localizer["DescriptionLabel"]</label>
+                                <label class="mb-0">@Localizer["DescriptionLabel"]
+                                    <span><abbr data-title="@Localizer["DescriptionLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                </label>
                                 <textarea type="text" asp-for="Description" id="description"></textarea>
                             </label>
                             <label for="">
-                                <label class="mb-0">@Localizer["EmailLabel"]</label>
+                                <label class="mb-0">@Localizer["EmailLabel"]
+                                    <span><abbr data-title="@Localizer["EmailLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                </label>
                                 <input type="email" id="email" asp-for="Email" pattern="@PatternConstants.Email" required>
                             </label>
                             <label for="">
-                                <label class="mb-0">@Localizer["PhoneNumberLabel"]</label>
+                                <label class="mb-0">@Localizer["PhoneNumberLabel"]
+                                    <span><abbr data-title="@Localizer["PhoneNumberLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                </label>
                                 <input type="text" asp-for="PhoneNumber.Number" id="phoneC" pattern="@PatternConstants.PhoneNumberWithoutCountryCode" placeholder="(XXX)-XXX-XXXX" required>
                                 <input type="hidden" id="country-code-dialcode" asp-for="PhoneNumber.DialCode">
                                 <input type="hidden" id="country-code-iso2" asp-for="PhoneNumber.Iso2">
                                 <input type="hidden" id="country-code-name" asp-for="PhoneNumber.Name">
                             </label>
                             <label for="">
-                                <label class="mb-0">@Localizer["ZipCodeLabel"]</label>
+                                <label class="mb-0">@Localizer["ZipCodeLabel"]
+                                    <span><abbr data-title="@Localizer["ZipCodeLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                </label>
                                 <input type="text" asp-for="ZipCode" id="zipcode" required/>
                             </label>
                             <label for="">
@@ -98,10 +112,22 @@
                         </form>
                     </div>
                 </div>
+                <div class="col-md-4">
+                    <div class="images">
+                        <div id="previewContainer">
+                        </div>
+                    </div>
             </div>
         </div>
     </div>
 </body>
+
+<script src="~/js/fileUploader.js"></script>
+<script>
+    var fileUploader = new FileUploader('fi1', 'previewContainer', 'createSellItem');
+    fileUploader.init();
+</script>
+
 <style>
     .btn3 {
         width: 250px;

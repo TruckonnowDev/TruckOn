@@ -1,0 +1,96 @@
+﻿@using DaoModels.DAO.Models;
+
+@model List<TrailerStatusWidget>;
+
+ @foreach(var item in Model)
+ {
+    <div class="widget" ondblclick="editTrailerWidget(@item.Id)">
+        <div class="widget-item" style="background: radial-gradient(circle, #@item.StatusTheme.BackgroundColor.HexCode 40%, #@item.StatusTheme.BackgroundColor.HexCode 60%); border: 1px solid #@item.StatusTheme.BackgroundColor.HexCode">
+            <span class="big-circle"></span>
+            <span class="middle-circle"></span>
+            <span class="fas">@item.CountItemsInStatus</span>
+        </div>
+        <div class="widget-status-name" style="color: #@item.StatusTheme.BackgroundColor.HexCode">@item.Status?.Name</div>
+    </div>
+}
+
+<style>
+    .group-widgets .widget {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0;
+    }
+
+    .group-widgets .widget .widget-status-name {
+        color: #4CAF50;
+        font-weight: 600;
+        font-size: 12px;
+    }
+
+    .group-widgets .widget-item {
+        -webkit-appearance: none;
+        appearance: none;
+        height: 50px;
+        width: 50px;
+        background: radial-gradient(circle, #3e9d42 40%, #4CAF50 60%);
+        border: 1px solid green;
+        position: relative;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-radius: 50%;
+        cursor: pointer;
+        outline: none;
+        margin: 12px 12px;
+        box-shadow: inset 5px 5px 10px rgb(6 6 6 / 30%);
+        margin-left: 12px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        -o-user-select: none;
+        user-select: none;
+    }
+
+    .group-widgets .widget-item .big-circle {
+        position: absolute;
+        content: "";
+        height: 70px;
+        width: 70px;
+        background: linear-gradient( 215deg, #7e7e7e, #e9e9e9, #7e7e7e );
+        bottom: -11px;
+        left: -11px;
+        z-index: -2;
+        border-radius: 50%;
+        box-shadow: inset 0 0 8px rgba(0,0,0,0.2);
+    }
+
+    .group-widgets .widget-item .middle-circle {
+        position: absolute;
+        content: "";
+        height: 58px;
+        width: 58px;
+        background: linear-gradient( 80deg, #ededed, #f7f7f7);
+        bottom: -5px;
+        border: 1px solid #bdbdbd;
+        left: -5px;
+        z-index: -1;
+        border-radius: 50%;
+        box-shadow: inset 0 0 8px rgba(0,0,0,0.2);
+    }
+
+    .group-widgets .widget-item .fas {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-shadow: 0px 1px 0 #bbbbbb, 0 2px 3px #e7e7e7;
+        font-family: Helvetica, Arial, Sans-Serif;
+        text-decoration: none;
+        font-weight: bold;
+        color: #ffffff;
+        font-size: 42px;
+    }
+</style>

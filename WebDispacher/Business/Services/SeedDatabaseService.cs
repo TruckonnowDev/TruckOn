@@ -10,6 +10,9 @@ using static System.Net.Mime.MediaTypeNames;
 using WebDispacher.Constants;
 using System.Xml.Linq;
 using System.Collections.Generic;
+using KellermanSoftware.UserAgentParser;
+using Stripe;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace WebDispacher.Business.Services
 {
@@ -63,7 +66,8 @@ namespace WebDispacher.Business.Services
                 var user = new User
                 {
                     Email = "truckonnow@test.com",
-                    UserName = "truckonnow@test.com"
+                    UserName = "truckonnow@test.com",
+                    EmailConfirmed = true,
                 };
 
                 var phoneNumber = new PhoneNumber
@@ -110,7 +114,8 @@ namespace WebDispacher.Business.Services
                 var user = new User
                 {
                     Email = "mrserge.husack@gmail.com",
-                    UserName = "mrserge.husack@gmail.com"
+                    UserName = "mrserge.husack@gmail.com",
+                    EmailConfirmed = true,
                 };
 
                 var phoneNumber = new PhoneNumber
@@ -160,7 +165,8 @@ namespace WebDispacher.Business.Services
                 var user = new User
                 {
                     Email = "truckonnow1@test.com",
-                    UserName = "truckonnow1@test.com"
+                    UserName = "truckonnow1@test.com",
+                    EmailConfirmed = true,
                 };
 
                 var phoneNumber = new PhoneNumber
@@ -206,7 +212,8 @@ namespace WebDispacher.Business.Services
                 var user = new User
                 {
                     Email = "truckonnow2@test.com",
-                    UserName = "truckonnow2@test.com"
+                    UserName = "truckonnow2@test.com",
+                    EmailConfirmed = true,
                 };
 
                 var phoneNumber = new PhoneNumber
@@ -250,7 +257,8 @@ namespace WebDispacher.Business.Services
                 var user = new User
                 {
                     Email = "truckonnow3@test.com",
-                    UserName = "truckonnow3@test.com"
+                    UserName = "truckonnow3@test.com",
+                    EmailConfirmed = true,
                 };
 
                 var phoneNumber = new PhoneNumber
@@ -293,7 +301,8 @@ namespace WebDispacher.Business.Services
                 var user = new User
                 {
                     Email = "serge.husack@gmail.com",
-                    UserName = "serge.husack@gmail.com"
+                    UserName = "serge.husack@gmail.com",
+                    EmailConfirmed = true,
                 };
                 var phoneNumber = new PhoneNumber
                 {
@@ -344,19 +353,21 @@ namespace WebDispacher.Business.Services
 
         public async Task CreateCurrentStatus(string orderStatus)
         {
-            if (db.CurrentStatuses.Any(cs => cs.StatusName == orderStatus))
+            if (db.OrderStatuses.Any(cs => cs.Name == orderStatus))
             {
                 Console.WriteLine(orderStatus + " status already exists");
             }
             else
             {
-                var currentStatusNewLoad = new CurrentStatus
+                var currentStatusNewLoad = new OrderStatus
                 {
-                    StatusName = orderStatus
+                    Name = orderStatus
                 };
 
-                await db.CurrentStatuses.AddAsync(currentStatusNewLoad);
+                await db.OrderStatuses.AddAsync(currentStatusNewLoad);
                 await db.SaveChangesAsync();
+
+                Console.WriteLine($"Current order status ({orderStatus}) successfully added");
             }
         }
         
@@ -418,6 +429,8 @@ namespace WebDispacher.Business.Services
                 await db.VehiclesTypes.AddAsync(currentVehicleType);
 
                 await db.SaveChangesAsync();
+
+                Console.WriteLine($"Current vehicle type ({typeName}) successfully added");
             }
         }
         
@@ -439,6 +452,8 @@ namespace WebDispacher.Business.Services
                 await db.VehiclesBrands.AddAsync(currentVehicleBrand);
 
                 await db.SaveChangesAsync();
+
+                Console.WriteLine($"Current vehicle brand ({typeName}) successfully added");
             }
         }
         
@@ -459,6 +474,8 @@ namespace WebDispacher.Business.Services
                 await db.VehiclesBodies.AddAsync(currentVehicleBody);
 
                 await db.SaveChangesAsync();
+
+                Console.WriteLine($"Current vehicle body ({typeName}) successfully added");
             }
         }
         
@@ -482,6 +499,8 @@ namespace WebDispacher.Business.Services
                 await db.VehiclesModels.AddAsync(currentVehicleModel);
 
                 await db.SaveChangesAsync();
+
+                Console.WriteLine($"Current vehicle model ({typeName}) successfully added");
             }
         }
 
@@ -569,12 +588,47 @@ namespace WebDispacher.Business.Services
                 };
 
                 await db.PhotoTypes.AddAsync(marketplaceType);
-
                 await db.SaveChangesAsync();
             }
         }
         
         
+        public async Task InitResourceItem(string name, string imgName, string description)
+        {
+            if (db.Resources.Any(cs => cs.Title == name))
+            {
+                Console.WriteLine($"{name} resource item already exists");
+            }
+            else
+            {
+                var resourceMaxPositionIdex = db.Resources.OrderByDescending(x => x.PositionIndex).FirstOrDefault();
+                var resource = new DaoModels.DAO.Models.Resource
+                {
+                    Title = name,
+                    Description = description,
+                    PositionIndex = resourceMaxPositionIdex != null ? resourceMaxPositionIdex.PositionIndex + 1 : 1,
+                    ImgName = imgName,
+                };
+
+                await db.Resources.AddAsync(resource);
+
+                await db.SaveChangesAsync();
+
+                Console.WriteLine($"Resource ({name}) successfully added in {resource.PositionIndex} position");
+            }
+        }
+
+        public async Task InitResourcesItems()
+        {
+            await InitResourceItem("ELD Service", "ELDService.svg", "ELDService information");
+            await InitResourceItem("Insurance Providers", "DriverCheck.svg", "Insurance Providers information");
+            await InitResourceItem("Legal Help", "LegalSupport.svg", "Legal Help information");
+            await InitResourceItem("Compliance & Safety", "CompanyRating.svg", "Compliance & Safety information");
+            await InitResourceItem("Mechanical Shops", "RepairLocator.svg", "Mechanical Shops information");
+            await InitResourceItem("Body Shops", "Tracking.svg", "Body Shops information");
+            await InitResourceItem("Truck & Trailer Repair", "TicketContest.svg", "Truck & Trailer Repair information");
+        }
+
         public async Task InitVehicleCategory(string name)
         {
             if (db.VehiclesCategories.Any(cs => cs.Name == name))
@@ -591,6 +645,8 @@ namespace WebDispacher.Business.Services
                 await db.VehiclesCategories.AddAsync(vehicleCategory);
 
                 await db.SaveChangesAsync();
+
+                Console.WriteLine($"Vehicle category ({name}) successfully added");
             }
         }
 
@@ -608,6 +664,9 @@ namespace WebDispacher.Business.Services
             await InitVehicleCategory("Tractor");
             await InitVehicleCategory("Motorhome");
             await InitVehicleCategory("Bus");
+
+            await InitVehicleCategory("Pickup /Car Hauler Trailer");
+            await InitVehicleCategory("Semi Trailer");
         }
 
         public async Task InitTruckTypeInVehicleCategory(string vehicleCategoryName, string truckTypeName)
@@ -635,6 +694,38 @@ namespace WebDispacher.Business.Services
                 await db.TruckTypes.AddAsync(truckType);
 
                 await db.SaveChangesAsync();
+
+                Console.WriteLine($"Truck type ({truckTypeName}) successfully added");
+            }
+        }
+        
+        public async Task InitTrailerTypeInVehicleCategory(string vehicleCategoryName, string trailerTypeName)
+        {
+            var vehicleCategory = db.VehiclesCategories.FirstOrDefault(vc => vc.Name == vehicleCategoryName);
+            if (vehicleCategory == null)
+            {
+                Console.WriteLine($"{vehicleCategoryName} not found");
+
+                return;
+            }
+
+            if (db.TrailerTypes.Any(cs => cs.Name == trailerTypeName))
+            {
+                Console.WriteLine($"{trailerTypeName} trailer type already exists");
+            }
+            else
+            {
+                var truckType = new TrailerType
+                {
+                    Name = trailerTypeName,
+                    VehicleCategoryId  = vehicleCategory.Id,
+                };
+
+                await db.TrailerTypes.AddAsync(truckType);
+
+                await db.SaveChangesAsync();
+
+                Console.WriteLine($"Trailer type ({trailerTypeName}) successfully added");
             }
         }
 
@@ -661,7 +752,6 @@ namespace WebDispacher.Business.Services
                     "Specialty Tractor", "Earthmoving Tractor",  }),
                 ("Motorhome", new List<string>() { "Class A (29-45ft.)", "Class B (18-24ft.)", "Class C (30-33ft.)" }),
                 ("Bus", new List<string>() { "Single-deck Bus", "Double-deck Bus", "Articulated Bus", "Trolley Bus", "School Bus", "Special needs Bus", "Coach/Motor Bus", "Shuttle Bus", "Party Bus",  }),
-
             };
 
             for(int i = 0; i < values.Count; i++)
@@ -670,6 +760,30 @@ namespace WebDispacher.Business.Services
                 for(int j = 0;  j < values[i].Item2.Count; j++)
                 {
                     await InitTruckTypeInVehicleCategory(vehicleCategoryName, values[i].Item2[j]);
+                }
+            }
+        }
+        
+        public async Task InitTrailersTypesInVehicliesCategories()
+        {
+            List<(string, List<string>)> values = new List<(string, List<string>)>
+            {
+                ("Pickup /Car Hauler Trailer", new List<string>()
+                {
+                    "Open 1 Car", "Open 2 Car - Tandem Axel", "Open 2 Car - Tripple Axle", "Gooseneck 3 Car", "Gooseneck 4 Car", "Gooseneck 5 Car", "Enclosed 2 Car Trailer", "Eclosed 4 Car Trailer"
+                }),
+
+                ("Semi Trailer", new List<string>{
+                    "Dry Van", "Flat Bed", "Refregirated", "Gooseneck Trailers", "Stretch Double Drop", "Step Deck", "Conestoga", "Sidekit", "Lowboy", "Super B",
+                }),
+            };
+
+            for(int i = 0; i < values.Count; i++)
+            {
+                var vehicleCategoryName = values[i].Item1;
+                for(int j = 0;  j < values[i].Item2.Count; j++)
+                {
+                    await InitTrailerTypeInVehicleCategory(vehicleCategoryName, values[i].Item2[j]);
                 }
             }
         }
@@ -687,6 +801,42 @@ namespace WebDispacher.Business.Services
             truckTypes.Slug = slug;
 
             await db.SaveChangesAsync();
+
+            Console.WriteLine($"Truck ({truckTypeName}) slug ({slug}) successfully added");
+        }
+        
+        public async Task SetSlugByTrailerTypeName(string trailerTypeName, string slug)
+        {
+            var trailerTypes = db.TrailerTypes.FirstOrDefault(vc => vc.Name == trailerTypeName);
+            if (trailerTypes == null)
+            {
+                Console.WriteLine($"{trailerTypes} not found");
+
+                return;
+            }
+
+            trailerTypes.Slug = slug;
+
+            await db.SaveChangesAsync();
+
+            Console.WriteLine($"Trailer ({trailerTypeName}) slug ({slug}) successfully added");
+        }
+
+        public async Task InitSlugsByTrailerTypesNames()
+        {
+            await SetSlugByTrailerTypeName("Dry Van", "DryVan");
+            await SetSlugByTrailerTypeName("Flat Bed", "FlatBed");
+            await SetSlugByTrailerTypeName("Refregirated", "Refregirated");
+            await SetSlugByTrailerTypeName("Gooseneck Trailers", "Gooseneck");
+          //await SetSlugByTrailerTypeName("Extendable Flatbed", );
+            await SetSlugByTrailerTypeName("Stretch Double Drop", "StretchDoubleDrop");
+            await SetSlugByTrailerTypeName("Step Deck", "StepDeck");
+            await SetSlugByTrailerTypeName("Conestoga", "Conestoga");
+            await SetSlugByTrailerTypeName("Sidekit", "Sidekit");
+            await SetSlugByTrailerTypeName("Lowboy", "Lowboy");
+          //await SetSlugByTrailerTypeName("Stretch Double Drop Deck", );
+            await SetSlugByTrailerTypeName("Super B", "SuperB" );
+          //await SetSlugByTrailerTypeName("Power Only", );
         }
 
         public async Task InitSlugsByTruckTypesNames()
@@ -699,6 +849,254 @@ namespace WebDispacher.Business.Services
             await SetSlugByTruckTypeName("2Dr Pickup ( flat bed ) Pickup with  Dually Wheels", "2DrPickupPickupwithDuallyWheels");
             await SetSlugByTruckTypeName("4Dr Crew Cab ( flat bed ) Pickup with Single Wheel", "4DrCrewCabPickupwithSingleWheelFlatBed");
             await SetSlugByTruckTypeName("4Dr Crew Cab ( flat bed ) Pickup with  Dually Wheels", "4DrCrewCabPickupwithDuallyWheelsFlatBed");
+
+
+            await SetSlugByTruckTypeName("Day Cab", "DayCab");
+            await SetSlugByTruckTypeName("Flat Roof Sleeper", "FlatRoofSleeper");
+            await SetSlugByTruckTypeName("Mid-Roof Sleeper", "MidRoofSleeper");
+            await SetSlugByTruckTypeName("Raised Roof Sleeper", "RaisedRoofSleeper");
+        }
+
+        public async Task InitColorItem(string colorName, string hexCode)
+        {
+            if (db.Colors.Any(cs => cs.Name == colorName))
+            {
+                Console.WriteLine($"{colorName} color already exists");
+            }
+            else
+            {
+                var color = new Color
+                {
+                    Name = colorName,
+                    HexCode = hexCode,
+                };
+
+                await db.Colors.AddAsync(color);
+
+                await db.SaveChangesAsync();
+
+                Console.WriteLine($"Color ({colorName}) successfully added");
+            }
+        }
+
+        public async Task InitColors()
+        {
+            await InitColorItem("Primary", "0d6efd");
+            await InitColorItem("Success", "198754");
+            await InitColorItem("Danger", "dc3545");
+            await InitColorItem("Warning", "ffc107");
+            await InitColorItem("Info", "0dcaf0");
+            await InitColorItem("Dark", "212529");
+            await InitColorItem("Light", "bbbbbb");
+            await InitColorItem("White", "fff");
+            await InitColorItem("Orange", "d7842d");
+            await InitColorItem("Brown", "974d00");
+            await InitColorItem("DarkRed", "9d1a1a");
+
+            await InitColorItem("Green", "008000");
+            await InitColorItem("Blue", "000a80");
+            await InitColorItem("Red", "800000");
+            await InitColorItem("LightGreen", "3e9d42");
+            await InitColorItem("LightBlue", "3e419d");
+            await InitColorItem("LightRed", "9d3e3e");
+            await InitColorItem("ExtraLightGreen", "4CAF50");
+            await InitColorItem("ExtraLightBlue", "4c61af");
+            await InitColorItem("ExtraLightRed", "af4c4c");
+        }
+
+        public async Task InitTruckThemeItem(string themeName, string backgroundNameColor, string textNameColor)
+        {
+            var backgroundColor = db.Colors.FirstOrDefault(vc => vc.Name == backgroundNameColor);
+            if (backgroundColor == null)
+            {
+                Console.WriteLine($"{backgroundNameColor} color not found");
+
+                return;
+            }
+
+            var textColor = db.Colors.FirstOrDefault(vc => vc.Name == textNameColor);
+
+            if (textColor == null)
+            {
+                Console.WriteLine($"{textNameColor} color not found");
+
+                return;
+            }
+
+            if (db.TruckStatusThemes.Any(cs => cs.Name == themeName))
+            {
+                Console.WriteLine($"{themeName} theme already exists");
+            }
+            else
+            {
+                var truckStatusTheme = new TruckStatusTheme
+                {
+                    Name = themeName,
+                    BackgroundColorId = backgroundColor.Id,
+                    TextColorId = textColor.Id,
+                };
+
+                await db.TruckStatusThemes.AddAsync(truckStatusTheme);
+
+                await db.SaveChangesAsync();
+
+                Console.WriteLine($"Truck theme ({themeName}) successfully added");
+            }
+        }
+        
+        public async Task InitTrailerThemeItem(string themeName, string backgroundNameColor, string textNameColor)
+        {
+            var backgroundColor = db.Colors.FirstOrDefault(vc => vc.Name == backgroundNameColor);
+            if (backgroundColor == null)
+            {
+                Console.WriteLine($"{backgroundNameColor} color not found");
+
+                return;
+            }
+
+            var textColor = db.Colors.FirstOrDefault(vc => vc.Name == textNameColor);
+
+            if (textColor == null)
+            {
+                Console.WriteLine($"{textNameColor} color not found");
+
+                return;
+            }
+
+            if (db.TrailerStatusThemes.Any(cs => cs.Name == themeName))
+            {
+                Console.WriteLine($"{themeName} theme already exists");
+            }
+            else
+            {
+                var trailerStatusTheme = new TrailerStatusTheme
+                {
+                    Name = themeName,
+                    BackgroundColorId = backgroundColor.Id,
+                    TextColorId = textColor.Id,
+                };
+
+                await db.TrailerStatusThemes.AddAsync(trailerStatusTheme);
+
+                await db.SaveChangesAsync();
+
+                Console.WriteLine($"Trailer theme ({themeName}) successfully added");
+            }
+        }
+        
+        public async Task InitTruckThemesDefault()
+        {
+            await InitTruckThemeItem("PrimaryTheme", "Primary", "White");
+            await InitTruckThemeItem("SuccessTheme", "Success", "White");
+            await InitTruckThemeItem("DangerTheme", "Danger", "White");
+            await InitTruckThemeItem("WarningTheme", "Warning", "Dark");
+            await InitTruckThemeItem("InfoTheme", "Info", "Dark");
+            await InitTruckThemeItem("LightTheme", "Light", "Dark");
+            await InitTruckThemeItem("DarkTheme", "Dark", "White");
+            await InitTruckThemeItem("OrangeTheme", "Orange", "White");
+            await InitTruckThemeItem("BrownTheme", "Brown", "White");
+            await InitTruckThemeItem("DarkRedTheme", "DarkRed", "White");
+        }
+        
+        public async Task InitTrailerThemesDefault()
+        {
+            await InitTrailerThemeItem("PrimaryTheme", "Primary", "White");
+            await InitTrailerThemeItem("SuccessTheme", "Success", "White");
+            await InitTrailerThemeItem("DangerTheme", "Danger", "White");
+            await InitTrailerThemeItem("WarningTheme", "Warning", "Dark");
+            await InitTrailerThemeItem("InfoTheme", "Info", "Dark");
+            await InitTrailerThemeItem("LightTheme", "Light", "Dark");
+            await InitTrailerThemeItem("DarkTheme", "Dark", "White");
+            await InitTrailerThemeItem("OrangeTheme", "Orange", "White");
+            await InitTrailerThemeItem("BrownTheme", "Brown", "White");
+            await InitTrailerThemeItem("DarkRedTheme", "DarkRed", "White");
+        }
+        
+        
+        public async Task InitTruckStatusItem(string statusName, string themeName)
+        {
+            var theme = db.TruckStatusThemes.FirstOrDefault(vc => vc.Name == themeName);
+            if (theme == null)
+            {
+                Console.WriteLine($"{themeName} theme not found");
+
+                return;
+            }
+
+            if (db.TruckStatuses.Any(cs => cs.Name == statusName))
+            {
+                Console.WriteLine($"{statusName} status already exists");
+            }
+            else
+            {
+                var truckStatus = new TruckStatus
+                {
+                    Name = statusName,
+                    StatusThemeId = theme.Id,
+                    TruckStatusType = TruckStatusType.System,
+                };
+
+                await db.TruckStatuses.AddAsync(truckStatus);
+
+                await db.SaveChangesAsync();
+
+                Console.WriteLine($"Truck status ({statusName}) successfully added");
+            }
+        }
+        
+        public async Task InitTrailerStatusItem(string statusName, string themeName)
+        {
+            var theme = db.TrailerStatusThemes.FirstOrDefault(vc => vc.Name == themeName);
+            if (theme == null)
+            {
+                Console.WriteLine($"{themeName} theme not found");
+
+                return;
+            }
+
+            if (db.TrailerStatuses.Any(cs => cs.Name == statusName))
+            {
+                Console.WriteLine($"{statusName} status already exists");
+            }
+            else
+            {
+                var trailerStatus = new TrailerStatus
+                {
+                    Name = statusName,
+                    StatusThemeId = theme.Id,
+                    TrailerStatusType = TrailerStatusType.System,
+                };
+
+                await db.TrailerStatuses.AddAsync(trailerStatus);
+
+                await db.SaveChangesAsync();
+
+                Console.WriteLine($"Trailer status ({statusName}) successfully added");
+            }
+        }
+
+        public async Task InitTruckStatuses()
+        {
+            await InitTruckStatusItem("Active", "SuccessTheme");
+            await InitTruckStatusItem("Inactive", "WarningTheme");
+            await InitTruckStatusItem("Damaged", "PrimaryTheme");
+            await InitTruckStatusItem("Broken", "DangerTheme");
+            await InitTruckStatusItem("Shop", "LightTheme");
+            await InitTruckStatusItem("Dealership", "LightTheme");
+            await InitTruckStatusItem("Tow Yard", "BrownTheme");
+            await InitTruckStatusItem("Emergency", "DarkRedTheme");
+        }
+        
+        public async Task InitTrailerStatuses()
+        {
+            await InitTrailerStatusItem("Active", "SuccessTheme");
+            await InitTrailerStatusItem("Inactive", "WarningTheme");
+            await InitTrailerStatusItem("Damaged", "PrimaryTheme");
+            await InitTrailerStatusItem("Broken", "DangerTheme");
+            await InitTrailerStatusItem("Shop", "LightTheme");
+            await InitTrailerStatusItem("Dealership", "LightTheme");
+            await InitTrailerStatusItem("Tow Yard", "BrownTheme");
+            await InitTrailerStatusItem("Emergency", "DarkRedTheme");
         }
     }
 }

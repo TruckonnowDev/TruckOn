@@ -24,7 +24,7 @@
     visibility: hidden; }
   .intl-tel-input input, .intl-tel-input input[type=text], .intl-tel-input input[type=tel] {
     position: relative;
-    z-index: 0;
+    z-index: -1;
     margin-top: 0 !important;
     margin-bottom: 0 !important;
     padding-right: 36px;
@@ -36,7 +36,7 @@
     right: 0;
     padding: 1px; }
   .intl-tel-input .selected-flag {
-    z-index: 1;
+    z-index: -1;
     position: relative;
     width: 36px;
     height: 100%;
@@ -101,7 +101,7 @@
     margin-left: 0; }
   .intl-tel-input.allow-dropdown .flag-container, .intl-tel-input.separate-dial-code .flag-container {
     right: auto;
-    left: 0; }
+    left: 0; z-index: 0;}
   .intl-tel-input.allow-dropdown .selected-flag, .intl-tel-input.separate-dial-code .selected-flag {
     width: 46px; }
   .intl-tel-input.allow-dropdown .flag-container:hover {

@@ -33,4 +33,7 @@
     <data name="PhoneNumberRequired" xml:space="preserve">
         <value>Телефон должен быть заполнен</value>
     </data>
+    <data name="DateOfBirthRequired" xml:space="preserve">
+        <value> Дата рождения должна быть заполнена</value>
+    </data>
 </root>

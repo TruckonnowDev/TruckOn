@@ -1,0 +1,266 @@
+﻿@using DaoModels.DAO.Models;
+@using Microsoft.AspNetCore.Mvc.Localization
+@using WebDispacher.Constants;
+@using WebDispacher.ViewModels.Trailer.Enum;
+@using WebDispacher.ViewModels.Trailer;
+
+@model (TrailerGroup, TrailerFilterViewModel, List<Trailer>)
+
+@inject IViewLocalizer Localizer
+@{
+    TrailerSortType GetSortType(TrailerSortField field)
+    {
+        return Model.Item2.SortField == field && Model.Item2.SortType == TrailerSortType.Ascending ? TrailerSortType.Descending : TrailerSortType.Ascending;
+    }
+
+    var tableId = Model.Item1.Id;
+}
+
+
+<table class="truck-trailer-tab" style="width: 100%;margin-left: auto; margin-right: auto;margin-top:0px;margin-bottom: 0px;" id="Table_@Model.Item1.Id">
+    <thead>
+        <tr>
+            <th colspan="15" style="text-align: center; font-size: 16px; background: #c5cae7; padding-left: 4vh; position: sticky; top: 0; z-index: auto; position: relative;">
+                @Model.Item1.Name
+                <div class="td-click-img-margin" style="position: absolute; top: 56%; right: 0;transform: translateY(-50%);">
+                    <div data-title="@Localizer["RenameTrailerGroupkNotificataion"]" class="ico-doc ico-doc-edit open-RenameGroup" data-group-name="@Model.Item1.Name" data-id="@Model.Item1.Id" data-toggle="modal" data-modal-selector="#renameGroup" href="#renameGroup" style="display: inline-block;vertical-align:middle;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#ff9800" style="font-size: 20px;" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+                        </svg>
+                    </div>
+                    <div data-title="@Localizer["DeleteTrailerGroupNotificataion"]" class="ico-doc ico-doc-delete open-RemoveGroup" data-toggle="modal" data-id="@Model.Item1.Id" data-modal-selector="#confirmDeleteGroupModal" href="#confirmDeleteGroupModal" style="display: inline-block;vertical-align:middle;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#f44336" class="bi bi-x-lg" viewBox="0 0 16 16">
+                            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
+                        </svg>
+                    </div>
+                </div>
+            </th>
+        </tr>
+    </thead>
+        <thead>
+        <tr>
+            <th style="width: 40px;text-align:center">#</th>
+            <th>
+                <a asp-controller="Equipment" asp-action="Trailers" id="@($"{tableId}_{TrailerSortField.Name}")" data-sortField="@TrailerSortField.Name" data-sortType="@(GetSortType(TrailerSortField.Name))">@Localizer["Name"]</a>
+            </th>
+            <th>
+                <a asp-controller="Equipment" asp-action="Trailers" id="@($"{tableId}_{TrailerSortField.Year}")" data-sortField="@TrailerSortField.Year" data-sortType="@(GetSortType(TrailerSortField.Year))">@Localizer["Year"]</a>
+            </th>
+            <th>
+                <a asp-controller="Equipment" asp-action="Trailers" id="@($"{tableId}_{TrailerSortField.Brand}")" data-sortField="@TrailerSortField.Brand" data-sortType="@(GetSortType(TrailerSortField.Brand))">@Localizer["Make"]</a>
+            </th>
+            <th>@Localizer["Type"]</th>
+            <th>@Localizer["HowLong"]</th>
+            <th>@Localizer["Vin"] #</th>
+            <th>@Localizer["Plate"]#</th>
+            <th>
+                <a asp-controller="Equipment" asp-action="Trailers" id="@($"{tableId}_{TrailerSortField.PlateExpires}")" data-sortField="@TrailerSortField.PlateExpires" data-sortType="@(GetSortType(TrailerSortField.PlateExpires))">@Localizer["PlateExp"]</a>
+            </th>
+            <th>@Localizer["Color"]</th>
+            <th>@Localizer["AnnualIns"]</th>
+            <th>
+                <a asp-controller="Equipment" asp-action="Trailers" id="@($"{tableId}_{TrailerSortField.Owner}")" data-sortField="@TrailerSortField.Owner" data-sortType="@(GetSortType(TrailerSortField.Owner))">@Localizer["Owner"]</a>
+            </th>
+            <th>@Localizer["TrailerStatus"]</th>
+            <th style="width: 40px"></th>
+            <th style="width: 60px"></th>
+        </tr>
+    </thead>
+    <tbody id="@Model.Item1.Id">
+        @{
+            var indexEntity = 1;
+        }
+        @foreach (var trailer in Model.Item3)
+        {
+            <tr>
+
+                <td aria-label="#" style="width: 40px;text-align:center">
+                    <div class="value-td">@(indexEntity++)</div>
+                </td>
+                <td aria-label="@Localizer["Name"]">
+                    <div class="value-td">@trailer.Name</div>
+                </td>
+                <td aria-label="@Localizer["Year"]">
+                    @{
+                        string yearString = trailer.Year != 0
+                        ? trailer.Year.ToString()
+                        : string.Empty;
+                    }
+                    <div class="value-td">@yearString</div>
+                </td>
+                <td aria-label="@Localizer["Make"]">
+                    <div class="value-td">@trailer.Brand</div>
+                </td>
+                <td aria-label="@Localizer["Type"]">
+                    <div class="value-td">@trailer?.TrailerType?.Name</div>
+                </td>
+                <td aria-label="@Localizer["HowLong"]">
+                    <div class="value-td">@trailer.HowLong</div>
+                </td>
+                <td aria-label="@Localizer["Vin"] #">
+                    <div class="value-td">@trailer.Vin</div>
+                </td>
+                <td aria-label="@Localizer["Plate"]#">
+                    <div class="value-td">@trailer.Plate</div>
+                </td>
+                <td aria-label="@Localizer["PlateExp"]">
+                    @{
+                        string plateExpiresString = trailer.PlateExpires.HasValue
+                        ? trailer.PlateExpires.Value.ToString("MM/yy")
+                        : "N/A";
+                    }
+                    <div class="value-td">@plateExpiresString</div>
+                </td>
+                <td aria-label="@Localizer["Color"]">
+                    <div class="value-td">@trailer.Color</div>
+                </td>
+                <td aria-label="@Localizer["AnnualIns"]">
+                    @{
+                        string annualInsString = trailer.AnnualIns.HasValue
+                        ? trailer.AnnualIns.Value.ToString(DateTimeFormats.DateOfBirth)
+                        : "N/A";
+                    }
+                    <div class="value-td">@annualInsString</div>
+                </td>
+                <td aria-label="@Localizer["Owner"]">
+                    <div class="value-td">@trailer.Owner</div>
+                </td>
+                <td aria-label="@Localizer["TrailerStatus"]">
+                    @{
+                        var index = $"{trailer.Id}";
+                    }
+                    <div class="value-td">
+                        <span ondblclick="convertToSelect('@index')" class="badge" id="container-click-trailer-status-@index" style="background-color:#@trailer?.TrailerStatus?.StatusTheme?.BackgroundColor.HexCode;color:#@trailer?.TrailerStatus?.StatusTheme.TextColor.HexCode;">@trailer?.TrailerStatus?.Name</span>
+                        <div class="select-container" id="select-container-trailer-status-@index">
+                            <select id="select-trailer-status-@index" onchange="submitForm('@index')" style="display:none">
+                            </select>
+                        </div>
+                    </div>
+                </td>
+                <td aria-label="@Localizer["Location"]" id="truck_location_@trailer.Id">
+                    <div class="value-td">
+                        @{
+                            var locationType = trailer.LocationType == DaoModels.DAO.Enum.LocationType.Mannually ? "Manual" : "GPS";
+                            if (trailer.TrailerStatus != null && trailer.LocationType != DaoModels.DAO.Enum.LocationType.Later)
+                            {
+                                <div class="panel-control" ondblclick="convertLocationToInput('@index')" id="container-click-trailer-location-@index">
+                                    <div data-title="@locationType: @trailer.LocationAddress" class="ico-location ico-location-item">
+                                        <i class="bi bi-geo-alt-fill" style="color: #0d6efd;"></i>
+                                    </div>
+                                </div>
+                                <div class="input-location-container" id="input-trailer-location-container-@index" style="display:none">
+                                    <input class="input-mini" type="text" id="input-trailer-location-@index" value="@trailer.LocationAddress" required />
+                                    <button class="btn1 btn1-mini" onclick="submitTrailerLocationForm('@index')">@Localizer["SaveLocationButton"]</button>
+                                </div>
+                            }
+                        }
+                    </div>
+                </td>
+                <td class="input-img mt-3 mb-3 panel-control">
+                    <div class="td-click-img-margin">
+                        <div data-title="@Localizer["ViewNotificataion"]" class="ico-doc ico-doc-view" onclick="document.location.href = '@ViewBag.BaseUrl/Driver/InspactionTrucks?driverId=0&truckId=0&trailerId=@trailer.Id&date=0';">
+                            <i class="bi bi-cursor-fill" style="color: #4caf50"></i>
+                        </div>
+                        @*<img src="~/img/arrow.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Driver/InspactionTrucks?idDriver=0&idTruck=0&idTrailer=@ViewBag.Trailers[i].Id&date=0';" />*@
+
+                        <div data-title="@Localizer["EditTrailerNotificataion"]" class="ico-doc ico-doc-edit" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/EditTrailer?trailerId='+@trailer.Id;">
+                            <i class="bi bi-pencil-square" style="color: #ff9800"></i>
+                        </div>
+                        @*<img src="~/img/pen.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/EditTrailer?idTrailer='+@ViewBag.Trailers[i].Id;">*@
+
+                        <div data-title="@Localizer["CustomizeNotificataion"]" class="ico-doc ico-doc-settings" onclick="document.location.href = '@ViewBag.BaseUrl/Settings/Get?idTr=trailer.Id&page=s&idProfile=0&typeTransport=Trailer'">
+                            <i class="bi bi-gear-fill" style="color: #a3644d"></i>
+                        </div>
+                        @*<img src="~/img/setting.svg" alt="" onclick="window.location.href='@ViewBag.BaseUrl/Settings?idTr=@ViewBag.Trailers[i].Id&page=s&idProfile=0&typeTransport=Trailer'">*@
+
+                        <div data-title="@Localizer["DocNotificataion"]" class="ico-doc ico-doc-documents" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/Trailer/Doc?id='+@trailer.Id;">
+                            <i class="bi bi-file-earmark-medical-fill" style="color: #3f51b5"></i>
+                        </div>
+                        @*<img src="~/img/doc.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/Trailer/Doc?id='+@ViewBag.Trailers[i].Id;">*@
+
+                        <div data-title="@Localizer["DeleteNotificataion"]" class="ico-doc ico-doc-delete open-RemoveTrailer" data-toggle="modal" data-id="@trailer.Id" data-modal-selector="#confirmDeleteEntryModal" href="#confirmDeleteEntryModal">
+                            <i class="bi bi-x-lg" style="color: #f44336"></i>
+                        </div>
+                        @*<img src="~/img/delet.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/Trailer/Remove?id='+@ViewBag.Trailers[i].Id;">*@
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<style>
+    .value-td select {
+        min-width: 80px;
+        width: max-content;
+        padding: 6px 0 8px 8px;
+        margin: 0 auto;
+        max-width: 100px;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        var activeSortField = "@Model.Item2.SortField";
+        var activeSortType = "@Model.Item2.SortType";
+
+        var tableIdPrefix = 'Table_@tableId';
+
+        $('#' + tableIdPrefix + ' th').removeClass('active-sort asc desc').find('i').remove();
+
+        var thElement = $('#' + tableIdPrefix + ' a[data-sortfield="' + activeSortField + '"]').closest('th');
+
+        if (activeSortType === 'Ascending') {
+            thElement.append('<i class="bi bi-caret-up-fill"></i>');
+        } else {
+            thElement.append('<i class="bi bi-caret-down-fill"></i>');
+        }
+
+        thElement.addClass('active-sort ' + activeSortType);
+
+        function bindSortEvent() {
+            $('#' + tableIdPrefix + ' th a').on('click', function (e) {
+                e.preventDefault();
+
+                var currentSortField = $(this).data('sortfield');
+
+                var currentSortType = $(this).data('sorttype');
+
+                if (currentSortField === activeSortField) {
+                    activeSortType = (activeSortType === 'Ascending') ? 'Descending' : 'Ascending';
+                } else {
+                    activeSortField = currentSortField;
+                    activeSortType = currentSortType;
+                }
+
+                var url = '@Url.Action("GetTrailersInGroupByFilters", "Equipment")' + '?groupId=' + @tableId + '&sortField=' + activeSortField + ' &sortType=' + activeSortType;
+
+                $.get(url, function (data) {
+                    $('#tabs .tabContent #table_block_' + '@Model.Item1.Id').html(data);
+
+                    $('#' + tableIdPrefix + ' th').removeClass('active - sort asc desc').find('i').remove();
+
+                    var thElement = $('#' + tableIdPrefix + ' a[data-sortfield="' + activeSortField + '"]').closest('th');
+
+                    if (activeSortType === 'Ascending') {
+                        thElement.append('<i class="bi bi-caret-up-fill"></i>');
+                    } else {
+                        thElement.append('<i class="bi bi-caret-down-fill"></i>');
+                    }
+
+                    thElement.addClass('active-sort ' + activeSortType);
+                });
+            });
+        }
+
+        function bindSortSubmit() {
+            $('#filterForm').submit(function (e) {
+                e.preventDefault();
+            });
+        }
+
+        bindSortEvent();
+        bindSortSubmit();
+    });
+</script>

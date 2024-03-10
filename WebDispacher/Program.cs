@@ -40,7 +40,15 @@ namespace WebDispacher
                 await seed.CreateEntityPhotoTypes();
                 await seed.InitVehiclesCategories();
                 await seed.InitTrucksTypesInVehicliesCategories();
+                await seed.InitTrailersTypesInVehicliesCategories();
                 await seed.InitSlugsByTruckTypesNames();
+                await seed.InitSlugsByTrailerTypesNames();
+                await seed.InitResourcesItems();
+                await seed.InitColors();
+                await seed.InitTruckThemesDefault();
+                await seed.InitTruckStatuses();
+                await seed.InitTrailerThemesDefault();
+                await seed.InitTrailerStatuses();
             }
         }
     }

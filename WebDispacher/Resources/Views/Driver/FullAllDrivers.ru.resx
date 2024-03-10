@@ -242,4 +242,37 @@
 	<data name="LastUpdate" xml:space="preserve">
 		<value>Последнее обновление</value>
 	</data>
+	<data name="FirstName" xml:space="preserve">
+		<value>Имя</value>
+	</data>
+	<data name="LastName" xml:space="preserve">
+		<value>Фамилия</value>
+	</data>
+	<data name="Search" xml:space="preserve">
+		<value>Искать</value>
+	</data>
+	<data name="FirstNameLabel" xml:space="preserve">
+		<value>Имя</value>
+	</data>
+	<data name="LastNameLabel" xml:space="preserve">
+		<value>Фамилия</value>
+	</data>
+	<data name="ViewDriver" xml:space="preserve">
+		<value>Просмотр</value>
+	</data>
+	<data name="AddEmailAll" xml:space="preserve">
+		<value>Отправьте всем емаил</value>
+	</data>
+	<data name="AllEmailMessage" xml:space="preserve">
+		<value>Все письма</value>
+	</data>
+	<data name="AddEmail" xml:space="preserve">
+		<value>Написать Письмо</value>
+	</data>
+	<data name="EmailNotSend" xml:space="preserve">
+		<value>Не удалось отправить электронное письмо</value>
+	</data>
+	<data name="EmailSuccessSend" xml:space="preserve">
+		<value>Успешная отправка электронного письма</value>
+	</data>
 </root>

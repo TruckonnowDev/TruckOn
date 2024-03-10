@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -23,6 +24,7 @@ using WebDispacher.Service;
 using WebDispacher.Service.EmailSmtp;
 using WebDispacher.ViewModels.Driver;
 using WebDispacher.ViewModels.Truck;
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace WebDispacher.Business.Services
 {
@@ -37,7 +39,7 @@ namespace WebDispacher.Business.Services
         private readonly IHistoryActionService historyActionService;
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly int maxFileLength = 6 * 1024 * 1024;
- 
+
         public DriverService(
             IMapper mapper,
             Context db,
@@ -71,9 +73,9 @@ namespace WebDispacher.Business.Services
                 await RemoveCompanyDb(companyId);
 
                 await RemoveDriversByCompanyId(companyId, string.Empty);
-            
+
                 var customerSt = companyService.GetCustomer_STByIdCompany(companyId);
-            
+
                 var customer = stripeApi.RemoveCustomer(customerSt);
 
                 if (customer != null)
@@ -95,34 +97,44 @@ namespace WebDispacher.Business.Services
             }
         }
 
-        private async Task RemoveCompanyDb(string id)
+        public async Task<List<DriverMail>> GetAllDriverEmails(int page, string companyId)
         {
-            if (!int.TryParse(id, out var result)) return;
-            
-            var company = await db.Companies.FirstOrDefaultAsync(dc => dc.Id == result);
+            if (!int.TryParse(companyId, out var result))
+                return new List<DriverMail>();
 
-            if (company == null) return;
+            var driverEmails = db.DriverMails
+                .Include(dm => dm.Driver)
+                .Where(dm => dm.Driver.CompanyId == result)
+                .OrderByDescending(umq => umq.DateTimeReceived)
+                .AsQueryable();
 
-            company.CompanyStatus = CompanyStatus.Deactivate;
+            if (page == UserConstants.AllPagesNumber) return await driverEmails.ToListAsync();
 
-            await db.SaveChangesAsync();
+            driverEmails = GetEntriesByPage(driverEmails, page);
+
+            var listDriverEmails = await driverEmails.ToListAsync();
+
+            return listDriverEmails;
         }
 
-        private async Task RemoveSubscribeST(CustomerST customer_ST)
+        public async Task<int> GetCountAllUserQuestionsPages(string companyId)
         {
-            var subscribeSt = await
-                db.SubscribeST.FirstOrDefaultAsync(s => s.CustomerSTId == customer_ST.Id);
+            if (!int.TryParse(companyId, out var result))
+                return 0;
 
-            if (subscribeSt == null) return;
-            
-            db.SubscribeST.Remove(subscribeSt);
-            await db.SaveChangesAsync();
+            return await GetCountAllUserQuestionsPagesInDb(result);
         }
 
-        private async Task RemoveCustomerST(CustomerST customer_ST)
+        private async Task<int> GetCountAllUserQuestionsPagesInDb(int result)
         {
-            db.CustomerST.Remove(customer_ST);
-            await db.SaveChangesAsync();
+            var countNewUserQuestions = await db.DriverMails
+                .Include(dm => dm.Driver)
+                .Where(dm => dm.Driver.CompanyId == result)
+                .CountAsync();
+
+            var countPages = GetCountPage(countNewUserQuestions, UserConstants.NormalPageCount);
+
+            return countPages;
         }
 
         public async Task<List<ProfileSettingsDTO>> GetSettingsTruck(string idCompany, int idProfile, int idTr, string typeTransport)
@@ -149,7 +161,7 @@ namespace WebDispacher.Business.Services
                     Id = z.Id,
                     IsChange = true,
                     IsSelect = z.Id == idProfile,
-                    Name = z.Name,   
+                    Name = z.Name,
                     TransportVehicle = z.TransportVehicle,
                     TypeTransportVehikle = z.TypeTransportVehikle,
                     IsUsed = z.IsUsed,
@@ -185,20 +197,20 @@ namespace WebDispacher.Business.Services
                 .First();
         }
 
-        public async Task RemoveDriver(string companyId, DriverReportModel model,string localDate)
+        public async Task RemoveDriver(string companyId, DriverReportModel model, string localDate)
         {
             await RemoveDriveInDb(model, localDate);
             await UpdatePlanSubscribe(companyId);
         }
-        
-        public async Task RemoveDriversByCompanyId(string companyId,string localDate)
+
+        public async Task RemoveDriversByCompanyId(string companyId, string localDate)
         {
             var dateTimeRemove = string.IsNullOrEmpty(localDate) ? DateTime.Now : DateTime.ParseExact(localDate, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
             if (!int.TryParse(companyId, out var result)) return;
 
             var drivers = await db.Drivers.Where(d => d.CompanyId == result && d.DriverReport == null).ToListAsync();
 
-            foreach(var driver in drivers)
+            foreach (var driver in drivers)
             {
                 await RemoveDriverInCompanyById(new DriverReport
                 {
@@ -221,6 +233,7 @@ namespace WebDispacher.Business.Services
             var driverEdit = await db.Drivers
                 .Include(d => d.DriverControl)
                 .Include(d => d.PhoneNumber)
+                .Include(d => d.EmergencyContactPhoneNumber)
                 .FirstOrDefaultAsync(d => d.Id == model.Id);
 
             if (driverEdit == null) return;
@@ -239,24 +252,82 @@ namespace WebDispacher.Business.Services
 
             await historyActionService.CompareAndSaveUpdatedFields<HistoryDriverAction, EditDriverViewModel>(editDriverViewModel, model, driverEdit.Id, actionData, dateTimeUpdate);
 
+            driverEdit.Language = model.Language;
+            driverEdit.CompanyName = model.CompanyName;
+            driverEdit.OwnerOperator = model.OwnerOperator;
+            driverEdit.Address = model.Address;
+            driverEdit.City = model.City;
+            driverEdit.State = model.State;
+            driverEdit.Login = model.Login;
+            driverEdit.ZipCode = model.ZipCode;
+            driverEdit.Restrictions = model.Restrictions;
+            driverEdit.Endorsements = model.Endorsements;
+            driverEdit.EmergencyContactName = model.EmergencyContactName;
+            driverEdit.EmergencyContactRelationship = model.EmergencyContactRelationship;
             driverEdit.FirstName = model.FirstName;
             driverEdit.LastName = model.LastName;
-            driverEdit.Email = model.Email.ToLower();
-            if(driverEdit.PhoneNumber.DialCode != 0) driverEdit.PhoneNumber.DialCode = model.PhoneNumber.DialCode;
+            driverEdit.Email = model.Email?.ToLower();
+            if (driverEdit.PhoneNumber.DialCode != 0) driverEdit.PhoneNumber.DialCode = model.PhoneNumber.DialCode;
+            if (driverEdit.EmergencyContactPhoneNumber.DialCode != 0) driverEdit.EmergencyContactPhoneNumber.DialCode = model.EmergencyContactPhoneNumber.DialCode;
             driverEdit.PhoneNumber.Name = model.PhoneNumber.Name;
             driverEdit.PhoneNumber.Number = model.PhoneNumber.Number;
             driverEdit.PhoneNumber.Iso2 = model.PhoneNumber.Iso2;
+            
+            driverEdit.EmergencyContactPhoneNumber.Name = model.EmergencyContactPhoneNumber.Name;
+            driverEdit.EmergencyContactPhoneNumber.Number = model.EmergencyContactPhoneNumber.Number;
+            driverEdit.EmergencyContactPhoneNumber.Iso2 = model.EmergencyContactPhoneNumber.Iso2;
             driverEdit.DateOfBirth = model.DateOfBirth;
             driverEdit.DriverLicenseNumber = model.DriverLicenseNumber;
-            driverEdit.DriverControl.TrailerCapacity = model.DriverControl.TrailerCapacity;
+            driverEdit.DriverLicenseState = model.DriverLicenseState;
+            driverEdit.DateDriverLicenseIssued = model.DateDriverLicenseIssued;
+            driverEdit.DateDriverLicenseExpiration = model.DateDriverLicenseExpiration;
+            driverEdit.DateMedicalCardExpiration = model.DateMedicalCardExpiration;
             driverEdit.DriverControl.Password = model.DriverControl.Password;
             driverEdit.DateLastUpdate = dateTimeUpdate;
 
             await db.SaveChangesAsync();
         }
 
+
+        public async Task<List<Driver>> GetDriversWithApproachingMedicalCardExpiration(string companyId, int countDays)
+        {
+            if (!int.TryParse(companyId, out var result))
+                return new List<Driver>();
+
+            var today = DateTime.Today;
+            var thresholdDateMedicalCard = today.AddDays(countDays);
+
+            using (var context = new Context())
+            {
+                var drivers = await context.Drivers
+                    .Where(d => d.DateMedicalCardExpiration <= thresholdDateMedicalCard && d.CompanyId == result)
+                    .ToListAsync();
+
+                return drivers;
+            }
+        }
+        
+        public async Task<List<Driver>> GetDriversWithApproachingDriverLicenseExpiration(string companyId, int countDays)
+        {
+            if (!int.TryParse(companyId, out var result))
+                return new List<Driver>();
+
+            var today = DateTime.Today;
+            var thresholdDateDriverLicense= today.AddDays(countDays);
+
+            using (var context = new Context())
+            {
+                var drivers = await context.Drivers
+                    .Where(d => d.DateDriverLicenseExpiration <= thresholdDateDriverLicense && d.CompanyId == result)
+                    .OrderBy(d => d.DateDriverLicenseExpiration)
+                    .ToListAsync();
+
+                return drivers;
+            }
+        }
+
         public async Task CreateDriver(CreateDriverViewModel driver,
-            IFormFile dLDoc, IFormFile medicalCardDoc, IFormFile sSNDoc, IFormFile proofOfWorkAuthorizationOrGCDoc,
+            IFormFile dLDoc, IFormFile mvr, IFormFile fuelCard, IFormFile corpDocs, IFormFile w9w2, IFormFile medicalCardDoc, IFormFile sSNDoc, IFormFile proofOfWorkAuthorizationOrGCDoc,
             IFormFile dQLDoc, IFormFile contractDoc, IFormFile drugTestResultsDo, string dateTimeLocal)
         {
             var dateTimeCreate = string.IsNullOrEmpty(dateTimeLocal) ? DateTime.Now : DateTime.ParseExact(dateTimeLocal, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
@@ -299,6 +370,20 @@ namespace WebDispacher.Business.Services
             {
                 await SaveDocDriver(drugTestResultsDo, DocAndFileConstants.DrugTestResult, driverId, dateTimeLocal);
             }
+            
+            if (mvr != null)
+            {
+                await SaveDocDriver(mvr, DocAndFileConstants.MVR, driverId, dateTimeLocal);
+            }if (fuelCard != null)
+            {
+                await SaveDocDriver(drugTestResultsDo, DocAndFileConstants.FuelCard, driverId, dateTimeLocal);
+            }if (corpDocs != null)
+            {
+                await SaveDocDriver(drugTestResultsDo, DocAndFileConstants.CorpDocuments, driverId, dateTimeLocal);
+            }if (w9w2 != null)
+            {
+                await SaveDocDriver(drugTestResultsDo, DocAndFileConstants.W9W2, driverId, dateTimeLocal);
+            }
 
             await Task.Run(() => UpdatePlanSubscribe(driver.CompanyId.ToString()));
         }
@@ -317,6 +402,28 @@ namespace WebDispacher.Business.Services
             return db.Drivers.FirstOrDefault(d => d.Id == id);
         }
         
+        public async Task<Driver> GetCompanyDriverById(int id, string companyId)
+        {
+            if (int.TryParse(companyId, out int result))
+            {
+                using (var context = new Context())
+                {
+                    var driver = await db.Drivers
+                        .Include(d => d.DriverControl)
+                        .Include(d => d.DriverReport)
+                        .Include(d => d.PhoneNumber)
+                        .Include(d => d.Geolocation)
+                        .Include(d => d.Company)
+                        .ThenInclude(c => c.PhoneNumber)
+                        .FirstOrDefaultAsync(d => d.Id == id && d.CompanyId == result);
+
+                    return driver;
+                }
+            }
+
+            return null;
+        }
+
         public async Task<EditDriverViewModel> GetEditCompanyDriverById(string companyId, int id)
         {
             if (int.TryParse(companyId, out int result))
@@ -324,12 +431,13 @@ namespace WebDispacher.Business.Services
                 var driver = await db.Drivers
                     .Include(d => d.DriverControl)
                     .Include(d => d.PhoneNumber)
+                    .Include(d => d.EmergencyContactPhoneNumber)
                     .FirstOrDefaultAsync(d => d.Id == id && d.CompanyId == result);
 
                 return mapper.Map<EditDriverViewModel>(driver);
             }
 
-           return null;
+            return null;
         }
 
         public async Task RemoveDocDriver(int docId)
@@ -345,7 +453,7 @@ namespace WebDispacher.Business.Services
 
         public async Task<List<Driver>> GetDriversByCompanyId(string companyId)
         {
-            if(int.TryParse(companyId, out var result))
+            if (int.TryParse(companyId, out var result))
             {
                 return await GetDriversInDb(result);
             }
@@ -353,24 +461,45 @@ namespace WebDispacher.Business.Services
             return new List<Driver>();
         }
 
-        public async Task<List<Driver>> GetDriversByCompanyId(int page, string companyId)
+        public async Task<(List<Driver>, int)> GetDriversByCompanyId(DriverFiltersViewModel filters, string companyId)
         {
             if (int.TryParse(companyId, out var result))
             {
-                return await GetDriversInDb(page, result);
+                return await GetDriversInDb(filters, result);
             }
 
-            return new List<Driver>();
+            return (new List<Driver>(),0);
         }
 
-        public async Task<int> GetCountDriversPages(string companyId)
+        public async Task<List<char>> GetActualFirstLettersDriversLastNameByCompanyId(string companyId)
         {
-            if(int.TryParse(companyId, out var result))
+            if (int.TryParse(companyId, out var result))
             {
-                return await GetDriversPagesInDb(result);
+                using (var context = new Context())
+                {
+                    var actualAlphabet = await context.Drivers
+                       .Where(d => d.CompanyId == result && d.DriverReport == null && !string.IsNullOrEmpty(d.LastName))
+                       .Select(d => d.LastName)
+                       .Distinct()
+                       .ToListAsync();
+
+                    var firstLetters = actualAlphabet
+                        .SelectMany(name => name.Select(ch => char.ToUpper(ch)).Take(1))
+                        .Distinct()
+                        .OrderBy(c => c)
+                        .ToList();
+
+                    return firstLetters;
+                }
             }
 
-            return 0;
+            return new List<char>();
+        }
+
+
+        public int GetCountDriversPagesByCountEntites(int countEntites)
+        {
+            return GetDriversPagesInDb(countEntites);
         }
 
         public async Task AddNewReportDriver(DriverReportViewModel driverReport, string localDate)
@@ -380,7 +509,7 @@ namespace WebDispacher.Business.Services
 
         public async Task<List<DriverReportViewModel>> GetDriverReportsByCompnayId(DriverSearchViewModel model, string companyId)
         {
-            if (!int.TryParse(companyId, out var result)) 
+            if (!int.TryParse(companyId, out var result))
                 return new List<DriverReportViewModel>();
 
             var driverReports = db.DriversReports
@@ -417,7 +546,7 @@ namespace WebDispacher.Business.Services
 
             if (!string.IsNullOrEmpty(driversLicense))
             {
-               driverReports = driverReports.Where(x => x.Driver.DriverLicenseNumber.Contains(driversLicense));
+                driverReports = driverReports.Where(x => x.Driver.DriverLicenseNumber.Contains(driversLicense));
             }
 
             driverReports = driverReports.OrderByDescending(x => x.Id);
@@ -496,7 +625,7 @@ namespace WebDispacher.Business.Services
             var layouts = db.Layouts.FirstOrDefault(l => l.Id == idLayout);
 
             if (layouts == null) return;
-            
+
             layouts.IsUsed = false;
             db.SaveChanges();
         }
@@ -536,6 +665,43 @@ namespace WebDispacher.Business.Services
             db.SaveChanges();
         }
 
+        public async Task SendEmail(DriverMail model, string companyId)
+        {
+            if (!int.TryParse(companyId, out var result)) return;
+
+            using (var context = new Context())
+            {
+                var currentCompany = await context.Companies.FirstOrDefaultAsync(c => c.Id == result);
+                if (model.DriverId == 0)
+                {
+                    var allCompanyDriver = await context.Drivers.Where(d => d.CompanyId == result).ToListAsync();
+
+                    var listDriverMails = new List<DriverMail>();
+                    foreach (var item in allCompanyDriver)
+                    {
+                        var pattern = new PaternSourse().GetPatternSendMessageCompanyToDriver(currentCompany.Name, model.Message);
+                        await new AuthMessageSender().Execute(item.Email, UserConstants.SendDriverMessageSubject, pattern);
+                        listDriverMails.Add(new DriverMail { DriverId = item.Id, Message = model.Message, DateTimeReceived = DateTime.UtcNow, ReceivedEmail = item.Email });
+                    }
+
+                    await context.DriverMails.AddRangeAsync(listDriverMails);
+                    await context.SaveChangesAsync();
+                    return;
+                }
+
+                var currentDriver = await context.Drivers.FirstOrDefaultAsync(d => d.Id == model.DriverId);
+                if (currentDriver == null) return;
+                model.ReceivedEmail = currentDriver.Email;
+                model.DateTimeReceived = DateTime.UtcNow;
+
+                var patternOnlyDriver = new PaternSourse().GetPatternSendMessageCompanyToDriver(currentCompany.Name, model.Message);
+                await new AuthMessageSender().Execute(model.ReceivedEmail, UserConstants.SendDriverMessageSubject, patternOnlyDriver);
+
+                await context.DriverMails.AddAsync(model);
+                await context.SaveChangesAsync();
+            }
+        }
+
         public async Task RemoveProfile(string idCompany, int idProfile)
         {
             var profileSetting = await db.ProfileSettings
@@ -544,12 +710,12 @@ namespace WebDispacher.Business.Services
                 .FirstOrDefaultAsync();
 
             if (profileSetting == null) return;
-            
-                db.Layouts.RemoveRange(profileSetting.TransportVehicle.Layouts);
-                db.TransportVehicles.RemoveRange(profileSetting.TransportVehicle);
-                db.ProfileSettings.Remove(db.ProfileSettings.First(p =>
-                    p.IdCompany.ToString() == idCompany && p.Id == idProfile));
-                await db.SaveChangesAsync();
+
+            db.Layouts.RemoveRange(profileSetting.TransportVehicle.Layouts);
+            db.TransportVehicles.RemoveRange(profileSetting.TransportVehicle);
+            db.ProfileSettings.Remove(db.ProfileSettings.First(p =>
+                p.IdCompany.ToString() == idCompany && p.Id == idProfile));
+            await db.SaveChangesAsync();
         }
 
         public void SelectLayout(int idLayout)
@@ -564,7 +730,7 @@ namespace WebDispacher.Business.Services
             var layouts = db.Layouts.FirstOrDefault(l => l.Id == idLayout);
 
             if (layouts == null) return;
-            
+
             layouts.IsUsed = true;
             db.SaveChanges();
         }
@@ -572,7 +738,7 @@ namespace WebDispacher.Business.Services
         public async Task<ProfileSettingsDTO> GetSelectSettingTruck(string idCompany, int idProfile, int idTr, string typeTransport)
         {
             ProfileSettingsDTO profileSetting = null;
-            
+
             if (idProfile != 0)
             {
                 var profileSetting1 = GetSelectSettings(idCompany, idProfile);
@@ -644,7 +810,7 @@ namespace WebDispacher.Business.Services
         {
             var profileSetting = db.ProfileSettings.FirstOrDefault(p => p.Id == idProfile);
             if (profileSetting == null) return;
-            
+
             profileSetting.IsUsed = isUsed;
 
             db.SaveChanges();
@@ -654,7 +820,7 @@ namespace WebDispacher.Business.Services
         {
             var emailDriver = "";
             var driver = db.Drivers.FirstOrDefault(d => d.Id.ToString() == idDriver);
-            
+
             if (driver != null)
             {
                 emailDriver = driver.Email;
@@ -670,7 +836,7 @@ namespace WebDispacher.Business.Services
 
         private async Task<List<Driver>> GetDriversInDb(int companyId)
         {
-            using(var context = new Context())
+            using (var context = new Context())
             {
                 var drivers = await db.Drivers
                     .Where(d => d.CompanyId == companyId && d.DriverReport == null)
@@ -684,37 +850,59 @@ namespace WebDispacher.Business.Services
             }
         }
 
-        private async Task<List<Driver>> GetDriversInDb(int page, int companyId)
+        private async Task<(List<Driver>,int)> GetDriversInDb(DriverFiltersViewModel filters, int companyId)
         {
             var drivers = db.Drivers
                 .Include(d => d.DriverControl)
                 .Include(d => d.PhoneNumber)
                 .Where(d => d.CompanyId == companyId && d.DriverReport == null)
-                .OrderByDescending(d => d.Id)
                 .AsQueryable();
 
-            if (page == UserConstants.AllPagesNumber) return await drivers.ToListAsync();
+            if (!string.IsNullOrEmpty(filters.FirstName))
+            {
+                var namesWord = filters.FirstName.Split(' ');
+
+                drivers = namesWord.Aggregate(drivers, (current, keyword) =>
+                    current.Where(bimp => bimp.FirstName.Contains(keyword)));
+            }
+
+            if (!string.IsNullOrEmpty(filters.LastName))
+            {
+                var namesWord = filters.LastName.Split(' ');
+
+                drivers = namesWord.Aggregate(drivers, (current, keyword) =>
+                    current.Where(bimp => bimp.LastName.Contains(keyword)));
+            }
+
+            if (filters.FirstLetter.HasValue)
+            {
+                var lowerCaseFirstLetter = filters.FirstLetter.ToString().ToLowerInvariant();
+                drivers = drivers
+                    .Where(d => string.IsNullOrEmpty(lowerCaseFirstLetter) || (d.LastName != null && d.LastName.StartsWith(lowerCaseFirstLetter)));
+            }
+
+            var countEntites = await drivers.CountAsync();
+
+            if (filters.Page == UserConstants.AllPagesNumber) return (await drivers.ToListAsync(), countEntites);
 
             try
             {
-                drivers = drivers.Skip(UserConstants.NormalPageCount * page - UserConstants.NormalPageCount);
+                drivers = drivers.Skip(UserConstants.NormalPageCount * filters.Page - UserConstants.NormalPageCount);
 
                 drivers = drivers.Take(UserConstants.NormalPageCount);
             }
             catch (Exception)
             {
-                drivers = drivers.Skip((UserConstants.NormalPageCount * page) - UserConstants.NormalPageCount);
+                drivers = drivers.Skip((UserConstants.NormalPageCount * filters.Page) - UserConstants.NormalPageCount);
             }
 
-            var listDrivers = await drivers.ToListAsync();
-            
-            return listDrivers;
-        }
-        
-        private async Task<int> GetDriversPagesInDb(int companyId)
-        {
-            var countDrivers = await db.Drivers.Where(d => d.CompanyId == companyId).CountAsync();
+            var listDrivers = await drivers.OrderBy(d => d.LastName).ToListAsync();
 
+            return (listDrivers, countEntites);
+        }
+
+        private int GetDriversPagesInDb(int countDrivers)
+        {
             var countPages = GetCountPage(countDrivers, UserConstants.NormalPageCount);
 
             return countPages;
@@ -722,9 +910,9 @@ namespace WebDispacher.Business.Services
 
         private int GetCountPage(int countElements, int countElementsInOnePage)
         {
-            var countPages = (countElements / countElementsInOnePage) % countElementsInOnePage;
+            var countPages = (countElements / countElementsInOnePage) + ((countElements % countElementsInOnePage) > 0 ? 1 : 0);
 
-            return countPages > 0 ? countPages + 1 : countPages;
+            return countPages;
         }
 
         public async Task SaveDocDriver(IFormFile uploadedFile, string nameDoc, int driverId, string dateTimeUpload)
@@ -742,12 +930,12 @@ namespace WebDispacher.Business.Services
             {
                 Directory.CreateDirectory($"../Document/Driver/{driverId}");
             }
-            
+
             using (var fileStream = new FileStream(path, FileMode.Create))
             {
                 uploadedFile.CopyTo(fileStream);
             }
-            
+
             await SaveDocDriverDb(path, driverId, nameDoc, dateTimeUpload);
         }
 
@@ -780,6 +968,35 @@ namespace WebDispacher.Business.Services
             await db.SaveChangesAsync();
         }
 
+        private async Task RemoveCompanyDb(string id)
+        {
+            if (!int.TryParse(id, out var result)) return;
+
+            var company = await db.Companies.FirstOrDefaultAsync(dc => dc.Id == result);
+
+            if (company == null) return;
+
+            company.CompanyStatus = CompanyStatus.Deactivate;
+
+            await db.SaveChangesAsync();
+        }
+
+        private async Task RemoveSubscribeST(CustomerST customer_ST)
+        {
+            var subscribeSt = await
+                db.SubscribeST.FirstOrDefaultAsync(s => s.CustomerSTId == customer_ST.Id);
+
+            if (subscribeSt == null) return;
+
+            db.SubscribeST.Remove(subscribeSt);
+            await db.SaveChangesAsync();
+        }
+
+        private async Task RemoveCustomerST(CustomerST customer_ST)
+        {
+            db.CustomerST.Remove(customer_ST);
+            await db.SaveChangesAsync();
+        }
         private async Task<int> AddDriver(CreateDriverViewModel model)
         {
             model.Email = model.Email != null ? model.Email.ToLower() : model.Email;
@@ -787,7 +1004,6 @@ namespace WebDispacher.Business.Services
             var driverControl = new DriverControl
             {
                 Password = model.DriverControl.Password,
-                TrailerCapacity = model.DriverControl.TrailerCapacity
             };
 
             await db.DriversControls.AddAsync(driverControl);
@@ -799,8 +1015,17 @@ namespace WebDispacher.Business.Services
                 Iso2 = model.PhoneNumber.Iso2,
                 Name = model.PhoneNumber.Name,
             };
+            
+            var phoneEmergencyContact = new PhoneNumber
+            {
+                Number = model.EmergencyContactPhoneNumber.Number,
+                DialCode = model.EmergencyContactPhoneNumber.DialCode,
+                Iso2 = model.EmergencyContactPhoneNumber.Iso2,
+                Name = model.EmergencyContactPhoneNumber.Name,
+            };
 
             await db.PhonesNumbers.AddAsync(phoneContact);
+            await db.PhonesNumbers.AddAsync(phoneEmergencyContact);
 
             await db.SaveChangesAsync();
 
@@ -808,11 +1033,31 @@ namespace WebDispacher.Business.Services
             {
                 FirstName = model.FirstName,
                 LastName = model.LastName,
+                OwnerOperator = model.OwnerOperator,
+                CompanyName = model.CompanyName,
+                Address = model.Address,
+                City = model.City,
+                State = model.State,
+                ZipCode = model.ZipCode,
+
+                EmergencyContactName = model.EmergencyContactName,
+                EmergencyContactRelationship = model.EmergencyContactRelationship,
+
+                Language = model.Language,
+                SocialSecurity = model.SocialSecurity,
+                Login = model.Login,
                 Email = model.Email,
                 PhoneNumberId = phoneContact.Id,
+                EmergencyContactPhoneNumberId = phoneEmergencyContact.Id,
                 DriverLicenseNumber = model.DriverLicenseNumber,
+                DriverLicenseState = model.DriverLicenseState,
+                DateDriverLicenseIssued = model.DateDriverLicenseIssued,
+                DateDriverLicenseExpiration = model.DateDriverLicenseExpiration,
+                DateMedicalCardExpiration = model.DateMedicalCardExpiration,
                 DateRegistration = model.DateRegistration,
                 DateLastUpdate = model.DateRegistration,
+                Endorsements = model.Endorsements,
+                Restrictions = model.Restrictions,
                 DateOfBirth = model.DateOfBirth,
                 CompanyId = model.CompanyId,
                 DriverControlId = driverControl.Id
@@ -830,8 +1075,8 @@ namespace WebDispacher.Business.Services
             var dateUpdate = string.IsNullOrEmpty(localDate) ? DateTime.Now : DateTime.ParseExact(localDate, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
 
             var driver = await db.Drivers.FirstOrDefaultAsync(d => d.DriverLicenseNumber == driverReport.DriverLicenseNumber);
-            
-            if(driver == null) return;
+
+            if (driver == null) return;
 
             driver.DateLastUpdate = dateUpdate;
 
@@ -853,7 +1098,7 @@ namespace WebDispacher.Business.Services
                 DotViolations = driverReport.DotViolations,
                 NumberAccidents = driverReport.NumberOfAccidents
             };
-            
+
             await db.DriversReports.AddAsync(driverReportReport);
 
             await db.SaveChangesAsync();
@@ -874,7 +1119,7 @@ namespace WebDispacher.Business.Services
             var driver = db.Drivers
                 .FirstOrDefault(d => d.Id == model.Id);
 
-            if(driver == null) return;
+            if (driver == null) return;
 
             driver.DateLastUpdate = dateUpdate;
 
@@ -902,6 +1147,21 @@ namespace WebDispacher.Business.Services
             await db.SaveChangesAsync();
         }
 
+        private IQueryable<T> GetEntriesByPage<T>(IQueryable<T> entry, int page)
+        {
+            try
+            {
+                entry = entry.Skip(UserConstants.NormalPageCount * page - UserConstants.NormalPageCount);
+
+                entry = entry.Take(UserConstants.NormalPageCount);
+            }
+            catch (Exception)
+            {
+                entry = entry.Skip((UserConstants.NormalPageCount * page) - UserConstants.NormalPageCount);
+            }
+
+            return entry;
+        }
         private async Task UpdatePlanSubscribe(string companyId)
         {
             var typeCurrentCompany = userService.GetCompanyById(companyId).CompanyStatus;

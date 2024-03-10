@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -16,6 +17,7 @@ using WebDispacher.Business.Services;
 using WebDispacher.Constants;
 using WebDispacher.Constants.Identity;
 using WebDispacher.Service;
+using WebDispacher.ViewModels;
 using WebDispacher.ViewModels.Marketplace;
 
 namespace WebDispacher.Controellers
@@ -167,8 +169,34 @@ namespace WebDispacher.Controellers
 
             return Redirect(Config.BaseReqvesteUrl);
         }
-        
-        
+
+        [HttpGet]
+        [Route("Marketplace/AllPages")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierAdminCompany)]
+        public async Task<IActionResult> UserLotAll(int page = 1)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+                ViewData[NavConstants.TypeNavBar] = NavConstants.BaseCompany;
+
+                var lots = await marketplaceService.GetFullPendingItemsMarketPosts(new UserMarketPostsFiltersViewModel { Page = page } );
+
+                ViewBag.CountPages = 1;
+
+                ViewBag.SelectedPage = page;
+
+                return View("UserLotAll", lots);
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            return Redirect(Config.BaseReqvesteUrl);
+        }
+
         [HttpGet]
         [Route("Marketplace/Classifieds/MyAds")]
         [Authorize(Policy = PolicyIdentityConstants.CarrierCompanyOrAdmin)]
@@ -447,6 +475,83 @@ namespace WebDispacher.Controellers
 
             return Redirect(Config.BaseReqvesteUrl);
         }
+        
+        [HttpPost]
+        [Route("Marketplace/Admin/Save")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierAdminCompany)]
+        public async Task<IActionResult> SaveDesidion(PostApprovalHistory model)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId, NavConstants.NormalCompany);
+                
+                await marketplaceService.SendDesidionToPost(model);
+
+                return Redirect($"{Config.BaseReqvesteUrl}/Marketplace/AllPages");
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            return Redirect(Config.BaseReqvesteUrl);
+        }
+        
+        [HttpGet]
+        [Route("Marketplace/Sell/Admin/{id:int}")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierAdminCompany)]
+        public async Task<IActionResult> CheckSell(int id)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId, NavConstants.NormalCompany);
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+
+                if (isCancelSubscribe)
+                {
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
+                }
+
+                var sellLotItem = await marketplaceService.GetSellItemMarketPostPendingWithHistory(id);
+                var historyChecks = await marketplaceService.GetHistoryChecksMarketPost(id);
+                return View((sellLotItem, historyChecks));
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            return Redirect(Config.BaseReqvesteUrl);
+        }
+
+        [HttpGet]
+        [Route("Marketplace/buy/Admin/{id:int}/")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierAdminCompany)]
+        public async Task<IActionResult> CheckBuy(int id)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId, NavConstants.NormalCompany);
+                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+
+                if (isCancelSubscribe)
+                {
+                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
+                }
+                var buyLotItem = await marketplaceService.GetBuyItemMarketPostPendingWithHistory(id);
+                var historyChecks = await marketplaceService.GetHistoryChecksMarketPost(id);
+                return View((buyLotItem, historyChecks));
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            return Redirect(Config.BaseReqvesteUrl);
+        }
 
         [HttpGet]
         [Route("Marketplace/Classifieds/CategoryBuy/CreateBuyLot")]
@@ -476,20 +581,23 @@ namespace WebDispacher.Controellers
         [HttpPost]
         [Route("Marketplace/Classifieds/CategoryBuy/CreateBuyLot")]
         [Authorize(Policy = PolicyIdentityConstants.CarrierCompanyOrAdmin)]
-        public async Task<IActionResult> CreateBuyLot(CreateBuyLotViewModel model, List<IFormFile> files, string localDate)
+        public async Task<IActionResult> CreateBuyLot(CreateBuyLotViewModel model, string uploadedFiles, string localDate)
         {
+            
             if (ModelState.IsValid)
             {
                 try
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId, NavConstants.NormalCompany);
+
                     
-                    var itemId = await marketplaceService.CreateBuyLot(model, files, CompanyId, localDate);
+
+                    var itemId = await marketplaceService.CreateBuyLot(model, uploadedFiles, CompanyId, localDate);
 
                     return Redirect($"{Config.BaseReqvesteUrl}/Marketplace/Classifieds/CategoryBuy/{itemId}");
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
 
                 }
@@ -505,7 +613,7 @@ namespace WebDispacher.Controellers
         [HttpPost]
         [Route("Marketplace/Classifieds/CategorySell/CreateSellLot")]
         [Authorize(Policy = PolicyIdentityConstants.CarrierCompanyOrAdmin)]
-        public async Task<IActionResult> CreateSellLot(CreateSellLotViewModel model, List<IFormFile> files, string localDate)
+        public async Task<IActionResult> CreateSellLot(CreateSellLotViewModel model, string uploadedFiles, string localDate)
         {
             if (ModelState.IsValid)
             {
@@ -514,7 +622,7 @@ namespace WebDispacher.Controellers
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                     ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId, NavConstants.NormalCompany);
                     
-                    var itemId = await marketplaceService.CreateSellLot(model, files, CompanyId, localDate);
+                    var itemId = await marketplaceService.CreateSellLot(model, uploadedFiles, CompanyId, localDate);
 
                     return Redirect($"{Config.BaseReqvesteUrl}/Marketplace/Classifieds/CategorySell/{itemId}");
                 }
@@ -534,14 +642,14 @@ namespace WebDispacher.Controellers
         [HttpPost]
         [Route("Marketplace/Classifieds/CategoryBuy/UpdateBuyLot")]
         [Authorize(Policy = PolicyIdentityConstants.CarrierCompanyOrAdmin)]
-        public async Task<IActionResult> UpdateBuyLot(BuyItemMarketPostViewModel model, List<IFormFile> files, string localDate)
+        public async Task<IActionResult> UpdateBuyLot(BuyItemMarketPostViewModel model, string uploadedFiles, string localDate)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                    var itemId = await marketplaceService.UpdateBuyLot(model, CompanyId, files, localDate);
+                    var itemId = await marketplaceService.UpdateBuyLot(model, CompanyId, uploadedFiles, localDate);
 
                     return Redirect($"{Config.BaseReqvesteUrl}/Marketplace/Classifieds/CategoryBuy/{itemId}");
                 }
@@ -561,7 +669,7 @@ namespace WebDispacher.Controellers
         [HttpPost]
         [Route("Marketplace/Classifieds/CategorySell/UpdateSellLot")]
         [Authorize(Policy = PolicyIdentityConstants.CarrierCompanyOrAdmin)]
-        public async Task<IActionResult> UpdateSellLot(SellItemMarketPostViewModel model, List<IFormFile> files, string localDate)
+        public async Task<IActionResult> UpdateSellLot(SellItemMarketPostViewModel model, string uploadedFiles, string localDate)
         {
             if (ModelState.IsValid)
             {
@@ -569,7 +677,7 @@ namespace WebDispacher.Controellers
                 {
                     ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
-                    var itemId = await marketplaceService.UpdateSellLot(model, CompanyId, files, localDate);
+                    var itemId = await marketplaceService.UpdateSellLot(model, CompanyId, uploadedFiles, localDate);
 
                     return Redirect($"{Config.BaseReqvesteUrl}/Marketplace/Classifieds/CategorySell/{itemId}");
                 }

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="CallButton" xml:space="preserve">
+        <value>Позвонить</value>
+    </data>
+    <data name="CategoryBuyForumNav" xml:space="preserve">
+        <value>Покупка</value>
+    </data>
+    <data name="ClassifiedsForumNav" xml:space="preserve">
+        <value>Объявления</value>
+    </data>
+    <data name="DeleteStatusPostItem" xml:space="preserve">
+        <value>Удаленный</value>
+    </data>
+    <data name="DescriptionBlockLabel" xml:space="preserve">
+        <value>Описание</value>
+    </data>
+    <data name="HideStatusPostItem" xml:space="preserve">
+        <value>Скрытый</value>
+    </data>
+    <data name="ManageButton" xml:space="preserve">
+        <value>Редактирование</value>
+    </data>
+    <data name="MarketplaceForumNav" xml:space="preserve">
+        <value>Маркетплейс</value>
+    </data>
+    <data name="NoImagesBlockHeader" xml:space="preserve">
+        <value>Нет изображений</value>
+    </data>
+    <data name="PublicStatusPostItem" xml:space="preserve">
+        <value>Опубликованный</value>
+    </data>
+    <data name="RemovedPostStatus" xml:space="preserve">
+        <value>Удаленный</value>
+    </data>
+    <data name="SoldPostStatus" xml:space="preserve">
+        <value>Продано</value>
+    </data>
+    <data name="SoldStatusPostItem" xml:space="preserve">
+        <value>Продано</value>
+    </data>
+    <data name="WriteButton" xml:space="preserve">
+        <value>Написать</value>
+    </data>
+    <data name="ZipCodeLabel" xml:space="preserve">
+        <value>Почтовый индекс</value>
+    </data>
+    <data name="ActionHistory" xml:space="preserve">
+        <value>История изменений</value>
+    </data>
+    <data name="ShowHistory" xml:space="preserve">
+        <value>Показать историю</value>
+    </data>
+    <data name="DateAction" xml:space="preserve">
+        <value>Дата действия</value>
+    </data>
+    <data name="CountActions" xml:space="preserve">
+        <value>Количество изменений</value>
+    </data>
+    <data name="ActionChecks" xml:space="preserve">
+        <value>История Проверок</value>
+    </data>
+    <data name="Approve" xml:space="preserve">
+        <value>Одобрено</value>
+    </data>
+    <data name="ChooseApprovalStatus" xml:space="preserve">
+        <value>Выберите Статус утверждения</value>
+    </data>
+    <data name="Comment" xml:space="preserve">
+        <value>Комментарий</value>
+    </data>
+    <data name="Desidion" xml:space="preserve">
+        <value>Решение</value>
+    </data>
+    <data name="Reject" xml:space="preserve">
+        <value>Отклонено</value>
+    </data>
+    <data name="Result" xml:space="preserve">
+        <value>Результат</value>
+    </data>
+    <data name="SaveInfo" xml:space="preserve">
+        <value>Сохранить</value>
+    </data>
+</root>

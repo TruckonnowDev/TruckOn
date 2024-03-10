@@ -8,5 +8,6 @@
         public const string FullDateTimeInfoUS = "M.dd.yyyy h:mm:ss tt";
         public const string DateTimeInfoUS = "M.dd.yyyy";
         public const string DateOfBirth = "MM/dd/yyyy";
+        public const string DocExp = "MM/dd/yy";
     }
 }

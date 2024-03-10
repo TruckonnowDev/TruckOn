@@ -92,13 +92,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BaceModel\BaceModel.csproj" />
     <ProjectReference Include="..\DaoModels\DaoModels.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="DaoModels">
-      <HintPath>..\DaoModels\bin\Debug\netstandard2.1\DaoModels.dll</HintPath>
+    <Reference Include="BaceModel">
+      <HintPath>..\BaceModel\bin\Debug\netstandard2.1\BaceModel.dll</HintPath>
     </Reference>
   </ItemGroup>
 
@@ -589,6 +588,303 @@
     <EmbeddedResource Update="Resources\Views\PartView\History\ChangeHistoryModalData.ru.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ChangeHistoryModalData.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RA\EmailConfirmed.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>EmailConfirmed.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RA\EmailConfirmed.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>EmailConfirmed.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RA\EmailConfirmed.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>EmailConfirmed.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RA\ErrorConfirmEmail.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ErrorConfirmEmail.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RA\ErrorConfirmEmail.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ErrorConfirmEmail.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RA\ErrorConfirmEmail.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ErrorConfirmEmail.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Driver\DriverInfo.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>DriverInfo.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Driver\DriverInfo.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>DriverInfo.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Driver\DriverInfo.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>DriverInfo.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Resources\PartViews\AdminAllItems.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AllItems.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Resources\PartViews\AdminServiceItem.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ServiceItem.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Resources\PartViews\AdminServiceItem.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ServiceItem.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Resources\PartViews\AdminServiceItem.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ServiceItem.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Resources\EditItem.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>EditItem.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Resources\EditItem.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>EditItem.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Resources\EditItem.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>EditItem.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Equipment\AllTrailer.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AllTrailer.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Equipment\AllTrailer.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AllTrailer.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Equipment\AllTrailer.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AllTrailer.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Equipment\AllTruck.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AllTruck.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Equipment\AllTruck.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AllTruck.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Equipment\AllTruck.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AllTruck.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\Equipment\RequiredCreateTrailerGroup.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RequiredCreateTrailerGroup.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\Equipment\RequiredCreateTrailerGroup.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RequiredCreateTrailerGroup.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\Equipment\RequiredCreateTrailerGroup.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RequiredCreateTrailerGroup.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\Equipment\RequiredCreateTruckGroup.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RequiredCreateTruckGroup.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\Equipment\RequiredCreateTruckGroup.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RequiredCreateTruckGroup.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\Equipment\RequiredCreateTruckGroup.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RequiredCreateTruckGroup.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\Equipment\CreateTruckStatus.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CreateTruckStatus.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\Equipment\CreateTruckStatus.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CreateTruckStatus.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\Equipment\CreateTruckStatus.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CreateTruckStatus.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\Equipment\CreateTrailerStatus.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CreateTruckStatus.en.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\Equipment\RenameGroup.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RenameGroup.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\Equipment\RenameGroup.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RenameGroup.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\Equipment\RenameGroup.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RenameGroup.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RA\IndexHide.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>IndexHide.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RA\IndexHide.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>IndexHide.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RA\IndexHide.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>IndexHide.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Equipment\PartView\_TrailerWidgets.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>_TrailerWidgets.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Equipment\PartView\_TrailerWidgets.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>_TrailerWidgets.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Equipment\PartView\_TrailerWidgets.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>_TrailerWidgets.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Equipment\PartView\_TruckWidgets.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>_TruckWidgets.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Equipment\PartView\_TruckWidgets.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>_TruckWidgets.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Equipment\PartView\_TruckWidgets.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>_TruckWidgets.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\CreateWidget.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CreateWidget.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\CreateWidget.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CreateWidget.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\CreateWidget.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CreateWidget.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\EditWidget.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CreateWidget.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\EditWidget.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CreateWidget.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\EditWidget.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CreateWidget.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Dashbord\PartView\_OrderWidgets.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>_OrderWidgets.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Dashbord\PartView\_OrderWidgets.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>_OrderWidgets.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Dashbord\PartView\_OrderWidgets.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>_OrderWidgets.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Dashbord\Index.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Index.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Dashbord\Index.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Index.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Dashbord\Index.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Index.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\Equipment\UpdateExpWithDoc.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>UpdateExpWithDoc.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\Equipment\UpdateExpWithDoc.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>UpdateExpWithDoc.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\Equipment\UpdateExpWithDoc.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>UpdateExpWithDoc.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\Driver\CreateEmailForm.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CreateEmailForm.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\Driver\CreateEmailForm.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CreateEmailForm.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\PartView\Modals\Driver\CreateEmailForm.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CreateEmailForm.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Driver\AllEmail.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AllEmail.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Driver\AllEmail.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AllEmail.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Driver\AllEmail.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AllEmail.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\UserLotAll.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>UserLotAll.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\UserLotAll.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>UserLotAll.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\UserLotAll.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>UserLotAll.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\CheckBuy.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>BuyLotPage.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\CheckBuy.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>BuyLotPage.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\CheckBuy.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>BuyLotPage.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\CheckSell.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>BuyLotPage.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\CheckSell.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>BuyLotPage.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Marketplace\CheckSell.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>BuyLotPage.es.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

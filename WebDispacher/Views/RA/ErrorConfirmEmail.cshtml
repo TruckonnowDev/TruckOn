@@ -1,0 +1,44 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Confirm Email";
+}
+
+<div class="mt-4">
+        <div class="text-red">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2 class="pb-2">@Localizer["NoAccess"]</h2>
+                        <h3 class="pb-3">@Localizer["NoAccessBody"]</h3>
+                        <button onclick="window.location.href='@ViewBag.BaseUrl'" class="btn1">@Localizer["ReturnMainPage"]</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+
+<style>
+
+    .text-red{
+        padding-top: 40px;
+    }
+
+    header {
+        position: relative;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #c4c9d5;
+    }
+
+    .pass-position {
+        right: 16% !important;
+        top: 33.5% !important;
+    }
+
+    .form.form-login .white .password-control {
+        top: 57%;
+        right: 6.5%;
+    }
+</style>

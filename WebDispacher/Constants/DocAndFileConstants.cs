@@ -11,6 +11,10 @@
         public const string TrailerInspection = "Trailer annual inspection";
         public const string LeaseAgreement = "Lease agreement";
         public const string BobTailPhysicalDamage = "Truck Bobtail Physical Damage";
+        public const string MVR = "MVR";
+        public const string FuelCard = "Fuel Card";
+        public const string CorpDocuments = "Corp Documents";
+        public const string W9W2 = "W9/W2";
         public const string NyHit = "NY HUT (NY Rolling) Documents";
         public const string Kyu = "KYU";
         public const string Dl = "DL";

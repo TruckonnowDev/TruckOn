@@ -141,4 +141,10 @@
   <data name="ConfirmMessageCloseMarketPost" xml:space="preserve">
     <value>¿Cerrar Publicación? (Vendido)</value>
   </data>
+  <data name="ConfirmMessagDeleteTruckGroup" xml:space="preserve">
+    <value>Eliminar Grupo de Camiones?</value>
+  </data>
+  <data name="ConfirmMessagDeleteTrailerGroup" xml:space="preserve">
+    <value>¿Eliminar el Grupo de Remolques?</value>
+  </data>
 </root>

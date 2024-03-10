@@ -1,0 +1,467 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization;
+@using WebDispacher.ViewModels.Widget;
+@using WebDispacher.ViewModels.Widget.Enum;
+
+@inject IViewLocalizer Localizer
+
+@model (CreateWidgetVm, string)
+
+<div class="modal fade" id="addWidget" tabindex="-1" role="dialog" aria-labelledby="addWidgetLabel">
+    <content class="ng-modal-wrapper">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header modal-title">
+                    <h1 class="text-center" style="width:100%;" id="WidgetLabel">@Localizer["AddWidgetHeader"]</h1>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="/Equipment/Widget/SaveWidget">
+                        <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+                        @Html.ValidationSummary()
+                        <div class="form-group">
+                            <label for="">
+                                @Localizer["SelectStatusLabel"]
+                                <span><abbr data-title="@Localizer["SelectStatusLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                <br />
+                                <select style="margin-top: 12px; height: auto;" required class="height-input input-select" name="StatusId" asp-for="Item1.StatusId" id="selectedStatus">
+                                    <option value="">@Localizer["ChooseStatus"]</option>
+                                </select>
+                                @Html.ValidationMessageFor(model => model.Item1.StatusId, "", new { @class = "text-danger" })
+                            </label>
+                        </div>
+                        <div class="form-group full-label">
+                            <input type="hidden" name="returnUrl" value="@Model.Item2">
+                            <input type="hidden" value="" name="dateTimeLocalCreateTruck" />
+                            <input class="btn1 button-custom" type="submit" value="@Localizer["ButtonAddWidget"]" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </content>
+</div>
+
+<script>
+    function initializeCreateWidgetScripts() {
+        const dateInputCreateTruckStatus = document.querySelector("[name='dateTimeLocalCreateTruck']");
+
+        $("input[type=submit]").on('click', function (e) {
+            dateInputCreateTruckStatus.value = GetDateTimeInFormat(new Date());
+        });
+
+        var colorPicker = $('#colorCreatePicker');
+        var selectedColorGroupIdInput = $('#SelectedCreateThemeId');
+        
+
+        colorPicker.on('click', '.color-option-group', function () {
+            var colorOptionGroup = $(this);
+
+            $('.color-option-group.selected').removeClass('selected');
+
+            colorOptionGroup.addClass('selected');
+
+            var selectedGroupId = colorOptionGroup.data('group-id');
+
+            selectedColorGroupIdInput.val(selectedGroupId);
+
+            updateCreateExampleBlock();
+        });
+    }
+
+    function updateCreateExampleBlock() {
+        var selectedColorGroup = $('.color-option-group.selected');
+        var exampleBlock = $('#exampleCreateBlock');
+        var exampleWidget = $("#exampleCreateWidget");
+        var textColor = selectedColorGroup.find('.color-option').eq(0).css('background-color');
+        var firstBGColor = selectedColorGroup.find('.color-option').eq(1).css('background-color');
+        var secondBGColor = selectedColorGroup.find('.color-option').eq(2).css('background-color');
+
+        exampleWidget.css("background", `radial-gradient(circle, ${firstBGColor} 40%, ${textColor} 60%)`);
+        exampleWidget.css("border", `1px solid ${secondBGColor}`);
+        exampleBlock.show();
+    }
+
+    function initializeCreateStatusDropDown() {
+        var url = '@Url.Action("GetTrailerStatusWithoutWidgetsDropdownItems", "Equipment")';
+
+        if (`@Model.Item1.TypeWidget` === `@TypeWidget.Truck`) {
+            url = '@Url.Action("GetTruckStatusWithoutWidgetsDropdownItems", "Equipment")';
+        }
+        else if (`@Model.Item1.TypeWidget` === `@TypeWidget.Order`) {
+            url = '@Url.Action("GetOrderStatusWithoutWidgetsDropdownItems", "Dashbord")';
+        }
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function (result) {
+                var dropdown = $('#selectedStatus');
+                dropdown.empty();
+
+                dropdown.append($('<option>', {
+                    value: '',
+                    text: '@Localizer["ChooseStatus"]'
+                }));
+
+                result.forEach(function (item) {
+                    dropdown.append($('<option>', {
+                        value: item.id,
+                        text: item.name
+                    }));
+                });
+            },
+            error: function () {
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        InitializeCreateTruck();
+    });
+
+    function InitializeCreateTruck() {
+        initializeCreateWidgetScripts();
+        initializeCreateStatusDropDown();
+
+        var selectedColorGroupIdInput = $('#SelectedCreateThemeId');
+        var selectedGroupId = selectedColorGroupIdInput.val();
+
+        $('.color-option-group').removeClass('selected');
+
+        $('.color-option-group[data-group-id="' + selectedGroupId + '"]').addClass('selected');
+
+        updateCreateExampleBlock();
+    }
+</script>
+
+
+<style>
+    #addWidget .widget {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin: 0 auto;
+    }
+
+    #addWidget .widget-item {
+        -webkit-appearance: none;
+        appearance: none;
+        height: 50px;
+        width: 50px;
+        background: radial-gradient(circle, #3e9d42 40%, #4CAF50 60%);
+        border: 1px solid green;
+        position: relative;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-radius: 50%;
+        cursor: pointer;
+        outline: none;
+        margin: 12px 12px;
+        box-shadow: inset 5px 5px 10px rgb(6 6 6 / 30%);
+        margin-left: 12px;
+        z-index: 1;
+    }
+    
+    #addWidget .widget-item .color-widget{
+        -webkit-appearance: none;
+        appearance: none;
+        height: 52px;
+        width: 52px;
+        background: radial-gradient(circle, #3e9d42 40%, #4CAF50 60%);
+        border: 1px solid green;
+        position: absolute;
+        bottom: -2px;
+        left: -2px;
+        border-radius: 50%;
+        z-index: 1;
+    }
+
+    #addWidget .widget-item .big-circle {
+        position: absolute;
+        z-index: 0;
+        content: "";
+        height: 70px;
+        width: 70px;
+        background: linear-gradient( 215deg, #7e7e7e, #e9e9e9, #7e7e7e );
+        bottom: -11px;
+        left: -11px;
+        border-radius: 50%;
+        box-shadow: inset 0 0 8px rgba(0,0,0,0.2);
+    }
+
+        #addWidget .widget-item .middle-circle {
+        position: absolute;
+            z-index: 0;
+        content: "";
+        height: 58px;
+        width: 58px;
+        background: linear-gradient( 80deg, #ededed, #f7f7f7);
+        bottom: -5px;
+        border: 1px solid #bdbdbd;
+        left: -5px;
+        border-radius: 50%;
+        box-shadow: inset 0 0 8px rgba(0,0,0,0.2);
+    }
+
+   #addWidget .widget-item .fas {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-shadow: 0px 1px 0 #bbbbbb, 0 2px 3px #e7e7e7;
+        font-family: Helvetica, Arial, Sans-Serif;
+        text-decoration: none;
+        font-weight: bold;
+        color: #ffffff;
+        font-size: 42px;
+        position: relative;
+        z-index: 2;
+    }
+</style>
+
+<style>
+    #addWidget.modal {
+        top: 20vh;
+    }
+
+    .value-td .badge {
+        font-size: 16px;
+        font-weight: 600;
+        padding: 0.3rem 0.6rem 0.3rem 0.6rem;
+    }
+
+    #addWidget .modal-body .modal-inp-text {
+        height: 46px;
+        padding: 8px 8px;
+    }
+
+    #addWidget .modal-body .button-custom {
+        font-size: 18px;
+        padding: 8px 12px;
+        cursor: pointer;
+    }
+
+    #addWidget .modal-dialog {
+        width: 480px !important;
+    }
+
+    .fi {
+        font-size: 14px;
+    }
+
+    .file-limit-exceeded {
+        font-size: 12px;
+    }
+
+    .full-label {
+        padding: 3px 10px 4px;
+    }
+
+    .modal-body {
+        padding: 1.5rem;
+    }
+
+    .modal-header {
+        padding: 1.25rem;
+    }
+
+    .button-custom {
+        background: #f44336;
+        color: #f9f9f9;
+        width: 100%;
+        font-style: normal;
+        font-weight: 700;
+        font-size: 22px;
+        line-height: 1.75;
+        border-radius: 10px;
+        padding: 12px 20px;
+        display: inline-block;
+        border: 1px solid #f44336
+    }
+
+        .button-custom:hover {
+            background: #f9f9f9;
+            border: 1px solid #f44336;
+            color: #f44336;
+            -webkit-transition: .3s all;
+            -o-transition: .3s all;
+            transition: .3s all
+        }
+
+    .button-custom-2 {
+        background: #f9f9f9;
+        color: #686F7C;
+        width: 100%;
+        font-style: normal;
+        font-weight: 700;
+        font-size: 22px;
+        line-height: 1.75;
+        border-radius: 10px;
+        padding: 12px 20px;
+        display: inline-block;
+        border: 1px solid #686F7C
+    }
+
+        .button-custom-2:hover {
+            background: #686F7C;
+            border: 1px solid #686F7C;
+            color: #f9f9f9;
+            -webkit-transition: .3s all;
+            -o-transition: .3s all;
+            transition: .3s all
+        }
+
+    .form-group label {
+        width: 100%;
+        font-family: Montserrat;
+        font-style: normal;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 1.7;
+        color: #08112b;
+        text-align: left;
+        margin-top: 0;
+        display: block;
+        margin-bottom: 15px;
+    }
+
+    .modal-dialog {
+        position: absolute;
+        left: 0;
+        right: 0;
+        margin-left: auto;
+        margin-right: auto;
+        top: 0;
+        width: 650px !important;
+        text-align: left;
+        background-color: #fff;
+        -moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
+        -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
+        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
+        transition: height 0.25s linear;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        border-radius: 30px;
+    }
+
+    .modal-content {
+        border: 0px;
+        border-radius: 30px;
+    }
+
+    .ng-modal-wrapper {
+        display: inline-block;
+        vertical-align: middle;
+        padding: 50px 0;
+        width: 100%;
+        position: relative;
+    }
+
+    .modal-dialog label {
+        position: relative;
+        display: inline-block;
+        vertical-align: middle;
+        cursor: pointer;
+        padding: 3px 10px 4px;
+        -moz-border-radius: 3px;
+        -webkit-border-radius: 3px;
+        margin-top: 2px;
+        background: none;
+        font-size: 16px;
+        line-height: 19px;
+        letter-spacing: -.016em;
+        -moz-transition-property: all;
+        -o-transition-property: all;
+        -webkit-transition-property: all;
+        transition-property: all;
+        -moz-transition-duration: 300ms;
+        -o-transition-duration: 300ms;
+        -webkit-transition-duration: 300ms;
+        transition-duration: 300ms;
+        border-radius: 30px;
+    }
+
+    .modal-buttons .right-buttons {
+        float: right;
+    }
+
+    .modal-inp-text {
+        width: 100%;
+        height: 77px;
+        background: #fff;
+        border: 1px solid #c4c9d5;
+        border-radius: 10px;
+        padding: 25px 15px;
+        font-family: Montserrat;
+        font-style: normal;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 1.2;
+        color: #686f7c;
+        margin-top: 6px
+    }
+
+    .modal-title h1 {
+        font-size: 26px;
+    }
+
+    .modal-header {
+        justify-content: center;
+        padding: 2rem 1rem 1rem 2rem;
+        border-bottom: 0;
+    }
+
+        .modal-header .close {
+            padding: 1rem 1rem 1rem 0.5rem;
+        }
+
+</style>
+<style>
+    .color-picker {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .color-option-group {
+        display: flex;
+        align-items: center;
+        margin: 5px;
+        padding: 5px;
+        cursor: pointer;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .color-option {
+        width: 20px;
+        height: 20px;
+    }
+
+    .color-option-first {
+        margin-right: 0px;
+    }
+
+    .selected {
+        border: 2px solid blue; /* Измените цвет границы на ваш вкус */
+    }
+</style>
+
+<style>
+    .example-block {
+        display: none;
+        margin-top: 10px;
+    }
+
+    .example-text {
+        font-size: 16px;
+        padding: 5px;
+    }
+
+    .example-bg {
+        width: 100px;
+        height: 50px;
+        margin-top: 10px;
+    }
+</style>

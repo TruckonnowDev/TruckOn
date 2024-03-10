@@ -231,7 +231,7 @@
 		<value>No</value>
 	</data>
 	<data name="ReminderSent" xml:space="preserve">
-		<value>Inspection Reminder was sent to a drive</value>
+		<value>Inspection Reminder was sent to a driver</value>
 	</data>
 	<data name="AlreadyPassed" xml:space="preserve">
 		<value>Today's inspection was already passed</value>
@@ -241,5 +241,38 @@
 	</data>
 	<data name="LastUpdate" xml:space="preserve">
 		<value>Last Update</value>
+	</data>
+	<data name="FirstName" xml:space="preserve">
+		<value>First Name</value>
+	</data>
+	<data name="LastName" xml:space="preserve">
+		<value>Last Name </value>
+	</data>
+	<data name="Search" xml:space="preserve">
+		<value>Search</value>
+	</data>
+	<data name="FirstNameLabel" xml:space="preserve">
+		<value>First Name</value>
+	</data>
+	<data name="LastNameLabel" xml:space="preserve">
+		<value>Last Name </value>
+	</data>
+	<data name="ViewDriver" xml:space="preserve">
+		<value>View</value>
+	</data>
+	<data name="AddEmailAll" xml:space="preserve">
+		<value>Send Everyone Email</value>
+	</data>
+	<data name="AllEmailMessage" xml:space="preserve">
+		<value>All Emails</value>
+	</data>
+	<data name="AddEmail" xml:space="preserve">
+		<value>Add Email</value>
+	</data>
+	<data name="EmailSuccessSend" xml:space="preserve">
+		<value>Email successfully sending</value>
+	</data>
+	<data name="EmailNotSend" xml:space="preserve">
+		<value>Email could not send</value>
 	</data>
 </root>

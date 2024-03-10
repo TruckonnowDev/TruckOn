@@ -142,7 +142,7 @@
                             {
                                 @await Html.PartialAsync("~/Views/PartView/Marketplace/ForumItem.cshtml", item)
                             }
-                            <pagination-list actual-pages="functions.GetPages(Model.Filters.Page, Model.Filters.CountPages)" selected-page="Model.Filters.Page" />
+                            <pagination-list actual-pages="functions.GetPages(Model.Filters.Page, Model.Filters.CountPages)" sorts="Model.Filters" />
 
                             @if (Model.Items.Count == 0)
                             {

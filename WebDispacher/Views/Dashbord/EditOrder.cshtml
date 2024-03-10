@@ -18,13 +18,12 @@
             };
 
 
-    if (Model.CurrentStatus != null)
+    if (Model.OrderStatus != null)
     { 
-        var isState = baseStatuses.TryAdd(Model.CurrentStatus.StatusName, Model.CurrentStatus.StatusName);
+        var isState = baseStatuses.TryAdd(Model.OrderStatus.Name, Model.OrderStatus.Name);
     }
 }
-<link rel="stylesheet" href="~/libs/intl-tel-input-master/css/intlTelInput.css">
-<script src="~/libs/intl-tel-input-master/js/intlTelInput.js"></script>
+
 <body>
     <div class="admin Billing">
         <div class="container">
@@ -44,11 +43,13 @@
                             <div class="w1">
                                 <label for="">
                                     @Localizer["LoadId"]
+                                    <span><abbr data-title="@Localizer["LoadIdLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                     <input type="text" id="idLoad" asp-for="OrderId" value="@Model.OrderId">
                                 </label>
                                 <label for="">
                                     @Localizer["Status"]
-                                    <select asp-for="CurrentStatus.StatusName" id="statusId">
+                                    <span><abbr data-title="@Localizer["StatusLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                    <select asp-for="OrderStatus.Name" id="statusId">
                                         @foreach(var item in baseStatuses)
                                         {
                                             <option value=@item.Key>@item.Value</option>
@@ -57,10 +58,12 @@
                                 </label>
                                 <label for="">
                                     @Localizer["Contact"]
+                                    <span><abbr data-title="@Localizer["ContactLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                     <input type="text" id="contactId" asp-for="Contact" value="@Model.Contact">
                                 </label>
                                 <label for="">
                                     @Localizer["Phone"]
+                                    <span><abbr data-title="@Localizer["PhoneLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                     <div class="intl-tel-input">
                                         <input data-default-country="auto" type="text" id="phoneC" asp-for="PhoneNumber.Number" value="@Model.PhoneNumber.Number" pattern="@PatternConstants.PhoneNumberWithoutCountryCode" placeholder="(XXX)-XXX-XXXX - @Localizer["PhoneNumber"]">
                                         <input type="hidden" id="country-code-dialcode-contact" asp-for="PhoneNumber.DialCode" value="@Model.PhoneNumber.DialCode">
@@ -71,22 +74,27 @@
                                 <h3>@Localizer["PichupHeader"]</h3>
                                 <label for="">
                                     @Localizer["Name"]
+                                    <span><abbr data-title="@Localizer["PickUpNameLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                     <input type="text" id="nameP" value="@Model.PickedUp.Name" placeholder="@Localizer["Name"]" asp-for="PickedUp.Name">
                                 </label>
                                 <label for="">
                                     @Localizer["Contact"]
+                                    <span><abbr data-title="@Localizer["PickUpContactLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                     <input type="text" id="contactNameP" asp-for="PickedUp.ContactName" value="@Model.PickedUp.ContactName" placeholder="@Localizer["ContactName"]">
                                 </label>
                                 <label for="">
                                     @Localizer["Address"]
+                                    <span><abbr data-title="@Localizer["PickUpAddressLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                     <input type="text" id="addressP" asp-for="PickedUp.Address" value="@Model.PickedUp.Address" placeholder="@Localizer["Address"]">
                                 </label>
                                 <label for="">
                                     @Localizer["City"]
+                                    <span><abbr data-title="@Localizer["PickUpCityLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                     <input type="text" pattern="@PatternConstants.OnlyLetters" id="cityP" asp-for="PickedUp.City" value="@Model.PickedUp.City" placeholder="@Localizer["City"]">
                                 </label>
                                 <label for="">
                                     @Localizer["State"]
+                                    <span><abbr data-title="@Localizer["PickUpStateLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                     <select id="stateP" asp-for="PickedUp.State" value="@Model.PickedUp.State">
                                         <option value="AL">Alabama</option>
                                         <option value="AK">Alaska</option>
@@ -143,10 +151,12 @@
                                 </label>
                                 <label for="">
                                     @Localizer["Zip"]
+                                    <span><abbr data-title="@Localizer["PickUpZipLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                     <input type="text" id="zipP" asp-for="PickedUp.ZipCode" value="@Model.PickedUp.ZipCode" maxlength="5" max="99999" pattern="@PatternConstants.ZipOnlyFiveDigits" placeholder="XXXXX - @Localizer["ZipCode"]">
                                 </label>
                                 <label for="">
                                     @Localizer["Phone"]
+                                    <span><abbr data-title="@Localizer["PickUpPhoneLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                     <input data-default-country="auto" type="text" id="phoneP" asp-for="PickedUp.PhoneNumber.Number" placeholder="(XXX)-XXX-XXXX - @Localizer["PhoneNumber"]"  pattern="@PatternConstants.PhoneNumberWithoutCountryCode" value="@Model.PickedUp.PhoneNumber.Number">
                                     <input type="hidden" id="country-code-dialcode-pickedup" asp-for="PickedUp.PhoneNumber.DialCode" value="@Model.PickedUp.PhoneNumber.DialCode">
                                     <input type="hidden" id="country-code-iso2-pickedup" asp-for="PickedUp.PhoneNumber.Iso2" value="@Model.PickedUp.PhoneNumber.Iso2">
@@ -154,10 +164,12 @@
                                 </label>
                                 <label for="">
                                     @Localizer["Email"]
+                                    <span><abbr data-title="@Localizer["PickUpEmailLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                     <input id="emailP" pattern="@PatternConstants.Email" asp-for="PickedUp.Email" type="email" value="@Model.PickedUp.Email" placeholder="@Localizer["Email"]">
                                 </label>
                                 <label for="">
                                     @Localizer["ScheduledPickupDate"]
+                                    <span><abbr data-title="@Localizer["PickUpScheduledDateLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                     <input type="date" id="scheduledPickupDateP" asp-for="DateTimePickedUp" value="@Model.DateTimePickedUp.ToString(DateTimeFormats.BaseCalendarDate)">
                                 </label>
                             </div>
@@ -168,6 +180,7 @@
                                 </label>
                                 <label for="">
                                     @Localizer["Fax"]
+                                    <span><abbr data-title="@Localizer["FaxLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                     <div class="intl-tel-input">
                                         <input data-default-country="auto" type="text" id="phoneFax" asp-for="FaxNumber.Number" value="@Model.FaxNumber.Number" pattern="@PatternConstants.PhoneNumberWithoutCountryCode" placeholder="(XXX)-XXX-XXXX - @Localizer["FaxNumber"]">
                                         <input type="hidden" id="country-code-dialcode-fax" asp-for="FaxNumber.DialCode" value="@Model.FaxNumber.DialCode">
@@ -177,27 +190,33 @@
                                 </label>
                                 <label for="">
                                     @Localizer["McNumber"]
+                                    <span><abbr data-title="@Localizer["McNumberLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                     <input type="text" id="iccmcC" asp-for="McNumber" value="@Model.McNumber">
                                 </label>
                                 <h3>@Localizer["DeliveryInfoHeader"]</h3>
                                 <label for="">
                                     @Localizer["Name"]
+                                    <span><abbr data-title="@Localizer["DeliveryNameLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                     <input type="text" id="nameD" asp-for="Delivery.Name" value="@Model.Delivery.Name" placeholder="@Localizer["Name"]">
                                 </label>
                                 <label for="">
                                     @Localizer["Contact"]
+                                    <span><abbr data-title="@Localizer["DeliveryContactLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                     <input type="text" id="contactD" asp-for="Delivery.ContactName" value="@Model.Delivery.ContactName" placeholder="@Localizer["ContactName"]">
                                 </label>
                                 <label for="">
                                     @Localizer["Address"]
+                                    <span><abbr data-title="@Localizer["DeliveryAddreessLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                     <input type="text" id="addressD" asp-for="Delivery.Address" value="@Model.Delivery.Address" placeholder="@Localizer["Address"]">
                                 </label>
                                 <label for="">
                                     @Localizer["City"]
+                                    <span><abbr data-title="@Localizer["DeliveryCityLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                     <input type="text" pattern="@PatternConstants.OnlyLetters" id="cityD" asp-for="Delivery.City" value="@Model.Delivery.City" placeholder="@Localizer["City"]">
                                 </label>
                                 <label for="">
                                     @Localizer["State"]
+                                    <span><abbr data-title="@Localizer["DeliveryStateLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                     <select id="stateD" asp-for="Delivery.State" value="@Model.Delivery.State">
                                         <option value="AL">Alabama</option>
                                         <option value="AK">Alaska</option>
@@ -254,10 +273,12 @@
                                 </label>
                                 <label for="">
                                     @Localizer["Zip"]
+                                    <span><abbr data-title="@Localizer["DeliveryZipLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                     <input type="text" id="zipD" asp-for="Delivery.ZipCode" value="@Model.Delivery.ZipCode" max="99999" maxlength="5" pattern="@PatternConstants.ZipOnlyFiveDigits" placeholder="XXXXX - @Localizer["ZipCode"]">
                                 </label>
                                 <label for="">
                                     @Localizer["Phone"]
+                                    <span><abbr data-title="@Localizer["DeliveryPhoneLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                     <input data-default-country="auto" type="text" id="phoneD" asp-for="Delivery.PhoneNumber.Number" value="@Model.Delivery.PhoneNumber.Number" pattern="@PatternConstants.PhoneNumberWithoutCountryCode" placeholder="(XXX)-XXX-XXXX - @Localizer["PhoneNumber"]">
                                     <input type="hidden" id="country-code-dialcode-delivery" asp-for="Delivery.PhoneNumber.DialCode" value="@Model.Delivery.PhoneNumber.DialCode">
                                     <input type="hidden" id="country-code-iso2-delivery" asp-for="Delivery.PhoneNumber.Iso2" value="@Model.Delivery.PhoneNumber.Iso2">
@@ -265,10 +286,12 @@
                                 </label>
                                 <label for="">
                                     @Localizer["Email"]
+                                    <span><abbr data-title="@Localizer["DeliveryEmailLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                     <input asp-for="Delivery.Email" pattern="@PatternConstants.Email" id="emailD" type="email" value="@Model.Delivery.Email" placeholder="@Localizer["Email"]">
                                 </label>
                                 <label for="">
                                     @Localizer["ScheduledDeliveryDate"]
+                                    <span><abbr data-title="@Localizer["DeliveryScheduledDateLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                     <input type="date" id="scheduledDeliveryEstimated" asp-for="DateTimeDelivery" value="@Model.DateTimeDelivery.ToString(DateTimeFormats.BaseCalendarDate)">
                                 </label>
                             </div>
@@ -276,6 +299,7 @@
                                 <h3>@Localizer["PaymentInfoHeader"]</h3>
                                 <label for="">
                                     @Localizer["PaymentMethod"]
+                                    <span><abbr data-title="@Localizer["PaymentMethodLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                     <select id="paymentMethod" asp-for="PaymentMethod" value="@Model.PaymentMethod">
                                         <option value="COP">COP</option>
                                         <option value="COD">COD</option>
@@ -288,10 +312,12 @@
                                 </label>
                                 <label for="">
                                     @Localizer["Price"]
+                                    <span><abbr data-title="@Localizer["PriceLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                     <input type="text" oninput="validateNonNegativeNumberWithTimer(this)" id="price" asp-for="Price" value="@Model.Price" step="0.01" min="0" />
                                 </label>
                                 <label for="">
                                     @Localizer["BrokenFee"]
+                                    <span><abbr data-title="@Localizer["BrokenFeeLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
                                     <input type="text" oninput="validateNonNegativeNumberWithTimer(this)" id="brokerFee" asp-for="BrokerFee" value="@Model.BrokerFee" step="0.01" min="0">
                                 </label>
                                 <input type="hidden" id="dateTimeLocal" name="dateTimeLocal" />
@@ -319,10 +345,7 @@
 
 </body>
 
-
-<script src="~/js/input-replacer.js"></script>
 <script>
-    setReplacer(document.querySelector('#iccmcC'), @ExpressionConstants.OnlyDigits);
     var delayTimer;
 
     function validateNonNegativeNumberWithTimer(input) {
@@ -444,8 +467,8 @@
     });
 </script>
 
-<script src="~/js/input-replacer.js"></script>
 <script>
+    setReplacer(document.querySelector('#iccmcC'), @ExpressionConstants.OnlyDigits);
     setReplacer(document.querySelector('#contactId'), /\d/g);
     setReplacer(document.querySelector('#nameP'), /\d/g);
     setReplacer(document.querySelector('#contactNameP'), /\d/g);
@@ -591,8 +614,8 @@
     $(document).ready(function () {
         
 
-        if ("@Model.CurrentStatus" != null) {
-            $('#statusId option[value="@Model.CurrentStatus"]').prop('selected', true);
+        if ("@Model.OrderStatus" != null) {
+            $('#statusId option[value="@Model.OrderStatus"]').prop('selected', true);
         }
         if ("@Model.PaymentMethod" != null) {
             $('#paymentMethod option[value="@Model.PaymentMethod"]').prop('selected', true);

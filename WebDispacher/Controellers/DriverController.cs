@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using AutoMapper;
 using DaoModels.DAO.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -42,13 +38,13 @@ namespace WebDispacher.Controellers
         [HttpGet]
         [Route("Driver/Drivers")]
         [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
-        public async Task<IActionResult> Drivers(int page = 1)
+        public async Task<IActionResult> Drivers(DriverFiltersViewModel filters)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
-                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
+                   var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
                     
                 if (isCancelSubscribe)
                 {
@@ -58,15 +54,16 @@ namespace WebDispacher.Controellers
                 //ViewBag.NameCompany = GetCookieCompanyName();
                 ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
 
-                var drivers = await driverService.GetDriversByCompanyId(page, CompanyId);
+                (var drivers, var countEntites) = await driverService.GetDriversByCompanyId(filters, CompanyId);
 
-                var countPages = await driverService.GetCountDriversPages(CompanyId);
+                filters.AvailableFirstLetters = await driverService.GetActualFirstLettersDriversLastNameByCompanyId(CompanyId);
+                filters.CountPages = driverService.GetCountDriversPagesByCountEntites(countEntites);
 
-                ViewBag.CountPages = countPages;
-
-                ViewBag.SelectedPage = page;
-
-                return View("FullAllDrivers", drivers);
+                 return View("FullAllDrivers", new DriverVmList
+                {
+                    Items = drivers,
+                    Filters = filters
+                } );
             }
             catch (Exception ex)
             {
@@ -76,37 +73,87 @@ namespace WebDispacher.Controellers
             return Redirect(Config.BaseReqvesteUrl);
         }
 
-        [Route("Driver/Check")]
+        [HttpGet]
+        [Route("GetCreateEmailForm")]
         [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
-        public async Task<IActionResult> CheckDriver(string nameDriver, string driversLicense, string comment)
+        public IActionResult GetCreateEmailForm(string modelId)
+        {
+            ViewData["ModalId"] = modelId;
+            return PartialView("~/Views/PartView/Modals/Driver/CreateEmailForm.cshtml");
+        }
+
+        [HttpPost]
+        [Route("Driver/Email/Send")]
+        public async Task<IActionResult> SendEmail(DriverMail model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+                    await driverService.SendEmail(model, CompanyId);
+
+                    return Redirect($"{Config.BaseReqvesteUrl}/Driver/Drivers");
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+
+            return Redirect(Config.BaseReqvesteUrl);
+        }
+
+        [HttpGet]
+        [Route("Driver/Emails/All")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> GetDriverAllEmails(int page = 1)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                
-                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
 
-                if (isCancelSubscribe)
-                {
-                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                }
-                    
-                //ViewBag.NameCompany = GetCookieCompanyName();
+                ViewData[NavConstants.TypeNavBar] = NavConstants.NormalCompany;
+
+                var driverMails = await driverService.GetAllDriverEmails(page, CompanyId);
+
+                var countPages = await driverService.GetCountAllUserQuestionsPages(CompanyId);
+
+                ViewBag.CountPages = countPages;
+
+                ViewBag.SelectedPage = page;
+
+                return View("AllEmail", driverMails);
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            return Redirect(Config.BaseReqvesteUrl);
+        }
+
+        [HttpGet]
+        [Route("Drivers/Driver/{id:int}/")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> DriverInfo(int id)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
 
                 ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
 
-                ViewBag.DriversLicense = driversLicense;
-                ViewBag.NameDriver = nameDriver;
+                var driverInfo = await driverService.GetCompanyDriverById(id, CompanyId);
 
-                var drivers = await driverService.GetDriversReport(nameDriver, driversLicense, CompanyId);
-                    
-                return View("DriverCheck", drivers);
+                return View(driverInfo);
             }
             catch (Exception)
             {
 
             }
-            
+
             return Redirect(Config.BaseReqvesteUrl);
         }
 
@@ -154,36 +201,6 @@ namespace WebDispacher.Controellers
             }
             
             return actionResult;
-        }
-
-        [HttpGet]
-        [Route("Driver/AddReport")]
-        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
-        public IActionResult AddReport()
-        {
-            try
-            {
-                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                
-                var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
-                    
-                if (isCancelSubscribe)
-                {
-                    return Redirect($"{Config.BaseReqvesteUrl}/Settings/Subscription/Subscriptions");
-                }
-                    
-                //ViewBag.NameCompany = GetCookieCompanyName();
-
-                ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
-                    
-                return View("ReportDriver", new DriverReportViewModel());
-            }
-            catch (Exception)
-            {
-
-            }
-            
-            return Redirect(Config.BaseReqvesteUrl);
         }
 
         [HttpPost]
@@ -333,7 +350,7 @@ namespace WebDispacher.Controellers
         [Route("Driver/Drivers/CreateDriver")]
         [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
         public async Task<IActionResult> CreateDriver(CreateDriverViewModel model,
-            IFormFile dLDoc, IFormFile medicalCardDoc, IFormFile sSNDoc, IFormFile proofOfWorkAuthorizationOrGCDoc,
+            IFormFile dLDoc, IFormFile mvr,IFormFile fuelCard,IFormFile corpDocs,IFormFile w9w2, IFormFile medicalCardDoc, IFormFile sSNDoc, IFormFile proofOfWorkAuthorizationOrGCDoc,
             IFormFile dQLDoc, IFormFile contractDoc, IFormFile drugTestResultsDoc, string dateTimeLocal)
         {
             try
@@ -343,14 +360,13 @@ namespace WebDispacher.Controellers
 
                 if (ModelState.IsValid)
                 {
-                    if (string.IsNullOrEmpty(model.FirstName) || string.IsNullOrEmpty(model.LastName) || string.IsNullOrEmpty(model.Email) ||
-                    string.IsNullOrEmpty(model.DriverControl.Password)) return View("CreateDriver");
+                    /*if (string.IsNullOrEmpty(model.FirstName) || string.IsNullOrEmpty(model.LastName) || string.IsNullOrEmpty(model.Email) ||
+                    string.IsNullOrEmpty(model.DriverControl.Password)) return View("CreateDriver");*/
 
                     model.CompanyId = Convert.ToInt32(CompanyId);
                     
                     await driverService.CreateDriver(model,
-                        dLDoc, medicalCardDoc, sSNDoc, proofOfWorkAuthorizationOrGCDoc, dQLDoc, contractDoc, drugTestResultsDoc, dateTimeLocal);
-
+                        dLDoc,mvr,fuelCard,corpDocs,w9w2, medicalCardDoc, sSNDoc, proofOfWorkAuthorizationOrGCDoc, dQLDoc, contractDoc, drugTestResultsDoc, dateTimeLocal);
                 }
                 else
                 {
@@ -496,7 +512,7 @@ namespace WebDispacher.Controellers
                     
                 ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
                 var drivers = await driverService.GetDriversByCompanyId(CompanyId);
-                var trucks = await truckAndTrailerService.GetTrucks(0, CompanyId);
+                /*var trucks = await truckAndTrailerService.GetTrucks(0, CompanyId);
                 var trailers = await truckAndTrailerService.GetTrailers(0, CompanyId);
                     
                 var inspectionTruck = truckAndTrailerService.GetInspectionTrucks(driverId, truckId, trailerId, date)
@@ -521,14 +537,14 @@ namespace WebDispacher.Controellers
                 ViewBag.IdDriver = driverId;
                 ViewBag.IdTruck = truckId;
                 ViewBag.IdTrailer = trailerId;
-                ViewBag.SelectData = date;
+                ViewBag.SelectData = date;*/
 
                 return View("AllInspactionTruckData", new FullInformationInspection
                 {
                     Drivers = drivers,
-                    Trucks = trucks,
+                    /*Trucks = trucks,
                     Trailers = trailers,
-                    Inspection = inspectionTruck
+                    Inspection = inspectionTruck*/
                 });
             }
             catch (Exception e)
@@ -558,16 +574,16 @@ namespace WebDispacher.Controellers
 
                 ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
                     
-                var trucks = await truckAndTrailerService.GetTrucks(0, CompanyId);
+                /*var trucks = await truckAndTrailerService.GetTrucks(0, CompanyId);
                 var trailers = await truckAndTrailerService.GetTrailers(0, CompanyId);
                 var inspectionDriver = driverService.GetInspectionTruck(idInspection);
                 var drivers = driverService.GetDriver(inspectionDriver.Id.ToString());
                     
                 ViewBag.InspectionTruck = inspectionDriver;
-                ViewBag.Drivers = drivers;
+                ViewBag.Drivers = drivers;*/
                 //ViewBag.Trailer = trailers.FirstOrDefault(t => t.Id == inspectionDriver.IdITrailer) != null ? $"{trailers.FirstOrDefault(t => t.Id == inspectionDriver.IdITrailer).Make}, Plate: {trailers.FirstOrDefault(t => t.Id == inspectionDriver.IdITrailer).Plate}" : "---------------";
                 //ViewBag.Truck = trucks.FirstOrDefault(t => t.Id == inspectionDriver.IdITruck) != null ? $"{trucks.FirstOrDefault(t => t.Id == inspectionDriver.IdITruck).Make} {trucks.FirstOrDefault(t => t.Id == inspectionDriver.IdITruck).Model}, Plate: {trucks.FirstOrDefault(t => t.Id == inspectionDriver.IdITruck).PlateTruk}" : "---------------";
-                ViewBag.SelectData = date;
+                /*ViewBag.SelectData = date;*/
                     
                 return View("OneInspektion");
             }

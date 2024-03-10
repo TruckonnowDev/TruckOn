@@ -32,33 +32,46 @@
                 <div class="col-md-5">
                     <div class="tabContent">
                         <h2>@Localizer["BuyItemLotHeader"]</h2>
-                        <form action="/Marketplace/Classifieds/CategoryBuy/UpdateBuyLot" enctype="multipart/form-data" method="post">
+                        <form action="/Marketplace/Classifieds/CategoryBuy/UpdateBuyLot" enctype="multipart/form-data" method="post" id="formMail">
+                            <input type="hidden" id="uploadedFiles" name="uploadedFiles" value="">
                             <div class="validation" asp-validation-summary="ModelOnly"></div>
                             <label for="">
-                                <label class="mb-0">@Localizer["TitleLabel"]</label>
+                                <label class="mb-0">@Localizer["TitleLabel"]
+                                    <span><abbr data-title="@Localizer["TitleLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                </label>
                                 <input type="text" id="title" asp-for="Title" value="@Model.Title" required>
                             </label>
                             <label for="">
-                                <label class="mb-0">@Localizer["DescriptionLabel"]</label>
+                                <label class="mb-0">@Localizer["DescriptionLabel"]
+                                    <span><abbr data-title="@Localizer["DescriptionLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                </label>
                                 <textarea type="text" asp-for="Description" id="description" value="@Model.Title"></textarea>
                             </label>
                             <label for="">
-                                <label class="mb-0">@Localizer["EmailLabel"]</label>
+                                <label class="mb-0">@Localizer["EmailLabel"]
+                                    <span><abbr data-title="@Localizer["EmailLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                </label>
                                 <input type="email" id="email" asp-for="Email" pattern="@PatternConstants.Email" value="@Model.Email" required>
                             </label>
                             <label for="">
-                                <label class="mb-0">@Localizer["PhoneNumberLabel"]</label>
+                                <label class="mb-0">@Localizer["PhoneNumberLabel"]
+                                    <span><abbr data-title="@Localizer["PhoneNumberLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                </label>
                                 <input type="text" asp-for="PhoneNumber.Number" id="phoneC" pattern="@PatternConstants.PhoneNumberWithoutCountryCode" value="@Model.PhoneNumber.Number" placeholder="(XXX)-XXX-XXXX" required>
                                 <input type="hidden" id="country-code-dialcode" value="@Model.PhoneNumber.DialCode" asp-for="PhoneNumber.DialCode">
                                 <input type="hidden" id="country-code-iso2" value="@Model.PhoneNumber.Iso2" asp-for="PhoneNumber.Iso2">
                                 <input type="hidden" id="country-code-name" value="@Model.PhoneNumber.Name" asp-for="PhoneNumber.Name">
                             </label>
                             <label for="">
-                                <label class="mb-0">@Localizer["ZipCodeLabel"]</label>
+                                <label class="mb-0">@Localizer["ZipCodeLabel"]
+                                    <span><abbr data-title="@Localizer["ZipCodeLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                </label>
                                 <input type="text" asp-for="ZipCode" value="@Model.ZipCode" id="zipcode" required />
                             </label>
                             <label for="">
-                                <label class="mb-0">@Localizer["CurrentStatusLabel"]</label>
+                                <label class="mb-0">@Localizer["CurrentStatusLabel"]
+                                    <span><abbr data-title="@Localizer["CurrentStatusLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                </label>
                                 <select class="height-input input-select" asp-for="MarketPost.ConditionPost" id="conditionPostId">
                                     <option value=@ConditionPost.Published>@Localizer["PublicStatusPostItem"]</option>
                                     <option value=@ConditionPost.Hidden>@Localizer["HideStatusPostItem"]</option>
@@ -102,6 +115,8 @@
                         <h2>@Localizer["UploadedFilesHeader"]</h2>
                     </div>
                     <div class="images">
+                        <div id="previewContainer">
+                        
                         @if (Model?.PhotoListMP != null && Model.PhotoListMP.Photos != null)
                         {
                             @foreach (var item in Model?.PhotoListMP?.Photos)
@@ -121,7 +136,8 @@
                                     </div>
                                 </div>
                             }
-                        }
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
@@ -130,6 +146,14 @@
     @await Html.PartialAsync("~/Views/PartView/Modals/ConfirmDelete.cshtml", new ViewDataDictionary(ViewData) { {"ModalId", "DeleteMarketPost"}, { "ConfirmMessage", "DeleteMarketPost" } });
     @await Html.PartialAsync("~/Views/PartView/Modals/ConfirmDelete.cshtml", new ViewDataDictionary(ViewData) { {"ModalId", "CloseMarketPost"}, { "ConfirmMessage", "CloseMarketPost" } });
 </body>
+
+
+<script src="~/js/fileUploader.js"></script>
+<script>
+    var fileUploader = new FileUploader('fi1', 'previewContainer', 'formMail');
+    fileUploader.init();
+</script>
+
 <style>
     .big-label{
         width: 100%!important;

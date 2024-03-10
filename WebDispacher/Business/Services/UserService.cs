@@ -57,6 +57,13 @@ namespace WebDispacher.Business.Services
                 UserConstants.ThankRegistrationSubject,
                 new PaternSourse().GetPatternRegistrationMail());
         }
+        
+        public async Task SendEmailConfirmEmailCarrierRegistration(string email, string link)
+        {
+            await new AuthMessageSender().Execute(email,
+                UserConstants.ConfirmEmailCarrierRegistration,
+                new PaternSourse().GetPatternSendMessageConfirmEmailCompany(link));
+        }
 
         public User GetUserByEmailAndPasswrod(string email, string password)
         {

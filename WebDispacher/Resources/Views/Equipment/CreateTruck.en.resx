@@ -124,10 +124,10 @@
     <value>Add New Truck</value>
   </data>
   <data name="NameTruck" xml:space="preserve">
-    <value>Truck Name</value>
+    <value>Unit</value>
   </data>
   <data name="TypeTruck" xml:space="preserve">
-    <value>Truck Type </value>
+    <value>Unit Type</value>
   </data>
   <data name="ChooseTruckType" xml:space="preserve">
     <value>Choose a truck type</value>
@@ -142,7 +142,7 @@
     <value>Model</value>
   </data>
   <data name="State" xml:space="preserve">
-    <value>State</value>
+    <value>State Registered</value>
   </data>
   <data name="PlateExp" xml:space="preserve">
     <value>Plate Exp</value>
@@ -193,6 +193,120 @@
     <value>Choose a vehicle type</value>
   </data>
   <data name="VehicleCategory" xml:space="preserve">
-    <value>Vehicle Category</value>
+    <value>Unit Class</value>
+  </data>
+  <data name="ChooseTruckStatus" xml:space="preserve">
+    <value>Select the status of the truck</value>
+  </data>
+  <data name="TruckStatus" xml:space="preserve">
+    <value>Truck Status</value>
+  </data>
+  <data name="TruckStatusActive" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="TruckStatusBroken" xml:space="preserve">
+    <value>Broken</value>
+  </data>
+  <data name="TruckStatusDamaged" xml:space="preserve">
+    <value>Damaged</value>
+  </data>
+  <data name="TruckStatusDealership" xml:space="preserve">
+    <value>Dealership</value>
+  </data>
+  <data name="TruckStatusEmergency" xml:space="preserve">
+    <value>Emergency</value>
+  </data>
+  <data name="TruckStatusInactive" xml:space="preserve">
+    <value>Inactive</value>
+  </data>
+  <data name="TruckStatusShop" xml:space="preserve">
+    <value>Shop</value>
+  </data>
+  <data name="TruckStatusTowYard" xml:space="preserve">
+    <value>Tow Yard</value>
+  </data>
+  <data name="NameTruckLabelInfo" xml:space="preserve">
+    <value>Drive the Imagination with a Captivating Name</value>
+  </data>
+  <data name="ModelLabelInfo" xml:space="preserve">
+    <value>Enter the Model Name for Your Truck</value>
+  </data>
+  <data name="MakeLabelInfo" xml:space="preserve">
+    <value>Enter the Maker Name Behind Your Automotive Pride</value>
+  </data>
+  <data name="YearLabelInfo" xml:space="preserve">
+    <value>Specify the Year Your Automotive Tale Unfolds</value>
+  </data>
+  <data name="TruckGroupSuccessAdded" xml:space="preserve">
+    <value>A New Truck Group was Added</value>
+  </data>
+  <data name="TruckGroupNotAdded" xml:space="preserve">
+    <value>Failed to add a new truck group</value>
+  </data>
+  <data name="ChooseGroupType" xml:space="preserve">
+    <value>Choose a truck group</value>
+  </data>
+  <data name="CreateNewGroupType" xml:space="preserve">
+    <value>Add a New Group</value>
+  </data>
+  <data name="VinLabelInfo" xml:space="preserve">
+    <value>Enter the VIN (Vehicle Identification Number) – a 17-character code uniquely identifying the truck's make, model, year, and essential details.</value>
+  </data>
+  <data name="PlateTruckLabelInfo" xml:space="preserve">
+    <value>Plate Truck: Enter the license plate number or registration identifier associated with the truck for accurate and efficient record-keeping.</value>
+  </data>
+  <data name="PlateExpLabelInfo" xml:space="preserve">
+    <value>Plate Expires: Input the expiration date of the truck's license plate for timely monitoring and adherence to registration requirements.</value>
+  </data>
+  <data name="StateLabelInfo" xml:space="preserve">
+    <value>State: Specify the state or jurisdiction where the truck is registered, providing essential location information for administrative and regulatory purposes.</value>
+  </data>
+  <data name="ColorLabelInfo" xml:space="preserve">
+    <value>Color: Enter the primary color of the truck, providing a visual reference for identification and enhancing record accuracy.</value>
+  </data>
+  <data name="OwnerLabelInfo" xml:space="preserve">
+    <value>Owner: Input the name or identification of the current owner of the truck, facilitating accurate ownership documentation and contact information for administrative purposes.</value>
+  </data>
+  <data name="TruckStatusLabelInfo" xml:space="preserve">
+    <value>Truck Status: Choose the current operational condition or state of the truck from the available options, reflecting its status in the system for comprehensive tracking and management.</value>
+  </data>
+  <data name="GroupTruck" xml:space="preserve">
+    <value>Truck Group</value>
+  </data>
+  <data name="TypeTruckLabelInfo" xml:space="preserve">
+    <value>Type Truck: Indicate the particular category or configuration of the truck by selecting from the available options, specifying its distinctive design for effective classification and organization.</value>
+  </data>
+  <data name="VehicleCategoryLabelInfo" xml:space="preserve">
+    <value>Vehicle Category: Indicate the general classification of the truck by selecting from provided options, defining its broad type for efficient categorization and record-keeping.</value>
+  </data>
+  <data name="CreateNewTruckStatus" xml:space="preserve">
+    <value>Add a New Status</value>
+  </data>
+  <data name="TruckStatusSuccessAdded" xml:space="preserve">
+    <value>A New Truck Status was Added</value>
+  </data>
+  <data name="TruckStatusNotAdded" xml:space="preserve">
+    <value>Failed to add a new truck status</value>
+  </data>
+  <data name="TruckLocation" xml:space="preserve">
+    <value>Add Location of the Unit</value>
+  </data>
+  <data name="ErrorMessageSelect" xml:space="preserve">
+    <value>Please make a selection from the drop down</value>
+  </data>
+  <data name="AnnualIns" xml:space="preserve">
+    <value>Annual Inspection Expiration Date</value>
+  </data>
+  <data name="TruckLocationType" xml:space="preserve">
+    <value>Location Type</value>
+  </data>
+  <data name="GPSLocationType" xml:space="preserve">
+    <value>Add GPS Location</value>
+  </data>
+  <data name="LaterLocationType" xml:space="preserve">
+    <value>Add Location Later</value>
+  </data>
+  <data name="MannuallyLocationType" xml:space="preserve">
+    <value>Add Location Manually</value>
   </data>
 </root>

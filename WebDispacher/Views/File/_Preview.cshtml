@@ -1,0 +1,18 @@
+﻿@using WebDispacher.Constants;
+@using WebDispacher.ViewModels;
+@model FileModel
+
+<div class="item" id="image_@Model.FileName" style="display:flex;">
+    <div class="left-content">
+        <img src="@Url.Content("~/uploads/" + Model.FileName)" style="width: 230px" alt="" />
+    </div>
+    <div class="right-content" style="padding-left: 20px;">
+        @{
+            var fileName = string.IsNullOrEmpty(Model.FileName) || Model.FileName.Length <= 50 ? Model.FileName : Model.FileName.Substring(0, 50) + "...";
+        }
+        <h3 style="word-break:break-all;font-size:12px;">@fileName</h3>
+        <p>@Model.Width x @Model.Height</p>
+        <p>@Model.UploadedTime.ToString(DateTimeFormats.FullDateTimeInfo)</p>
+        <a class="red-button-custom" style="margin-top:12px;" data-file-name="@Model.FileName">(Delete)</a>
+    </div>
+</div>

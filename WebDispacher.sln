@@ -12,6 +12,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Expansion", "Expansion\Expansion.csproj", "{CF639699-B873-4A75-A48B-C92F411C37E8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDispacher", "WebDispacher\WebDispacher.csproj", "{618C1017-F4EE-4153-A784-EDFFB6AC95EA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DF537442-AB06-4233-BA2E-C8D4E10D20FA} = {DF537442-AB06-4233-BA2E-C8D4E10D20FA}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DaoModels", "DaoModels\DaoModels.csproj", "{DF537442-AB06-4233-BA2E-C8D4E10D20FA}"
 EndProject

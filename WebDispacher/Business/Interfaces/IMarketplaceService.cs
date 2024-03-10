@@ -12,15 +12,15 @@ namespace WebDispacher.Business.Interfaces
     {
         Task<List<ItemMarketPostShortViewModel>> GetBuyItemsMarketPosts(BuyMarketPostsFiltersViewModel filters, User user);
         Task<List<ItemMarketPostShortViewModel>> GetSellItemsMarketPosts(SellMarketPostsFiltersViewModel filters, User user);
-        Task<int> CreateBuyLot(CreateBuyLotViewModel model, List<IFormFile> files, string companyId, string localDate);
-        Task<int> CreateSellLot(CreateSellLotViewModel model, List<IFormFile> files, string companyId, string localDate);
+        Task<int> CreateBuyLot(CreateBuyLotViewModel model, string uploadedFiles, string companyId, string localDate);
+        Task<int> CreateSellLot(CreateSellLotViewModel model, string uploadedFiles, string companyId, string localDate);
         Task<BuyItemMarketPostViewModel> GetBuyItemMarketPost(int id, string currentUserId);
         Task<SellItemMarketPostViewModel> GetSellItemMarketPost(int id, string currentUserId);
         Task<int> GetCountPublicBuyMarketPosts();
         bool IsHavePermissionToEditMarketPost(int postId, string userId);
         Task<bool> RemoveUploadedImage(int id);
-        Task<int> UpdateBuyLot(BuyItemMarketPostViewModel model, string companyId, List<IFormFile> files, string localDate);
-        Task<int> UpdateSellLot(SellItemMarketPostViewModel model, string companyId, List<IFormFile> files, string localDate);
+        Task<int> UpdateBuyLot(BuyItemMarketPostViewModel model, string companyId, string uploadedFiles, string localDate);
+        Task<int> UpdateSellLot(SellItemMarketPostViewModel model, string companyId, string uploadedFiles, string localDate);
         Task UpdateMarketPostById(int postId, string localDate, ConditionPost conditionPost);
         Task<List<ItemMarketPostShortViewModel>> GetUserItemsMarketPosts(UserMarketPostsFiltersViewModel filters, User user);
         Task<bool> AddViewToMarketPost(int postId, string userId);
@@ -31,5 +31,10 @@ namespace WebDispacher.Business.Interfaces
         Task<BuyItemMarketPostWithHistoryViewModel> GetBuyItemMarketPostWithHistory(int id, string currentUserId);
         HistoryMarketPostActionGroup GetHistoryForDate(DateTime date, int itemId);
         Task<SellItemMarketPostWithHistoryViewModel> GetSellItemMarketPostWithHistory(int id, string currentUserId);
+        Task<List<ItemMarketPostShortViewModel>> GetFullPendingItemsMarketPosts(UserMarketPostsFiltersViewModel filters);
+        Task<BuyItemMarketPostWithHistoryViewModel> GetBuyItemMarketPostPendingWithHistory(int id);
+        Task<SellItemMarketPostWithHistoryViewModel> GetSellItemMarketPostPendingWithHistory(int id);
+        Task SendDesidionToPost(PostApprovalHistory model);
+        Task<List<PostApprovalHistory>> GetHistoryChecksMarketPost(int id);
     }
 }

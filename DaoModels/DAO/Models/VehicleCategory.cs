@@ -9,5 +9,6 @@ namespace DaoModels.DAO.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public List<TruckType> TruckTypes { get; set; }
+        public List<TrailerType> TrailerTypes { get; set; }
     }
 }

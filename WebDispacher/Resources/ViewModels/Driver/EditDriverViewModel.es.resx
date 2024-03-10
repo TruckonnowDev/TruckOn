@@ -33,4 +33,7 @@
     <data name="PhoneNumberRequired" xml:space="preserve">
         <value>El campo Teléfono es obligatorio</value>
     </data>
+    <data name="DateOfBirthRequired" xml:space="preserve">
+        <value>El campo de Fecha de nacimiento es obligatorio</value>
+    </data>
 </root>

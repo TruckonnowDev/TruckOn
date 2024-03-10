@@ -1,0 +1,277 @@
+﻿@using DaoModels.DAO.Models;
+@using Microsoft.AspNetCore.Mvc.Localization
+@using WebDispacher.Constants;
+@using WebDispacher.ViewModels.Truck.Enum;
+@using WebDispacher.ViewModels.Truck;
+
+@* @model TruckShortVmList *@
+
+@model (TruckGroup, TruckFilterViewModel, List<DaoModels.DAO.Models.Truck>)
+
+@inject IViewLocalizer Localizer
+
+@{
+    TruckSortType GetSortType(TruckSortField field)
+    {
+        return Model.Item2.SortField == field && Model.Item2.SortType == TruckSortType.Ascending ? TruckSortType.Descending : TruckSortType.Ascending;
+    }
+
+    var tableId = Model.Item1.Id;
+}
+
+
+<table class="truck-trailer-tab" style="width: 100%;margin-left: auto; margin-right: auto;margin-top:0px;margin-bottom: 0px;" id="Table_@Model.Item1.Id">
+    <thead>
+        <tr>
+            <th colspan="16" style="text-align: center; font-size: 16px; background: #c5cae7;top: 0; z-index: auto; position: relative;">
+                    @Model.Item1.Name
+                <div class="td-click-img-margin" style="position: absolute; top: 56%; right: 0;transform: translateY(-50%);">
+                    <div data-title="@Localizer["RenameTruckGroupkNotificataion"]" class="ico-doc ico-doc-edit open-RenameGroup" data-group-name="@Model.Item1.Name" data-id="@Model.Item1.Id" data-toggle="modal" data-modal-selector="#renameGroup" href="#renameGroup" style="display: inline-block;vertical-align:middle;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#ff9800" style="font-size: 20px;" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+                        </svg>
+                    </div>
+                    <div data-title="@Localizer["DeleteTruckGroupNotificataion"]" class="ico-doc ico-doc-delete open-RemoveGroup" data-toggle="modal" data-id="@Model.Item1.Id" data-modal-selector="#confirmDeleteGroupModal" href="#confirmDeleteGroupModal" style="display: inline-block;vertical-align:middle;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#f44336" class="bi bi-x-lg" viewBox="0 0 16 16">
+                            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
+                        </svg>
+                    </div>
+                </div>
+            </th>
+        </tr>
+
+    </thead>
+    <thead>
+        <tr>
+            <th style="width: 40px;text-align:center">#</th>
+            <th>
+                <a asp-controller="Equipment" asp-action="Trucks" id="@($"{tableId}_{TruckSortField.Name}")" data-sortField="@TruckSortField.Name" data-sortType="@(GetSortType(TruckSortField.Name))">@Localizer["Name"]</a>
+            </th>
+            <th>
+                <a asp-controller="Equipment" asp-action="Trucks" id="@($"{tableId}_{TruckSortField.Year}")" data-sortField="@TruckSortField.Year" data-sortType="@(GetSortType(TruckSortField.Year))">@Localizer["Year"]</a>
+            </th>
+            <th>
+                <a asp-controller="Equipment" asp-action="Trucks" id="@($"{tableId}_{TruckSortField.Brand}")" data-sortField="@TruckSortField.Brand" data-sortType="@(GetSortType(TruckSortField.Brand))">@Localizer["Make"]</a>
+            </th>
+            <th>
+                <a asp-controller="Equipment" asp-action="Trucks" id="@($"{tableId}_{TruckSortField.Model}")" data-sortField="@TruckSortField.Model" data-sortType="@(GetSortType(TruckSortField.Model))">@Localizer["Model"]</a>
+            </th>
+            <th>@Localizer["Type"]</th>
+            <th>@Localizer["Vin"] #</th>
+            <th>@Localizer["Plate"]#</th>
+            <th>
+                <a asp-controller="Equipment" asp-action="Trucks" id="@($"{tableId}_{TruckSortField.PlateExpires}")" data-sortField="@TruckSortField.PlateExpires" data-sortType="@(GetSortType(TruckSortField.Plate))">@Localizer["PlateExp"]</a>
+            </th>
+            <th>
+                <a asp-controller="Equipment" asp-action="Trucks" id="@($"{tableId}_{TruckSortField.State}")" data-sortField="@TruckSortField.State" data-sortType="@(GetSortType(TruckSortField.Status))">@Localizer["State"]</a>
+            </th>
+            <th>@Localizer["Color"]</th>
+            <th>@Localizer["AnnualIns"]</th>
+            <th>
+                <a asp-controller="Equipment" asp-action="Trucks" id="@($"{tableId}_{TruckSortField.Owner}")" data-sortField="@TruckSortField.Owner" data-sortType="@(GetSortType(TruckSortField.Owner))">@Localizer["Owner"]</a>
+            </th>
+            <th>@Localizer["TruckStatus"]</th>
+            <th style="width: 40px"></th>
+            <th style="width: 60px"></th>
+        </tr>
+    </thead>
+    <tbody id="@Model.Item1.Id">
+        @{
+            var indexEntity = 1;
+        }
+        @foreach (var truck in Model.Item3)
+        {
+            var index = $"{truck.Id}";
+            <tr>
+                <td aria-label="#" style="text-align:center;width:40px">
+                    <div class="value-td">@(indexEntity++)</div>
+                </td>
+                <td aria-label="@Localizer["Name"]">
+                    <div class="value-td">@truck.Name</div>
+                </td>
+                <td aria-label="@Localizer["Year"]">
+                    @{
+                        string yearString = truck.Year != 0
+                        ? truck.Year.ToString()
+                        : string.Empty;
+                    }
+                    <div class="value-td">@yearString</div>
+                </td>
+                <td aria-label="@Localizer["Make"]">
+                    <div class="value-td">@truck.Brand</div>
+                </td>
+                <td aria-label="@Localizer["Model"]">
+                    <div class="value-td">@truck.Model</div>
+                </td>
+                <td aria-label="@Localizer["Type"]">
+                    <div class="value-td">@truck?.TruckType?.Name</div>
+                </td>
+                <td aria-label="@Localizer["Vin"] #">
+                    <div class="value-td">@truck.VIN</div>
+                </td>
+                <td aria-label="@Localizer["Plate"]#">
+                    <div class="value-td">@truck.Plate</div>
+                </td>
+                <td aria-label="@Localizer["PlateExp"]">
+                    @{
+                        string plateExpiresString = truck.PlateExpires.HasValue
+                        ? truck.PlateExpires.Value.ToString("MM/yy")
+                        : "N/A";
+                    }
+                    <div class="value-td">@plateExpiresString</div>
+                </td>
+                <td aria-label="@Localizer["State"]">
+                    <div class="value-td">@truck.State</div>
+                </td>
+                <td aria-label="@Localizer["Color"]">
+                    <div class="value-td">@truck.Color</div>
+                </td>
+                <td aria-label="@Localizer["AnnualIns"]">
+                    @{
+                        string annualInsString = truck.AnnualIns.HasValue
+                        ? truck.AnnualIns.Value.ToString(DateTimeFormats.DateOfBirth)
+                        : "N/A";
+                    }
+                    <div class="value-td">@annualInsString</div>
+                </td>
+                <td aria-label="@Localizer["Owner"]">
+                    <div class="value-td">@truck.Owner</div>
+                </td>
+                <td aria-label="@Localizer["TruckStatus"]">
+                    <div class="value-td">
+                        <span ondblclick="convertStatusToSelect('@index')" class="badge" id="container-click-truck-status-@index" style="background-color:#@truck?.TruckStatus?.StatusTheme?.BackgroundColor?.HexCode;color:#@truck?.TruckStatus?.StatusTheme?.TextColor?.HexCode;">@truck?.TruckStatus?.Name</span>
+                        <div class="select-container" id="select-container-truck-status-@index">
+                            <select id="select-truck-status-@index" onchange="submitForm('@index')" style="display:none">
+                            </select>
+                        </div>
+                    </div>
+                </td>
+                <td aria-label="@Localizer["Location"]" id="truck_location_@truck.Id">
+                    <div class="value-td">
+                        @{
+                            var locationType = truck.LocationType == DaoModels.DAO.Enum.LocationType.Mannually ? "Manual" : "GPS";
+                            if (truck.TruckStatus != null && truck.LocationType != DaoModels.DAO.Enum.LocationType.Later)
+                            {
+                                <div class="panel-control" ondblclick="convertLocationToInput('@index')" id="container-click-truck-location-@index">
+                                    <div data-title="@locationType: @truck.LocationAddress" class="ico-location ico-location-item">
+                                        <i class="bi bi-geo-alt-fill" style="color: #0d6efd;"></i>
+                                    </div>
+                                </div>
+                                <div class="input-location-container" id="input-truck-location-container-@index" style="display:none">
+                                    <input class="input-mini" type="text" id="input-truck-location-@index" value="@truck.LocationAddress" required />
+                                    <button class="btn1 btn1-mini" onclick="submitTruckLocationForm('@index')">@Localizer["SaveLocationButton"]</button>
+                                </div>
+                            }
+                        }
+                    </div>
+                </td>
+                <td class="input-img mt-3 mb-3 panel-control">
+                    <div class="td-click-img-margin">
+                        <div data-title="@Localizer["ViewNotificataion"]" class="ico-doc ico-doc-view" onclick="document.location.href = '@ViewBag.BaseUrl/Driver/InspactionTrucks?driverId=0&truckId='+@truck.Id+'&trailerId=0&date=0';">
+                            <i class="bi bi-cursor-fill" style="color: #4caf50;"></i>
+                        </div>
+                        <div data-title="@Localizer["EditTruckNotificataion"]" class="ico-doc ico-doc-edit" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/EditTruck?truckId='+@truck.Id">
+                            <i class="bi bi-pencil-square" style="color: #ff9800;"></i>
+                        </div>
+                        <div data-title="@Localizer["CustomizeNotificataion"]" class="ico-doc ico-doc-settings" onclick="document.location.href = '@ViewBag.BaseUrl/Settings/Get?idTr=@truck.Id&page=s&idProfile=0&typeTransport=Truck'">
+                            <i class="bi bi-gear-fill" style="color: #a3644d;"></i>
+                        </div>
+                        <div data-title="@Localizer["DocNotificataion"]" class="ico-doc ico-doc-documents" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/Truck/Doc?id='+@truck.Id;">
+                            <i class="bi bi-file-earmark-medical-fill" style="color: #3f51b5;"></i>
+                        </div>
+                        <div data-title="@Localizer["DeleteNotificataion"]" class="ico-doc ico-doc-delete open-RemoveTruck" data-toggle="modal" data-id="@truck.Id" data-modal-selector="#confirmDeleteEntryModal" href="#confirmDeleteEntryModal">
+                            <i class="bi bi-x-lg" style="color: #f44336;"></i>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function () {
+        var activeSortField = "@Model.Item2.SortField";
+        var activeSortType = "@Model.Item2.SortType";
+
+        var tableIdPrefix = 'Table_@tableId';
+
+        $('#' + tableIdPrefix + ' th').removeClass('active-sort asc desc').find('i').remove();
+
+        var thElement = $('#' + tableIdPrefix  + ' a[data-sortfield="' + activeSortField + '"]').closest('th');
+
+        if (activeSortType === 'Ascending') {
+            thElement.append('<i class="bi bi-caret-up-fill"></i>');
+        } else {
+            thElement.append('<i class="bi bi-caret-down-fill"></i>');
+        }
+
+        thElement.addClass('active-sort ' + activeSortType);
+
+        function bindSortEvent() {
+            $('#' + tableIdPrefix + ' th a').on('click', function (e) {
+                e.preventDefault();
+
+                var currentSortField = $(this).data('sortfield');
+
+                var currentSortType = $(this).data('sorttype');
+
+                if (currentSortField === activeSortField) {
+                    activeSortType = (activeSortType === 'Ascending') ? 'Descending' : 'Ascending';
+                } else {
+                    activeSortField = currentSortField;
+                    activeSortType = currentSortType;
+                }
+
+                var url = '@Url.Action("GetTrucksInGroupByFilters", "Equipment")' + '?groupId=' + @tableId + '&sortField=' + activeSortField + ' &sortType=' + activeSortType;
+
+                $.get(url, function (data) {
+                    $('#tabs .tabContent #table_block_' + '@Model.Item1.Id').html(data);
+
+                    $('#' + tableIdPrefix + ' th').removeClass('active - sort asc desc').find('i').remove();
+
+                    var thElement = $('#' + tableIdPrefix + ' a[data-sortfield="' + activeSortField + '"]').closest('th');
+
+                    if (activeSortType === 'Ascending') {
+                        thElement.append('<i class="bi bi-caret-up-fill"></i>');
+                    } else {
+                        thElement.append('<i class="bi bi-caret-down-fill"></i>');
+                    }
+
+                    thElement.addClass('active-sort ' + activeSortType);
+                });
+            });
+        }
+
+        function bindSortSubmit() {
+            $('#filterForm').submit(function (e) {
+                e.preventDefault();
+            });
+        }
+
+        bindSortEvent();
+        bindSortSubmit();
+    });
+</script>
+
+<style>
+    .tero {
+        font-family: Montserrat;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 13px;
+        line-height: 1.25;
+        color: #686f7c;
+        padding: 8px 6px 8px 6px;
+        text-align: left;
+    }
+
+    .value-td select {
+        min-width: 80px;
+        width: max-content;
+        padding: 6px 0 8px 16px;
+        margin: 0 auto;
+        max-width: 130px;
+    }
+</style>

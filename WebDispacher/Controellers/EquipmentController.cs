@@ -1,22 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using DaoModels.DAO.Enum;
 using DaoModels.DAO.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Hosting.Internal;
 using WebDispacher.Business.Interfaces;
 using WebDispacher.Constants;
 using WebDispacher.Constants.Identity;
 using WebDispacher.Service;
+using WebDispacher.ViewModels.Equipment.Enum;
 using WebDispacher.ViewModels.Trailer;
 using WebDispacher.ViewModels.Truck;
+using WebDispacher.ViewModels.Truck.Enum;
+using WebDispacher.ViewModels.Widget;
 
 namespace WebDispacher.Controellers
 {
@@ -38,14 +44,64 @@ namespace WebDispacher.Controellers
             this.truckAndTrailerService = truckAndTrailerService;
         }
 
+        [Route("GetTrucks")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> GetTrucksByFilters(TruckFiltersViewModel filters)
+        {
+            var(trucks, countEntities) = await truckAndTrailerService.GetTrucks(filters, CompanyId);
+
+            filters.CountPages = truckAndTrailerService.GetCountTrucksPagesByCountEntites(countEntities);
+            filters.AvailableGroups = await truckAndTrailerService.GetActualTruckGroupByCompanyId(CompanyId);
+
+            return PartialView($"~/Views/Equipment/PartView/_TruckTable.cshtml", new TruckShortVmList
+            {
+                Items = trucks,
+                Filters = filters,
+            });
+        }
+
+        [Route("GetTrucksInGroupByFilters")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> GetTrucksInGroupByFilters(TruckFilterViewModel filters)
+        {
+            try {
+                var trucks = await truckAndTrailerService.GetTrucksInGroupByFilters(filters, CompanyId);
+
+                return PartialView($"~/Views/Equipment/PartView/_TruckTable.cshtml", (trucks.Item1, filters, trucks.Item2));
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Redirect(Config.BaseReqvesteUrl);
+        }
+        
+        [Route("GetTrailersInGroupByFilters")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> GetTrailersInGroupByFilters(TrailerFilterViewModel filters)
+        {
+            try {
+                var trucks = await truckAndTrailerService.GetTrailerInGroupByFilters(filters, CompanyId);
+
+                return PartialView($"~/Views/Equipment/PartView/_TrailerTable.cshtml", (trucks.Item1, filters, trucks.Item2));
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Redirect(Config.BaseReqvesteUrl);
+        }
+
         [Route("Trucks")]
         [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
-        public async Task<IActionResult> Trucks(int page = 1)
+        public async Task<IActionResult> Trucks(TruckFiltersViewModel filters)
         {
             try
             {
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
-                
+
                 var isCancelSubscribe = companyService.GetCancelSubscribe(CompanyId);
                     
                 if (isCancelSubscribe)
@@ -55,17 +111,22 @@ namespace WebDispacher.Controellers
 
                 ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
 
-                var trucks = await truckAndTrailerService.GetTrucks(page, CompanyId);
+                var (trucks, countEntities) = await truckAndTrailerService.GetTrucks(filters, CompanyId);
 
-                var countPages = await truckAndTrailerService.GetCountTrucksPages(CompanyId);
+                filters.AvailableGroups = await truckAndTrailerService.GetActualTruckGroupByCompanyId(CompanyId);
 
-                ViewBag.CountPages = countPages;
+                var currentWidgets = await truckAndTrailerService.GetCurrentCompanyTruckWidgets(CompanyId);
 
-                ViewBag.SelectedPage = page;
+                filters.CountPages = truckAndTrailerService.GetCountTrucksPagesByCountEntites(countEntities);
 
-                return View($"AllTruck", trucks);
+                return View($"AllTruck", new TruckShortVmList
+                {
+                    Items = trucks,
+                    Filters = filters,
+                    Widgets = currentWidgets,
+                });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
             }
@@ -73,9 +134,61 @@ namespace WebDispacher.Controellers
             return Redirect(Config.BaseReqvesteUrl);
         }
 
+        [Route("Truck/GetWidgets")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> GetTruckWidgetsInCompany()
+        {
+            var listTruckStatusThemes = await truckAndTrailerService.GetCurrentCompanyTruckWidgets(CompanyId);
+
+            return PartialView("~/Views/Equipment/PartView/_TruckWidgets.cshtml", listTruckStatusThemes);
+        }
+        
+        [Route("Truck/GetCurrentWidgets")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> GetCurrentTruckWidgetsInCompany()
+        {
+            var listTruckStatusThemes = await truckAndTrailerService.GetCurrentCompanyTruckWidgets(CompanyId);
+
+            return PartialView("~/Views/PartView/Widgets/_TruckWidget.cshtml", listTruckStatusThemes);
+        }
+        
+        [Route("Trailer/GetWidgets")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> GetTrailerWidgetsInCompany()
+        {
+            var listTrailerStatusThemes = await truckAndTrailerService.GetCurrentCompanyTrailerWidgets(CompanyId);
+
+            return PartialView("~/Views/Equipment/PartView/_TrailerWidgets.cshtml", listTrailerStatusThemes);
+        }
+        
+        [Route("Trailer/GetCurrentWidgets")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> GetCurrentTrailerWidgetsInCompany()
+        {
+            var listTrailerStatusThemes = await truckAndTrailerService.GetCurrentCompanyTrailerWidgets(CompanyId);
+
+            return PartialView("~/Views/PartView/Widgets/_TrailerWidget.cshtml", listTrailerStatusThemes);
+        }
+
+        [Route("GetTrailers")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> GetTrailersByFilters(TrailerFiltersViewModel filters)
+        {
+            var (trailers, countEntities) = await truckAndTrailerService.GetTrailers(filters, CompanyId);
+
+            filters.CountPages = truckAndTrailerService.GetCountTrucksPagesByCountEntites(countEntities);
+            filters.AvailableGroups = await truckAndTrailerService.GetActualTrailerGroupByCompanyId(CompanyId);
+
+            return PartialView($"~/Views/Equipment/PartView/_TrailerTable.cshtml", new TrailerShortVmList
+            {
+                Items = trailers,
+                Filters = filters,
+            });
+        }
+
         [Route("Trailers")]
         [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
-        public async Task<IActionResult> Trailers(int page = 1)
+        public async Task<IActionResult> Trailers(TrailerFiltersViewModel filters)
         {
             try
             {
@@ -89,18 +202,23 @@ namespace WebDispacher.Controellers
                 }
 
                 ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
-                
-                var trailers = await truckAndTrailerService.GetTrailers(page, CompanyId);
 
-                var countPages = await truckAndTrailerService.GetCountTrailersPages(CompanyId);
+                var (trailers, countEntities) = await truckAndTrailerService.GetTrailers(filters, CompanyId);
 
-                ViewBag.CountPages = countPages;
+                filters.CountPages = truckAndTrailerService.GetCountTrailersPagesByCountEntites(countEntities);
 
-                ViewBag.SelectedPage = page;
+                var currentWidgets = await truckAndTrailerService.GetCurrentCompanyTrailerWidgets(CompanyId);
 
-                return View($"AllTrailer", trailers);
+                filters.AvailableGroups = await truckAndTrailerService.GetActualTrailerGroupByCompanyId(CompanyId);
+
+                return View($"AllTrailer", new TrailerShortVmList
+                {
+                    Items = trailers,
+                    Filters = filters,
+                    Widgets = currentWidgets,
+                });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
             }
@@ -115,13 +233,38 @@ namespace WebDispacher.Controellers
         }
 
         [HttpGet]
-        [Route("GetImages")]
+        [Route("GetTruckImages")]
         [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
-        public async Task<IActionResult> GetImages(string vehicleSlug)
+        public async Task<IActionResult> GetTruckImages(string vehicleSlug)
         {
             if (string.IsNullOrEmpty(vehicleSlug)) return Json(new string[0]);
 
             var directoryPath = $"../TruckPattern/" + vehicleSlug;
+
+            try
+            {
+                var imageFiles = Directory.GetFiles(directoryPath)
+                    .Where(file => file.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
+                    .Select(Path.GetFileName);
+
+                return Json(imageFiles);
+            }
+            catch(Exception ex) 
+            { 
+            
+            }
+
+            return Json(new string[0]);
+        }
+        
+        [HttpGet]
+        [Route("GetTrailerImages")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> GetTrailerImages(string vehicleSlug)
+        {
+            if (string.IsNullOrEmpty(vehicleSlug)) return Json(new string[0]);
+
+            var directoryPath = $"../TrailerPattern/" + vehicleSlug;
 
             try
             {
@@ -147,6 +290,15 @@ namespace WebDispacher.Controellers
 
             return Json(vehicleSlug);
         }
+        
+        [Route("GetTrailerSlug")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> GetTrailerSlugByName(string vehicleName)
+        {
+            var vehicleSlug = await truckAndTrailerService.GetTrailerTypeSlugByName(vehicleName);
+
+            return Json(vehicleSlug);
+        }
 
         [Route("GetTruckTypes")]
         [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
@@ -157,11 +309,29 @@ namespace WebDispacher.Controellers
             return Json(truckTypes);
         }
         
-        [Route("GetVehicleCategiries")]
+        [Route("GetTrailerTypes")]
         [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
-        public async Task<IActionResult> GetVehicleCategiries()
+        public async Task<IActionResult> GetTrailerTypes(string categoryId)
         {
-            var vehicleCategories = await truckAndTrailerService.GetVehicleCategiries();
+            var trailerTypes = await truckAndTrailerService.GetTrailerTypes(categoryId);
+
+            return Json(trailerTypes);
+        }
+        
+        [Route("Truck/GetVehicleCategiries")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> GetTruckVehicleCategiries()
+        {
+            var vehicleCategories = await truckAndTrailerService.GetTruckVehicleCategiries();
+
+            return Json(vehicleCategories);
+        }
+        
+        [Route("Trailer/GetVehicleCategiries")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> GetTrailerVehicleCategiries()
+        {
+            var vehicleCategories = await truckAndTrailerService.GetTrailerVehicleCategiries();
 
             return Json(vehicleCategories);
         }
@@ -186,6 +356,90 @@ namespace WebDispacher.Controellers
             return Redirect(Config.BaseReqvesteUrl);
         }
 
+        [HttpGet]        
+        [Route("TruckGroup/Remove")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<bool> RemoveTruckGroup(int id)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                
+                var result = await truckAndTrailerService.RemoveTruckGroupByCompanyId(id);
+
+                return result;
+            }
+            catch (Exception)
+            {
+
+            }
+
+            return false;
+        }
+        
+        [HttpGet]        
+        [Route("TrailerGroup/Remove")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<bool> RemoveTrailerGroup(int id)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                
+                var result = await truckAndTrailerService.RemoveTrailerGroupByCompanyId(id);
+
+                return result;
+            }
+            catch (Exception)
+            {
+
+            }
+
+            return false;
+        }
+        
+        [HttpGet]        
+        [Route("TruckGroup/Rename")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<bool> RenameTruckGroup(int groupId, string name)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                
+                var result = await truckAndTrailerService.RenameTruckGroupByCompanyId(groupId, name, CompanyId);
+
+                return result;
+            }
+            catch (Exception)
+            {
+
+            }
+
+            return false;
+        }
+        
+        [HttpGet]        
+        [Route("TrailerGroup/Rename")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<bool> RenameTrailerGroup(int groupId, string name)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                
+                var result = await truckAndTrailerService.RenameTrailerGroupByCompanyId(groupId, name, CompanyId);
+
+                return result;
+            }
+            catch (Exception)
+            {
+
+            }
+
+            return false;
+        }
+
         [HttpPost]
         [Route("Truck/Remove")]
         [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
@@ -196,6 +450,48 @@ namespace WebDispacher.Controellers
                 ViewBag.BaseUrl = Config.BaseReqvesteUrl;
                 
                 await truckAndTrailerService.RemoveTruck(id);
+
+                return true;
+            }
+            catch (Exception)
+            {
+
+            }
+
+            return false;
+        }
+        
+        [HttpPost]
+        [Route("Truck/RemoveWidget")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<bool> RemoveTruckWidget(int id)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                
+                await truckAndTrailerService.RemoveTruckWidget(id, CompanyId);
+
+                return true;
+            }
+            catch (Exception)
+            {
+
+            }
+
+            return false;
+        }
+        
+        [HttpPost]
+        [Route("Trailer/RemoveWidget")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<bool> RemoveTrailerWidget(int id)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                
+                await truckAndTrailerService.RemoveTrailerWidget(id, CompanyId);
 
                 return true;
             }
@@ -271,6 +567,18 @@ namespace WebDispacher.Controellers
                 {
                     ViewData["SelectedTruckTypeId"] = truck.TruckTypeId;
                 }
+                
+                if(truck.TruckGroupId != 0)
+                {
+                    ViewData["SelectedTruckGroupId"] = truck.TruckGroupId;
+                }
+                
+                if(truck.TruckStatusId != 0)
+                {
+                    ViewData["SelectedTrucStatusId"] = truck.TruckStatusId;
+                }
+
+
                 return View("CreateTruck", truck);
             }
 
@@ -317,6 +625,44 @@ namespace WebDispacher.Controellers
             
             return false;
         }
+        
+        [HttpGet]
+        [Route("Truck/IsVisibleLocation")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<bool> IsVisibleTruckLocation(LocationType selectedLocationType)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                
+                return await truckAndTrailerService.IsVisibleTruckLocation(selectedLocationType);
+            }
+            catch (Exception)
+            {
+
+            }
+            
+            return false;
+        }
+        
+        [HttpGet]
+        [Route("Trailer/IsVisibleLocation")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<bool> IsVisibleTrailerLocation(LocationType selectedLocationType)
+        {
+            try
+            {
+                ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+                
+                return await truckAndTrailerService.IsVisibleTrailerLocation(selectedLocationType);
+            }
+            catch (Exception)
+            {
+
+            }
+            
+            return false;
+        }
 
         [HttpGet]
         [Route("CreateTrailer")]
@@ -349,6 +695,495 @@ namespace WebDispacher.Controellers
         }
 
         [HttpPost]
+        [Route("Truck/IsHaveTruckGroup")]
+        public async Task<JsonResult> IsHaveTruckGroup()
+        {
+            var canProceed = await truckAndTrailerService.CheckTruckHaveGroup(CompanyId);
+
+            return Json(new { canProceed });
+        }
+        
+        [HttpPost]
+        [Route("Trailer/IsHaveTrailerGroup")]
+        public async Task<JsonResult> IsHaveTrailerGroup()
+        {
+            var canProceed = await truckAndTrailerService.CheckTrailerHaveGroup(CompanyId);
+
+            return Json(new { canProceed });
+        }
+        
+        [HttpGet]
+        [Route("Truck/GetTruckGroupsDropdownItems")]
+        public async Task<JsonResult> GetTruckGroupsDropdownItems()
+        {
+            var truckGroups = await truckAndTrailerService.GetTruckGroupsDropdownItems(CompanyId);
+
+            return Json(truckGroups);
+        }
+        
+        [HttpGet]
+        [Route("Truck/GetTruckStatusDropdownItems")]
+        public async Task<JsonResult> GetTruckStatusDropdownItems()
+        {
+            var truckStatuses = await truckAndTrailerService.GetTruckStatusDropdownItems(CompanyId);
+
+            return Json(truckStatuses);
+        }
+        
+        [HttpGet]
+        [Route("Truck/GetStatusWithoutWidgetsDropdownItems")]
+        public async Task<JsonResult> GetTruckStatusWithoutWidgetsDropdownItems()
+        {
+            var truckStatuses = await truckAndTrailerService.GetTruckStatusWithoutWidgetsDropdownItems(CompanyId);
+
+            return Json(truckStatuses);
+        }
+        
+        [HttpGet]
+        [Route("Trailer/GetStatusWithoutWidgetsDropdownItems")]
+        public async Task<JsonResult> GetTrailerStatusWithoutWidgetsDropdownItems()
+        {
+            var truckStatuses = await truckAndTrailerService.GetTrailerStatusWithoutWidgetsDropdownItems(CompanyId);
+
+            return Json(truckStatuses);
+        }
+        
+        [HttpGet]
+        [Route("Truck/GetEditStatusWithoutWidgetsDropdownItems")]
+        public async Task<JsonResult> GetEditTruckStatusWithoutWidgetsDropdownItems(int currentItemId)
+        {
+            var truckStatuses = await truckAndTrailerService.GetTruckStatusWithoutWidgetsWithCurrentDropdownItems(currentItemId,CompanyId);
+
+            return Json(truckStatuses);
+        }
+        
+        [HttpGet]
+        [Route("Trailer/GetEditStatusWithoutWidgetsDropdownItems")]
+        public async Task<JsonResult> GetEditTrailerStatusWithoutWidgetsDropdownItems(int currentItemId)
+        {
+            var trailerStatuses = await truckAndTrailerService.GetTrailerStatusWithoutWidgetsWithCurrentDropdownItems(currentItemId,CompanyId);
+
+            return Json(trailerStatuses);
+        }
+        
+        [HttpGet]
+        [Route("Trailer/GetTrailerStatusDropdownItems")]
+        public async Task<JsonResult> GetTrailerStatusDropdownItems()
+        {
+            var trailerGroups = await truckAndTrailerService.GetTrailerStatusDropdownItems(CompanyId);
+
+            return Json(trailerGroups);
+        }
+        
+        [HttpGet]
+        [Route("Trailer/GetTrailerGroupsDropdownItems")]
+        public async Task<JsonResult> GetTrailerGroupsDropdownItems()
+        {
+            var trailerGroups = await truckAndTrailerService.GetTrailerGroupsDropdownItems(CompanyId);
+
+            return Json(trailerGroups);
+        }
+
+        [HttpPost]
+        [Route("SaveTruckStatus")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<bool> SaveTruckStatus(int truckId, int truckStatusId)
+        {
+            if (truckId != 0 && truckStatusId != 0)
+            {
+                try
+                {
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+                    return await truckAndTrailerService.SaveTruckStatus(truckId, truckStatusId, CompanyId);
+                }
+                catch (Exception e)
+                {
+
+                }
+            }
+
+            return false;
+        }
+        
+        [HttpPost]
+        [Route("SaveTruckLocation")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<bool> SaveTruckLocation(int truckId, string truckLocation)
+        {
+            if (truckId != 0 && !string.IsNullOrEmpty(truckLocation))
+            {
+                try
+                {
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+                    return await truckAndTrailerService.SaveTruckLocation(truckId, truckLocation, CompanyId);
+                }
+                catch (Exception e)
+                {
+
+                }
+            }
+
+            return false;
+        }
+        
+        [HttpPost]
+        [Route("SaveTrailerLocation")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<bool> SaveTrailerLocation(int trailerId, string trailerLocation)
+        {
+            if (trailerId != 0 && !string.IsNullOrEmpty(trailerLocation))
+            {
+                try
+                {
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+                    return await truckAndTrailerService.SaveTrailerLocation(trailerId, trailerLocation, CompanyId);
+                }
+                catch (Exception e)
+                {
+
+                }
+            }
+
+            return false;
+        }
+        
+        [HttpPost]
+        [Route("SaveTrailerStatus")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<bool> SaveTrailerStatus(int trailerId, int trailerStatusId)
+        {
+            if (trailerId != 0 && trailerStatusId != 0)
+            {
+                try
+                {
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+                    return await truckAndTrailerService.SaveTrailerStatus(trailerId, trailerStatusId, CompanyId);
+                }
+                catch (Exception e)
+                {
+
+                }
+            }
+
+            return false;
+        }
+        
+        [HttpPost]
+        [Route("Truck/SaveGroup")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> SaveTruckGroup(string name, string dateTimeLocalTruck, string returnUrl)
+        {
+            if (!string.IsNullOrEmpty(name))
+            {
+                try
+                {
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+                    await truckAndTrailerService.AddTruckGroupInCompany(name, dateTimeLocalTruck, CompanyId);
+
+                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                    {
+                        return Redirect(returnUrl);
+                    }
+                }
+                catch (Exception e)
+                {
+
+                }
+            }
+
+            return Redirect(Config.BaseReqvesteUrl);
+        }
+        
+        [HttpPost]
+        [Route("Trailer/SaveGroup")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> SaveTrailerGroup(string name, string dateTimeLocalTrailer, string returnUrl)
+        {
+            if (!string.IsNullOrEmpty(name))
+            {
+                try
+                {
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+                    await truckAndTrailerService.AddTrailerGroupInCompany(name, dateTimeLocalTrailer, CompanyId);
+
+                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                    {
+                        return Redirect(returnUrl);
+                    }
+                }
+                catch (Exception e)
+                {
+
+                }
+            }
+
+            return Redirect(Config.BaseReqvesteUrl);
+        }
+        
+        [HttpPost]
+        [Route("Truck/SaveWidget")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> SaveTruckWidget(CreateWidgetVm model, string dateTimeLocalCreateTruck, string returnUrl = "none")
+        {
+            model.TypeWidget = ViewModels.Widget.Enum.TypeWidget.Truck;
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+                    await truckAndTrailerService.AddTruckWidgetInCompany(model, dateTimeLocalCreateTruck, CompanyId);
+
+                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                    {
+                        return Redirect(returnUrl);
+                    }
+                }
+                catch (Exception e)
+                {
+
+                    return PartialView("~/Views/PartView/Modals/CreateWidget.cshtml", (model, returnUrl));
+                }
+            }
+
+            return PartialView("~/Views/PartView/Modals/CreateWidget.cshtml", (model, returnUrl));
+        }
+        
+        [HttpPost]
+        [Route("Trailer/SaveWidget")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> SaveTrailerkWidget(CreateWidgetVm model, string dateTimeLocalCreateTruck, string returnUrl = "none")
+        {
+            model.TypeWidget = ViewModels.Widget.Enum.TypeWidget.Trailer;
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+                    await truckAndTrailerService.AddTrailerWidgetInCompany(model, dateTimeLocalCreateTruck, CompanyId);
+
+                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                    {
+                        return Redirect(returnUrl);
+                    }
+                }
+                catch (Exception e)
+                {
+                    return PartialView("~/Views/PartView/Modals/CreateWidget.cshtml", (model, returnUrl));
+                }
+            }
+
+            return PartialView("~/Views/PartView/Modals/CreateWidget.cshtml", (model, returnUrl));
+        }
+        
+        [HttpPost]
+        [Route("Truck/UpdateWidget")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> UpdateTruckWidget(WidgetViewModel model, string dateTimeLocalCreateTruck, string returnUrl = "none")
+        {
+            model.TypeWidget = ViewModels.Widget.Enum.TypeWidget.Truck;
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+                    await truckAndTrailerService.UpdateTruckWidgetInCompany(model, dateTimeLocalCreateTruck, CompanyId);
+
+                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                    {
+                        return Redirect(returnUrl);
+                    }
+                }
+                catch (Exception e)
+                {
+                    return PartialView("~/Views/PartView/Modals/EditWidget.cshtml", (model, returnUrl));
+                }
+            }
+
+            return PartialView("~/Views/PartView/Modals/EditWidget.cshtml", (model, returnUrl));
+        }
+        
+        [HttpPost]
+        [Route("Trailer/UpdateWidget")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> UpdateTrailerWidget(WidgetViewModel model, string dateTimeLocalCreateTruck, string returnUrl = "none")
+        {
+            model.TypeWidget = ViewModels.Widget.Enum.TypeWidget.Trailer;
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+                    await truckAndTrailerService.UpdateTrailerWidgetInCompany(model, dateTimeLocalCreateTruck, CompanyId);
+
+                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                    {
+                        return Redirect(returnUrl);
+                    }
+                }
+                catch (Exception e)
+                {
+                    return PartialView("~/Views/PartView/Modals/EditWidget.cshtml", (model, returnUrl));
+                }
+            }
+
+            return PartialView("~/Views/PartView/Modals/EditWidget.cshtml", (model, returnUrl));
+        }
+        
+        [HttpPost]
+        [Route("Truck/SaveCustomStatus")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> SaveCustomTruckStatus(CreateTruckStatusVm model, string dateTimeLocalCreateTruck, string returnUrl = "none")
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+                    await truckAndTrailerService.AddCustomTruckStatusInCompany(model, dateTimeLocalCreateTruck, CompanyId);
+
+                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                    {
+                        return Redirect(returnUrl);
+                    }
+                }
+                catch (Exception e)
+                {
+                    model.TruckStatusThemes = await truckAndTrailerService.GetAvailableTruckStatusThemes();
+
+                    return PartialView("~/Views/PartView/Modals/Equipment/CreateTruckStatus.cshtml", (model, returnUrl));
+                }
+            }
+
+            model.TruckStatusThemes = await truckAndTrailerService.GetAvailableTruckStatusThemes();
+
+            return PartialView("~/Views/PartView/Modals/Equipment/CreateTruckStatus.cshtml", (model, returnUrl));
+        }
+        
+        [HttpPost]
+        [Route("Trailer/SaveCustomStatus")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> SaveCustomTrailerStatus(CreateTrailerStatusVm model, string dateTimeLocalCreateTrailer, string returnUrl = "none")
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+                    await truckAndTrailerService.AddCustomTrailerStatusInCompany(model, dateTimeLocalCreateTrailer, CompanyId);
+
+                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                    {
+                        return Redirect(returnUrl);
+                    }
+                }
+                catch (Exception e)
+                {
+                    model.TrailerStatusThemes = await truckAndTrailerService.GetAvailableTrailerStatusThemes();
+
+                    return PartialView("~/Views/PartView/Modals/Equipment/CreateTrailerStatus.cshtml", (model, returnUrl));
+                }
+            }
+
+            model.TrailerStatusThemes = await truckAndTrailerService.GetAvailableTrailerStatusThemes();
+
+            return PartialView("~/Views/PartView/Modals/Equipment/CreateTrailerStatus.cshtml", (model, returnUrl));
+        }
+
+        [HttpGet]
+        [Route("Truck/CreateTruckStatusForm")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> GetCreateTruckStatusForm(string returnUrl)
+        {
+            var listTruckStatusThemes = await truckAndTrailerService.GetAvailableTruckStatusThemes();
+
+            return PartialView("~/Views/PartView/Modals/Equipment/CreateTruckStatus.cshtml", (new CreateTruckStatusVm { TruckStatusThemes = listTruckStatusThemes}, returnUrl));
+        }
+        
+        
+        [HttpGet]
+        [Route("Truck/CreateWidgetForm")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> GetCreateWidgetForm(string returnUrl)
+        {
+            return PartialView("~/Views/PartView/Modals/CreateWidget.cshtml", (new CreateWidgetVm { TypeWidget = ViewModels.Widget.Enum.TypeWidget.Truck }, returnUrl));
+        }
+        
+        [HttpGet]
+        [Route("Trailer/CreateWidgetForm")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> GetTrailerCreateWidgetForm(string returnUrl)
+        {
+            return PartialView("~/Views/PartView/Modals/CreateWidget.cshtml", (new CreateWidgetVm { TypeWidget = ViewModels.Widget.Enum.TypeWidget.Trailer }, returnUrl));
+        }
+        
+        [HttpGet]
+        [Route("Truck/EditWidgetForm")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> GetWidgetForm(int id, string returnUrl)
+        {
+            var widget = await truckAndTrailerService.GetTruckWidgetById(id, CompanyId);
+
+            return PartialView("~/Views/PartView/Modals/EditWidget.cshtml", (widget, returnUrl));
+        }
+        
+        [HttpGet]
+        [Route("GetUploadExpDocForm")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public IActionResult GetUploadExpDocForm(string modelId)
+        {
+            ViewData["ModalId"] = modelId;
+            return PartialView("~/Views/PartView/Modals/Equipment/UpdateExpWithDoc.cshtml");
+        }
+        
+        [HttpGet]
+        [Route("Trailer/EditWidgetForm")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> GetTrailerWidgetForm(int id, string returnUrl)
+        {
+            var widget = await truckAndTrailerService.GetTrailerWidgetById(id, CompanyId);
+
+            return PartialView("~/Views/PartView/Modals/EditWidget.cshtml", (widget, returnUrl));
+        }
+        
+        [HttpGet]
+        [Route("Trailer/CreateTrailerStatusForm")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public async Task<IActionResult> GetCreateTrailerStatusForm(string returnUrl)
+        {
+            var listTrailerStatusThemes = await truckAndTrailerService.GetAvailableTrailerStatusThemes();
+
+            return PartialView("~/Views/PartView/Modals/Equipment/CreateTrailerStatus.cshtml", (new CreateTrailerStatusVm { TrailerStatusThemes = listTrailerStatusThemes }, returnUrl));
+        }
+        
+        [HttpGet]
+        [Route("Truck/CreateTruckGroupForm")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public IActionResult GetCreateTruckGroupForm(string returnUrl)
+        {
+            return PartialView("~/Views/PartView/Modals/Equipment/RequiredCreateTruckGroup.cshtml", (new TruckGroup(), returnUrl));
+        }
+        
+        [HttpGet]
+        [Route("Trailer/CreateTrailerGroupForm")]
+        [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
+        public IActionResult GetCreateTrailerGroupForm(string returnUrl)
+        {
+            return PartialView("~/Views/PartView/Modals/Equipment/RequiredCreateTrailerGroup.cshtml", (new TrailerGroup(), returnUrl));
+        }
+
+        [HttpPost]
         [Route("CreateTrailer")]
         [DisableRequestSizeLimit]
         [Authorize(Policy = PolicyIdentityConstants.CarrierCompany)]
@@ -378,9 +1213,30 @@ namespace WebDispacher.Controellers
             }
             else
             {
+                if (trailer.VehicleCategoryId != null)
+                {
+                    ViewData["SelectedVehicleCategoryId"] = trailer.VehicleCategoryId;
+                }
+
+                if (trailer.TrailerTypeId != null)
+                {
+                    ViewData["SelectedTrailerTypeId"] = trailer.TrailerTypeId;
+                }
+
+                if (trailer.TrailerGroupId != 0)
+                {
+                    ViewData["SelectedTrailerGroupId"] = trailer.TrailerGroupId;
+                }
+
+                if (trailer.TrailerStatusId != null)
+                {
+                    ViewData["SelectedTrailerStatusId"] = trailer.TrailerStatusId;
+                }
+
+
                 return View("CreateTraler", trailer);
             }
-            
+
 
             return Redirect(Config.BaseReqvesteUrl);
         }
@@ -417,6 +1273,16 @@ namespace WebDispacher.Controellers
                 {
                     ViewData["SelectedTruckTypeId"] = truck.TruckTypeId;
                 }
+                
+                if (truck.TruckGroupId != 0)
+                {
+                    ViewData["SelectedTruckGroupId"] = truck.TruckGroupId;
+                }
+
+                if (truck.TruckStatusId != 0)
+                {
+                    ViewData["SelectedTrucStatusId"] = truck.TruckStatusId;
+                }
 
                 return View(truck);
             }
@@ -426,6 +1292,58 @@ namespace WebDispacher.Controellers
             }
             
             return Redirect(Config.BaseReqvesteUrl);
+        }
+
+        [HttpPost]
+        [Route("Truck/UpdateDoc")]
+        [DisableRequestSizeLimit]
+        public async Task<IActionResult> UpdateTruckDocuments(int entryId, DateTime docExp, IFormFile updateDocument, TypeChangeDocument typeChangeDocument)
+        {
+            try
+            {
+                switch (typeChangeDocument)
+                {
+                    case TypeChangeDocument.AnnualInspection:
+                        await truckAndTrailerService.UpdateTruckAnnualInspectionWithDoc(entryId, docExp, updateDocument);
+                        break;
+                    case TypeChangeDocument.Plate:
+                        await truckAndTrailerService.UpdateTruckPlateWithDoc(entryId, docExp, updateDocument);
+                        break;
+                    default: return NotFound();
+                }
+            }
+            catch(Exception e) 
+            {
+                return NotFound();
+            }
+
+            return Ok();
+        }
+        
+        [HttpPost]
+        [Route("Trailer/UpdateDoc")]
+        [DisableRequestSizeLimit]
+        public async Task<IActionResult> UpdateTrailerDocuments(int entryId, DateTime docExp, IFormFile updateDocument, TypeChangeDocument typeChangeDocument)
+        {
+            try
+            {
+                switch (typeChangeDocument)
+                {
+                    case TypeChangeDocument.AnnualInspection:
+                        await truckAndTrailerService.UpdateTrailerAnnualInspectionWithDoc(entryId, docExp, updateDocument);
+                        break;
+                    case TypeChangeDocument.Plate:
+                        await truckAndTrailerService.UpdateTrailerPlateWithDoc(entryId, docExp, updateDocument);
+                        break;
+                    default: return NotFound();
+                }
+            }
+            catch(Exception e) 
+            {
+                return NotFound();
+            }
+
+            return Ok();
         }
 
         [HttpPost]
@@ -464,6 +1382,17 @@ namespace WebDispacher.Controellers
                 {
                     ViewData["SelectedTruckTypeId"] = truck.TruckTypeId;
                 }
+
+                if (truck.TruckGroupId != 0)
+                {
+                    ViewData["SelectedTruckGroupId"] = truck.TruckGroupId;
+                }
+
+                if (truck.TruckStatusId != 0)
+                {
+                    ViewData["SelectedTrucStatusId"] = truck.TruckStatusId;
+                }
+
                 ViewBag.TruckDocs = await truckAndTrailerService.GetBaseTruckDoc(truck.Id.ToString());
                 return View("EditTruck", truck);
             }
@@ -491,7 +1420,27 @@ namespace WebDispacher.Controellers
                 ViewData[NavConstants.TypeNavBar] = companyService.GetTypeNavBar(CompanyId);
                     
                 var model = truckAndTrailerService.GetTrailerById(trailerId);
-                    
+
+                if (model.VehicleCategoryId != null)
+                {
+                    ViewData["SelectedVehicleCategoryId"] = model.VehicleCategoryId;
+                }
+
+                if (model.TrailerTypeId != null)
+                {
+                    ViewData["SelectedTrailerTypeId"] = model.TrailerTypeId;
+                }
+
+                if (model.TrailerGroupId != 0)
+                {
+                    ViewData["SelectedTrailerGroupId"] = model.TrailerGroupId;
+                }
+
+                if (model.TrailerStatusId != null)
+                {
+                    ViewData["SelectedTrailerStatusId"] = model.TrailerStatusId;
+                }
+
                 return View(model);
             }
             catch (Exception)
@@ -525,6 +1474,16 @@ namespace WebDispacher.Controellers
             }
             else
             {
+                if (trailer.TrailerGroupId != 0)
+                {
+                    ViewData["SelectedTrailerGroupId"] = trailer.TrailerGroupId;
+                }
+
+                if (trailer.TrailerStatusId != null)
+                {
+                    ViewData["SelectedTrailerStatusId"] = trailer.TrailerStatusId;
+                }
+
                 return View(trailer);
             }
 

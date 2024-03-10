@@ -1,8 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 @using System.Globalization;
 @using WebDispacher.Constants;
+@using WebDispacher.ViewModels.Driver;
 
-@model List<DaoModels.DAO.Models.Driver>
+@model DriverVmList
 
 @inject IViewLocalizer Localizer
 
@@ -15,69 +16,90 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="title">
-                        <h1>@Localizer["Drivers"]</h1>
-                        <button class="btn1" onclick="window.location.href='@Url.Action("CreateDriver", "Driver")';">@Localizer["AddDriver"]</button>
+                    <div class="title" style="display: flex; justify-content: space-between;margin-top:60px">
+                        <div class="title" style="margin-top: 0px">
+                            <h1>@Localizer["Drivers"]</h1>
+                            <button class="btn1 btn1-custom" onclick="window.location.href='@Url.Action("CreateDriver", "Driver")';">@Localizer["AddDriver"]</button>
+                            <div style="margin-left:20px;vertical-align: middle;display: flex;align-items: center;" class="btn1 btn1-custom" id="addEmail" data-toggle="modal" data-modal-selector="#createEmail" onclick="setEmailProperty('0')" href="#createEmail">@Localizer["AddEmailAll"]</div>
+                        </div>
+                        <button class="btn1 btn1-custom" onclick="window.location.href='@Url.Action("GetDriverAllEmails", "Driver")';">@Localizer["AllEmailMessage"]</button>
                     </div>
+                    <form method="get" id="searchForm">
+                        <div class="card border card-body" style="display: flex;flex-direction: row;">
+                            <div class="item-search">
+                                <label>
+                                    @Localizer["LastName"]
+                                    <input class="type-button" id="search-last-name-driver" placeholder="@Localizer["LastNameLabel"]" asp-for="Filters.LastName" type="text" maxlength="20">
+                                </label>
+                            </div>
+                            <div class="item-search">
+                                <label>
+                                    @Localizer["FirstName"]
+                                    <input class="type-button" id="search-first-name-driver" placeholder="@Localizer["FirstNameLabel"]" asp-for="Filters.FirstName"  type="text" maxlength="20">
+                                </label>
+                            </div>
+                            <div class="item-search item-search-button">
+                                <button type="submit" class="btn1 btn-modal">@Localizer["Search"]</button>
+                            </div>
+                        </div>
+                        <div class="col-md-12 pl-0 pr-0">
+                            <div id="sorts" class="sort-group">
+                                @foreach (var item in Model.Filters.AvailableFirstLetters)
+                                {
+                                    <p class="first-letter" data-letter="@item">@item</p>
+                                }
+                            </div>
+                        </div>
+                        <input type="hidden" id="firstLetterField" name="Filters.FirstLetter" asp-for="Filters.FirstLetter" />
+                    </form>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
                     <div id="tabs">
-                        <div class="tab whiteborder" onclick="window.location.href='@Url.Action("Drivers", "Driver")';">@Localizer["Drivers"]</div>
-                        <div class="tab" onclick="window.location.href='@Url.Action("Check", "Driver")';">@Localizer["DriverCheck"]</div>
-                        <div class="tab" onclick="window.location.href='@Url.Action("AddReport", "Driver")';">@Localizer["ReportDriver"]</div>
                         <div class="tabContent">
-                            
-                            @for (int i = 0; i < Model.Count; i++)
+                            @for (int i = 0; i < Model.Items.Count; i++)
                             {
                                 <div class="one-line">
                                     <div class="top-line">
                                         <div class="left">
                                             <div class="contact">
-                                                <p>
-                                                    <strong>@Model[i].FirstName @Model[i].LastName</strong>
+                                                <p style="text-transform: uppercase;">
+                                                    <strong>@Model.Items[i].LastName, @Model.Items[i].FirstName</strong>
                                                 </p>
-                                                <p class="text-p">@Localizer["TrailerCapacity"]: @Model[i].DriverControl.TrailerCapacity</p>
-                                                <p class="text-p">@Localizer["LastIns"]: @Model[i].DriverControl.LastDateInspaction</p>
-                                            </div>
-                                        </div>
-                                        <div class="right">
-                                            <a href="@ViewBag.BaseUrl/Driver/Drivers/Edit?id=@Model[i].Id" class="btn3">@Localizer["Edit"]</a>
-                                            <input class="btn3" type="button" value="@Localizer["Delete"]" onclick="ShowAlert(@Model[i].Id)" data-toggle="modal" data-target="#dismissFormModal" />
-                                        </div>
-                                    </div>
-                                    <div class="top-line">
-                                        <div class="left">
-                                            <div class="contact">
-                                                <p class="text-p">@Localizer["Email"]: <a href="@Model[i].Email">@Model[i].Email</a></p>
+                                                <p class="text-p"><b>@Localizer["Email"]:</b> <a href="@Model.Items[i].Email">@Model.Items[i].Email</a></p>
                                                 @{
                                                     var phoneDriver = string.Empty;
-                                                    if (Model[i]?.PhoneNumber != null && Model[i]?.PhoneNumber.DialCode != 0 && !string.IsNullOrEmpty(Model[i]?.PhoneNumber.Number))
+                                                    if (Model.Items[i]?.PhoneNumber != null && Model.Items[i]?.PhoneNumber.DialCode != 0 && !string.IsNullOrEmpty(Model.Items[i]?.PhoneNumber.Number))
                                                     {
-                                                        phoneDriver = $"+{Model[i].PhoneNumber.DialCode} {Model[i].PhoneNumber.Number}";
+                                                        phoneDriver = $"+{Model.Items[i].PhoneNumber.DialCode} {Model.Items[i].PhoneNumber.Number}";
                                                     }
                                                 }
-                                                <p class="text-p">@Localizer["Phone"]: <a href="tel:@Model[i].PhoneNumber">@phoneDriver</a></p>
+                                                <p class="text-p"><b>@Localizer["Phone"]:</b> <a href="tel:@Model.Items[i].PhoneNumber">@phoneDriver</a></p>
                                             </div>
+                                        </div>
+                                        <div class="right">
+                                            @* <a href="@ViewBag.BaseUrl/Driver/Drivers/Edit?id=@Model.Items[i].Id" class="btn3">@Localizer["Edit"]</a> *@
+                                            <a href="@ViewBag.BaseUrl/Drivers/Driver/@Model.Items[i].Id/" class="btn3">@Localizer["ViewDriver"]</a>
+                                            <input class="btn3" value="@Localizer["Documents"]" type="button" onclick="window.location.href='Doc?id=@Model.Items[i].Id'" />
+                                            <input class="btn3" value="@Localizer["RemindIns"]" type="button" onclick="SendRemindInspection(@Model.Items[i].Id, '@ViewBag.BaseUrl')" />
+                                            <input class="btn3" type="button" value="@Localizer["Delete"]" onclick="ShowAlert(@Model.Items[i].Id)" data-toggle="modal" data-target="#dismissFormModal" />
+                                            <div class="btn3" id="addEmail" data-toggle="modal" data-modal-selector="#createEmail" onclick="setEmailProperty('@Model.Items[i].Id')" href="#createEmail">@Localizer["AddEmail"]</div>
                                         </div>
                                     </div>
                                     <div class="top-line">
                                         <div class="left">
                                             <div class="contact">
-                                                <p class="text-p">@Localizer["Registration"]: @Model[i].DateRegistration.ToString(DateTimeFormats.FullDateTimeInfoUS)</p>
-                                                <p class="text-p">@Localizer["LastUpdate"]: @Model[i].DateLastUpdate.ToString(DateTimeFormats.FullDateTimeInfoUS)</p>
                                             </div>
                                         </div>
                                         <div class="right">
-                                            <a class="btn3" href="~/Driver/InspactionTrucks?driverId=@Model[i].Id&idTruck=0&idTrailer=0&date=0">@Localizer["Inspection"]</a>
-                                            <input class="btn3" value="@Localizer["RemindIns"]" type="button" onclick="SendRemindInspection(@Model[i].Id, '@ViewBag.BaseUrl')" />
-                                            <input class="btn3" value="@Localizer["Documents"]" type="button" onclick="window.location.href='Doc?id=@Model[i].Id'" />
+                                           @*<a class="btn3" href="~/Driver/InspactionTrucks?driverId=@Model.Items[i].Id&idTruck=0&idTrailer=0&date=0">@Localizer["Inspection"]</a>*@
+                                           
                                         </div>
                                     </div>
                                 </div>
                             }
-                            <pagination-list actual-pages="functions.GetPages(ViewBag.SelectedPage, ViewBag.CountPages)" selected-page="ViewBag.SelectedPage" />
+                            <pagination-list actual-pages="functions.GetPages(Model.Filters.Page, Model.Filters.CountPages)" sorts="@Model.Filters" />
                         </div>
                     </div>
                 </div>
@@ -279,7 +301,69 @@
             </content>
         </div>
     </div>
+
+    <div id="confirmCreateEmailModalContainer"></div>
 </body>
+
+<script>
+    $(document).ready(function () {
+        $('#confirmCreateEmailModalContainer').load('@Url.Action("GetCreateEmailForm", "Driver")?modelId=' + `createEmail`, function () {
+            $('#confirmCreateEmailModalContainer').on('submit', '#createEmail form', function (event) {
+                event.preventDefault();
+                var form = $('#createEmail form')[0];
+        var formData = new FormData(form);
+
+                $.ajax({
+                    url: '@Url.Action("SendEmail", "Driver")',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        SuccessAlert("@Localizer["EmailSuccessSend"]");
+                        $("#createEmail").modal('hide');
+                        $("#emailMessage").val('');
+                    },
+                    error: function () {
+                        WarningAlert("@Localizer["EmailNotSend"]")
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var currentFirstLetter = document.getElementById('firstLetterField').value;
+        var currentLetterSpan = document.querySelector('.first-letter[data-letter="' + currentFirstLetter + '"]');
+        if (currentLetterSpan) {
+            currentLetterSpan.classList.add('selected-letter');
+        }
+
+        document.querySelectorAll('.first-letter').forEach(letter => {
+            letter.addEventListener('click', function () {
+                var currentFirstLetter = document.getElementById('firstLetterField').value;
+
+                if (currentFirstLetter === this.dataset.letter) {
+                    document.getElementById('firstLetterField').value = '';
+                } else {
+                    document.getElementById('firstLetterField').value = this.dataset.letter;
+                }
+
+                document.querySelectorAll('.first-letter').forEach(letter => {
+                    letter.classList.remove('selected-letter');
+                });
+
+                this.classList.add('selected-letter');
+
+                document.getElementById('searchForm').submit();
+            });
+        });
+    });
+</script>
+
+
 <script>
     const optionalCheckBoxes = document.querySelectorAll(".if-true-terminated");
 
@@ -643,5 +727,90 @@ function SendRemindInspection(idDriver, url) {
     .value-elem {
         margin-bottom: 10px;
         margin-top: 10px;
+    }
+</style>
+
+<style>
+    .item-search label {
+        margin-bottom: 1rem;
+    }
+
+    .type-button {
+        width: 100%;
+    }
+
+    .item-search {
+        display: flex;
+        margin-right: 0.5rem;
+        max-width: 400px;
+    }
+
+    .big-item {
+        max-width: 400px;
+    }
+
+    .small-item {
+        max-width: 200px;
+    }
+
+    .btn1 {
+        height: 54px;
+        line-height: unset;
+        padding: 8px 20px;
+    }
+
+    .item-search-button {
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+
+    .sort-group {
+        border-radius: 10px;
+        background: #e0e0e0;
+        font-size: 14px;
+        font-weight: 600;
+        color: #343a40;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .sort-group p{
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .first-letter {
+        cursor: pointer;
+        padding: 8px 14px;
+        border-radius: 12px;
+        background-color: #dfdfdf;
+        color: black;
+        transition: all 0.3s;
+    }
+
+    .first-letter:hover {
+        background-color: #e9e9e9;
+    }
+
+    .selected-letter {
+        cursor: pointer;
+        background-color: #007bff;
+        border-radius: 12px;
+        color: white;
+        padding: 8px 14px;
+    }
+
+    .btn1-custom {
+        cursor: pointer;
+    }
+
+    .btn1-custom:hover {
+        background: #f9f9f9;
+        border: 1px solid #2c5deb;
+        color: #2c5deb;
+        -webkit-transition: .3s all;
+        -o-transition: .3s all;
+        transition: .3s all
     }
 </style>

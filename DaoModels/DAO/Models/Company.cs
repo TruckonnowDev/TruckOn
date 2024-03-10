@@ -19,7 +19,7 @@ namespace DaoModels.DAO.Models
         public ICollection<Order> Orders { get; set; }
         public ICollection<Driver> Drivers { get; set; }
         public ICollection<Trailer> Trailers { get; set; }
-        public ICollection<Truck> Trucks { get; set; }
+        public ICollection<TruckGroup> TruckGroups { get; set; }
         public ICollection<PaymentMethod> PaymentMethods { get; set; }
         public ICollection<CustomerST> CustomerSTs { get; set; }
         public ICollection<CompanyUser> CompanyUsers { get; set; }

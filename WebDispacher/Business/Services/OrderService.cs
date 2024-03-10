@@ -18,6 +18,8 @@ using WebDispacher.Notify;
 using WebDispacher.Service;
 using WebDispacher.Service.TransportationManager;
 using WebDispacher.ViewModels.Order;
+using WebDispacher.ViewModels.Truck;
+using WebDispacher.ViewModels.Widget;
 
 namespace WebDispacher.Business.Services
 {
@@ -39,24 +41,24 @@ namespace WebDispacher.Business.Services
         public async Task DeleteOrder(int id, string localDate)
         {
             var order = await db.Orders
-                .Include(o => o.CurrentStatus)
+                .Include(o => o.OrderStatus)
                 .FirstOrDefaultAsync(s => s.Id == id);
 
             if (order == null) return;
 
             var dateTimeUpdate = string.IsNullOrEmpty(localDate) ? DateTime.Now : DateTime.ParseExact(localDate, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
-            var currentStatusId = order.CurrentStatusId;
+            var OrderStatusId = order.OrderStatusId;
 
-            if (order.CurrentStatus.StatusName == OrderConstants.OrderStatusDeliveredBilled || order.CurrentStatus.StatusName == OrderConstants.OrderStatusDeliveredPaid)
+            if (order.OrderStatus.Name == OrderConstants.OrderStatusDeliveredBilled || order.OrderStatus.Name == OrderConstants.OrderStatusDeliveredPaid)
             {
-                order.CurrentStatusId = GetCurrentStatusIdByName(OrderConstants.OrderStatusDeleted);
+                order.OrderStatusId = GetOrderStatusIdByName(OrderConstants.OrderStatusDeleted);
             }
             else
             {
-                order.CurrentStatusId = GetCurrentStatusIdByName(OrderConstants.OrderStatusDeleted);
+                order.OrderStatusId = GetOrderStatusIdByName(OrderConstants.OrderStatusDeleted);
             }
 
-            if (currentStatusId != order.CurrentStatusId)
+            if (OrderStatusId != order.OrderStatusId)
             {
                 await db.HistoriesOrdersActions.AddAsync(new HistoryOrderAction
                 {
@@ -64,8 +66,8 @@ namespace WebDispacher.Business.Services
                     ActionType = ActionType.Delete,
                     DateTimeAction = dateTimeUpdate,
                     FieldAction = "Current Status",
-                    ContentFrom = GetCurrentStatusById(currentStatusId).StatusName,
-                    ContentTo = GetCurrentStatusById(order.CurrentStatusId).StatusName,
+                    ContentFrom = GetOrderStatusById(OrderStatusId).Name,
+                    ContentTo = GetOrderStatusById(order.OrderStatusId).Name,
                 });
             }
 
@@ -101,6 +103,70 @@ namespace WebDispacher.Business.Services
             return vehicles;
         }
 
+        public async Task<WidgetViewModel> GetOrderWidgetById(int widgetId, string companyId)
+        {
+            if (int.TryParse(companyId, out var result))
+            {
+                return await GetOrderWidgetByIdInDb(widgetId, result);
+            }
+
+            return null;
+        }
+
+        public async Task UpdateOrderWidgetInCompany(WidgetViewModel model, string dateTimeLocal, string companyId)
+        {
+            if (!int.TryParse(companyId, out var result))
+                return;
+
+            var dateTimeCreate = string.IsNullOrEmpty(dateTimeLocal) ? DateTime.Now : DateTime.ParseExact(dateTimeLocal, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
+
+            using (var context = new Context())
+            {
+
+                var actualWidget = await context.OrderStatusWidgets.FirstOrDefaultAsync(osw => osw.CompanyId == result && osw.Id == model.Id);
+                if (actualWidget == null) return;
+
+                var isHaveStatus = await context.OrderStatuses.AnyAsync(cs => cs.Id == model.StatusId);
+
+                if (!isHaveStatus) return;
+
+                actualWidget.StatusId = model.StatusId;
+
+                await context.SaveChangesAsync();
+            }
+        }
+
+        public async Task AddOrderWidgetInCompany(CreateWidgetVm model, string dateTimeLocal, string companyId)
+        {
+            if (!int.TryParse(companyId, out var result))
+                return;
+
+            var dateTimeCreate = string.IsNullOrEmpty(dateTimeLocal) ? DateTime.Now : DateTime.ParseExact(dateTimeLocal, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
+
+            using (var context = new Context())
+            {
+                var newStatusWidgetStatus = new OrderStatusWidget
+                {
+                    StatusId = model.StatusId,
+                    CompanyId = result
+                };
+
+                await context.OrderStatusWidgets.AddAsync(newStatusWidgetStatus);
+
+                await context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<List<OrderStatusDropdownVm>> GetOrderStatusWithoutWidgetsWithCurrentDropdownItems(int currentItemId, string companyId)
+        {
+            if (int.TryParse(companyId, out var result))
+            {
+                return await GetOrderStatusWithoutWidgetsWithCurrentDropdownItemsInDb(currentItemId, result);
+            }
+
+            return new List<OrderStatusDropdownVm>();
+        }
+
         public async Task<int> GetOrderIdByVehicleId(int id)
         {
             var vehicle = await db.VehiclesDetails.FirstOrDefaultAsync(vd => vd.Id == id);
@@ -111,26 +177,26 @@ namespace WebDispacher.Business.Services
         public async Task ArchiveOrder(int id, string localDate)
         {
             var order = await db.Orders
-                .Include(o => o.CurrentStatus)
+                .Include(o => o.OrderStatus)
                 .FirstOrDefaultAsync(s => s.Id == id);
 
             if (order == null) return;
 
             var dateTimeUpdate = string.IsNullOrEmpty(localDate) ? DateTime.Now : DateTime.ParseExact(localDate, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
             
-            var currentStatusId = order.CurrentStatusId;
+            var OrderStatusId = order.OrderStatusId;
 
-            if (order.CurrentStatus.StatusName == OrderConstants.OrderStatusDeliveredBilled
-                || order.CurrentStatus.StatusName == OrderConstants.OrderStatusDeliveredPaid)
+            if (order.OrderStatus.Name == OrderConstants.OrderStatusDeliveredBilled
+                || order.OrderStatus.Name == OrderConstants.OrderStatusDeliveredPaid)
             {
-                order.CurrentStatusId = GetCurrentStatusIdByName(OrderConstants.OrderStatusArchived);
+                order.OrderStatusId = GetOrderStatusIdByName(OrderConstants.OrderStatusArchived);
             }
             else
             {
-                order.CurrentStatusId = GetCurrentStatusIdByName(OrderConstants.OrderStatusArchived);
+                order.OrderStatusId = GetOrderStatusIdByName(OrderConstants.OrderStatusArchived);
             }
 
-            if(currentStatusId != order.CurrentStatusId)
+            if(OrderStatusId != order.OrderStatusId)
             {
                 await db.HistoriesOrdersActions.AddAsync(new HistoryOrderAction
                 {
@@ -138,8 +204,8 @@ namespace WebDispacher.Business.Services
                     ActionType = ActionType.Update,
                     DateTimeAction = dateTimeUpdate,
                     FieldAction = "Current Status",
-                    ContentFrom = GetCurrentStatusById(currentStatusId).StatusName,
-                    ContentTo = GetCurrentStatusById(order.CurrentStatusId).StatusName,
+                    ContentFrom = GetOrderStatusById(OrderStatusId).Name,
+                    ContentTo = GetOrderStatusById(order.OrderStatusId).Name,
                 });
             }
 
@@ -528,7 +594,7 @@ namespace WebDispacher.Business.Services
             {
                 CompanyId = result,
                 DateTimeCreate = dateTimeCreate,
-                CurrentStatusId = 1,
+                OrderStatusId = 1,
                 PickedUpId = pickedUpInfo.Id,
                 DeliveryId = deliveryInfo.Id,
                 DateTimeDelivery = DateTime.Now,
@@ -625,7 +691,13 @@ namespace WebDispacher.Business.Services
             
             db.SaveChanges();
         }
-        
+
+        public async Task<List<OrderStatusDropdownVm>> GetOrderStatusWithoutWidgetsDropdownItems()
+        {
+            return await GetOrderStatusWithoutWidgetsDropdownItemsInDb();
+        }
+
+
         public async Task<int> GetCountPage(string companyId, string status, string loadId, string name, string address, string phone,
             string email, decimal price)
         {
@@ -803,26 +875,44 @@ namespace WebDispacher.Business.Services
             
             return isInspactionDriverToDay;
         }
-        
-        public CurrentStatus GetCurrentStatusByName(string name)
-        {
-            var currentStatus = db.CurrentStatuses.FirstOrDefault(cs => cs.StatusName == name);
 
-            return currentStatus;
+        public async Task RemoveOrderWidget(int entryId, string companyId)
+        {
+            if (int.TryParse(companyId, out var result))
+            {
+                await RemoveOrderWidgetInDb(entryId, result);
+            }
+        }
+
+        public async Task<List<OrderStatusWidget>> GetCurrentCompanyOrderWidgets(string companyId)
+        {
+            if (int.TryParse(companyId, out var result))
+            {
+                return await GetCurrentCompanyOrderWidgetsInDb(result);
+            }
+
+            return null;
+        }
+
+        public OrderStatus GetOrderStatusByName(string name)
+        {
+            var OrderStatus = db.OrderStatuses.FirstOrDefault(cs => cs.Name == name);
+
+            return OrderStatus;
         }
         
-        public CurrentStatus GetCurrentStatusById(int id)
+        public OrderStatus GetOrderStatusById(int id)
         {
-            var currentStatus = db.CurrentStatuses.FirstOrDefault(cs => cs.Id == id);
+            var OrderStatus = db.OrderStatuses.FirstOrDefault(cs => cs.Id == id);
 
-            return currentStatus;
+            return OrderStatus;
         }
         
-        public int GetCurrentStatusIdByName(string name)
+        public int GetOrderStatusIdByName(string name)
         {
-            var currentStatusId = db.CurrentStatuses.FirstOrDefault(cs => cs.StatusName == name).Id;
+            var OrderStatusId = db.OrderStatuses.FirstOrDefault(cs => cs.Name == name).Id;
 
-            return currentStatusId;
+            return OrderStatusId;
         }
 
         public List<HistoryOrderAction> GetHistoryOrder(int orderId)
@@ -920,7 +1010,7 @@ namespace WebDispacher.Business.Services
                 .Include(o => o.Delivery)
                 .ThenInclude(o => o.PhoneNumber)
                 .Include(o => o.FaxNumber)
-                .Include(o => o.CurrentStatus)
+                .Include(o => o.OrderStatus)
                 .FirstOrDefaultAsync(o => o.Id == id && o.CompanyId == companyId);
 
             return order;
@@ -936,9 +1026,9 @@ namespace WebDispacher.Business.Services
                     .ThenInclude(o => o.PhoneNumber)
                     .Include(o => o.PickedUp)
                     .ThenInclude(o => o.PhoneNumber)
-                    .Include(o => o.CurrentStatus)
+                    .Include(o => o.OrderStatus)
                     .Include(o => o.Driver)
-                    .Where(o => o.CurrentStatus.StatusName == status && o.CompanyId == companyId)
+                    .Where(o => o.OrderStatus.Name == status && o.CompanyId == companyId)
                     .OrderByDescending(o => o.DateTimeLastUpdate)
                     .AsQueryable();
 
@@ -996,10 +1086,27 @@ namespace WebDispacher.Business.Services
                 return listOrders;
             }
         }
-        
+
+        private async Task<List<OrderStatusWidget>> GetCurrentCompanyOrderWidgetsInDb(int companyId)
+        {
+            using (var context = new Context())
+            {
+                var currentOrderWidgets = await context.OrderStatusWidgets
+                    .Include(tsw => tsw.Status)
+                    .Include(tsw => tsw.StatusTheme)
+                    .ThenInclude(wst => wst.BackgroundColor)
+                    .Include(tsw => tsw.StatusTheme)
+                    .ThenInclude(wst => wst.TextColor)
+                    .Where(tsw => tsw.CompanyId == companyId)
+                    .ToListAsync();
+
+                return currentOrderWidgets;
+            }
+        }
+
         private async Task<int> GetCountPageInDb(int companyId, string status, string loadId, string name, string address, string phone, string email, decimal price)
         {
-            var qOrders = db.Orders.Where(x => x.CurrentStatus.StatusName == status && x.CompanyId == companyId).AsQueryable();
+            var qOrders = db.Orders.Where(x => x.OrderStatus.Name == status && x.CompanyId == companyId).AsQueryable();
         
             if (loadId != null)
             {
@@ -1045,11 +1152,24 @@ namespace WebDispacher.Business.Services
             return countPages;
         }
 
+        private async Task<WidgetViewModel> GetOrderWidgetByIdInDb(int widgetId, int companyId)
+        {
+            using (var context = new Context())
+            {
+                var widget = await context.OrderStatusWidgets
+                    .FirstOrDefaultAsync(tsw => tsw.Id == widgetId && tsw.CompanyId == companyId);
+
+                var mapperWidget = mapper.Map<WidgetViewModel>(widget);
+
+                return mapperWidget;
+            }
+        }
+
         private int GetCountPage(int countElements, int countElementsInOnePage)
         {
-            var countPages = (countElements / countElementsInOnePage) % countElementsInOnePage;
+            var countPages = (countElements / countElementsInOnePage) + ((countElements % countElementsInOnePage) > 0 ? 1 : 0);
 
-            return countPages > 0 ? countPages + 1 : countPages;
+            return countPages;
         }
 
         private async Task<List<VehicleDetails>> RemoveDriversInOrder(int orderId)
@@ -1060,7 +1180,7 @@ namespace WebDispacher.Business.Services
 
             order.DriverId = null;
 
-            order.CurrentStatusId = GetCurrentStatusIdByName(OrderConstants.OrderStatusNewLoad);
+            order.OrderStatusId = GetOrderStatusIdByName(OrderConstants.OrderStatusNewLoad);
             
             await db.SaveChangesAsync();
             
@@ -1087,7 +1207,7 @@ namespace WebDispacher.Business.Services
 
             order.DriverId = driver.Id;
 
-            order.CurrentStatusId = GetCurrentStatusIdByName(OrderConstants.OrderStatusAssigned);
+            order.OrderStatusId = GetOrderStatusIdByName(OrderConstants.OrderStatusAssigned);
             
             await db.SaveChangesAsync();
             
@@ -1110,7 +1230,20 @@ namespace WebDispacher.Business.Services
             
             return order;
         }
-        
+
+        private async Task RemoveOrderWidgetInDb(int entryId, int companyId)
+        {
+            using (var context = new Context())
+            {
+                var orderWidget = await db.OrderStatusWidgets.FirstOrDefaultAsync(tsw => tsw.Id == entryId && tsw.CompanyId == companyId);
+                if (orderWidget == null) return;
+
+                db.OrderStatusWidgets.Remove(orderWidget);
+
+                await db.SaveChangesAsync();
+            }
+        }
+
         private VehicleDetails GetVechById(string idVech)
         {
             return db.VehiclesDetails.FirstOrDefault(v => v.Id.ToString() == idVech);
@@ -1135,7 +1268,44 @@ namespace WebDispacher.Business.Services
             
             return order.Id;
         }
-        
+
+        private async Task<List<OrderStatusDropdownVm>> GetOrderStatusWithoutWidgetsDropdownItemsInDb()
+        {
+            using (var context = new Context())
+            {
+                var orderStatuses = await context.OrderStatuses
+                    .Where(tg => !context.OrderStatusWidgets.Any(tsw => tsw.StatusId == tg.Id))
+                    .Select(tg => new OrderStatusDropdownVm { Name = tg.Name, Id = tg.Id })
+                    .ToListAsync();
+
+                return orderStatuses;
+            }
+        }
+
+        private async Task<List<OrderStatusDropdownVm>> GetOrderStatusWithoutWidgetsWithCurrentDropdownItemsInDb(int OrderStatusId, int companyId)
+        {
+            using (var context = new Context())
+            {
+                var currentItem = await context.OrderStatuses
+                    .Where(tg => tg.Id == OrderStatusId)
+                    .Select(tg => new OrderStatusDropdownVm { Name = tg.Name, Id = tg.Id })
+                    .FirstOrDefaultAsync();
+
+                var orderStatuses = await context.OrderStatuses
+                    .Where(tg => !context.OrderStatusWidgets.Any(tsw => tsw.StatusId == tg.Id))
+                    .Select(tg => new OrderStatusDropdownVm { Name = tg.Name, Id = tg.Id })
+                    .ToListAsync();
+
+                if (currentItem != null)
+                {
+                    orderStatuses.Add(currentItem);
+                    orderStatuses.OrderBy(x => x.Id);
+                }
+
+                return orderStatuses;
+            }
+        }
+
         private async Task AddHistoryInDb(HistoryOrderAction historyOrder)
         {
             await db.HistoriesOrdersActions.AddAsync(historyOrder);
@@ -1322,7 +1492,7 @@ namespace WebDispacher.Business.Services
                 .ThenInclude(o => o.PhoneNumber)
                 .Include(o => o.PickedUp)
                 .ThenInclude(o => o.PhoneNumber)
-                .Include(o => o.CurrentStatus)
+                .Include(o => o.OrderStatus)
                 .FirstOrDefaultAsync(s => s.Id == model.Id);
 
             if (orderEdit != null)
@@ -1343,52 +1513,52 @@ namespace WebDispacher.Business.Services
 
                 orderEdit.OrderId = model.OrderId ?? orderEdit.OrderId;
 
-                var currentStatusId = db.CurrentStatuses.First(cs => cs.StatusName == model.CurrentStatus.StatusName).Id;
-                var orderEditStatusId = orderEdit.CurrentStatusId;
+                var OrderStatusId = db.OrderStatuses.First(cs => cs.Name == model.OrderStatus.Name).Id;
+                var orderEditStatusId = orderEdit.OrderStatusId;
 
-                switch (model.CurrentStatus.StatusName)
+                switch (model.OrderStatus.Name)
                 {
                     case OrderConstants.OrderStatusNewLoad:
-                        orderEdit.CurrentStatusId = currentStatusId;
+                        orderEdit.OrderStatusId = OrderStatusId;
                         break;
                     case OrderConstants.OrderStatusAssigned:
-                        orderEdit.CurrentStatusId = currentStatusId;
+                        orderEdit.OrderStatusId = OrderStatusId;
                         break;
                     case OrderConstants.OrderStatusPickedUp:
-                        orderEdit.CurrentStatusId = currentStatusId;
+                        orderEdit.OrderStatusId = OrderStatusId;
                         break;
                     case OrderConstants.OrderStatusDelivered:
-                        orderEdit.CurrentStatusId = currentStatusId;
+                        orderEdit.OrderStatusId = OrderStatusId;
                         break;
                     case OrderConstants.OrderStatusDeliveredBilled:
-                        orderEdit.CurrentStatusId = currentStatusId;
+                        orderEdit.OrderStatusId = OrderStatusId;
                         break;
                     case OrderConstants.OrderStatusDeliveredPaid:
-                        orderEdit.CurrentStatusId = currentStatusId;
+                        orderEdit.OrderStatusId = OrderStatusId;
                         break;
                     case OrderConstants.OrderStatusDeleted:
-                        orderEdit.CurrentStatusId = currentStatusId;
+                        orderEdit.OrderStatusId = OrderStatusId;
                         break;
                     case OrderConstants.OrderStatusDeletedBilled:
-                        orderEdit.CurrentStatusId = currentStatusId;
+                        orderEdit.OrderStatusId = OrderStatusId;
                         break;
                     case OrderConstants.OrderStatusDeletedPaid:
-                        orderEdit.CurrentStatusId = currentStatusId;
+                        orderEdit.OrderStatusId = OrderStatusId;
                         break;
                     case OrderConstants.OrderStatusArchived:
-                        orderEdit.CurrentStatusId = currentStatusId;
+                        orderEdit.OrderStatusId = OrderStatusId;
                         break;
                     case OrderConstants.OrderStatusArchivedBilled:
-                        orderEdit.CurrentStatusId = currentStatusId;
+                        orderEdit.OrderStatusId = OrderStatusId;
                         break;
                     case OrderConstants.OrderStatusArchivedPaid:
-                        orderEdit.CurrentStatusId = currentStatusId;
+                        orderEdit.OrderStatusId = OrderStatusId;
                         break;
                     default:
                         break;
                 }
 
-                if(orderEditStatusId != orderEdit.CurrentStatusId)
+                if(orderEditStatusId != orderEdit.OrderStatusId)
                 {
                     db.HistoriesOrdersActions.Add(new HistoryOrderAction
                     {
@@ -1396,8 +1566,8 @@ namespace WebDispacher.Business.Services
                         ActionType = ActionType.Update,
                         DateTimeAction = dateTimeUpdate,
                         FieldAction = "Current Status",
-                        ContentFrom = GetCurrentStatusById(orderEditStatusId).StatusName,
-                        ContentTo = GetCurrentStatusById(orderEdit.CurrentStatusId).StatusName
+                        ContentFrom = GetOrderStatusById(orderEditStatusId).Name,
+                        ContentTo = GetOrderStatusById(orderEdit.OrderStatusId).Name
                     });
                 }
 

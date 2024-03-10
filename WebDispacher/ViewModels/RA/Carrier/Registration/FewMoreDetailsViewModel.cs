@@ -5,12 +5,6 @@ namespace WebDispacher.ViewModels.RA.Carrier.Registration
 {
     public class FewMoreDetailsViewModel
     {
-        [Display(Name = "Type")]
-        public IEnumerable<AccountType> Type { get; set; }
-
-        [Required(ErrorMessage = "SelectTypeRequired")]
-        public int? SelectedType { get; set; }
-
         [Required(ErrorMessage = "UnitsRequired")]
         [Display(Name = "Units")]
         public int Units { get; set; }

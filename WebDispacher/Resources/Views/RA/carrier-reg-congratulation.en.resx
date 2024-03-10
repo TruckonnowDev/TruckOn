@@ -145,6 +145,6 @@
     <value>Privacy Policy</value>
   </data>
   <data name="CongratulationMessage" xml:space="preserve">
-    <value>Congratulations, your account has been created. Let’s grow your business.</value>
+    <value>Congratulations, your account has been created. Confirm your Email in order to login to your account.</value>
   </data>
 </root>

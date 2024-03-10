@@ -1,0 +1,530 @@
+﻿@using DaoModels.DAO.Enum;
+@using DaoModels.DAO.Models;
+@using Microsoft.AspNetCore.Mvc.Localization
+@using WebDispacher.Constants;
+@using WebDispacher.Service;
+@using WebDispacher.ViewModels.Marketplace;
+
+@inject IViewLocalizer Localizer
+
+@model (SellItemMarketPostWithHistoryViewModel, List<PostApprovalHistory>)
+@{
+    ViewData["Title"] = "Sell Lot | Marketplace";
+}
+
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+
+<link rel="stylesheet" href="~/css/Marketplace/Marketplace.css">
+
+<link rel="stylesheet" href="~/libs/jquery/lightgallery.css">
+<body>
+    <div class="admin">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12" style="margin-bottom: 10%;">
+                    <div class="tabContent">
+                        <div class="row">
+                            <div class="col-md-7">
+                                <div class="img-block" style="width:100%;padding: 16px;padding-left:0px;" id="lightgallery">
+                                    <div style="--swiper-navigation-color: #fff; --swiper-pagination-color: #fff" class="swiper mySwiper2">
+                                        <div class="swiper-wrapper">
+                                            @if (Model.Item1?.SellItemMarketPost?.PhotoListMP?.Photos == null || Model.Item1?.SellItemMarketPost?.PhotoListMP?.Photos.Count == 0)
+                                            {
+                                                <div class="swiper-slide">
+                                                    <span class="no-photos-item">@Localizer["NoImagesBlockHeader"]</span>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                @foreach (var item in Model.Item1?.SellItemMarketPost?.PhotoListMP?.Photos)
+                                                {
+                                                    <div class="swiper-slide">
+                                                        <a href="@Config.BaseReqvesteUrl/Marketpace/Image?imagePath=@item.PhotoPath" target="_blank" style="cursor: zoom-in">
+                                                            <img src="@Config.BaseReqvesteUrl/Marketpace/Image?imagePath=@item.PhotoPath" />
+                                                        </a>
+                                                    </div>
+                                                }
+                                            }
+                                        </div>
+                                        <div class="swiper-button-next"></div>
+                                        <div class="swiper-button-prev"></div>
+                                        @if (Model.Item1.SellItemMarketPost.MarketPost.ConditionPost == DaoModels.DAO.Enum.ConditionPost.Deleted)
+                                        {
+                                            <div class="block-status">
+                                                <span>@Localizer["RemovedPostStatus"]</span>
+                                            </div>
+                                        }
+                                        @if (Model.Item1.SellItemMarketPost.MarketPost.ConditionPost == DaoModels.DAO.Enum.ConditionPost.Sold)
+                                        {
+                                            <div class="block-status">
+                                                <span>@Localizer["SoldPostStatus"]</span>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div thumbsSlider="" class="swiper mySwiper">
+                                        <div class="swiper-wrapper">
+                                            @if (Model.Item1?.SellItemMarketPost?.PhotoListMP?.Photos != null && Model.Item1?.SellItemMarketPost?.PhotoListMP?.Photos.Count != 0)
+                                            {
+                                                @foreach (var item in Model.Item1.SellItemMarketPost.PhotoListMP.Photos)
+                                                {
+                                                    <div class="swiper-slide">
+                                                        <img src="@Config.BaseReqvesteUrl/Marketpace/Image?imagePath=@item.PhotoPath" alt="" />
+                                                    </div>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5" style="padding: 6px;">
+                                <div class="main-short-text-block">
+                                    <div class="main-text-block">
+                                        <h2>@Model.Item1.SellItemMarketPost.Title</h2>
+                                        <h3>
+                                            @switch (Model.Item1.SellItemMarketPost.ConditionItem)
+                                            {
+                                                case DaoModels.DAO.Enum.ConditionItem.New:
+                                                    {
+                                                        <span class="badge bg-success">@Localizer["NewItemCondition"]</span>
+                                                        break;
+                                                    }
+                                                case DaoModels.DAO.Enum.ConditionItem.LikeNew:
+                                                    {
+                                                        <span class="badge bg-secondary ">@Localizer["LikeNewItemCondition"]</span>
+                                                        break;
+                                                    }
+
+                                                case DaoModels.DAO.Enum.ConditionItem.Good:
+                                                    {
+                                                        <span class="badge bg-secondary ">@Localizer["GoodItemCondition"]</span>
+                                                        break;
+                                                    }
+                                                case DaoModels.DAO.Enum.ConditionItem.Fair:
+                                                    {
+                                                        <span class="badge bg-warning">@Localizer["FairItemCondition"]</span>
+                                                        break;
+                                                    }
+                                            }
+
+                                            @switch (Model.Item1.SellItemMarketPost.MarketPost.ConditionPost)
+                                            {
+                                                case DaoModels.DAO.Enum.ConditionPost.Published:
+                                                    {
+                                                        <span class="badge bg-success">@Localizer["PublicStatusPostItem"]</span>
+                                                        break;
+                                                    }
+                                                case DaoModels.DAO.Enum.ConditionPost.Hidden:
+                                                    {
+                                                        <span class="badge bg-secondary ">@Localizer["HideStatusPostItem"]</span>
+                                                        break;
+                                                    }
+
+                                                case DaoModels.DAO.Enum.ConditionPost.Sold:
+                                                    {
+                                                        <span class="badge bg-warning ">@Localizer["SoldStatusPostItem"]</span>
+                                                        break;
+                                                    }
+                                                case DaoModels.DAO.Enum.ConditionPost.Deleted:
+                                                    {
+                                                        <span class="badge bg-danger">@Localizer["DeleteStatusPostItem"]</span>
+                                                        break;
+                                                    }
+                                            }
+                                        </h3>
+                                        <h1> <i class="bi bi-currency-dollar" style="font-size:36px;margin-left:-8px;"></i> @Model.Item1.SellItemMarketPost.Price</h1>
+                                        <div class="zip-code">
+                                            <h3>@Localizer["ZipCodeLabel"] -- <b>@Model.Item1.SellItemMarketPost.ZipCode</b></h3>
+                                        </div>
+                                    </div>
+                                    <div class="control-panel mt-4">
+                                        <form method="post" action="/Marketplace/admin/save" style="margin-top: 0px; margin-bottom: 0px;">
+                                            <label class="big-label" for="" style="width:100%!important">
+                                                @Localizer["Desidion"]
+                                                <br />
+                                                <select class="height-input input-select" name="approvalStatus" id="approvalStatus">
+                                                    <option value="">@Localizer["ChooseApprovalStatus"]</option>
+                                                    <option value="@ApprovalStatus.Approved">@Localizer["Approve"]</option>
+                                                    <option value="@ApprovalStatus.Rejected">@Localizer["Reject"]</option>
+                                                </select>
+                                            </label>
+                                            <label id="desidionLabel" class="big-label" for="" style="width:100%!important">
+                                                @Localizer["Comment"]
+                                                <br />
+                                                <textarea style="height: 140px;" id="conclusion" type="text" name="conclusion"></textarea>
+                                            </label>
+                                            <input type="hidden" name="marketpostid" value="@Model.Item1.SellItemMarketPost.MarketPostId" />
+                                            <button id="button-save" class="btn1 big-label height-input big-font-size" style="width:100%!important">@Localizer["SaveInfo"]</button>
+                                        </form>
+                                    </div>
+                                    <div class="info-seller">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-block">
+                                    <div class="description">
+                                        <h2>@Localizer["DescriptionBlockLabel"]</h2>
+                                        <p>@Model.Item1.SellItemMarketPost.Description</p>
+                                    </div>
+                                </div>
+                            </div>
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-12 mb-2">
+                                            <div class="right-bar-about">
+                                                <h3 class="text-info-header-3">@Localizer["ActionHistory"]</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="archive-item">
+                                        <div class="archive-title">
+                                            <p style="font-size: 20px">
+                                                @Localizer["ShowHistory"]
+                                                <span>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
+                                                        <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                                                    </svg>
+                                                </span>
+                                            </p>
+                                        </div>
+                                        <div class="content">
+                                            <div class="row">
+                                            @for (var i = 0; i < Model.Item1.Actions.Count; i++)
+                                                {
+                                                var date = Model.Item1.Actions[i].GroupAction.ToString(DateTimeFormats.DateTimeInfoUS);
+                                                <div class="col-md-3 mb-4" data-toggle="modal" data-target="#historyChanges" data-date="@date" data-item-id="@Model.Item1.SellItemMarketPost.MarketPostId">
+                                                        <div class="one text-info-p">
+                                                            <p>
+                                                            <b>@Localizer["DateAction"]:</b> @Model.Item1.Actions[i].GroupAction.ToString(DateTimeFormats.DateTimeInfoUS)
+                                                            </p>
+                                                            <p>
+                                                            <b>@Localizer["CountActions"]: </b> @Model.Item1.Actions[i].GroupCount
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-12 mb-2">
+                                        <div class="right-bar-about">
+                                            <h3 class="text-info-header-3">@Localizer["ActionChecks"]</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="archive-item">
+                                    <div class="archive-title">
+                                        <p style="font-size: 20px">
+                                            @Localizer["ShowHistory"]
+                                            <span>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
+                                                    <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                                                </svg>
+                                            </span>
+                                        </p>
+                                    </div>
+                                    <div class="content">
+                                        <div class="row">
+                                            @for (var i = 0; i < Model.Item2.Count; i++)
+                                            {
+                                                <div class="col-md-3 mb-4">
+                                                    <div class="one text-info-p">
+                                                        <p>
+                                                            <b>@Localizer["DateAction"]:</b> @Model.Item2[i].DateTimeAction.ToString(DateTimeFormats.DateTimeInfoUS)
+                                                        </p>
+                                                        <p>
+                                                            <b>@Localizer["Result"]:</b> @Model.Item2[i].ApprovalStatus
+                                                        </p>
+                                                        <p>
+                                                            <b>@Localizer["Comment"]:</b> @Model.Item2[i].Conclusion
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        @await Html.PartialAsync("~/Views/PartView/History/ChangeHistoryElem.cshtml")
+</body>
+
+
+<script>
+    $(document).on("show.bs.modal", "#historyChanges", function (event) {
+        var button = $(event.relatedTarget);
+        var date = button.data("date");
+        var itemId = button.data("item-id");
+
+        $.ajax({
+            type: "GET",
+            url: `/Marketplace/GetChanges?date=${date}&marketPostId=${itemId}`,
+            success: function (data) {
+                $("#historyChanges").find(".modal-dialog").html(data);
+            }
+        });
+    });
+</script>
+
+<script>
+    const archiveItems = document.querySelectorAll(".archive-item");
+    archiveItems.forEach(item => {
+        item.querySelector(".archive-title").addEventListener("click", () => {
+            item.classList.toggle("active");
+            let contentItem = item.querySelector(".content");
+            if (contentItem.style.maxHeight) {
+                contentItem.style.maxHeight = null;
+            } else {
+                contentItem.style.maxHeight = contentItem.scrollHeight + 'px'
+            }
+        })
+    })
+</script>
+
+<style>
+    .archive-item {
+        cursor: pointer;
+    }
+
+    .archive-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .archive-title h3 {
+            font-size: 1.7rem;
+        }
+
+        .archive-title span {
+            vertical-align: middle;
+        }
+
+    .content {
+        visibility: hidden;
+        overflow: hidden;
+        max-height: 0;
+        opacity: 0;
+        transition: visibility 1s, opacity 0.5s ease, max-height 0.5s ease;
+    }
+
+    .archive-item.active .content {
+        visibility: visible;
+        opacity: 1;
+        transition: visibility 1s, opacity 0.5s ease;
+    }
+
+    .archive-item .archive-title span svg {
+        transform: rotate(360deg);
+        transition: transform 0.3s ease;
+    }
+
+    .archive-item.active .archive-title span svg {
+        transform: rotate(180deg);
+        transition: transform 0.3s ease;
+    }
+
+    .archive-item p {
+        font-size: 13px;
+    }
+
+    p {
+        font-size: 15px;
+    }
+
+    h3 {
+        font-size: 16px;
+    }
+
+    .Billing table td {
+        width: 350px;
+    }
+
+
+    .modal-dialog.change-history {
+        position: absolute;
+        left: 0;
+        right: 0;
+        margin-left: auto;
+        margin-right: auto;
+        top: 100px;
+        width: 520px !important;
+        text-align: left;
+        background-color: #fff;
+        -moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
+        -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
+        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15), 0px 0px 1px 1px rgba(0, 0, 0, 0.05);
+        transition: height 0.25s linear;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        border-radius: 30px;
+    }
+</style>
+
+<script>
+    var swiper = new Swiper(".mySwiper", {
+        spaceBetween: 8,
+        slidesPerView: 6,
+        freeMode: true,
+        watchSlidesProgress: true,
+    });
+    var swiper2 = new Swiper(".mySwiper2", {
+        spaceBetween: 8,
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+        thumbs: {
+            swiper: swiper,
+        },
+    });
+</script>
+
+<style>
+    .swiper {
+        width: 100%;
+        height: 100%;
+    }
+
+    .swiper-slide {
+        text-align: center;
+        font-size: 18px;
+        background: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: auto;
+        max-height: 450px;
+    }
+
+        .swiper-slide img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .swiper {
+        width: 100%;
+        height: 300px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .swiper-slide {
+        background-size: cover;
+        background-position: center;
+    }
+
+    .mySwiper2 {
+        height: 80%;
+        width: 100%;
+        border-radius: 8px;
+    }
+
+    .mySwiper {
+        height: 20%;
+        box-sizing: border-box;
+        padding: 10px 2px;
+    }
+
+        .mySwiper .swiper-slide {
+            width: 25%;
+            height: 86px;
+            opacity: 0.4;
+            cursor: pointer;
+        }
+
+    .mySwiper2 .swiper-slide-active {
+        transition: transform 0.3s ease;
+    }
+
+        .mySwiper2 .swiper-slide-active:hover {
+            transform: scale(1.05);
+        }
+
+    .mySwiper .swiper-slide-thumb-active {
+        opacity: 1;
+    }
+
+        .mySwiper .swiper-slide-thumb-active img {
+            border: 2px red solid;
+        }
+
+    .swiper-slide img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+</style>
+<style>
+    .btn2, .btn3 {
+        max-width: 300px;
+    }
+
+    .btn2 {
+        text-align: center;
+    }
+
+    .intl-tel-input {
+        width: 100%;
+    }
+
+
+    .nav-forum-marketplace {
+        display: flex;
+    }
+
+    .nav-forum-item {
+        margin-right: 10px;
+    }
+
+        .nav-forum-item a {
+            margin-right: 10px;
+        }
+
+    .other-img {
+        justify-content: center;
+        padding: 18px;
+        display: grid;
+        grid-template-columns: repeat(5, 120px);
+        gap: 8px;
+    }
+
+        .other-img .img-one {
+            max-width: 100%;
+            height: auto;
+            border: 1px black solid;
+        }
+
+    .control-panel {
+        display: flex;
+        flex-direction: column;
+    }
+
+
+    .badge {
+        font-weight: 600;
+        font-size: 16px;
+    }
+</style>
+
+<script src="~/js/input-replacer.js"></script>
+<script>
+    $(document).ready(function () {
+        ShowAlert();
+    });
+</script>

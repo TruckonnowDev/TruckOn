@@ -19,41 +19,40 @@
                         <h1>@Localizer["DriverCheck"]</h1>
                     </div>
                     <form method="get">
-                    <div class="card border card-body" style="display: flex;flex-direction: row;">
-                        <div class="item-search">                            
-                            <label>
-                                @Localizer["FirstName"]
+                        <div class="card border card-body" style="display: flex;flex-direction: row;">
+                            <div class="item-search">
+                                <label>
+                                    @Localizer["FirstName"]
                                     <input class="type-button" id="search-first-name-driver" placeholder="@Localizer["FirstNameLabel"]" asp-for="Search.FirstName" type="text" maxlength="20" required>
-                            </label>
-                        </div>
-                        <div class="item-search">
-                            <label>
-                                @Localizer["LastName"]
-                                <input class="type-button" id="search-last-name-driver" placeholder="@Localizer["LastNameLabel"]" asp-for="Search.LastName" type="text" maxlength="20" required>
-                              
-                            </label>
-                        </div>
-                        <div class="item-search big-item ">
-                            <label>
-                                @Localizer["DriverLicenseSearch"]
-                                <input class="type-button" id="search-driver-license-number" placeholder="@Localizer["DriverLicenseSearch"]" asp-for="Search.LicenseNumber" maxlength="30" type="text" required>
-                                
-                                <span class="info-gray-message">@Localizer["DriverLicenseNumberInfoLabel"]</span>
-                            </label>
-                        </div>
-                        <div class="item-search small-item">
-                            <label id="dateOfBirthLabel">
-                                @Localizer["DateOfBirth"]
+                                </label>
+                            </div>
+                            <div class="item-search">
+                                <label>
+                                    @Localizer["LastName"]
+                                    <input class="type-button" id="search-last-name-driver" placeholder="@Localizer["LastNameLabel"]" asp-for="Search.LastName" type="text" maxlength="20" required>
+
+                                </label>
+                            </div>
+                            <div class="item-search big-item ">
+                                <label>
+                                    @Localizer["DriverLicenseSearch"]
+                                    <input class="type-button" id="search-driver-license-number" placeholder="@Localizer["DriverLicenseSearch"]" asp-for="Search.LicenseNumber" maxlength="30" type="text" required>
+
+                                    <span class="info-gray-message">@Localizer["DriverLicenseNumberInfoLabel"]</span>
+                                </label>
+                            </div>
+                            <div class="item-search small-item">
+                                <label id="dateOfBirthLabel">
+                                    @Localizer["DateOfBirth"]
                                     <input class="type-button" id="search-date-of-birth-driver" placeholder="MM/DD/YYYY" asp-for="Search.DateOfBirth" type="text" required>
-                                <p class="dob-not-current-format text-danger"></p>
-                            </label>
+                                    <p class="dob-not-current-format text-danger"></p>
+                                </label>
+                            </div>
+                            <div class="item-search item-search-button">
+                                <button type="submit" class="btn1 btn-modal">@Localizer["Search"]</button>
+                            </div>
                         </div>
-                        <div class="item-search item-search-button">
-                            <button type="submit" class="btn1 btn-modal">@Localizer["Search"]</button>
-                        </div>
-                        
-                        
-                    </div></form>
+                    </form>
                 </div>
             </div>
             <div class="row">
@@ -80,7 +79,7 @@
                                 </div>
                             }
                         </div>
-                     </div>
+                    </div>
                 </div>
             </div>
 
@@ -93,7 +92,7 @@
     setReplacer(document.querySelector('#search-first-name-driver'), @ExpressionConstants.OnlyLetters);
     setReplacer(document.querySelector('#search-last-name-driver'), @ExpressionConstants.OnlyLetters);
     setReplacer(document.querySelector('#search-driver-license-number'), @ExpressionConstants.WithoutDashes);
-    
+
     $.fn.setCursorPosition = function (pos) {
         if ($(this).get(0).setSelectionRange) {
             $(this).get(0).setSelectionRange(pos, pos);
@@ -113,7 +112,7 @@
 
     $("button[type=submit]").on('click', function (e) {
         CheckValidDoB(e, "search-date-of-birth-driver", "dob-not-current-format", "dateOfBirthLabel");
-        
+
     });
 
     $("#search-date-of-birth-driver").mask("99/99/9999", { placeholder: "MM/DD/YYYY" });

@@ -12,6 +12,8 @@ namespace WebDispacher.Business.Interfaces
 {
     public interface IDriverService
     {
+        Task<List<Driver>> GetDriversWithApproachingMedicalCardExpiration(string companyId, int countDays);
+        Task<List<Driver>> GetDriversWithApproachingDriverLicenseExpiration(string companyId, int countDays);
         Task<List<DriverReportViewModel>> GetDriverReportsByCompnayId(DriverSearchViewModel model, string companyId);
         List<Driver> GetDriversByIdCompany(string companyId);
         Task RemoveDriver(string companyId, DriverReportModel model, string localDate);
@@ -21,18 +23,17 @@ namespace WebDispacher.Business.Interfaces
 
         Task EditDriver(EditDriverViewModel model, string companyId, string localDate);
 
-        Task CreateDriver(CreateDriverViewModel model,
-            IFormFile dLDoc, IFormFile medicalCardDoc, IFormFile sSNDoc, IFormFile proofOfWorkAuthorizationOrGCDoc,
+        Task CreateDriver(CreateDriverViewModel driver,
+            IFormFile dLDoc, IFormFile mvr, IFormFile fuelCard, IFormFile corpDocs, IFormFile w9w2, IFormFile medicalCardDoc, IFormFile sSNDoc, IFormFile proofOfWorkAuthorizationOrGCDoc,
             IFormFile dQLDoc, IFormFile contractDoc, IFormFile drugTestResultsDo, string dateTimeLocal);
 
-        Driver GetDriver(string idInspection);
+            Driver GetDriver(string idInspection);
         Driver GetDriverById(int id);
         Task<EditDriverViewModel> GetEditCompanyDriverById(string companyId, int id);
         Task RemoveDocDriver(int docId);
-        Task<List<Driver>> GetDriversByCompanyId(int page, string companyId);
+        Task<(List<Driver>, int)> GetDriversByCompanyId(DriverFiltersViewModel filters, string companyId);
         Task<List<Driver>> GetDriversByCompanyId(string companyId);
-        Task<int> GetCountDriversPages(string companyId);
-
+        int GetCountDriversPagesByCountEntites(int countEntites);
         Task AddNewReportDriver(DriverReportViewModel driverReport, string localDate);
 
         Task<List<DriverReport>> GetDriversReport(string nameDriver, string driversLicense, string companyId);
@@ -49,5 +50,10 @@ namespace WebDispacher.Business.Interfaces
         Task<List<ProfileSettingsDTO>> GetSettingsTruck(string idCompany, int idProfile, int idTr, string typeTransport);
         Task<bool> RemoveCompany(string companyId);
         Task SaveDocDriver(IFormFile uploadedFile, string nameDoc, int driverId, string dateTimeUpload);
+        Task<List<char>> GetActualFirstLettersDriversLastNameByCompanyId(string companyId);
+        Task<Driver> GetCompanyDriverById(int id, string companyId);
+        Task<List<DriverMail>> GetAllDriverEmails(int page, string companyId);
+        Task<int> GetCountAllUserQuestionsPages(string companyId);
+        Task SendEmail(DriverMail model, string companyId);
     }
 }

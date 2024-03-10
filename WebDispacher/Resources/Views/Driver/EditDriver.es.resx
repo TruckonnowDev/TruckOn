@@ -134,4 +134,16 @@
 	<data name="FirstName" xml:space="preserve">
 		<value>Nombre</value>
 	</data>
+	<data name="DriverLicenseState" xml:space="preserve">
+		<value>Estado de la Licencia de Conducir</value>
+	</data>
+	<data name="DriverLicenseExpiration" xml:space="preserve">
+		<value>Vencimiento de la Licencia de Conducir</value>
+	</data>
+	<data name="MedicalCardExpiration" xml:space="preserve">
+		<value>Vencimiento de la Tarjeta Médica</value>
+	</data>
+	<data name="DateOfBirth" xml:space="preserve">
+		<value>Fecha de Nacimiento</value>
+	</data>
 </root>

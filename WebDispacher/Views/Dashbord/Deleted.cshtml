@@ -1,9 +1,10 @@
-﻿@using Microsoft.AspNetCore.Mvc.Localization
+﻿@using DaoModels.DAO.Models;
+@using Microsoft.AspNetCore.Mvc.Localization
 @using WebDispacher.Constants;
 
 @inject IViewLocalizer Localizer
 
-@model List<WebDispacher.ViewModels.Order.ShortOrderViewModel>
+@model (List<WebDispacher.ViewModels.Order.ShortOrderViewModel>, List<OrderStatusWidget>)
 
 @{
     ViewData["Title"] = "Dashboard | Deleted";
@@ -12,18 +13,23 @@
 <div class="admin">
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
-                <div class="title">
-                    <h1>@Localizer["Orders"]</h1>
-                    <button class="btn1 mr-3" id="create-order-btn">@Localizer["CreateOrder"]</button>
-                    <a style="background-color: white;color:#686F7C;" data-toggle="collapse" href="#search-form" role="button" aria-expanded="false" aria-controls="search-form">
-                        @Localizer["SearchOrders"]
-                        <span class="open-chevron">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
-                            </svg>
-                        </span>
-                    </a>
+            <div class="col-md-12 mt-5">
+                <div class="title" style="display: flex;justify-content: space-between;">
+                    <div class="title">
+                        <h1>@Localizer["Orders"]</h1>
+                        <button class="btn1 mr-3" id="create-order-btn">@Localizer["CreateOrder"]</button>
+                        <a style="background-color: white;color:#686F7C;" data-toggle="collapse" href="#search-form" role="button" aria-expanded="false" aria-controls="search-form">
+                            @Localizer["SearchOrders"]
+                            <span class="open-chevron">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                                </svg>
+                            </span>
+                        </a>
+                    </div>
+                    <div id="widgetBlock">
+                        @await Html.PartialAsync("PartView/_OrderWidgets.cshtml", Model.Item2)
+                    </div>
                 </div>
                 <div class="collapse multi-collapse" id="search-form">
                     <div style="margin-top: 15px;" class="card border card-body">
@@ -54,17 +60,17 @@
                         <div class="tab whiteborder" onclick="window.location.href='@Url.Action("Deleted", "Dashbord", new { loadId = ViewBag.LoadId, name = ViewBag.Name, address=ViewBag.Address, phone = ViewBag.Phone, email = ViewBag.Email, price = ViewBag.price })';">@Localizer["Deleted"]</div>
                     </div>
                     <div class="tabContent">
-                        @for (int i = 0; i < Model.Count; i++)
+                        @for (int i = 0; i < Model.Item1.Count; i++)
                         {
                             <div class="one-line">
                                 <div class="top-line">
                                     <div class="left">
-                                        <button class="btn3" onClick='location.href="@Url.Action( "FullInfoOrder", new { id = Model[i].Id, status = "Deleted" } )"'>@Localizer["LoadId"]: @Model[i].OrderId</button>
-                                        <div class="text"><img src="~/img/dolar.svg" alt=""> @Model[i].Price</div>
-                                        <div class="text"><img src="~/img/clock.svg" alt=""> @Model[i].PaymentMethod</div>
+                                        <button class="btn3" onClick='location.href="@Url.Action( "FullInfoOrder", new { id = Model.Item1[i].Id, status = "Deleted" } )"'>@Localizer["LoadId"]: @Model.Item1[i].OrderId</button>
+                                        <div class="text"><img src="~/img/dolar.svg" alt=""> @Model.Item1[i].Price</div>
+                                        <div class="text"><img src="~/img/clock.svg" alt=""> @Model.Item1[i].PaymentMethod</div>
                                     </div>
                                     <div class="right">
-                                        <a class="btn3" href="@Url.Action("EditOrder", new { id = Model[i].Id,
+                                        <a class="btn3" href="@Url.Action("EditOrder", new { id = Model.Item1[i].Id,
                                                                   status = "Deleted",
                                                                   filters = $"loadId={ViewBag.LoadId}&name={ViewBag.Name}&address={ViewBag.Address}&phone={ViewBag.Phone}&email={@ViewBag.Email}&price={@ViewBag.price}" } )">@Localizer["Edit"]</a>
                                     </div>
@@ -72,28 +78,28 @@
                                 <div class="info-line">
                                     <div class="info-block">
                                         <h3>@Localizer["Origin"]</h3>
-                                        <p> @Model[i].PickedUp.Address, @Model[i].PickedUp.City,  @Model[i].PickedUp.State, @Model[i].PickedUp.ZipCode</p>
+                                        <p> @Model.Item1[i].PickedUp.Address, @Model.Item1[i].PickedUp.City,  @Model.Item1[i].PickedUp.State, @Model.Item1[i].PickedUp.ZipCode</p>
                                         @{
                                             var phonePickedUp = string.Empty;
-                                            if (Model[i]?.PickedUp?.PhoneNumber.DialCode != 0 && !string.IsNullOrEmpty(Model[i]?.PickedUp?.PhoneNumber.Number))
+                                            if (Model.Item1[i]?.PickedUp?.PhoneNumber.DialCode != 0 && !string.IsNullOrEmpty(Model.Item1[i]?.PickedUp?.PhoneNumber.Number))
                                             {
-                                                phonePickedUp = $"+{Model[i].PickedUp.PhoneNumber.DialCode} {Model[i].PickedUp.PhoneNumber.Number}";
+                                                phonePickedUp = $"+{Model.Item1[i].PickedUp.PhoneNumber.DialCode} {Model.Item1[i].PickedUp.PhoneNumber.Number}";
                                             }
                                         }
                                         <p>@Localizer["Phone"]: @phonePickedUp</p>
                                     </div>
                                     <div class="info-block">
                                         <h3>@Localizer["Destination"]</h3>
-                                        <p> @Model[i].Delivery.Address, @Model[i].Delivery.City,  @Model[i].Delivery.State, @Model[i].Delivery.ZipCode</p>
+                                        <p> @Model.Item1[i].Delivery.Address, @Model.Item1[i].Delivery.City,  @Model.Item1[i].Delivery.State, @Model.Item1[i].Delivery.ZipCode</p>
                                         @{
                                             var phoneDelivery = string.Empty;
-                                            if (Model[i]?.Delivery?.PhoneNumber.DialCode != 0 && !string.IsNullOrEmpty(Model[i]?.Delivery?.PhoneNumber.Number))
+                                            if (Model.Item1[i]?.Delivery?.PhoneNumber.DialCode != 0 && !string.IsNullOrEmpty(Model.Item1[i]?.Delivery?.PhoneNumber.Number))
                                             {
-                                                phoneDelivery = $"+{Model[i].Delivery.PhoneNumber.DialCode} {Model[i].Delivery.PhoneNumber.Number}";
+                                                phoneDelivery = $"+{Model.Item1[i].Delivery.PhoneNumber.DialCode} {Model.Item1[i].Delivery.PhoneNumber.Number}";
                                             }
                                         }
                                         <p>@Localizer["Phone"]: @phoneDelivery</p>
-                                        <p>@Localizer["DeliveryEstimated"]: @Model[i].DateTimeDelivery.ToString(DateTimeFormats.BaseCalendarDate)</p>
+                                        <p>@Localizer["DeliveryEstimated"]: @Model.Item1[i].DateTimeDelivery.ToString(DateTimeFormats.BaseCalendarDate)</p>
                                     </div>
                                     <div class="info-block">
                                     </div>
@@ -106,12 +112,52 @@
             </div>
         </div>
     </div>
-
+    <div id="modalCreateWidgetFormContainer"></div>
+    <div id="modalEditWidgetFormContainer"></div>
     <script src="~/js/orders.js"></script>
 </div>
 
 <script src="~/js/input-replacer.js"></script>
 <script>
+     function updateWidgets() {
+        $.ajax({
+            url: '@Url.Action("GetOrderWidgetsInCompany", "Dashbord")',
+            type: 'GET',
+            success: function (result) {
+                $("#widgetBlock").html(result);
+            },
+            error: function () {
+            }
+        });
+    }
+
+    function ConfirmRemoveWidgetEntry(id) {
+        var body = {
+            id: id,
+        };
+
+        $.ajax({
+            type: "post",
+            async: true,
+            data: body,
+            url: '@Url.Action("RemoveOrderWidget", "Dashbord")',
+            dataType: 'json',
+            success: function (result) {
+                if (result) {
+                    updateWidgets();
+                    SuccessAlert('@Localizer["MessageSuccessRemoveOrderWidget"]');
+                } else {
+                    WarningAlert('@Localizer["MessageErrorRemoveOrderWidget"]');
+                }
+                $('#editWidget').modal('hide');
+            },
+            error: function (result) {
+                ErrorAlert('@Localizer["MessageErrorRequestRemoveOrderWidget"]');
+                $('#editWidget').modal('hide');
+            },
+        });
+    }
+
     setReplacer(document.querySelector('#name-input'), @ExpressionConstants.OnlyLetters);
     setReplacer(document.querySelector('#price-input'), @ExpressionConstants.OnlyDigits);
 
@@ -150,5 +196,9 @@
     input::placeholder {
         color: #c4c9d5;
         font-size: 16px;
+    }
+
+    .admin .title {
+        margin-top: 0 !important;
     }
 </style>

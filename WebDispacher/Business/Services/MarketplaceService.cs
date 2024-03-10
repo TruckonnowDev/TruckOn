@@ -1,12 +1,19 @@
-﻿using AutoMapper;
+﻿using AngleSharp.Css;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using DaoModels.DAO;
 using DaoModels.DAO.Enum;
 using DaoModels.DAO.Models;
+using DeviceDetectorNET;
+using MaxMind.GeoIP2;
+using MaxMind.GeoIP2.Model;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
@@ -17,7 +24,11 @@ using System.Threading.Tasks;
 using WebDispacher.Business.Extensions;
 using WebDispacher.Business.Interfaces;
 using WebDispacher.Constants;
+using WebDispacher.Resources.ViewModels.History;
 using WebDispacher.Service;
+using WebDispacher.Service.EmailSmtp;
+using WebDispacher.ViewModels.Driver;
+using WebDispacher.ViewModels.History;
 using WebDispacher.ViewModels.Marketplace;
 using WebDispacher.ViewModels.Order;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
@@ -31,7 +42,11 @@ namespace WebDispacher.Business.Services
         private readonly ICompanyService companyService;
         private readonly IMemoryCache memoryCache;
         private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly IWebHostEnvironment _environment;
 
+        private readonly IHistoryActionService historyActionService;
+        private string PathDbGeo = @"../GeoLite2-City.mmdb";
+        //private string PathDbGeo = $"F:\\work\\GeoLite2-City.mmdb";
         private int MaxCountFilesInPost = 20;
         private readonly int maxFileLength = 6 * 1024 * 1024;
 
@@ -41,7 +56,8 @@ namespace WebDispacher.Business.Services
             ICompanyService companyService,
             IMemoryCache memoryCache,
             IHttpContextAccessor httpContextAccessor,
-            IHistoryActionService historyActionService)
+            IHistoryActionService historyActionService,
+            IWebHostEnvironment environment)
         {
             this.mapper = mapper;
             this.db = db;
@@ -49,6 +65,7 @@ namespace WebDispacher.Business.Services
             this.memoryCache = memoryCache;
             this.httpContextAccessor = httpContextAccessor;
             this.historyActionService = historyActionService;
+            _environment = environment;
         }
 
         public async Task<bool> AddViewToMarketPost(int postId, string userId)
@@ -166,6 +183,37 @@ namespace WebDispacher.Business.Services
 
             return PaginateItemsViewModel(userItems, filters.Page);
         }
+        
+        public async Task<List<ItemMarketPostShortViewModel>> GetFullPendingItemsMarketPosts(UserMarketPostsFiltersViewModel filters)
+        {
+            var sellItems = await GetPendingSellItems(ApprovalStatus.NotSelected)
+                .ToListAsync();
+
+            var buyItems = await GetPendingBuyItems(ApprovalStatus.NotSelected)
+                .ToListAsync();
+
+            var sellItemsViewModel = await ConvertSellItemsToMarketPostViewModelListAsync(sellItems);
+
+            var buyItemsViewModel = await ConvertBuyItemsToMarketPostViewModelListAsync(buyItems);
+
+
+            var userItems = new List<ItemMarketPostShortViewModel>(buyItemsViewModel);
+
+            userItems.AddRange(sellItemsViewModel);
+
+            userItems = SortItemsViewModel(userItems, SortType.Base);
+
+            if (filters.Page == UserConstants.AllPagesNumber)
+            {
+                return sellItemsViewModel;
+            }
+
+            var countEntities = userItems.Count();
+
+            (filters.Page, filters.CountPages) = NormalizeItemsPageParameters(filters.Page, filters.CountPages, countEntities);
+
+            return PaginateItemsViewModel(userItems, filters.Page);
+        }
 
         public async Task<int> GetCountInCache(int modelId)
         {
@@ -229,8 +277,8 @@ namespace WebDispacher.Business.Services
                 .FirstOrDefaultAsync(simp => simp.MarketPostId == id);
             if (model == null) return null;
 
-            if (model.MarketPost.ConditionPost == ConditionPost.Published
-                || model.MarketPost.ConditionPost == ConditionPost.Sold)
+            if ((model.MarketPost.ConditionPost == ConditionPost.Published
+                || model.MarketPost.ConditionPost == ConditionPost.Sold) && model.MarketPost.ApprovalStatus == ApprovalStatus.Approved)
             {
                 return mapper.Map<SellItemMarketPostViewModel>(model);
             }
@@ -253,8 +301,8 @@ namespace WebDispacher.Business.Services
 
             var sellItemMarketPostViewModel = mapper.Map<SellItemMarketPostViewModel>(model);
 
-            if (model.MarketPost.ConditionPost == ConditionPost.Published
-                || model.MarketPost.ConditionPost == ConditionPost.Sold)
+            if ((model.MarketPost.ConditionPost == ConditionPost.Published
+                || model.MarketPost.ConditionPost == ConditionPost.Sold) && model.MarketPost.ApprovalStatus == ApprovalStatus.Approved)
             {
                 return new SellItemMarketPostWithHistoryViewModel
                 {
@@ -272,6 +320,93 @@ namespace WebDispacher.Business.Services
             : null;
         }
 
+        public async Task<BuyItemMarketPostWithHistoryViewModel> GetBuyItemMarketPostPendingWithHistory(int id)
+        {
+            using (var dbt = new Context())
+            {
+                var model = await dbt.BuyItemsMarketsPosts
+                    .Include(bimp => bimp.MarketPost)
+                    .ThenInclude(mp => mp.User)
+                    .Include(bimp => bimp.PhoneNumber)
+                    .Include(bimp => bimp.PhotoListMP)
+                    .ThenInclude(plmp => plmp.Photos)
+                    .FirstOrDefaultAsync(bimp => bimp.MarketPostId == id);
+
+                if (model == null) return null;
+
+                var history = GetMarketPostHistoryActionsById(model.MarketPostId);
+
+                var buyItemMarketPostViewModel = mapper.Map<BuyItemMarketPostViewModel>(model);
+
+                return new BuyItemMarketPostWithHistoryViewModel
+                {
+                    BuyItemMarketPost = buyItemMarketPostViewModel,
+                    Actions = history,
+                };
+            }
+        }
+
+        public async Task SendDesidionToPost(PostApprovalHistory model)
+        {
+            using (var context =  new Context())
+            { 
+                var currentMarketPost = await context.MarketPosts.FirstOrDefaultAsync(mp => mp.Id == model.MarketPostId);
+                if (currentMarketPost == null) return;
+
+                currentMarketPost.ApprovalStatus = model.ApprovalStatus;
+
+                var newPostApprovalEntry = new PostApprovalHistory
+                {
+                    ApprovalStatus = model.ApprovalStatus,
+                    DateTimeAction = DateTime.Now,
+                    MarketPostId = model.MarketPostId,
+                    Conclusion = model.Conclusion
+                };
+
+                var buyMarketPost = await context.BuyItemsMarketsPosts.FirstOrDefaultAsync(bimp => bimp.MarketPostId ==  model.MarketPostId);
+                if (buyMarketPost != null) 
+                {
+                    var pattern = new PaternSourse().GetPatternSendMessageToUserMarketPost(buyMarketPost.Title, model.ApprovalStatus == ApprovalStatus.Approved ? "Approve" : "Reject", model.Conclusion);
+                    await new AuthMessageSender().Execute(buyMarketPost.Email, UserConstants.MarketplacePostSubject, pattern);
+                }
+                else
+                {
+                    var sellMarketPost = await context.SellItemsMarketsPosts.FirstOrDefaultAsync(simp => simp.MarketPostId == model.MarketPostId);
+                    if (sellMarketPost != null)
+                    {
+                        var pattern = new PaternSourse().GetPatternSendMessageToUserMarketPost(sellMarketPost.Title, model.ApprovalStatus == ApprovalStatus.Approved ? "Approve" : "Reject", model.Conclusion);
+                        await new AuthMessageSender().Execute(sellMarketPost.Email, UserConstants.MarketplacePostSubject, pattern);
+                    }
+                }
+                
+                await context.PostApprovalHistories.AddAsync(newPostApprovalEntry);
+                await context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<SellItemMarketPostWithHistoryViewModel> GetSellItemMarketPostPendingWithHistory(int id)
+        {
+            var model = await db.SellItemsMarketsPosts
+                .Include(simp => simp.MarketPost)
+                .ThenInclude(mp => mp.User)
+                .Include(simp => simp.PhoneNumber)
+                .Include(simp => simp.PhotoListMP)
+                .ThenInclude(simp => simp.Photos)
+                .FirstOrDefaultAsync(simp => simp.MarketPostId == id);
+
+            if (model == null) return null;
+
+            var history = GetMarketPostHistoryActionsById(model.MarketPostId);
+
+            var sellItemMarketPostViewModel = mapper.Map<SellItemMarketPostViewModel>(model);
+
+            return new SellItemMarketPostWithHistoryViewModel
+            {
+                SellItemMarketPost = sellItemMarketPostViewModel,
+                Actions = history,
+            };
+        }
+
         public async Task<bool> RemoveUploadedImage(int id)
         {
             var imageById = await db.PhotosMP.FirstOrDefaultAsync(pmp => pmp.Id == id);
@@ -283,7 +418,7 @@ namespace WebDispacher.Business.Services
             return imageById != null;
         }
 
-        public async Task<int> CreateBuyLot(CreateBuyLotViewModel model, List<IFormFile> files, string companyId, string localDate)
+        public async Task<int> CreateBuyLot(CreateBuyLotViewModel model, string uploadedFiles, string companyId, string localDate)
         {
             var dateTimeCreate = DateTime.ParseExact(localDate, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
 
@@ -293,6 +428,7 @@ namespace WebDispacher.Business.Services
             {
                 UserId = user.Id,
                 ConditionPost = ConditionPost.Published,
+                ApprovalStatus = ApprovalStatus.Pending,
                 ShowView = true,
                 ShowComment = true,
                 DateTimeCreate = dateTimeCreate,
@@ -331,18 +467,27 @@ namespace WebDispacher.Business.Services
 
             await db.SaveChangesAsync();
 
-            if (files != null && files.Count <= MaxCountFilesInPost)
+            var fileNames = JsonConvert.DeserializeObject<string[]>(uploadedFiles);
+
+            foreach (var fileName in fileNames)
+            {
+                var filePath = Path.Combine(_environment.WebRootPath, "uploads", fileName);
+
+                await SavePhotoToPostByName(filePath, fileName, UserConstants.MarketplaceBuyEntityTypeResetPassword, photolist.Id, dateTimeCreate);
+            }
+
+            /*if (files != null && files.Count <= MaxCountFilesInPost)
             {
                 foreach (var file in files)
                 {
                     await SavePhotoToPost(file, UserConstants.MarketplaceBuyEntityTypeResetPassword, photolist.Id, dateTimeCreate);
                 }
-            }
+            }*/
 
             return marketPost.Id;
         }
 
-        public async Task<int> CreateSellLot(CreateSellLotViewModel model, List<IFormFile> files, string companyId, string localDate)
+        public async Task<int> CreateSellLot(CreateSellLotViewModel model, string uploadedFiles, string companyId, string localDate)
         {
             var dateTimeCreate = DateTime.ParseExact(localDate, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
 
@@ -352,6 +497,7 @@ namespace WebDispacher.Business.Services
             {
                 UserId = user.Id,
                 ConditionPost = ConditionPost.Published,
+                ApprovalStatus = ApprovalStatus.Pending,
                 ShowView = true,
                 ShowComment = true,
                 DateTimeCreate = dateTimeCreate,
@@ -392,13 +538,22 @@ namespace WebDispacher.Business.Services
 
             await db.SaveChangesAsync();
 
-            if (files != null && files.Count <= MaxCountFilesInPost)
+            var fileNames = JsonConvert.DeserializeObject<string[]>(uploadedFiles);
+
+            foreach (var fileName in fileNames)
+            {
+                var filePath = Path.Combine(_environment.WebRootPath, "uploads", fileName);
+
+                await SavePhotoToPostByName(filePath, fileName, UserConstants.MarketplaceBuyEntityTypeResetPassword, photolist.Id, dateTimeCreate);
+            }
+
+            /*if (files != null && files.Count <= MaxCountFilesInPost)
             {
                 foreach (var file in files)
                 {
                     await SavePhotoToPost(file, UserConstants.MarketplaceSellEntityTypeResetPassword, photolist.Id, dateTimeCreate);
                 }
-            }
+            }*/
 
             return marketPost.Id;
         }
@@ -422,7 +577,7 @@ namespace WebDispacher.Business.Services
         }
 
 
-        public async Task<int> UpdateBuyLot(BuyItemMarketPostViewModel model, string companyId, List<IFormFile> files, string localDate)
+        public async Task<int> UpdateBuyLot(BuyItemMarketPostViewModel model, string companyId, string uploadedFiles, string localDate)
         {
             var dateTimeLastUpdate = DateTime.ParseExact(localDate, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
 
@@ -438,6 +593,11 @@ namespace WebDispacher.Business.Services
 
                 currentMarketPost.ConditionPost = model.MarketPost.ConditionPost;
                 currentMarketPost.DateTimeLastUpdate = dateTimeLastUpdate;
+
+                if(currentMarketPost.ApprovalStatus != ApprovalStatus.Approved)
+                {
+                    currentMarketPost.ApprovalStatus = ApprovalStatus.Pending;
+                }
             }
 
             var currentPhoneNumber = await db.PhonesNumbers.FirstOrDefaultAsync(p => p.Id == model.PhoneNumberId);
@@ -479,13 +639,22 @@ namespace WebDispacher.Business.Services
 
             await db.SaveChangesAsync();
 
-            if (files != null && files.Count <= MaxCountFilesInPost)
+            var fileNames = JsonConvert.DeserializeObject<string[]>(uploadedFiles);
+
+            foreach (var fileName in fileNames)
+            {
+                var filePath = Path.Combine(_environment.WebRootPath, "uploads", fileName);
+
+                await SavePhotoToPostByName(filePath, fileName, UserConstants.MarketplaceBuyEntityTypeResetPassword, currentBuyItemMarketPost.PhotoListMPId, dateTimeLastUpdate);
+            }
+
+            /*if (files != null && files.Count <= MaxCountFilesInPost)
             {
                 foreach (var file in files)
                 {
                     await SavePhotoToPost(file, UserConstants.MarketplaceBuyEntityTypeResetPassword, currentBuyItemMarketPost.PhotoListMPId, dateTimeLastUpdate);
                 }
-            }
+            }*/
 
             return currentMarketPost.Id;
         }
@@ -508,8 +677,8 @@ namespace WebDispacher.Business.Services
 
                 var buyItemMarketPostViewModel = mapper.Map<BuyItemMarketPostViewModel>(model);
 
-                if (model.MarketPost.ConditionPost == ConditionPost.Published
-                    || model.MarketPost.ConditionPost == ConditionPost.Sold)
+                if ((model.MarketPost.ConditionPost == ConditionPost.Published
+                    || model.MarketPost.ConditionPost == ConditionPost.Sold) && model.MarketPost.ApprovalStatus == ApprovalStatus.Approved)
                 {
                     return new BuyItemMarketPostWithHistoryViewModel
                     {
@@ -527,7 +696,6 @@ namespace WebDispacher.Business.Services
                 : null;
             }
         }
-
 
         public HistoryMarketPostActionGroup GetHistoryForDate(DateTime date, int itemId)
         {
@@ -719,7 +887,7 @@ namespace WebDispacher.Business.Services
         }
 
 
-        public async Task<int> UpdateSellLot(SellItemMarketPostViewModel model, string companyId, List<IFormFile> files, string localDate)
+        public async Task<int> UpdateSellLot(SellItemMarketPostViewModel model, string companyId, string uploadedFiles, string localDate)
         {
             var dateTimeLastUpdate = DateTime.ParseExact(localDate, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
 
@@ -735,6 +903,11 @@ namespace WebDispacher.Business.Services
 
                 currentMarketPost.ConditionPost = model.MarketPost.ConditionPost;
                 currentMarketPost.DateTimeLastUpdate = dateTimeLastUpdate;
+
+                if (currentMarketPost.ApprovalStatus != ApprovalStatus.Approved)
+                {
+                    currentMarketPost.ApprovalStatus = ApprovalStatus.Pending;
+                }
             }
 
             var currentPhoneNumber = await db.PhonesNumbers.FirstOrDefaultAsync(p => p.Id == model.PhoneNumberId);
@@ -778,13 +951,22 @@ namespace WebDispacher.Business.Services
 
             await db.SaveChangesAsync();
 
-            if (files != null && files.Count <= MaxCountFilesInPost)
+            var fileNames = JsonConvert.DeserializeObject<string[]>(uploadedFiles);
+
+            foreach (var fileName in fileNames)
+            {
+                var filePath = Path.Combine(_environment.WebRootPath, "uploads", fileName);
+
+                await SavePhotoToPostByName(filePath, fileName, UserConstants.MarketplaceBuyEntityTypeResetPassword, currentSellItemMarketPost.PhotoListMPId, dateTimeLastUpdate);
+            }
+
+            /*if (files != null && files.Count <= MaxCountFilesInPost)
             {
                 foreach (var file in files)
                 {
                     await SavePhotoToPost(file, UserConstants.MarketplaceSellEntityTypeResetPassword, currentSellItemMarketPost.PhotoListMPId, dateTimeLastUpdate);
                 }
-            }
+            }*/
 
             return currentMarketPost.Id;
         }
@@ -816,7 +998,7 @@ namespace WebDispacher.Business.Services
             {
                 lastUpdateDateTime = await db.MarketPosts
                     .Where(mp => db.BuyItemsMarketsPosts.Include(bimp => bimp.MarketPost).Any(bimp => bimp.MarketPostId == mp.Id
-                        && bimp.MarketPost.ConditionPost == ConditionPost.Published))
+                        && bimp.MarketPost.ConditionPost == ConditionPost.Published && bimp.MarketPost.ApprovalStatus == ApprovalStatus.Approved))
                     .Select(mp => mp.DateTimeLastUpdate)
                     .MaxAsync();
 
@@ -840,7 +1022,7 @@ namespace WebDispacher.Business.Services
                 lastUpdateDateTime = await db.ViewsMarketsPosts
                     .Where(vmp => db.BuyItemsMarketsPosts.Include(simp => simp.MarketPost)
                             .Any(bimp => bimp.MarketPostId == vmp.MarketPostId
-                            && bimp.MarketPost.ConditionPost == ConditionPost.Published))
+                            && bimp.MarketPost.ConditionPost == ConditionPost.Published && bimp.MarketPost.ApprovalStatus == ApprovalStatus.Approved))
                     .CountAsync();
 
                 var cacheEntryOptions = new MemoryCacheEntryOptions
@@ -871,7 +1053,7 @@ namespace WebDispacher.Business.Services
             {
                 lastUpdateDateTime = await db.MarketPosts
                     .Where(mp => db.SellItemsMarketsPosts.Include(simp => simp.MarketPost).Any(simp => simp.MarketPostId == mp.Id
-                        && simp.MarketPost.ConditionPost == ConditionPost.Published))
+                        && simp.MarketPost.ConditionPost == ConditionPost.Published && simp.MarketPost.ApprovalStatus == ApprovalStatus.Approved))
                     .Select(mp => mp.DateTimeLastUpdate)
                     .MaxAsync();
 
@@ -895,7 +1077,7 @@ namespace WebDispacher.Business.Services
                 lastUpdateDateTime = await db.ViewsMarketsPosts
                     .Where(vmp => db.SellItemsMarketsPosts.Include(simp => simp.MarketPost)
                                 .Any(simp => simp.MarketPostId == vmp.MarketPostId
-                                && simp.MarketPost.ConditionPost == ConditionPost.Published))
+                                && simp.MarketPost.ConditionPost == ConditionPost.Published && simp.MarketPost.ApprovalStatus == ApprovalStatus.Approved))
                     .CountAsync();
 
                 var cacheEntryOptions = new MemoryCacheEntryOptions
@@ -941,6 +1123,20 @@ namespace WebDispacher.Business.Services
             return lastUpdateDateTime;
         }
 
+        public async Task<List<PostApprovalHistory>> GetHistoryChecksMarketPost(int id)
+        {
+            using (var context = new Context())
+            {
+                var currentMarketPost = await context.MarketPosts.FirstOrDefaultAsync(mp => mp.Id == id);
+                if (currentMarketPost == null) return new List<PostApprovalHistory>();
+
+                var postHistory = await context.PostApprovalHistories.Where(pah => pah.MarketPostId == id).OrderByDescending(x => x.Id).ToListAsync();
+
+                return postHistory;
+            }
+        }
+
+
         public async Task<DateTime> GetDateTimeLastUpdateUserId(string userId)
         {
             var cacheKey = $"GetDateTimeLastUpdate_" + userId;
@@ -948,8 +1144,7 @@ namespace WebDispacher.Business.Services
             if (!memoryCache.TryGetValue(cacheKey, out DateTime lastUpdateDateTime))
             {
                 lastUpdateDateTime = await db.MarketPosts
-                    .Where(mp => db.MarketPosts.Any(simp => simp.Id == mp.Id
-                                                            && simp.UserId == userId))
+                    .Where(mp => db.MarketPosts.Any(simp => simp.Id == mp.Id && simp.UserId == userId))
                     .Select(mp => mp.DateTimeLastUpdate)
                     .MaxAsync();
 
@@ -981,7 +1176,7 @@ namespace WebDispacher.Business.Services
             {
                 lastUpdateDateTime = await db.MarketPosts
                     .Where(mp => db.MarketPosts.Any(simp => simp.Id == mp.Id
-                        && simp.ConditionPost == ConditionPost.Published))
+                        && simp.ConditionPost == ConditionPost.Published && simp.ApprovalStatus == ApprovalStatus.Approved))
                     .Select(mp => mp.DateTimeLastUpdate)
                     .MaxAsync();
 
@@ -1005,7 +1200,7 @@ namespace WebDispacher.Business.Services
                 lastUpdateDateTime = await db.ViewsMarketsPosts
                     .Where(vmp => db.MarketPosts
                                 .Any(simp => simp.Id == vmp.MarketPostId
-                                && simp.ConditionPost == ConditionPost.Published))
+                                && simp.ConditionPost == ConditionPost.Published && simp.ApprovalStatus == ApprovalStatus.Approved))
                     .CountAsync();
 
                 var cacheEntryOptions = new MemoryCacheEntryOptions
@@ -1067,6 +1262,35 @@ namespace WebDispacher.Business.Services
 
             await SavePhotoToPostDb(path, image.Width, image.Height, postId, postType, uploadedFile.FileName, dateTimeUpload);
         }
+        
+        public async Task SavePhotoToPostByName(string fileFullPath, string fileName, string postType, int postId, DateTime dateTimeUpload)
+        {
+            var path = $"../Marketplace/{postType}/{postId}/{fileName}";
+
+            if (!Directory.Exists($"../Marketplace/{postType}"))
+            {
+                Directory.CreateDirectory($"../Marketplace/{postType}");
+            }
+
+            if (!Directory.Exists($"../Marketplace/{postType}/{postId}"))
+            {
+                Directory.CreateDirectory($"../Marketplace/{postType}/{postId}");
+            }
+
+            try
+            {
+                File.Move(fileFullPath, path);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            using var imageStream = new FileStream(path, FileMode.Open, FileAccess.Read);
+            using var image = System.Drawing.Image.FromStream(imageStream);
+
+            await SavePhotoToPostDb(path, image.Width, image.Height, postId, postType, fileName, dateTimeUpload);
+        }
 
         public int GetCurrentPhotoTypeIdByName(string name)
         {
@@ -1081,6 +1305,8 @@ namespace WebDispacher.Business.Services
                 .Include(c => c.PhoneNumber)
                 .Include(bimp => bimp.MarketPost)
                 .AsQueryable();
+
+            buyItems = buyItems.Where(bimp => (bimp.MarketPost.UserId != user.Id && bimp.MarketPost.ApprovalStatus == ApprovalStatus.Approved) || bimp.MarketPost.UserId == user.Id);
 
             if (filters.ConditionPost != ConditionPost.NotSelected)
             {
@@ -1103,13 +1329,54 @@ namespace WebDispacher.Business.Services
 
             return buyItems;
         }
+        
+        private IQueryable<BuyItemMarketPost> GetPendingBuyItems(ApprovalStatus approvalStatus)
+        {
+            var buyItems = db.BuyItemsMarketsPosts
+                .Include(c => c.PhoneNumber)
+                .Include(bimp => bimp.MarketPost)
+                
+                .AsQueryable();
+            
+            if(approvalStatus != ApprovalStatus.NotSelected)
+            {
+                buyItems = buyItems.Where(bimp => bimp.MarketPost.ApprovalStatus == approvalStatus);
+            }
+            else
+            {
+                buyItems = buyItems.Where(bimp => bimp.MarketPost.ApprovalStatus == ApprovalStatus.Pending);
+            }
+
+            return buyItems;
+        }
+
+        private IQueryable<SellItemMarketPost> GetPendingSellItems(ApprovalStatus approvalStatus)
+        {
+            var sellItems = db.SellItemsMarketsPosts
+                .Include(c => c.PhoneNumber)
+                .Include(simp => simp.MarketPost)
+                .AsQueryable();
+
+            if (approvalStatus != ApprovalStatus.NotSelected)
+            {
+                sellItems = sellItems.Where(simp => simp.MarketPost.ApprovalStatus == approvalStatus);
+            }
+            else
+            {
+                sellItems = sellItems.Where(simp => simp.MarketPost.ApprovalStatus == ApprovalStatus.Pending);
+            }
+
+            return sellItems;
+        }
 
         private IQueryable<SellItemMarketPost> GetFilteredSellItems(SellMarketPostsFiltersViewModel filters, User user)
         {
             var sellItems = db.SellItemsMarketsPosts
                 .Include(c => c.PhoneNumber)
-                .Include(bimp => bimp.MarketPost)
+                .Include(simp => simp.MarketPost)
                 .AsQueryable();
+
+            sellItems = sellItems.Where(simp => (simp.MarketPost.UserId != user.Id && simp.MarketPost.ApprovalStatus == ApprovalStatus.Approved) || simp.MarketPost.UserId == user.Id);
 
             if (filters.ConditionPost != ConditionPost.NotSelected)
             {
@@ -1262,9 +1529,9 @@ namespace WebDispacher.Business.Services
 
         private int GetCountPage(int countElements, int countElementsInOnePage)
         {
-            var countPages = (countElements / countElementsInOnePage) % countElementsInOnePage;
+            var countPages = (countElements / countElementsInOnePage) + ((countElements % countElementsInOnePage) > 0 ? 1 : 0);
 
-            return countPages > 0 ? countPages + 1 : countPages;
+            return countPages;
         }
 
         private string GetUserAgent()

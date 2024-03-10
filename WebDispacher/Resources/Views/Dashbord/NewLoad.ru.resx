@@ -176,4 +176,13 @@
 	<data name="PickupEstimated" xml:space="preserve">
 		<value>Предполагаемая отправка</value>
 	</data>
+	<data name="MessageErrorRequestRemoveOrderWidget" xml:space="preserve">
+		<value>Во время операции произошла ошибка, пожалуйста, повторите попытку позже</value>
+	</data>
+	<data name="MessageErrorRemoveOrderWidget" xml:space="preserve">
+		<value>Не удалось удалить виджет заказа</value>
+	</data>
+	<data name="MessageSuccessRemoveOrderWidget" xml:space="preserve">
+		<value>Виджет заказа успешно удален</value>
+	</data>
 </root>

@@ -53,7 +53,8 @@ namespace WebDispacher.Controellers
 
             ViewData[NavConstants.TypeNavBar] = NavConstants.AllUsers;
             
-            return View("Index");
+            //return View("Index");
+            return View("IndexHide");
         }
 
         [HttpPost]
@@ -246,11 +247,7 @@ namespace WebDispacher.Controellers
             }
 
             return View("carrier-reg-second-step", new FewMoreDetailsViewModel {
-                Type = new List<AccountType>
-                {
-                    new AccountType {Id = 1, TypeName = "Owner"},
-                    new AccountType {Id = 2, TypeName = "Driver"}
-                }, PersonalData = personalDataView});
+                PersonalData = personalDataView});
         }
         
         [HttpPost]
@@ -277,12 +274,16 @@ namespace WebDispacher.Controellers
                     
                     if (result.Succeeded)
                     {
+                        var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+                        var confirmationLink = Url.Action("ConfirmEmail", "RA", new { userId = user.Id, token }, Request.Scheme);
+
                         await userManager.AddToRoleAsync(user, RolesIdentityConstants.UserRole);
                         var company = await companyService.CreateCompany(model);
 
                         if (company.Id != 0 && user.Id != null)
                         {
                             await companyService.AddUserToCompany(user, company);
+                            await userService.SendEmailConfirmEmailCarrierRegistration(user.Email, confirmationLink);
                             await userService.SendEmailSuccessCarrierRegistration(user.Email);
                             return View("carrier-reg-congratulation");
                         }
@@ -299,13 +300,7 @@ namespace WebDispacher.Controellers
             {
                 return View("carrier-reg-second-step", new FewMoreDetailsViewModel
                 {
-                    Type = new List<AccountType>
-                {
-                    new AccountType {Id = 1, TypeName = "Owner"},
-                    new AccountType {Id = 2, TypeName = "Driver"}
-                },
                     PersonalData = model.PersonalData,
-                    SelectedType = model.SelectedType,
                     HowYouFindUs = model.HowYouFindUs,
                     Promo = model.Promo,
                     Units = model.Units
@@ -313,6 +308,37 @@ namespace WebDispacher.Controellers
             }
 
             return Redirect(Config.BaseReqvesteUrl);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            ViewData[NavConstants.TypeNavBar] = NavConstants.AllUsers;
+            ViewBag.BaseUrl = Config.BaseReqvesteUrl;
+
+            if (userId == null || token == null)
+            {
+                return View("ErrorConfirmEmail");
+            }
+
+            var user = await userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                return View("ErrorConfirmEmail");
+            }
+
+            var result = await userManager.ConfirmEmailAsync(user, token);
+
+            if (result.Succeeded)
+            {
+                return View("EmailConfirmed");
+            }
+            else
+            {
+                return View("ErrorConfirmEmail");
+            }
         }
 
         [HttpGet]
@@ -415,6 +441,13 @@ namespace WebDispacher.Controellers
                     if (user != null && await userManager
                             .CheckPasswordAsync(user, model.Password))
                     {
+                        var isConfirmed = await userManager.IsEmailConfirmedAsync(user);
+                        if (!isConfirmed)
+                        {
+                            ModelState.AddModelError("", "You must confirm your email address before logging in.");
+                            return View("carrier-login", model);
+                        }
+
                         var isBlocked = await userManager.IsLockedOutAsync(user);
                         if (isBlocked)
                         {
@@ -708,7 +741,7 @@ namespace WebDispacher.Controellers
                 return Redirect("/Checks/CarrierBrokerCheck");
 
             if (companyService.GetTypeNavBar(CompanyId) == NavConstants.NormalCompany)
-                return Redirect("/Dashbord/Order/NewLoad");
+                return Redirect("/Dashboard");
 
             return Redirect("/error?code=404");
         }

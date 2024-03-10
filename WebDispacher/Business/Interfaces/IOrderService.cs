@@ -4,11 +4,19 @@ using DaoModels.DAO.Models;
 using WebDispacher.ViewModels;
 using WebDispacher.ViewModels.Order;
 using WebDispacher.ViewModels.Vehicles;
+using WebDispacher.ViewModels.Widget;
 
 namespace WebDispacher.Business.Interfaces
 {
     public interface IOrderService
     {
+        Task<List<OrderStatusDropdownVm>> GetOrderStatusWithoutWidgetsWithCurrentDropdownItems(int currentItemId, string companyId);
+        Task<List<OrderStatusDropdownVm>> GetOrderStatusWithoutWidgetsDropdownItems();
+        Task RemoveOrderWidget(int entryId, string companyId);
+        Task<List<OrderStatusWidget>> GetCurrentCompanyOrderWidgets(string companyId);
+        Task AddOrderWidgetInCompany(CreateWidgetVm model, string dateTimeLocal, string companyId);
+        Task UpdateOrderWidgetInCompany(WidgetViewModel model, string dateTimeLocal, string companyId);
+        Task<WidgetViewModel> GetOrderWidgetById(int widgetId, string companyId);
         Task<OrderWithHistoryViewModel> GetOrderWithHistory(string companyId, int id);
         Task DeleteOrder(int id, string localDate);
         Task ArchiveOrder(int id, string localDate);
@@ -16,8 +24,8 @@ namespace WebDispacher.Business.Interfaces
         Task<int> GetOrderIdByVehicleId(int id);
         //Task<Shipping> AddNewOrder(string urlPage, Dispatcher dispatcher);
 
-        CurrentStatus GetCurrentStatusByName(string name);
-        int GetCurrentStatusIdByName(string name);
+        OrderStatus GetOrderStatusByName(string name);
+        int GetOrderStatusIdByName(string name);
 
         Task SaveVechicle(int idVech, string vin, string year, string make, string model, string type, string body, string color, string lotNumber, string localDate);
 

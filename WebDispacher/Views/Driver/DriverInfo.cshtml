@@ -1,0 +1,186 @@
+﻿@using DaoModels.DAO.Models;
+@using Microsoft.AspNetCore.Mvc.Localization
+@using System.Globalization;
+@using WebDispacher.Constants;
+
+@model Driver
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = $"{Model.LastName} {Model.FirstName} | Driver Information";
+}
+
+<body>
+    <div class="admin Billing">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="title text-info-padding-5">
+                        <a href="#" onclick="history.back();">@Localizer["BackToDrivers"]</a>
+                    </div>
+                    <div class="title text-info-padding-5 mb-3">
+
+                        <h1 class="text-info-header-1">
+                            <span>
+                                @Model.LastName, @Model.FirstName
+                            </span>
+                        </h1>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-md-4 text-r">
+                            <h3 class="text-info-header-3 text-info-padding-5">@Localizer["MainInfo"]</h3>
+                            <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["DriverCompany"]:</b> <span>@Model.CompanyName </span></p>
+                            @{
+                                var phoneDriver = string.Empty;
+                                if (Model?.PhoneNumber.DialCode != 0 && !string.IsNullOrEmpty(Model?.PhoneNumber.Number))
+                                {
+                                    phoneDriver = $"+{Model.PhoneNumber.DialCode} {Model.PhoneNumber.Number}";
+                                }
+                            }
+                            <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["Language"]:</b> <span>@Model.Language</span></p>
+                            <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["Phone"]:</b> <span>@phoneDriver</span></p>
+                            <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["Email"]:</b> <span>@Model.Email</span></p>
+                            <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["SocialSecurity"]:</b> <span>@Model.SocialSecurity</span></p>
+                            <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["OwnerOperator"]:</b> <span>@Model.OwnerOperator</span></p>
+                            <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["DateOfBirth"]:</b> <span>@Model.DateOfBirth.ToString(DateTimeFormats.DateOfBirth)</span></p>
+                            <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["DateMedicalCardExpiration"]:</b> <span>@Model?.DateMedicalCardExpiration?.ToString(DateTimeFormats.DateOfBirth)</span></p>
+                            <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["DateLastUpdate"]:</b> <span>@Model.DateLastUpdate</span></p>
+                            <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["DateRegistration"]:</b> <span>@Model.DateRegistration</span></p>
+
+                            <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["Password"]:</b> <span>@Model.DriverControl.Password</span></p>
+                            <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["Login"]:</b> <span>@Model.Login</span></p>
+
+                            @if (Model.GeolocationId.HasValue)
+                            {
+                                <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["Geolocation"]:</b> <span>@Model.Geolocation.Latitude x @Model.Geolocation.Longitude</span></p>
+
+                            }
+                            <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["IsActive"]:</b> <span>@(!Model.DriverReportId.HasValue)</span></p>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-12 mb-4">
+                                    <div class="text-r">
+                                        <h3 class="text-info-header-3 text-info-padding-5">@Localizer["HomeAddress"]</h3>
+                                        <p class="text-info-p">
+                                            @Model.Address <br>
+                                            @Model.City, @Model.State @Model.ZipCode<br>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="text-r">
+                                        <h3 class="text-info-header-3 text-info-padding-5">@Localizer["Emergency"]</h3>
+                                        <p class="text-info-p">
+                                            <b>@Localizer["EmergencyContactName"]: </b>@Model.EmergencyContactName <br>
+                                            <b>@Localizer["EmergencyContactRelationship"]: </b>@Model.EmergencyContactRelationship <br>
+                                            @{
+                                                var phoneEmergency = string.Empty;
+                                                if (Model?.EmergencyContactPhoneNumber?.DialCode != 0 && !string.IsNullOrEmpty(Model?.EmergencyContactPhoneNumber?.Number))
+                                                {
+                                                    phoneEmergency = $"+{Model.EmergencyContactPhoneNumber.DialCode} {Model.EmergencyContactPhoneNumber.Number}";
+                                                }
+                                            }
+                                            <b>@Localizer["PhoneEmergency"]: </b>@phoneEmergency<br>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="text-r">
+                                <h3 class="text-info-header-3 text-info-padding-5">@Localizer["DriverLicense"]</h3>
+                                <p class="text-info-p">
+                                    <b>@Localizer["DriverLicenseNumber"]: </b>@Model.DriverLicenseNumber <br>
+                                    <b>@Localizer["DriverLicenseState"]: </b>@Model.DriverLicenseState <br>
+                                    <b>@Localizer["DateDriverLicenseIssued"]: </b>@Model?.DateDriverLicenseIssued?.ToString(DateTimeFormats.DateOfBirth)<br>
+                                    <b>@Localizer["DateDriverLicenseExpiration"]: </b>@Model?.DateDriverLicenseExpiration?.ToString(DateTimeFormats.DateOfBirth)<br>
+                                    <b>@Localizer["Endorsements"]: </b>@Model.Endorsements <br>
+                                    <b>@Localizer["Restrictions"]: </b>@Model.Restrictions <br>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-r">
+                                <h3 class="text-info-header-3">@Localizer["DriverInspection"]</h3>
+                                <p class="text-info-p">
+                                    <b>@Localizer["IsInspectionDriver"]:</b> @Model.DriverControl.IsInspectionDriver<br>
+                                    <b>@Localizer["IsInspectionToDayDriver"]:</b> @Model.DriverControl.IsInspectionToDayDriver<br>
+                                    <b>@Localizer["LastDateInspaction"]:</b> @Model.DriverControl.LastDateInspaction<br>
+                                </p>
+                            </div>
+                        </div>
+                        @if (Model.DriverReportId.HasValue)
+                        {
+                            <div class="col-md-12">
+                                <div class="text-r">
+                                    <h3 class="text-info-header-3">@Localizer["DriverFired"]</h3>
+
+                                    <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["DateFired"]:</b> <span>@Model.DriverReport.DateFired</span></p>
+                                    <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["Comment"]:</b> <span>@Model.DriverReport.Comment</span></p>
+                                    <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["AlcoholTendency"]:</b> <span>@Model.DriverReport.AlcoholTendency</span></p>
+                                    <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["DriverSkills"]:</b> <span>@Model.DriverReport.DriverSkills</span></p>
+                                    <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["DrugTendency"]:</b> <span>@Model.DriverReport.DrugTendency</span></p>
+                                    <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["EldKnowledge"]:</b> <span>@Model.DriverReport.EldKnowledge</span></p>
+                                    <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["English"]:</b> <span>@Model.DriverReport.English</span></p>
+                                    <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["Experience"]:</b> <span>@Model.DriverReport.Experience</span></p>
+                                    <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["PaymentHandling"]:</b> <span>@Model.DriverReport.PaymentHandling</span></p>
+                                    <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["ReturnEquipment"]:</b> <span>@Model.DriverReport.ReturnEquipment</span></p>
+                                    <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["Terminated"]:</b> <span>@Model.DriverReport.Terminated</span></p>
+                                    <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["WorkEffeciency"]:</b> <span>@Model.DriverReport.WorkEffeciency</span></p>
+                                    <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["DotViolations"]:</b> <span>@Model.DriverReport.DotViolations</span></p>
+                                    <p class="text-info-p-1 text-info-padding-5"><b>@Localizer["NumberAccidents"]:</b> <span>@Model.DriverReport.NumberAccidents</span></p>
+
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-2 mt-3">
+                                <a href="@ViewBag.BaseUrl/Driver/Drivers/Edit?id=@Model.Id" class="btn1">@Localizer["Edit"]</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+<style>
+    .text-r p {
+        color: #646464;
+    }
+
+    .admin .title h1 {
+        font-size: 28px;
+    }
+
+    .Billing .row h3 {
+        font-size: 16px;
+        font-weight: 600;
+        color: black;
+        margin-bottom: 6px;
+    } 
+
+    .btn1 {
+        width: 100%;
+        font-size: 16px;
+        font-weight: 600;
+        text-align: center;
+        padding: 14px 20px;
+    }
+    .btn1:hover {
+        background: #f9f9f9;
+        border: 1px solid #2c5deb;
+        color: #2c5deb;
+        -webkit-transition: .3s all;
+        -o-transition: .3s all;
+        transition: .3s all
+    }
+</style>

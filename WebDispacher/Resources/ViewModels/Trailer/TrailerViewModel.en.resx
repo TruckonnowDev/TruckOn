@@ -134,4 +134,13 @@
 	<data name="TypeRequired" xml:space="preserve">
 		<value>The Type field is required</value>
 	</data>
+	<data name="TrailerGroupRequired" xml:space="preserve">
+		<value>Please Make a Selection</value>
+	</data>
+	<data name="TrailerStatusRequired" xml:space="preserve">
+		<value>Please Make a Selection</value>
+	</data>
+	<data name="TrailerLocationRequired" xml:space="preserve">
+		<value>The Location of the Unit field is required</value>
+	</data>
 </root>

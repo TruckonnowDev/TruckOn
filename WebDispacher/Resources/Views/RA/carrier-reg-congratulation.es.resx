@@ -145,6 +145,6 @@
     <value>Paso 3: ¡Estás listo!</value>
   </data>
   <data name="CongratulationMessage" xml:space="preserve">
-    <value>Felicitaciones, su cuenta ha sido creada. Hagamos crecer su negocio.</value>
+    <value>Felicitaciones, su cuenta ha sido creada. Confirme su correo electrónico para iniciar sesión en su cuenta.</value>
   </data>
 </root>

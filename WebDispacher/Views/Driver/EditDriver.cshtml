@@ -9,6 +9,7 @@
 @{
     ViewData["Title"] = "Edit Driver";
 }
+
 <body>
     <div class="admin">
         <div class="container">
@@ -23,43 +24,276 @@
                         </div>
                         <form action="" method="post">
                             @Html.ValidationSummary()
+                            <h3 class="h3-header">@Localizer["PersonalInfo"]</h3>
                             <label class="big-label" for="">
                                 @Localizer["FirstName"]
-                                <input id="firstName" class="height-input" type="text" asp-for="FirstName" value="@Model.FirstName" required>
+                                <span><abbr data-title="@Localizer["FirstNameLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                <input id="firstName" class="height-input" type="text" asp-for="FirstName" value="@Model.FirstName">
                                 @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["LastName"]
-                                <input id="lastName" class="height-input" type="text" asp-for="LastName" value="@Model.LastName" required>
+                                <span><abbr data-title="@Localizer["LastNameLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                <input id="lastName" class="height-input" type="text" asp-for="LastName" value="@Model.LastName">
                                 @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
                             </label>
                             <label class="big-label" for="">
-                                @Localizer["Email"]
-                                <input class="height-input" type="email" asp-for="Email" value="@Model.Email" required>
-                                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                                @Localizer["OwnerOperator"]
+                                <span><abbr data-title="@Localizer["OwnerOperatorLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                <select id="ownerOperation" asp-for="OwnerOperator" class="height-input input-select">
+                                    <option value="Yes">@Localizer["Yes"]</option>
+                                    <option value="No">@Localizer["No"]</option>
+                                </select>
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["CompanyName"]
+                                <span><abbr data-title="@Localizer["CompanyNameLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                <input class="height-input" type="text" asp-for="CompanyName" id="companyName" value="@Model.CompanyName">
+                                @Html.ValidationMessageFor(model => model.CompanyName, "", new { @class = "text-danger" })
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["Language"]
+                                <span><abbr data-title="@Localizer["LanguageLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                <input class="height-input" type="text" asp-for="Language" id="language" value="@Model.Language">
+                                @Html.ValidationMessageFor(model => model.Language, "", new { @class = "text-danger" })
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["Address"]
+                                <span><abbr data-title="@Localizer["AddressLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                <input class="height-input" type="text" asp-for="Address" id="address" value="@Model.Address">
+                                @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["City"]
+                                <span><abbr data-title="@Localizer["CityLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                <input class="height-input" type="text" asp-for="City" id="city" value="@Model.City">
+                                @Html.ValidationMessageFor(model => model.City, "", new { @class = "text-danger" })
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["State"]
+                                <span><abbr data-title="@Localizer["StateLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                <select id="stateP" asp-for="State" class="height-input input-select">
+                                    <option value="AL">Alabama</option>
+                                    <option value="AK">Alaska</option>
+                                    <option value="AZ">Arizona</option>
+                                    <option value="AR">Arkansas</option>
+                                    <option value="CA">California</option>
+                                    <option value="CO">Colorado</option>
+                                    <option value="CT">Connecticut</option>
+                                    <option value="DE">Delaware</option>
+                                    <option value="DC">District Of Columbia</option>
+                                    <option value="FL">Florida</option>
+                                    <option value="GA">Georgia</option>
+                                    <option value="HI">Hawaii</option>
+                                    <option value="ID">Idaho</option>
+                                    <option value="IL">Illinois</option>
+                                    <option value="IN">Indiana</option>
+                                    <option value="IA">Iowa</option>
+                                    <option value="KS">Kansas</option>
+                                    <option value="KY">Kentucky</option>
+                                    <option value="LA">Louisiana</option>
+                                    <option value="ME">Maine</option>
+                                    <option value="MD">Maryland</option>
+                                    <option value="MA">Massachusetts</option>
+                                    <option value="MI">Michigan</option>
+                                    <option value="MN">Minnesota</option>
+                                    <option value="MS">Mississippi</option>
+                                    <option value="MO">Missouri</option>
+                                    <option value="MT">Montana</option>
+                                    <option value="NE">Nebraska</option>
+                                    <option value="NV">Nevada</option>
+                                    <option value="NH">New Hampshire</option>
+                                    <option value="NJ">New Jersey</option>
+                                    <option value="NM">New Mexico</option>
+                                    <option value="NY">New York</option>
+                                    <option value="NC">North Carolina</option>
+                                    <option value="ND">North Dakota</option>
+                                    <option value="OH">Ohio</option>
+                                    <option value="OK">Oklahoma</option>
+                                    <option value="OR">Oregon</option>
+                                    <option value="PA">Pennsylvania</option>
+                                    <option value="RI">Rhode Island</option>
+                                    <option value="SC">South Carolina</option>
+                                    <option value="SD">South Dakota</option>
+                                    <option value="TN">Tennessee</option>
+                                    <option value="TX">Texas</option>
+                                    <option value="UT">Utah</option>
+                                    <option value="VT">Vermont</option>
+                                    <option value="VA">Virginia</option>
+                                    <option value="WA">Washington</option>
+                                    <option value="WV">West Virginia</option>
+                                    <option value="WI">Wisconsin</option>
+                                    <option value="WY">Wyoming</option>
+                                </select>
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["ZipCode"]
+                                <span><abbr data-title="@Localizer["ZipCodeLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                <input type="text" id="zipP" asp-for="ZipCode" maxlength="5" max="99999" value="@Model.ZipCode" pattern="@PatternConstants.ZipOnlyFiveDigits" placeholder="XXXXX - @Localizer["ZipCode"]">
+                            </label>
+
+                            <label class="big-label" id="dateOfBirthLabel" for="">
+                                @Localizer["DateOfBirth"]
+                                <span><abbr data-title="@Localizer["DateOfBirthLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                <input class="height-input" asp-for="DateOfBirth" id="dateOfBirth" type="text" value="@Model.DateOfBirth.ToString(DateTimeFormats.DateOfBirth)">
+                                <p class="dob-not-current-format text-danger"></p>
+                                @Html.ValidationMessageFor(model => model.DriverLicenseNumber, "", new { @class = "text-danger" })
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["Password"]
-                                <input class="height-input" type="text" asp-for="DriverControl.Password" value="@Model.DriverControl.Password" required>
+                                <span><abbr data-title="@Localizer["PasswordLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                <input class="height-input" type="text" asp-for="DriverControl.Password" value="@Model.DriverControl.Password">
                                 @Html.ValidationMessageFor(model => model.DriverControl.Password, "", new { @class = "text-danger" })
                             </label>
                             <label class="big-label" for="">
                                 @Localizer["PhoneNumber"]
-                                <input class="height-input" type="text" asp-for="PhoneNumber.Number" placeholder="(XXX)-XXX-XXXX" id="phoneD" pattern="@PatternConstants.PhoneNumberWithoutCountryCode" value="@Model.PhoneNumber.Number" required>
-                                <input type="hidden" id="country-code-dialcode" asp-for="PhoneNumber.DialCode" value="@Model.PhoneNumber.DialCode">
-                                <input type="hidden" id="country-code-iso2" asp-for="PhoneNumber.Iso2" value="@Model.PhoneNumber.Iso2">
-                                <input type="hidden" id="country-code-name" asp-for="PhoneNumber.Name" value="@Model.PhoneNumber.Name">
+                                <span><abbr data-title="@Localizer["PhoneNumberLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                <input class="height-input" type="text" asp-for="PhoneNumber.Number" placeholder="(XXX)-XXX-XXXX" id="phoneD" pattern="@PatternConstants.PhoneNumberWithoutCountryCode" value="@Model.PhoneNumber.Number">
+                                <input type="hidden" id="country-code-dialcode-driver" asp-for="PhoneNumber.DialCode" value="@Model.PhoneNumber.DialCode">
+                                <input type="hidden" id="country-code-iso2-driver" asp-for="PhoneNumber.Iso2" value="@Model.PhoneNumber.Iso2">
+                                <input type="hidden" id="country-code-name-driver" asp-for="PhoneNumber.Name" value="@Model.PhoneNumber.Name">
                                 @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
                             </label>
-                            <label class="big-label" for="">
-                                @Localizer["TrailerCapacity"]
-                                <input class="height-input" type="text" asp-for="DriverControl.TrailerCapacity" value="@Model.DriverControl.TrailerCapacity" required>
-                                @Html.ValidationMessageFor(model => model.DriverControl.TrailerCapacity, "", new { @class = "text-danger" })
-                            </label>
+                            <h3 class="h3-header">@Localizer["DriverLicenseInfo"]</h3>
                             <label class="big-label pb-3" for="">
                                 @Localizer["DriverLicenseNumber"]
-                                <input id="driverNumber" class="height-input" type="text" asp-for="DriverLicenseNumber" value="@Model.DriverLicenseNumber" required>
+                                <span><abbr data-title="@Localizer["DriverLicenseNumberLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                <input id="driverNumber" class="height-input" type="text" asp-for="DriverLicenseNumber" value="@Model.DriverLicenseNumber">
                                 @Html.ValidationMessageFor(model => model.DriverLicenseNumber, "", new { @class = "text-danger" })
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["DriverLicenseState"]
+                                <span><abbr data-title="@Localizer["DriverLicenseStateLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                <select id="driverLicenseState" class="height-input input-select" asp-for="DriverLicenseState" value="@Model.DriverLicenseState">
+                                    <option value="AL">Alabama</option>
+                                    <option value="AK">Alaska</option>
+                                    <option value="AZ">Arizona</option>
+                                    <option value="AR">Arkansas</option>
+                                    <option value="CA">California</option>
+                                    <option value="CO">Colorado</option>
+                                    <option value="CT">Connecticut</option>
+                                    <option value="DE">Delaware</option>
+                                    <option value="DC">District Of Columbia</option>
+                                    <option value="FL">Florida</option>
+                                    <option value="GA">Georgia</option>
+                                    <option value="HI">Hawaii</option>
+                                    <option value="ID">Idaho</option>
+                                    <option value="IL">Illinois</option>
+                                    <option value="IN">Indiana</option>
+                                    <option value="IA">Iowa</option>
+                                    <option value="KS">Kansas</option>
+                                    <option value="KY">Kentucky</option>
+                                    <option value="LA">Louisiana</option>
+                                    <option value="ME">Maine</option>
+                                    <option value="MD">Maryland</option>
+                                    <option value="MA">Massachusetts</option>
+                                    <option value="MI">Michigan</option>
+                                    <option value="MN">Minnesota</option>
+                                    <option value="MS">Mississippi</option>
+                                    <option value="MO">Missouri</option>
+                                    <option value="MT">Montana</option>
+                                    <option value="NE">Nebraska</option>
+                                    <option value="NV">Nevada</option>
+                                    <option value="NH">New Hampshire</option>
+                                    <option value="NJ">New Jersey</option>
+                                    <option value="NM">New Mexico</option>
+                                    <option value="NY">New York</option>
+                                    <option value="NC">North Carolina</option>
+                                    <option value="ND">North Dakota</option>
+                                    <option value="OH">Ohio</option>
+                                    <option value="OK">Oklahoma</option>
+                                    <option value="OR">Oregon</option>
+                                    <option value="PA">Pennsylvania</option>
+                                    <option value="RI">Rhode Island</option>
+                                    <option value="SC">South Carolina</option>
+                                    <option value="SD">South Dakota</option>
+                                    <option value="TN">Tennessee</option>
+                                    <option value="TX">Texas</option>
+                                    <option value="UT">Utah</option>
+                                    <option value="VT">Vermont</option>
+                                    <option value="VA">Virginia</option>
+                                    <option value="WA">Washington</option>
+                                    <option value="WV">West Virginia</option>
+                                    <option value="WI">Wisconsin</option>
+                                    <option value="WY">Wyoming</option>
+                                </select>
+                            </label>
+                            <label class="big-label" id="driverLicenseIssuedLabel" for="">
+                                @Localizer["DriverLicenseIssued"]
+                                @{
+                                    var time = Model?.DateDriverLicenseIssued?.ToString(DateTimeFormats.BaseCalendarDate);
+                                }
+                                <span><abbr data-title="@Localizer["DriverLicenseIssuedLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                <input type="date" id="driverLicenseIssued" asp-for="DateDriverLicenseIssued" value="@time">
+                                <p class="dob-not-current-format text-danger"></p>
+                                @Html.ValidationMessageFor(model => model.DateDriverLicenseIssued, "", new { @class = "text-danger" })
+                            </label>
+                            <label class="big-label" id="driverLicenseExpirationLabel" for="">
+                                @Localizer["DriverLicenseExpiration"]
+                                <span><abbr data-title="@Localizer["DriverLicenseExpirationLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                <input type="text" id="driverLicenseExpiration" asp-for="DateDriverLicenseExpiration" value="@Model?.DateDriverLicenseExpiration?.ToString(DateTimeFormats.DateOfBirth)">
+                                <p class="dob-not-current-format text-danger"></p>
+                                @Html.ValidationMessageFor(model => model.DateDriverLicenseExpiration, "", new { @class = "text-danger" })
+                            </label>
+                            <label class="big-label" id="medicalCardExpirationLabel" for="">
+                                @Localizer["MedicalCardExpiration"]
+                                <span><abbr data-title="@Localizer["MedicalCardExpirationLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                <input type="text" id="medicalCardExpiration" asp-for="DateMedicalCardExpiration" value="@Model?.DateMedicalCardExpiration?.ToString(DateTimeFormats.DateOfBirth)">
+                                <p class="dob-not-current-format text-danger"></p>
+                                @Html.ValidationMessageFor(model => model.DateMedicalCardExpiration, "", new { @class = "text-danger" })
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["Endorsements"]
+                                <span><abbr data-title="@Localizer["EndorsementsLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                <input class="height-input" type="text" asp-for="Endorsements" value="@Model.Endorsements">
+                                @Html.ValidationMessageFor(model => model.Endorsements, "", new { @class = "text-danger" })
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["Restrictions"]
+                                <span><abbr data-title="@Localizer["RestrictionsLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                <input class="height-input" type="text" asp-for="Restrictions" value="@Model.Restrictions">
+                                @Html.ValidationMessageFor(model => model.Restrictions, "", new { @class = "text-danger" })
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["Email"]
+                                <span><abbr data-title="@Localizer["EmailLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                <input class="height-input" type="email" asp-for="Email" value="@Model.Email">
+                                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["SocialSecurity"]#
+                                <span><abbr data-title="@Localizer["SocialSecurityLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                <input class="height-input" type="text" asp-for="SocialSecurity" value="@Model.SocialSecurity">
+                                @Html.ValidationMessageFor(model => model.SocialSecurity, "", new { @class = "text-danger" })
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["Login"]
+                                <span><abbr data-title="@Localizer["LoginLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                <input class="height-input" type="text" asp-for="Login" value="@Model.Login">
+                                @Html.ValidationMessageFor(model => model.Login, "", new { @class = "text-danger" })
+                            </label>
+
+                            <h3  class="h3-header">@Localizer["EmergencyContact"]</h3>
+                            <label class="big-label" for="">
+                                @Localizer["EmergencyContact"]
+                                <span><abbr data-title="@Localizer["EmergencyContactLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                <input class="height-input" type="text" asp-for="EmergencyContactName" value="@Model.EmergencyContactName">
+                                @Html.ValidationMessageFor(model => model.EmergencyContactName, "", new { @class = "text-danger" })
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["EmergencyContactRelationship"]
+                                <span><abbr data-title="@Localizer["EmergencyContactRelationshipLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                <input class="height-input" type="text" asp-for="EmergencyContactRelationship" value="@Model.EmergencyContactRelationship">
+                                @Html.ValidationMessageFor(model => model.EmergencyContactRelationship, "", new { @class = "text-danger" })
+                            </label>
+                            <label class="big-label" for="">
+                                @Localizer["EmergencyPhoneNumber"]
+                                <span><abbr data-title="@Localizer["EmergencyPhoneNumberLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                <input class="height-input" type="text" asp-for="EmergencyContactPhoneNumber.Number" placeholder="(XXX)-XXX-XXXX" id="phone" pattern="@PatternConstants.PhoneNumberWithoutCountryCode">
+                                <input type="hidden" id="country-code-dialcode-emergency" asp-for="EmergencyContactPhoneNumber.DialCode" value="@Model?.EmergencyContactPhoneNumber?.DialCode">
+                                <input type="hidden" id="country-code-iso2-emergency" asp-for="EmergencyContactPhoneNumber.Iso2" value="@Model?.EmergencyContactPhoneNumber?.Iso2">
+                                <input type="hidden" id="country-code-name-emergency" asp-for="EmergencyContactPhoneNumber.Name" value="@Model?.EmergencyContactPhoneNumber?.Name">
+                                @Html.ValidationMessageFor(model => model.EmergencyContactPhoneNumber, "", new { @class = "text-danger" })
                             </label>
                             <input name="id" value="@Model.Id" style="display:none" />
                             <input type="hidden" value="" name="localDate" />
@@ -97,28 +331,58 @@
 
     $("input[type=submit]").on('click', function (e) {
         dateInput.value = GetDateTimeInFormat(new Date());
+
+        //CheckValidDoB(e, "dateOfBirthLabel", "dateOfBirth", "dob-not-current-format");
+        //CheckValidDoB(e, "driverLicenseIssuedLabel", "driverLicenseIssued", "dob-not-current-format");
+        //CheckValidExp(e, "driverLicenseExpirationLabel", "driverLicenseExpiration", "dob-not-current-format");
+        //CheckValidExp(e, "medicalCardExpirationLabel", "medicalCardExpiration", "dob-not-current-format");
     });
-    
+
+    $('input[name="DateOfBirth"]').on('click', function () {
+        $(this).setCursorPosition(0);
+    });
 
     $(document).ready(function () {
         $("#phoneD").mask("(999)-999-9999", { placeholder: "(XXX)-XXX-XXXX" });
+        $("#phone").mask("(999)-999-9999", { placeholder: "(XXX)-XXX-XXXX" });
+        $("#driverLicenseExpiration").mask("99/99/9999", { placeholder: "MM/DD/YYYY" });
+        $("#medicalCardExpiration").mask("99/99/9999", { placeholder: "MM/DD/YYYY" });
+        $("#dateOfBirth").mask("99/99/9999", { placeholder: "MM/DD/YYYY" });
 
-        if (!$("#country-code-iso2").val()) {
-            $("#country-code-iso2").val("us")
-            $("#country-code-dialcode").val("1")
-            $("#country-code-name").val("United States")
+        if (!$("#country-code-iso2-driver").val()) {
+            $("#country-code-iso2-driver").val("us")
+            $("#country-code-dialcode-driver").val("1")
+            $("#country-code-name-driver").val("United States")
+        }
+
+        if (!$("#country-code-iso2-emergency").val()) {
+            $("#country-code-iso2-emergency").val("us")
+            $("#country-code-dialcode-emergency").val("1")
+            $("#country-code-name-emergency").val("United States")
         }
 
         var phoneC = $("#phoneD");
         phoneC.intlTelInput({
-            initialCountry: $("#country-code-iso2").val() ? $("#country-code-iso2").val() : "us",
+            initialCountry: $("#country-code-iso2-driver").val() ? $("#country-code-iso2-driver").val() : "us",
             separateDialCode: true,
         });
 
         phoneC.on("countrychange", function (e, countryData) {
-            $("#country-code-dialcode").val(countryData.dialCode);
-            $("#country-code-iso2").val(countryData.iso2);
-            $("#country-code-name").val(countryData.name);
+            $("#country-code-dialcode-driver").val(countryData.dialCode);
+            $("#country-code-iso2-driver").val(countryData.iso2);
+            $("#country-code-name-driver").val(countryData.name);
+        });
+        
+        var phoneE = $("#phone");
+        phone.intlTelInput({
+            initialCountry: $("#country-code-iso2-emergency").val() ? $("#country-code-iso2-emergency").val() : "us",
+            separateDialCode: true,
+        });
+
+        phoneE.on("countrychange", function (e, countryData) {
+            $("#country-code-dialcode-driver-emergency").val(countryData.dialCode);
+            $("#country-code-iso2-driver-emergency").val(countryData.iso2);
+            $("#country-code-name-driver-emergency").val(countryData.name);
         });
     });
     
@@ -128,5 +392,25 @@
 <style>
     .intl-tel-input {
         width: 100%;
+    }
+
+    .Billing .table .td input, .Billing .table .td select {
+        text-align: center;
+        width: 95%;
+        padding: 6px 0;
+        border: 1px solid #c4c9d5;
+        border-radius: 10px !important;
+        background: #fff;
+        margin: 0;
+        font-weight: 400;
+        color: #007bff;
+        font-size: 20px;
+    }
+
+    .h3-header {
+        font-size: 20px;
+        color: black;
+        font-weight: 600;
+        margin-bottom: 10px;
     }
 </style>

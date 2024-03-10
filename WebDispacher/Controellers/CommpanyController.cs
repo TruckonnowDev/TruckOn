@@ -63,12 +63,14 @@ namespace WebDispacher.Controellers
                 var companies = await companyService.GetCompaniesWithUsers(page);
 
                 var countPages = await companyService.GetCountCompaniesPages();
+                var activeCompanies = await companyService.GetCountCompaniesByStatus(CompanyStatus.Active);
+                var deletedCompanies = await companyService.GetCountCompaniesByStatus(CompanyStatus.Deactivate);
 
                 ViewBag.CountPages = countPages;
 
                 ViewBag.SelectedPage = page;
 
-                return View("Companies", companies);
+                return View("Companies", (companies, activeCompanies, deletedCompanies));
             }
             catch (Exception e)
             {
@@ -171,6 +173,10 @@ namespace WebDispacher.Controellers
 
                     if (result.Succeeded)
                     {
+                        var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+                        var confirmationLink = Url.Action("ConfirmEmail", "RA", new { userId = user.Id, token }, Request.Scheme);
+
+
                         await userManager.AddToRoleAsync(user, RolesIdentityConstants.UserRole);
 
                         var company = await companyService.CreateCompanyByAdminWithDocs(model, 
@@ -180,10 +186,11 @@ namespace WebDispacher.Controellers
                         if (company.Id != 0 && user.Id != null)
                         {
                             await companyService.AddUserToCompany(user, company);
+                            await userService.SendEmailSuccessCarrierRegistration(user.Email);
+                            await userService.SendEmailConfirmEmailCarrierRegistration(user.Email, confirmationLink);
 
                             return Redirect($"{Config.BaseReqvesteUrl}/Company/Companies");
                         }
-
                     }
 
                     foreach (var error in result.Errors) ModelState.AddModelError(string.Empty, error.Description);
@@ -619,8 +626,6 @@ namespace WebDispacher.Controellers
             
             return Redirect(Config.BaseReqvesteUrl);
         }
-
-
         
         [HttpGet]
         [Route("Questions/Answered")]

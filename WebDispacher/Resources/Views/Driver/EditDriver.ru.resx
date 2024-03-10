@@ -134,4 +134,16 @@
 	<data name="LastName" xml:space="preserve">
 		<value>Фамилия</value>
 	</data>
+	<data name="DriverLicenseState" xml:space="preserve">
+		<value>Штат водительских прав</value>
+	</data>
+	<data name="DriverLicenseExpiration" xml:space="preserve">
+		<value>Истечение срока водительских прав</value>
+	</data>
+	<data name="MedicalCardExpiration" xml:space="preserve">
+		<value>Истечение срока медицинской карты</value>
+	</data>
+	<data name="DateOfBirth" xml:space="preserve">
+		<value>Дата Рождения</value>
+	</data>
 </root>

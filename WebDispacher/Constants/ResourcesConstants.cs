@@ -2,9 +2,11 @@
 {
     public static class ResourcesConstants
     {
+        public const string UrlToPicture = "/img/Main/Features/";
+
         public const string EldServiceCase = "eldservice";
         public const string EldServiceName = "ELDService";
-        public const string EldServiceUrlPicture = "img/Main/Features/ELDService.svg";
+        public const string EldServiceUrlPicture = "/img/Main/Features/ELDService.svg";
         public const string EldServiceInfo = "ELDService information";
         
         public const string InsuranceProviderseCase = "insuranceproviders";

@@ -22,24 +22,36 @@
                         <form action="" method="post">
                             <div class="validation" asp-validation-summary="ModelOnly"></div>
                             <label for="">
-                                <label class="mb-0" asp-for="Name"></label>
+                                <label class="mb-0" asp-for="Name">
+                                    @Html.DisplayNameFor(model => model.Name)
+                                    <span><abbr data-title="@Localizer["NameLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                </label>
                                 <input type="text" id="name" name="Name" value="@Model.Name" required>
                                 @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
                             </label>
                             <label for="">
-                                <label class="mb-0" asp-for="Position"></label>
+                                <label class="mb-0" asp-for="Position">
+                                    @Html.DisplayNameFor(model => model.Position)
+                                    <span><abbr data-title="@Localizer["PositionLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                </label>
                                 <input type="text" name="Position" id="position" value="@Model.Position">
                                 @Html.ValidationMessageFor(model => model.Position, "", new { @class = "text-danger" })
                             </label>
                             <label for="">
-                                <label class="mb-0" asp-for="Email"></label>
+                                <label class="mb-0" asp-for="Email">
+                                    @Html.DisplayNameFor(model => model.Email)
+                                    <span><abbr data-title="@Localizer["EmailLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                </label>
                                 <input type="email" id="email" name="Email" value="@Model.Email" pattern="@PatternConstants.Email" required>
                                 @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
                             </label>
                             <div style="width:500px">
                                 <div style="display:flex;justify-content:space-between;">
                                     <div class="elem" style="width: 75%">
-                                        <label class="mb-0" asp-for="PhoneNumber.Number" style="width:100%;"></label>
+                                        <label class="mb-0" asp-for="PhoneNumber.Number" style="width:100%;">
+                                            @Html.DisplayNameFor(model => model.PhoneNumber.Number)
+                                            <span><abbr data-title="@Localizer["PhoneNumberLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                        </label>
                                         <label for="" style="width:100%">
                                             <div class="intl-tel-input">
                                             <input type="text" id="phoneC" asp-for="PhoneNumber.Number" pattern="@PatternConstants.PhoneNumberWithoutCountryCode" placeholder="(XXX)-XXX-XXXX" required>
@@ -50,7 +62,10 @@
                                         </label>
                                     </div>
                                     <div class="elem" style="width: 20%">
-                                        <label class="mb-0" asp-for="Ext" style="width:100%;"></label>
+                                        <label class="mb-0" asp-for="Ext" style="width:100%;">
+                                            @Html.DisplayNameFor(model => model.Ext)
+                                            <span><abbr data-title="@Localizer["ExtLabelInfo"]"><i class="bi bi-info-circle"></i></abbr></span>
+                                        </label>
                                         <label for="" style="width:100%">
                                             <input type="text" name="Ext" id="Ext" class="mt-0" maxlength="5" value="@Model.Ext" required />
                                         </label>

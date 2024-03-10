@@ -127,7 +127,7 @@
     <value>Año</value>
   </data>
   <data name="TypeTruck" xml:space="preserve">
-    <value>Tipo Camión</value>
+    <value>Tipo de Unidad</value>
   </data>
   <data name="State" xml:space="preserve">
     <value>Estado</value>
@@ -145,7 +145,7 @@
     <value>Propietario</value>
   </data>
   <data name="NameTruck" xml:space="preserve">
-    <value>Nombre Camión</value>
+    <value>Unidad</value>
   </data>
   <data name="Model" xml:space="preserve">
     <value>Modelo</value>
@@ -154,7 +154,7 @@
     <value>Hacer</value>
   </data>
   <data name="EditTruck" xml:space="preserve">
-    <value>Editar camión</value>
+    <value>Editar Camión</value>
   </data>
   <data name="BackToEquipment" xml:space="preserve">
     <value>Volver a Equipamiento</value>
@@ -184,12 +184,108 @@
     <value>opcional para el balanceo de NY</value>
   </data>
   <data name="VehicleCategory" xml:space="preserve">
-    <value>Categoría de Vehículo</value>
+    <value>Clase de Unidad</value>
   </data>
   <data name="ChooseVehicleCategory" xml:space="preserve">
     <value>Elija un tipo de vehículo</value>
   </data>
   <data name="ChooseTruckType" xml:space="preserve">
     <value>Elija un tipo de camión</value>
+  </data>
+  <data name="TruckStatus" xml:space="preserve">
+    <value>Estado del Camión</value>
+  </data>
+  <data name="ChooseTruckStatus" xml:space="preserve">
+    <value>Seleccione el estado del camión</value>
+  </data>
+  <data name="TruckStatusActive" xml:space="preserve">
+    <value>Activo</value>
+  </data>
+  <data name="TruckStatusBroken" xml:space="preserve">
+    <value>Roto</value>
+  </data>
+  <data name="TruckStatusDamaged" xml:space="preserve">
+    <value>Dañado</value>
+  </data>
+  <data name="TruckStatusDealership" xml:space="preserve">
+    <value>Concesionario</value>
+  </data>
+  <data name="TruckStatusEmergency" xml:space="preserve">
+    <value>Emergencia</value>
+  </data>
+  <data name="TruckStatusInactive" xml:space="preserve">
+    <value>Inactivo</value>
+  </data>
+  <data name="TruckStatusShop" xml:space="preserve">
+    <value>Tienda</value>
+  </data>
+  <data name="TruckStatusTowYard" xml:space="preserve">
+    <value>Patio de Remolque</value>
+  </data>
+  <data name="NameTruckLabelInfo" xml:space="preserve">
+    <value>Impulsa la Imaginación con un Nombre Cautivador</value>
+  </data>
+  <data name="YearLabelInfo" xml:space="preserve">
+    <value>Especifique el Año en que Se Desarrolla Su Historia Automotriz</value>
+  </data>
+  <data name="MakeLabelInfo" xml:space="preserve">
+    <value>Ingrese el Nombre del Fabricante Detrás De Su Orgullo Automotriz</value>
+  </data>
+  <data name="ModelLabelInfo" xml:space="preserve">
+    <value>Ingrese el Nombre del Modelo de su Camión</value>
+  </data>
+  <data name="TruckGroupSuccessAdded" xml:space="preserve">
+    <value>Se ha agregado con éxito un nuevo grupo de camiones</value>
+  </data>
+  <data name="TruckGroupNotAdded" xml:space="preserve">
+    <value>Error al agregar un nuevo grupo de camiones</value>
+  </data>
+  <data name="ChooseGroupType" xml:space="preserve">
+    <value>Elija un grupo de camiones</value>
+  </data>
+  <data name="CreateNewGroupType" xml:space="preserve">
+    <value>Crear un nuevo grupo de camiones</value>
+  </data>
+  <data name="GroupTruck" xml:space="preserve">
+    <value>Camión de Grupo</value>
+  </data>
+  <data name="CreateNewTruckStatus" xml:space="preserve">
+    <value>Crear un nuevo estado de camión</value>
+  </data>
+  <data name="TruckStatusSuccessAdded" xml:space="preserve">
+    <value>Se ha agregado con éxito un nuevo estado de camión</value>
+  </data>
+  <data name="TruckStatusNotAdded" xml:space="preserve">
+    <value>Error al agregar un nuevo estado de camión</value>
+  </data>
+  <data name="TruckLocation" xml:space="preserve">
+    <value>Agregar Ubicación de la Unidad</value>
+  </data>
+  <data name="AnnualIns" xml:space="preserve">
+    <value>INS ANUAL</value>
+  </data>
+  <data name="TruckLocationType" xml:space="preserve">
+    <value>Tipo de Ubicación</value>
+  </data>
+  <data name="MannuallyLocationType" xml:space="preserve">
+    <value>Ubicación Manualmente</value>
+  </data>
+  <data name="LaterLocationType" xml:space="preserve">
+    <value>Ubicación Más Tarde</value>
+  </data>
+  <data name="GPSLocationType" xml:space="preserve">
+    <value>Ubicación GPS</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Actualización</value>
+  </data>
+  <data name="TruckDocumentSuccessUpdated" xml:space="preserve">
+    <value>Documento actualizado correctamente</value>
+  </data>
+  <data name="TruckDocumentNotUpdated" xml:space="preserve">
+    <value>El documento no se pudo actualizar</value>
+  </data>
+  <data name="UploadDocument" xml:space="preserve">
+    <value>Subir Documento</value>
   </data>
 </root>

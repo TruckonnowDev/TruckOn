@@ -28,13 +28,14 @@ using WebDispacher.ViewModels.Dispatcher;
 using WebDispacher.ViewModels.Driver;
 using WebDispacher.ViewModels.Payment;
 using WebDispacher.ViewModels.RA.Carrier.Registration;
+using WebDispacher.ViewModels.Resources;
 
 namespace WebDispacher.Business.Services
 {
     public class CompanyService : ICompanyService
     {
         private readonly Context db;
-        private readonly IMapper mapper; 
+        private readonly IMapper mapper;
         private readonly StripeApi stripeApi;
         private readonly IUserService userService;
 
@@ -44,7 +45,7 @@ namespace WebDispacher.Business.Services
 
         public CompanyService(
             IMapper mapper,
-            Context db, 
+            Context db,
             IHttpContextAccessor httpContextAccessor,
             IUserService userService)
         {
@@ -58,7 +59,7 @@ namespace WebDispacher.Business.Services
         public async Task<Company> GetActiveUserCompanyByCompanyTypeUserId(string userId, CompanyType companyType)
         {
             var userCompany = await db.Companies.Include(c => c.CompanyUsers)
-                .FirstOrDefaultAsync(c => 
+                .FirstOrDefaultAsync(c =>
                     c.CompanyUsers
                         .FirstOrDefault(cu => cu.UserId == userId).CompanyId == c.Id && c.CompanyType == companyType);
 
@@ -83,6 +84,16 @@ namespace WebDispacher.Business.Services
                     Date = z.Date
                 })
                 .ToList();*/
+        }
+
+        public async Task<int> GetCountCompaniesByStatus(CompanyStatus status)
+        {
+            using (var context = new Context())
+            {
+                var countCompanies = await context.Companies.Where(c => c.CompanyStatus == status).CountAsync();
+
+                return countCompanies;
+            }
         }
 
         public async Task<bool> UploadCompanyRequiredDoc(
@@ -113,7 +124,7 @@ namespace WebDispacher.Business.Services
 
             return newUserMailQuestions;
         }
-        
+
         public async Task SetViewInUserMailQuestion(ViewUserMailQuestion model)
         {
             using (var context = new Context())
@@ -147,21 +158,21 @@ namespace WebDispacher.Business.Services
         {
             return GetDispatcherByKeyUsers(key);
         }
-        
+
         public List<Dispatcher> GetDispatchers(int idCompany)
         {
             return GetDispatchersDb(idCompany);
         }
-        
+
         public List<Company> GetCompanies()
         {
             return db.Companies.ToList();
         }
-        
+
         public async Task<CompanyViewModel> GetCompanyById(int id)
         {
             var companyViewModel = await GetCompanyByIdDb(id);
-            
+
             return companyViewModel ?? new CompanyViewModel();
         }
 
@@ -230,7 +241,7 @@ namespace WebDispacher.Business.Services
 
             return userQuestionWithAnswers;
         }
-        
+
         public async Task<List<UserMailQuestion>> GetUserQuestions()
         {
             var userQuestions = await db.UsersMailsQuestions.ToListAsync();
@@ -254,7 +265,7 @@ namespace WebDispacher.Business.Services
 
             return listUserQuestions;
         }
-        
+
         public async Task<List<UserMailQuestion>> GetUserQuestionsWithAnswers(int page)
         {
             var userQuestions = db.UsersMailsQuestions
@@ -271,7 +282,7 @@ namespace WebDispacher.Business.Services
 
             return listUserQuestions;
         }
-        
+
         public async Task<List<UserMailQuestion>> GetAllUserQuestions(int page)
         {
             var userQuestions = db.UsersMailsQuestions
@@ -301,7 +312,7 @@ namespace WebDispacher.Business.Services
 
             return countPages;
         }
-        
+
         public async Task<int> GetCountAnsweredUserQuestionsPages()
         {
             return await GetCountAnsweredUserQuestionsPagesInDb();
@@ -317,7 +328,7 @@ namespace WebDispacher.Business.Services
 
             return countPages;
         }
-        
+
         public async Task<int> GetCountAllUserQuestionsPages()
         {
             return await GetCountAllUserQuestionsPagesInDb();
@@ -348,7 +359,7 @@ namespace WebDispacher.Business.Services
 
             return entry;
         }
-        
+
         public async Task<List<UserMailQuestion>> GetUserQuestionsWithAnswers()
         {
             var userQuestions = await db.UsersMailsQuestions
@@ -392,9 +403,9 @@ namespace WebDispacher.Business.Services
 
                 return true;
             }
-            catch(Exception ex) 
-            { 
-                return false; 
+            catch (Exception ex)
+            {
+                return false;
             }
         }
 
@@ -422,13 +433,13 @@ namespace WebDispacher.Business.Services
         {
             return GetContactById(id);
         }
-        
+
         public string RefreshTokenDispatch(string idDispatch)
         {
             var token = GetHash();
-            
+
             RefreshTokenDispatchDb(idDispatch, token);
-            
+
             return token;
         }
 
@@ -438,7 +449,7 @@ namespace WebDispacher.Business.Services
 
             return dispatcherType;
         }
-        
+
         public void CreateDispatch(DispatcherViewModel model, int idCompany)
         {
             var dispatcher = new Dispatcher
@@ -451,21 +462,21 @@ namespace WebDispacher.Business.Services
             };
 
             db.Dispatchers.Add(dispatcher);
-            
+
             db.SaveChanges();
         }
-        
+
         public async Task DeleteContactById(int id)
         {
             var contact = await db.Contacts.FirstOrDefaultAsync(c => c.Id == id);
 
             if (contact == null) return;
-            
+
             db.Contacts.Remove(contact);
-            
+
             await db.SaveChangesAsync();
         }
-        
+
         public DispatcherViewModel GetDispatcherById(int idDispatch)
         {
             var dispatcher = db.Dispatchers.Include(d => d.DispatcherType).FirstOrDefault(d => d.Id == idDispatch);
@@ -481,17 +492,17 @@ namespace WebDispacher.Business.Services
                 Type = dispatcher.DispatcherType.Name
             };
         }
-        
+
         public void RemoveDispatchById(int idDispatch)
         {
             var dispatcher = db.Dispatchers.FirstOrDefault(d => d.Id == idDispatch);
             if (dispatcher == null) return;
-            
+
             db.Dispatchers.Remove(dispatcher);
-            
+
             db.SaveChanges();
         }
-        
+
         public async Task EditContact(ContactViewModel model, string localDate)
         {
             var dateTimeUpdate = DateTime.ParseExact(localDate, DateTimeFormats.FullDateTimeInfo, CultureInfo.InvariantCulture);
@@ -501,7 +512,7 @@ namespace WebDispacher.Business.Services
                 .FirstOrDefaultAsync(c => c.Id == model.Id);
 
             if (contactEdit == null) return;
-            
+
             contactEdit.Name = model.Name;
             contactEdit.Position = model.Position;
             contactEdit.Email = model.Email.ToLower();
@@ -511,10 +522,10 @@ namespace WebDispacher.Business.Services
             contactEdit.PhoneNumber.Iso2 = model.PhoneNumber.Iso2;
             contactEdit.Ext = model.Ext;
             contactEdit.DateTimeLastUpdate = dateTimeUpdate;
-            
+
             await db.SaveChangesAsync();
         }
-        
+
         public async Task EditCompany(CompanyViewModel model, string localDate)
         {
             if (model == null) return;
@@ -532,40 +543,40 @@ namespace WebDispacher.Business.Services
             companyEdit.PhoneNumber.Iso2 = model.PhoneNumber.Iso2;
             companyEdit.CompanyType = model.CompanyType;
             companyEdit.DateTimeLastUpdate = dateTimeUpdate;
-            
+
             await db.SaveChangesAsync();
         }
-        
+
         public void EditDispatch(DispatcherViewModel dispatcher)
         {
             var dispatcherEdit = db.Dispatchers.FirstOrDefault(d => d.Id == dispatcher.Id);
 
             if (dispatcherEdit == null) return;
-            
+
             dispatcherEdit.Login = dispatcher.Login;
             dispatcherEdit.Password = dispatcher.Password;
             //dispatcherEdit.DispatcherTypeId = dispatcher.Type;
-            
+
             db.SaveChanges();
         }
-        
+
         public ResponseStripe AddPaymentCard(string idCompany, CardViewModel card)
         {
             var responseStripe = stripeApi.CreatePaymentMethod(card.Number.Replace(" ", ""), card.Name, card.Expiry, card.Cvc);
 
             if (responseStripe == null || responseStripe.IsError) return responseStripe;
-            
+
             var paymentMethod = (Stripe.PaymentMethod)responseStripe.Content;
             var customerSt = GetCustomer_STByIdCompany(idCompany);
             responseStripe = stripeApi.AttachPayMethod(paymentMethod.Id, customerSt.IdCustomerST);
-                
+
             if (responseStripe != null && !responseStripe.IsError)
             {
                 responseStripe = stripeApi.SelectDefaultPaymentMethod(paymentMethod.Id, customerSt.IdCustomerST);
             }
 
             if (responseStripe == null || responseStripe.IsError) return responseStripe;
-            
+
             var isFirstPaymentMethodInCompany = CheckFirstPaymentMethodInCompany(idCompany);
             var paymentMethodSt = new DaoModels.DAO.Models.PaymentMethod()
             {
@@ -574,39 +585,39 @@ namespace WebDispacher.Business.Services
                 PaymentMethodSTId = paymentMethod.Id,
                 IsDefault = !isFirstPaymentMethodInCompany
             };
-            
+
             AddPaymentMethodSt(paymentMethodSt);
 
             return responseStripe;
         }
-        
+
         public void DeletePaymentMethod(string idPayment, string idCompany)
         {
             stripeApi.DeletePaymentMethod(idPayment);
             var idPaymentNewSelect = RemovePaymentMethod(idCompany, idPayment);
-            
+
             if (idPaymentNewSelect != null)
             {
                 SelectDefaultPaymentMethod(idPaymentNewSelect, idCompany);
             }
         }
-        
+
         public async Task<SubscribeST> GetSubscriptionIdCompany(string idCompany, ActiveType activeType = ActiveType.Active)
         {
             return await db.SubscribeST.FirstOrDefaultAsync(s => s.CustomerST.CompanyId.ToString() == idCompany && s.ActiveType == activeType);
         }
-        
+
         public ResponseStripe SelectDefaultPaymentMethod(string idPayment, string idCompany = null, CustomerST customer_ST = null)
         {
             if (customer_ST == null)
             {
                 customer_ST = GetCustomer_STByIdCompany(idCompany);
             }
-            
+
             var responseStripe = stripeApi.SelectDefaultPaymentMethod(idPayment, customer_ST.IdCustomerST);
 
             if (responseStripe == null || responseStripe.IsError) return responseStripe;
-            
+
             UnSelectPaymentMethod_ST(idCompany);
             SelectPaymentMethod_ST(idCompany, idPayment);
 
@@ -619,7 +630,7 @@ namespace WebDispacher.Business.Services
 
             return stripeApi.GetPaymentMethodsByCustomerST(customerSt.IdCustomerST);
         }
-        
+
         public List<DaoModels.DAO.Models.PaymentMethod> GetPaymentMethodsST(string idCompany)
         {
             return GetPaymentMethod_STsByIdCompany(idCompany);
@@ -628,21 +639,21 @@ namespace WebDispacher.Business.Services
         public async Task RemoveDocCompany(int docId)
         {
             var documentCompany = await db.DocumentsCompanies.FirstOrDefaultAsync(d => d.Id == docId);
-            
+
             if (documentCompany == null) return;
-            
+
             db.DocumentsCompanies.Remove(documentCompany);
 
             await db.SaveChangesAsync();
         }
-        
+
         public async Task<List<DocumentCompany>> GetCompanyDoc(string id)
         {
             if (!int.TryParse(id, out var companyId)) return new List<DocumentCompany>();
 
             return await db.DocumentsCompanies.Where(d => d.CompanyId == companyId).ToListAsync();
         }
-        
+
         public async Task CreateContact(ContactViewModel model, string companyId, string localDate)
         {
             if (!int.TryParse(companyId, out var result)) return;
@@ -674,7 +685,7 @@ namespace WebDispacher.Business.Services
             };
 
             await db.Contacts.AddAsync(contact);
-            
+
             await db.SaveChangesAsync();
         }
 
@@ -685,7 +696,7 @@ namespace WebDispacher.Business.Services
                 UserId = user.Id,
                 CompanyId = company.Id
             };
-            
+
             await db.CompanyUsers.AddAsync(companyUser);
             await db.SaveChangesAsync();
         }
@@ -770,50 +781,50 @@ namespace WebDispacher.Business.Services
             await db.SaveChangesAsync();
 
             var company = new Company()
-             {
-                 Name = model.Name,
+            {
+                Name = model.Name,
                 PhoneNumberId = phoneCompany.Id,
                 CompanyType = model.CompanyType,
-                 CompanyStatus = CompanyStatus.Active,
-                 DateTimeRegistration = DateTime.Now,
-                 DateTimeLastUpdate = DateTime.Now,
-             };
+                CompanyStatus = CompanyStatus.Active,
+                DateTimeRegistration = DateTime.Now,
+                DateTimeLastUpdate = DateTime.Now,
+            };
 
-             await db.Companies.AddAsync(company);
+            await db.Companies.AddAsync(company);
 
-             await db.SaveChangesAsync();
+            await db.SaveChangesAsync();
 
-             InitStripeForCompany(model.Name, model.Email, company.Id);
+            InitStripeForCompany(model.Name, model.Email, company.Id);
 
-             if (MCNumberConfirmation != null)
-             {
-                 await SaveDocCompany(MCNumberConfirmation, DocAndFileConstants.McNumber, company.Id, dateTimeLocal);
-             }
+            if (MCNumberConfirmation != null)
+            {
+                await SaveDocCompany(MCNumberConfirmation, DocAndFileConstants.McNumber, company.Id, dateTimeLocal);
+            }
 
-             if (IFTA != null)
-             {
-                 await SaveDocCompany(IFTA, DocAndFileConstants.Ifta, company.Id, dateTimeLocal);
-             }
+            if (IFTA != null)
+            {
+                await SaveDocCompany(IFTA, DocAndFileConstants.Ifta, company.Id, dateTimeLocal);
+            }
 
-             if (KYU != null)
-             {
-                 await SaveDocCompany(KYU, DocAndFileConstants.Kyu, company.Id, dateTimeLocal);
-             }
+            if (KYU != null)
+            {
+                await SaveDocCompany(KYU, DocAndFileConstants.Kyu, company.Id, dateTimeLocal);
+            }
 
-             if (logbookPapers != null)
-             {
-                 await SaveDocCompany(logbookPapers, DocAndFileConstants.LogbookPapers, company.Id, dateTimeLocal);
-             }
+            if (logbookPapers != null)
+            {
+                await SaveDocCompany(logbookPapers, DocAndFileConstants.LogbookPapers, company.Id, dateTimeLocal);
+            }
 
-             if (COI != null)
-             {
-                 await SaveDocCompany(COI, DocAndFileConstants.Coi, company.Id, dateTimeLocal);
-             }
+            if (COI != null)
+            {
+                await SaveDocCompany(COI, DocAndFileConstants.Coi, company.Id, dateTimeLocal);
+            }
 
-             if (permits != null)
-             {
-                 await SaveDocCompany(permits, DocAndFileConstants.Permits, company.Id, dateTimeLocal);
-             }
+            if (permits != null)
+            {
+                await SaveDocCompany(permits, DocAndFileConstants.Permits, company.Id, dateTimeLocal);
+            }
 
             return company;
         }
@@ -827,7 +838,7 @@ namespace WebDispacher.Business.Services
 
             return new List<Contact>();
         }
-        
+
         public async Task<List<ContactViewModel>> GetContactsViewModels(int page, string idCompany)
         {
             return await GetContactsViewModelInDb(page, idCompany);
@@ -904,7 +915,7 @@ namespace WebDispacher.Business.Services
                     }
                 case NavConstants.NormalCompany when company.CompanyStatus == CompanyStatus.Active:
                     {
-                        typeNavBar = NavConstants.NormalCompany; 
+                        typeNavBar = NavConstants.NormalCompany;
                         break;
                     }
             }
@@ -944,22 +955,22 @@ namespace WebDispacher.Business.Services
 
             return subscriptions;
         }
-        
+
         public async Task<string> SelectSub(string priceId, string companyId, string priodDays)
         {
             var errorStr = string.Empty;
             var customerSt = GetCustomer_STByIdCompany(companyId);
             var subscribeSt = await GetSubscriptionIdCompany(companyId);
             var responseStripe = stripeApi.GetSubscriptionSTById(subscribeSt.SubscribeSTId);
-            
-            if(!responseStripe.IsError)
+
+            if (!responseStripe.IsError)
             {
                 var subscription = responseStripe.Content as Stripe.Subscription;
-                
-                if(subscription.Status == DriverConstants.Canceled)
+
+                if (subscription.Status == DriverConstants.Canceled)
                 {
                     responseStripe = stripeApi.CreateSupsctibe(priceId, customerSt);
-                    
+
                     if (!responseStripe.IsError)
                     {
                         UpdateTypeInactiveByIdCompany(companyId);
@@ -976,19 +987,19 @@ namespace WebDispacher.Business.Services
                     {
                         errorStr = responseStripe.Message;
                     }
-                    
+
                     return errorStr;
                 }
-                
+
                 stripeApi.UpdateSubscribeCancelAtPeriodEnd(subscription.Id, true);
                 var subscribeStNext = await GetSubscriptionIdCompany(companyId, ActiveType.NextActive);
-                
+
                 if (subscribeStNext != null)
                 {
                     stripeApi.CanceleSubscribe(subscribeStNext.SubscribeSTId);
                     UpdateTypeActiveSubById(subscribeStNext.Id, ActiveType.Inactive);
                 }
-                
+
                 subscribeStNext = new SubscribeST();
                 var subscriptionNext = stripeApi.CreateSupsctibeNext(customerSt.IdCustomerST, priceId, priodDays, subscription.CurrentPeriodEnd);
                 subscribeStNext.CustomerST.IdCustomerST = subscriptionNext.CustomerId;
@@ -996,15 +1007,70 @@ namespace WebDispacher.Business.Services
                 subscribeStNext.CustomerST.CompanyId = Convert.ToInt32(companyId);
                 //subscribeStNext.Status = subscriptionNext.Status;
                 subscribeStNext.ActiveType = ActiveType.NextActive;
-                
+
                 SaveSubscribeSt(subscribeStNext);
             }
             else
             {
                 errorStr = responseStripe.Message;
             }
-            
+
             return errorStr;
+        }
+
+        public async Task<ResourceViewModel> GetResourceById(int id)
+        {
+            using (var context = new Context()) 
+            {
+                var resource = await context.Resources.FirstOrDefaultAsync(r => r.Id == id);
+
+                return mapper.Map<ResourceViewModel>(resource);
+            }
+        }
+        
+        public async Task<List<ResourceViewModel>> GetAllResources()
+        {
+            using (var context = new Context()) 
+            {
+                var resources = await context.Resources.OrderBy(r => r.PositionIndex).ToListAsync();
+
+                return mapper.Map<List<ResourceViewModel>>(resources);
+            }
+        }
+
+        public async Task<ResourceViewModel> EditResource(ResourceViewModel model, string localDate)
+        {
+            using (var context = new Context())
+            {
+                var actualResource = await context.Resources.FirstOrDefaultAsync(r => r.Id == model.Id);
+                
+                if (actualResource == null) { return null; }
+
+                actualResource.Title = model.Name;
+                actualResource.Description = model.Description;
+
+                await context.SaveChangesAsync();
+
+                return mapper.Map<ResourceViewModel>(actualResource);
+            }
+        }
+        
+        public async Task UpdatePositionResources(List<ResourceViewModel> updates)
+        {
+            using (var context = new Context())
+            {
+                foreach(var update in updates) 
+                {
+                    var actualResource = await context.Resources.FirstOrDefaultAsync(r => r.Id == update.Id);
+
+                    if (actualResource != null)
+                    {
+                        actualResource.PositionIndex = update.PositionIndex;
+                    }
+                }
+
+                context.SaveChanges();
+            }
         }
 
         public async Task CancelSubscriptionsNext(string companyId)
@@ -1078,9 +1144,9 @@ namespace WebDispacher.Business.Services
 
         private int GetCountPage(int countElements, int countElementsInOnePage)
         {
-            var countPages = (countElements / countElementsInOnePage) % countElementsInOnePage;
+            var countPages = (countElements / countElementsInOnePage) + ((countElements % countElementsInOnePage) > 0 ? 1 : 0);
 
-            return countPages > 0 ? countPages + 1 : countPages;
+            return countPages;
         }
 
         private async Task<int> GetCountCompaniesPagesInDb()

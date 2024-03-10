@@ -1,5 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization;
 
+@model List<WebDispacher.ViewModels.Resources.ResourceViewModel>
+
 @inject IViewLocalizer Localizer
 
 @{
@@ -15,49 +17,15 @@
                 </div>
                 <div class="col-md-10 mt-5">
                     <div class="features" style="display: flex;flex-flow: row wrap;justify-content: center;">
-                        <div class="features-item m-2 mt-4">
-                            <a href="Resources/Eldservice">
-                                <img src="img/Main/Features/ELDService.svg" alt="">
-                                <h3>@Localizer["ELDSerivce"]</h3>
-                            </a>
-                        </div>
-                        
-                        <div class="features-item m-2 mt-4">
-                            <a href="Resources/InsuranceProviders">
-                                <img src="img/Main/Features/DriverCheck.svg" alt="">
-                                <h3>@Localizer["InsuranceProviders"]</h3>
-                            </a>
-                        </div>
-                        <div class="features-item m-2 mt-4">
-                            <a href="Resources/LegalHelp">
-                                <img src="img/Main/Features/LegalSupport.svg" alt="">
-                                <h3>@Localizer["LegalHelp"]</h3>
-                            </a>
-                        </div>
-                        <div class="features-item m-2 mt-4">
-                            <a href="Resources/ComplianceSafety">
-                                <img src="img/Main/Features/CompanyRating.svg" alt="">
-                                <h3>@Localizer["ComplianceSafety"]</h3>
-                            </a>
-                        </div>
-                        <div class="features-item m-2 mt-4">
-                            <a href="Resources/MechanicalShops">
-                                <img src="img/Main/Features/RepairLocator.svg" alt="">
-                                <h3>@Localizer["MechanicalShops"]</h3>
-                            </a>
-                        </div>
-                        <div class="features-item m-2 mt-4">
-                            <a href="Resources/BodyShops">
-                                <img src="img/Main/Features/Tracking.svg" alt="">
-                                <h3>@Localizer["BodyShops"]</h3>
-                            </a>
-                        </div>
-                        <div class="features-item m-2 mt-4">
-                            <a href="Resources/TruckTrailerRepair">
-                                <img src="img/Main/Features/TicketContest.svg" alt="">
-                                <h3>@Localizer["TruckTrailerRepair"]</h3>
-                            </a>
-                        </div>
+                        @foreach(var item in Model)
+                        {
+                            <div class="features-item m-2 mt-4">
+                                <a href="Resources/@item.Id">
+                                    <img src="@item.UrlPicture" alt="">
+                                    <h3>@item.Name</h3>
+                                </a>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>

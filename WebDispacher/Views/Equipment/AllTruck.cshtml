@@ -1,181 +1,828 @@
-﻿@using Microsoft.AspNetCore.Mvc.Localization
+﻿@using DaoModels.DAO.Models;
+@using Microsoft.AspNetCore.Mvc.Localization
+@using WebDispacher.ViewModels.Truck;
+@using WebDispacher.ViewModels.Truck.Enum;
 
-@model List<DaoModels.DAO.Models.Truck>
+@model TruckShortVmList
 
 @inject IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = "All Trucks";
 }
-
+<link rel="stylesheet" href="~/css/Marketplace/Marketplace.css">
 <body>
-    <div class="admin">
-        <div class="container">
+    <div class="admin" style="margin-top: 20px;">
+        <div class="equipment">
             <div class="row">
+                <div class="equipment-nav" id="fixedContent">
+                    <div class="col-md-12 equipment-nav-item" style="margin-top: 10px;">
+                        <div class="title" style="display: flex; justify-content: space-between">
+                            <div class="title">
+                                <h1>@Localizer["Header"]</h1>
+                                <button style="margin-right: 30px;" class="btn1" onclick="checkAndRedirect('@Url.Action("CreateTruck", "Equipment")');">@Localizer["AddTruck"]</button>
+                            </div>
+                            <div id="widgetBlock">
+                                @await Html.PartialAsync("PartView/_TruckWidgets.cshtml", Model.Widgets)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 equipment-nav-item">
+                        <form method="get" id="filterForm" action="/Equipment/Trucks">
+                            <input type="hidden" asp-for="Filters.Page" value="@Model.Filters.Page" />
+                            <input type="hidden" asp-for="Filters.TrucksFiltersViewModels" value="@Model.Filters.TrucksFiltersViewModels" />
+                            <input type="hidden" asp-for="Filters.GroupId" value="@Model.Filters.GroupId" />
+                        </form>
+                    </div>
+                    <div class="col-md-12 equipment-nav-item">
+                        <div>
+                            <div id="tabs">
+                                <div class="tab whiteborder" onclick="window.location.href='@Url.Action("Trucks", "Equipment")';">@Localizer["Trucks"]</div>
+                                <div class="tab" onclick="window.location.href='@Url.Action("Trailers", "Equipment")';">@Localizer["Trailers"]</div>
+                            </div>
+                        </div>
+
+                        <div class="sort" id="sort-block" style="margin-top: 20px;justify-content:start;gap:18px">
+                            <button id="add-new-group" style="padding: 0 12px">
+                                <i class="bi bi-plus" style="font-size: 28px; font-weight: 600;"></i>
+                            </button>
+                            @foreach (var item in Model.Filters.AvailableGroups)
+                            {
+                                <button class="sort-button" data-sort-type="@item.Id">
+                                    <span class="name">@item.Name</span>
+                                    <span class="count-trucks">( @item.Trucks.Count() )</span>
+                                </button>
+                            }
+                        </div>
+                    </div>
+                    <div class="col-md-12 under-border-block equipment-nav-item">
+                    </div>
+                </div>
                 <div class="col-md-12">
-                    <div class="title">
-                        <h1>@Localizer["Header"]</h1>
-                        <button class="btn1" onclick="window.location.href='@Url.Action("CreateTruck", "Equipment")';">@Localizer["AddTruck"]</button>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div>
-                    <div id="tabs">
-                        <div class="tab whiteborder" onclick="window.location.href='@Url.Action("Trucks", "Equipment")';">@Localizer["Trucks"]</div>
-                        <div class="tab" onclick="window.location.href='@Url.Action("Trailers", "Equipment")';">@Localizer["Trailers"]</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="tabs">
-        <div class="tabContent">
-            <table class="truck-trailer-tab" style="width: auto;margin-left: auto; margin-right: auto;">
-                <thead>
-                    <tr>
-                        <th>@Localizer["Name"]</th>
-                        <th>@Localizer["Year"]</th>
-                        <th>@Localizer["Make"]</th>
-                        <th>@Localizer["Model"]</th>
-                        <th>@Localizer["Type"]</th>
-                        <th>@Localizer["Vin"] #</th>
-                        <th>@Localizer["Plate"]#</th>
-                        <th style="white-space: pre;">@Localizer["PlateExp"]</th>
-                        <th>@Localizer["State"]</th>
-                        <th>@Localizer["Color"]</th>
-                        <th style="padding: 10px 0;">@Localizer["Owner"]</th>
-                        <th style="width: 60px"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @for (int i = 0; i < Model.Count; i++)
-                    {
-                        <tr>
-                            <td aria-label="@Localizer["Name"]">
-                                    <div class="value-td">@Model[i].Name</div>
-                                </td>
-                            <td aria-label="@Localizer["Year"]">
-                                    @{
-                                        string yearString = Model[i].Year != 0
-                                        ? Model[i].Year.ToString()
-                                        : string.Empty;
-                                    }
-                                    <div class="value-td">@yearString</div>
-                                    </td>
-                            <td aria-label="@Localizer["Make"]">
-                                    <div class="value-td">@Model[i].Brand</div>
-                                </td>
-                            <td aria-label="@Localizer["Model"]">
-                                    <div class="value-td">@Model[i].Model</div>
-                                </td>
-                            <td aria-label="@Localizer["Type"]">
-                                    @* @{
-                                        var typeValue = Model[i].Type;
-                                        switch (Model[i].Type)
-                                        {
-                                            case "2DrPickupwithSingleWheel":
-                                                typeValue = "2Dr Pickup with Single Wheel";
-                                                break;
-                                            case "2DrPickupwithDuallyWheels":
-                                                typeValue = "2Dr Pickup with Dually Wheels";
-                                                break;
-                                            case "4DrCrewCabPickupwithSingleWheel":
-                                                typeValue = "4Dr Crew Cab Pickup with Single Wheel";
-                                                break;
-                                           case "4DrCrewCabPickupwithDuallyWheels":
-                                                typeValue = "4Dr Crew Cab Pickup with Dually Wheels";
-                                                break;
-                                            case "2DrPickupPickupwithSingleWheel":
-                                                typeValue = "2Dr Pickup ( flat bed ) Pickup with Single Wheel";
-                                                break;
-                                            case "2DrPickupPickupwithDuallyWheels":
-                                                typeValue = "2Dr Pickup ( flat bed ) Pickup with  Dually Wheels";
-                                                break;
-                                            case "4DrCrewCabPickupwithSingleWheelFlatBed":
-                                                typeValue = "4Dr Crew Cab ( flat bed ) Pickup with Single Wheel";
-                                                break;
-                                            case "4DrCrewCabPickupwithDuallyWheelsFlatBed":
-                                                typeValue = "4Dr Crew Cab ( flat bed ) Pickup with  Dually Wheels";
-                                                break;
-                                        }
-                                        <div class="value-td">@typeValue</div>
-                                    } *@
-                                    <div class="value-td">@Model[i]?.TruckType?.Name</div>
-                                </td>
-                            <td aria-label="@Localizer["Vin"] #">
-                                    <div class="value-td">@Model[i].VIN</div>
-                                </td>
-                            <td aria-label="@Localizer["Plate"]#">
-                                    <div class="value-td">@Model[i].Plate</div>
-                                </td>
-                            <td aria-label="@Localizer["PlateExp"]">
-                                @{
-                                        string plateExpiresString = Model[i].PlateExpires.HasValue
-                                        ? Model[i].PlateExpires.Value.ToString("MM/yy")
-                                        : "N/A";
+                    <div class="tables">
+                        <div id="tabs" style="margin: 0 auto">
+                            <div class="tabContent all-trucks" style="margin-top: 0;">
+                                @foreach (var item in Model.Items)
+                                {
+                                    var localTrucks = item.Value;
+
+                                    var localFilters = localTrucks == null || localTrucks.Count == 0 ? new TruckFilterViewModel { GroupId = item.Key.Id } : Model.Filters.TrucksFiltersViewModels.FirstOrDefault(tfv => tfv.GroupId == localTrucks.First().TruckGroupId) ?? new TruckFilterViewModel { GroupId = item.Key.Id };
+                                    <div class="table-truck-container" id="table_block_@localFilters.GroupId" data-group-id="@localFilters.GroupId">
+                                        @await Html.PartialAsync("PartView/_TruckTable.cshtml", (item.Key, localFilters, item.Value))
+                                    </div>
                                 }
-                                <div class="value-td">@plateExpiresString</div>
-                                </td>
-                            <td aria-label="@Localizer["State"]">
-                                    <div class="value-td">@Model[i].State</div>
-                                </td>
-                            <td aria-label="@Localizer["Color"]">
-                                    <div class="value-td">@Model[i].Color</div>
-                                    </td>
-                            <td aria-label="@Localizer["Owner"]">
-                                    <div class="value-td">@Model[i].Owner</div>
-                                </td>
-                            <td class="input-img mt-3 mb-3">
-                                <div class="td-click-img-margin">
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                                        <div data-title="@Localizer["ViewNotificataion"]" class="ico-doc ico-doc-view" onclick="document.location.href = '@ViewBag.BaseUrl/Driver/InspactionTrucks?driverId=0&truckId='+@Model[i].Id+'&trailerId=0&date=0';">
-                                            <i class="bi bi-cursor-fill" style="color: #4caf50; font-size:20px"></i>
-                                        </div>
-                                    @*<img src="~/img/arrow.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Driver/InspactionTrucks?idDriver=0&idTruck='+@ViewBag.Trucks[i].Id+'&idTrailer=0&date=0';" />*@
-
-                                        <div data-title="@Localizer["EditTruckNotificataion"]" class="ico-doc ico-doc-edit" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/EditTruck?truckId='+@Model[i].Id">
-                                            <i class="bi bi-pencil-square" style="color: #ff9800; font-size:20px"></i>
-                                        </div>
-                                    @*<img src="~/img/pen.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/EditTruck?idTruck='+@ViewBag.Trucks[i].Id;">*@
-
-                                        <div data-title="@Localizer["CustomizeNotificataion"]" class="ico-doc ico-doc-settings" onclick="document.location.href = '@ViewBag.BaseUrl/Settings/Get?idTr=@Model[i].Id&page=s&idProfile=0&typeTransport=Truck'">
-                                            <i class="bi bi-gear-fill" style="color: #a3644d; font-size:20px"></i>
-                                        </div>
-                                    @*<img src="~/img/setting.svg" alt="" onclick="window.location.href='@ViewBag.BaseUrl/Settings?idTr=@ViewBag.Trucks[i].Id&page=s&idProfile=0&typeTransport=Truck'">*@
-                                        <div data-title="@Localizer["DocNotificataion"]" class="ico-doc ico-doc-documents" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/Truck/Doc?id='+@Model[i].Id;">
-                                            <i class="bi bi-file-earmark-medical-fill" style="color: #3f51b5; font-size:20px"></i>
-                                        </div>
-                                        
-                                    @*<img src="~/img/doc.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/Truck/Doc?id='+@ViewBag.Trucks[i].Id;">*@
-                                        <div data-title="@Localizer["DeleteNotificataion"]" class="ico-doc ico-doc-delete open-ConfirmDelete" data-toggle="modal" data-id="@Model[i].Id" href="#confirmDeleteEntryModal">
-                                            <i class="bi bi-x-lg" style="color: #f44336; font-size:20px"></i>
-                                        </div>
-                                    @*<img src="~/img/delet.svg" alt="" onclick="document.location.href = '@ViewBag.BaseUrl/Equipment/Truck/Remove?id='+@ViewBag.Trucks[i].Id;">*@
-                                </div>
-                            </td>
-                        </tr>
-                    }
-
-                </tbody>
-            </table>
-            <pagination-list actual-pages="functions.GetPages(ViewBag.SelectedPage, ViewBag.CountPages)" selected-page="ViewBag.SelectedPage" />
             </div>
+
+            @await Html.PartialAsync("~/Views/PartView/Modals/ConfirmDelete.cshtml", new ViewDataDictionary(ViewData) { {"ModalId", "confirmDeleteEntryModal"},})
+            @await Html.PartialAsync("~/Views/PartView/Modals/ConfirmDelete.cshtml", new ViewDataDictionary(ViewData) { {"ModalId", "confirmDeleteGroupModal"}, { "ConfirmMessage", "DeleteTruckGroup"} })
+            @await Html.PartialAsync("~/Views/PartView/Modals/Equipment/RenameGroup.cshtml", new TruckGroupDropdownVm())
         </div>
     </div>
-    @await Html.PartialAsync("~/Views/PartView/Modals/ConfirmDelete.cshtml", new ViewDataDictionary(ViewData) { {"ModalId", "confirmDeleteEntryModal"},});
+    <div id="modalTruckGroupFormContainer"></div>
+    <div id="modalCreateWidgetFormContainer"></div>
+    <div id="modalEditWidgetFormContainer"></div>
 </body>
 
-<script>
-    ConfirmRemoveEntry(GetDateTimeInFormat(new Date()), `/Equipment/Truck/Remove`, `/Equipment/Trucks`, '#confirmDeleteEntryModal');
-
-     $(document).ready(function () {
-        ShowAlert();
-     });
-
-</script>
-
 <style>
-    img {
-        float: left;
+    th.active-sort {
+        background: #dbdbdb;
+    }
+
+    th a {
+        text-decoration: none;
+        color: black;
+    }
+
+    th.active-sort a {
+        text-decoration: none;
+        color: black;
+    }
+
+    th.active-sort i {
+        color: #7b7b7b;
+    }
+
+    .value-td .badge {
+        font-size: 14px;
+        font-weight: 600;
+        padding: 0.3rem 0.6rem 0.3rem 0.6rem;
+    }
+
+    .admin #tabs .tabContent {
+        gap: 0px;
+    }
+
+    .under-border-block {
+        margin-top: 20px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.15);
     }
 </style>
+<script>
+    function updateWidgets(){
+        $.ajax({
+            url: '@Url.Action("GetTruckWidgetsInCompany", "Equipment")',
+            type: 'GET',
+            success: function (result) {
+                $("#widgetBlock").html(result);
+            },
+            error: function () {
+            }
+        });
+    }
+
+    window.addEventListener('DOMContentLoaded', function () {
+        synchronizeWidth();
+
+        window.addEventListener('resize', synchronizeWidth);
+    });
+
+    function synchronizeWidth() {
+        var elements = document.getElementsByClassName('tables');
+
+        for (var i = 0; i < elements.length; i++) {
+            var parentElement = elements[i].parentElement;
+
+            if (parentElement && parentElement.classList.contains('parentClass')) {
+                var referenceElement = elements[i];
+
+                var targetElement = document.getElementById('targetElement');
+
+                if (referenceElement && targetElement) {
+                    targetElement.style.width = getComputedStyle(referenceElement).width;
+                }
+                break;
+            }
+        }
+    }
+</script>
+
+
+<script>
+    function ConfirmRemoveWidgetEntry(id) {
+        var body = {
+            id: id,
+        };
+
+        $.ajax({
+            type: "post",
+            async: true,
+            data: body,
+            url: '@Url.Action("RemoveTruckWidget", "Equipment")',
+            dataType: 'json',
+            success: function (result) {
+                if (result) {
+                    updateWidgets();
+                    SuccessAlert('@Localizer["MessageSuccessRemoveTruckWidget"]');
+                } else {
+                    WarningAlert('@Localizer["MessageErrorRemoveTruckWidget"]');
+                }
+                $('#editWidget').modal('hide');
+            },
+            error: function (result) {
+                ErrorAlert('@Localizer["MessageErrorRequestRemoveTruckWidget"]');
+                $('#editWidget').modal('hide');
+            },
+        });
+    }
+    
+    document.addEventListener("DOMContentLoaded", adjustPadding);
+
+    function adjustPadding() {
+        var container = document.getElementById("sort-block");
+        var buttons = container.querySelectorAll("button[data-sort-type]");
+        var addButton = document.getElementById("add-new-group");
+        var containerWidth = container.offsetWidth;
+        if (containerWidth >= 995) {
+            var baseFontSize = 12;
+            var minFontSize = 11;
+            var maxFontSize = 13;
+            var maxPadding = 14;
+            var minPadding = 8;
+            buttons.forEach(function (button) {
+                button.style.padding = "8px " + maxPadding + "px";
+                button.style.fontSize = baseFontSize + "px";
+            });
+            function allButtonsFit() {
+                var totalWidth = addButton.offsetWidth
+                buttons.forEach(function (button) {
+                    totalWidth += button.offsetWidth;
+                });
+                totalWidth += buttons.length * 18;
+                console.log(totalWidth);
+                console.log(totalWidth <= containerWidth);
+                return totalWidth <= containerWidth;
+            }
+            while (!allButtonsFit() && (maxFontSize >= minFontSize || maxPadding >= minPadding)) {
+                if (maxPadding >= minPadding) {
+                    maxPadding--;
+                } else if (maxFontSize >= minFontSize) {
+                    maxFontSize--;
+                    maxPadding = 14;
+                }
+
+                buttons.forEach(function (button) {
+                    button.style.padding = "8px " + Math.max(minPadding, maxPadding) + "px";
+                    button.style.fontSize = Math.max(minFontSize, maxFontSize) + "px";
+                });
+            }
+        }
+    }
+
+    const sortButtons = document.querySelectorAll('button[data-sort-type]');
+
+    sortButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const targetElementId = 'Table_' + button.getAttribute('data-sort-type');
+            const targetElement = document.getElementById(targetElementId);
+
+            if (targetElement) {
+                const fixedContentHeight = document.getElementById('fixedContent').offsetHeight;
+                const targetElementTop = targetElement.getBoundingClientRect().top + window.scrollY;
+
+                const offset = targetElementTop - fixedContentHeight;
+
+                $("html, body").animate({ scrollTop: offset }, 500);
+            }
+        });
+    });
+
+    ConfirmRemoveEntryTruck(GetDateTimeInFormat(new Date()), `/Equipment/Truck/Remove`, `/Equipment/Trucks`, '#confirmDeleteEntryModal');
+    ConfirmRemoveGroupEntry(GetDateTimeInFormat(new Date()), `/Equipment/TruckGroup/Remove`, `/Equipment/Trucks`, '#confirmDeleteGroupModal');
+    ConfirmRenameGroupEntry(GetDateTimeInFormat(new Date()), `/Equipment/TruckGroup/Rename`, `/Equipment/Trucks`, '#renameGroup');
+
+    $(document).on("click", "#add-new-group", function () {
+        var returnUrl = '@Context.Request.Path' + '@Context.Request.QueryString';
+        var modalContainer = $('#modalTruckGroupFormContainer');
+
+        if (modalContainer.length === 0 || modalContainer.html().trim() === '') {
+            modalContainer.load('@Url.Action("GetCreateTruckGroupForm", "Equipment")?returnUrl=' + encodeURIComponent(returnUrl), function () {
+                $("#addFirstGroup").modal('show');
+            });
+        }
+        else {
+            $("#addFirstGroup").modal('show');
+        }
+    });
+
+    function checkAndRedirect(url) {
+        var returnUrl = '@Context.Request.Path' + '@Context.Request.QueryString';
+        var modalContainer = $('#modalTruckGroupFormContainer');
+
+        $.ajax({
+            url: '@Url.Action("IsHaveTruckGroup", "Equipment")',
+            type: 'POST',
+            data: {
+            },
+            success: function (result) {
+                if (result.canProceed) {
+                    window.location.href = url;
+                } else {
+                    if (modalContainer.length === 0 || modalContainer.html().trim() === '') {
+                        modalContainer.load('@Url.Action("GetCreateTruckGroupForm", "Equipment")?returnUrl=' + encodeURIComponent(returnUrl), function () {
+                            $("#addFirstGroup").modal('show');
+                        });
+                    }
+                    else {
+                        $("#addFirstGroup").modal('show');
+                    }
+                }
+            },
+            error: function () {
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        syncColumnWidths();
+        ShowAlert();
+    });
+
+    function ConfirmRemoveGroupEntry(actualDate, requestUrl, responseUrl, modalSelector) {
+        $(document).on("click", ".open-RemoveGroup", function () {
+            var entryId = $(this).data('id');
+            var modalSelectorr = $($(this).data('modal-selector'));
+            modalSelectorr.off("click", "#remove-entry-button");
+
+            modalSelectorr.on("click", "#remove-entry-button", function () {
+                var body = {
+                    id: entryId,
+                    localDate: actualDate,
+                };
+
+                var currentModalSelector = modalSelector;
+                $.ajax({
+                    type: "get",
+                    async: true,
+                    data: body,
+                    url: requestUrl,
+                    dataType: 'json',
+                    success: function (result) {
+                        if (result) {
+                            SuccessAlert('@Localizer["MessageSuccessRemoveGroup"]');
+                            var currentGroup = "@Model.Filters.GroupId";
+                            if (currentGroup === `${entryId}`) {
+                                document.querySelector('#filterForm input[name="Filters.GroupId"]').value = 0;
+                                document.getElementById('filterForm').submit();
+                            }
+                            else {
+                                var buttonToChange = $(`#sort-block button[data-sort-type="${entryId}"]`);
+
+                                if (buttonToChange.length > 0) {
+                                    buttonToChange.remove();
+                                }
+
+                                var block = $("#table_block_" + entryId).remove();
+                            }
+                        } else {
+                            WarningAlert('@Localizer["MessageErrorRemoveGroup"]');
+                        }
+                        $(currentModalSelector).modal('hide');
+                    },
+                    error: function (result) {
+                        ErrorAlert('@Localizer["MessageErrorRequestRemoveGroup"]');
+                        $(currentModalSelector).modal('hide');
+                    },
+                });
+            });
+        });
+    }
+
+    function ConfirmRenameGroupEntry(actualDate, requestUrl, responseUrl, modalSelector) {
+        $(document).on("click", ".open-RenameGroup", function () {
+            var entryId = $(this).data('id');
+            var groupName = $(this).data('group-name');
+
+            document.getElementById('groupId').value = entryId;
+            document.getElementById('groupName').value = groupName;
+        });
+
+        $('#renameGroup').on('submit', function (event) {
+            event.preventDefault();
+
+            $.ajax({
+                type: "get",
+                async: true,
+                data: $('#renameGroup form').serialize(),
+                url: requestUrl,
+                dataType: 'json',
+                success: function (result) {
+                    var entryId = document.getElementById('groupId').value;
+                    var newGroupName = document.getElementById('groupName').value;
+                    if (result) {
+                        SuccessAlert('@Localizer["MessageSuccessRenameGroup"]');
+
+                        var buttonToChange = $(`#sort-block button[data-sort-type="${entryId}"]`);
+
+                        if (buttonToChange.length > 0) {
+                            buttonToChange.find('.name').text(newGroupName);
+                        }
+
+                        var blockId = `table_block_${entryId}`;
+                        var upArrowIcon = $('#' + blockId + ' i.bi-caret-up-fill');
+                        var downArrowIcon = $('#' + blockId + ' i.bi-caret-down-fill');
+
+                        let filter;
+
+                        if (upArrowIcon.length > 0) {
+                            filter = upArrowIcon;
+                        } else if (downArrowIcon.length > 0) {
+                            filter = downArrowIcon;
+                        }
+
+                        if (filter !== undefined && filter.length > 0) {
+
+                            var aElement = filter.closest('th').find('a');
+                            var currentSortField = aElement.data('sortfield');
+
+                            var currentSortType = aElement.data('sorttype');
+
+                            currentSortType = (currentSortType === 'Ascending') ? 'Descending' : 'Ascending';
+
+                            var url = '@Url.Action("GetTrucksInGroupByFilters", "Equipment")' + '?groupId=' + entryId + '&sortField=' + currentSortField + ' &sortType=' + currentSortType;
+
+                            $.get(url, function (data) {
+                                $('#tabs .tabContent #table_block_' + entryId).html(data);
+
+                                $('#Table_' + entryId + ' th').removeClass('active - sort asc desc').find('i').remove();
+
+                                var thElement = $('#Table_' + entryId + ' a[data-sortfield="' + currentSortField + '"]').closest('th');
+
+                                if (currentSortType === 'Ascending') {
+                                    thElement.append('<i class="bi bi-caret-down-fill"></i>');
+                                } else {
+                                    thElement.append('<i class="bi bi-caret-up-fill"></i>');
+                                }
+
+                                thElement.addClass('active-sort ' + currentSortType);
+                            });
+                        }
+                        else {
+                            var url = '@Url.Action("GetTrucksInGroupByFilters", "Equipment")' + '?groupId=' + entryId;
+
+                            $.get(url, function (data) {
+                                $('#tabs .tabContent #table_block_' + entryId).html(data);
+
+                                $('#Table_' + entryId + ' th').removeClass('active - sort asc desc').find('i').remove();
+                            });
+                        }
+                    } else {
+                        WarningAlert('@Localizer["MessageErrorRenameGroup"]');
+                    }
+                    $(modalSelector).modal('hide');
+                },
+                error: function (result) {
+                    ErrorAlert('@Localizer["MessageErrorRequestRenameGroup"]');
+                    $(modalSelector).modal('hide');
+                },
+            });
+        });
+    }
+
+    function ConfirmRemoveEntryTruck(actualDate, requestUrl, responseUrl, modalSelector) {
+        $(document).on("click", ".open-RemoveTruck", function () {
+            var entryId = $(this).data('id');
+            var modalSelectorr = $($(this).data('modal-selector'));
+            var blockId = $(this).closest('.table-truck-container').attr('data-group-id');
+
+            modalSelectorr.off("click", "#remove-entry-button");
+
+            modalSelectorr.on("click", "#remove-entry-button", function () {
+                var body = {
+                    id: entryId,
+                    localDate: actualDate,
+                };
+
+                $.ajax({
+                    type: "post",
+                    async: true,
+                    data: body,
+                    url: requestUrl,
+                    success: function (result) {
+                        if (result) {
+                            SuccessAlert('@Localizer["MessageSuccessRemoveTruck"]');
+
+                            var upArrowIcon = $('#table_block_' + blockId + ' i.bi-caret-up-fill');
+
+                            var downArrowIcon = $('#table_block_' + blockId + ' i.bi-caret-down-fill');
+
+                            let filter;
+
+                            if (upArrowIcon.length > 0) {
+                                filter = upArrowIcon;
+                            } else if (downArrowIcon.length > 0) {
+                                filter = downArrowIcon;
+                            }
+
+                            if (filter !== undefined && filter.length > 0) {
+
+                                var aElement = filter.closest('th').find('a');
+
+                                var currentSortField = aElement.data('sortfield');
+
+                                var currentSortType = aElement.data('sorttype');
+
+                                currentSortType = (currentSortType === 'Ascending') ? 'Descending' : 'Ascending';
+
+                                var url = '@Url.Action("GetTrucksInGroupByFilters", "Equipment")' + '?groupId=' + blockId + '&sortField=' + currentSortField + ' &sortType=' + currentSortType;
+
+                                $.get(url, function (data) {
+                                    $('#tabs .tabContent #table_block_' + blockId).html(data);
+                                    $('#Table_' + blockId + ' th').removeClass('active - sort asc desc').find('i').remove();
+
+                                    var thElement = $('#Table_' + blockId + ' a[data-sortfield="' + currentSortField + '"]').closest('th');
+
+                                    if (currentSortType === 'Ascending') {
+                                        thElement.append('<i class="bi bi-caret-down-fill"></i>');
+                                    } else {
+                                        thElement.append('<i class="bi bi-caret-up-fill"></i>');
+                                    }
+
+                                    thElement.addClass('active-sort ' + currentSortType);
+                                    var buttonToChange = $(`#sort-block button[data-sort-type="${blockId}"]`);
+
+                                    if (buttonToChange.length > 0) {
+                                        buttonToChange.find('.count-trucks').text('( ' + $('#tabs .tabContent #table_block_' + blockId + ' tbody tr').length + ' )');
+                                    }
+                                });
+                            }
+                            else {
+                                var url = '@Url.Action("GetTrucksInGroupByFilters", "Equipment")' + '?groupId=' + blockId;
+
+                                $.get(url, function (data) {
+                                    $('#tabs .tabContent #table_block_' + blockId).html(data);
+                                    $('#Table_' + blockId + ' th').removeClass('active - sort asc desc').find('i').remove();
+
+                                    var buttonToChange = $(`#sort-block button[data-sort-type="${blockId}"]`);
+
+                                    if (buttonToChange.length > 0) {
+                                        buttonToChange.find('.count-trucks').text('( ' + $('#tabs .tabContent #table_block_' + blockId + ' tbody tr').length + ' )');
+                                    }
+                                });
+                            }
+                        }
+                        else {
+                            WarningAlert('@Localizer["MessageErrorRemoveTruck"]');
+                        }
+                    },
+                    error: function () {
+                        ErrorAlert('@Localizer["MessageErrorRequestRemoveTruck"]');
+                    }
+                });
+
+                $(modalSelectorr).modal('hide');
+            });
+        });
+    }
+</script>
+
+<script>
+    async function convertStatusToSelect(index) {
+        var textElement = document.getElementById('container-click-truck-status-' + index);
+        var selectContainer = document.getElementById('select-container-truck-status-' + index);
+        var selectElement = document.getElementById('select-truck-status-' + index);
+
+        textElement.style.display = 'none';
+        selectElement.style.display = 'inline-block';
+
+        document.addEventListener('click', clickOutsideHandler);
+
+        try {
+            var response = await fetch('@Url.Action("GetTruckStatusDropdownItems", "Equipment")');
+            var data = await response.json();
+
+            data.forEach(function (item) {
+                var option = document.createElement('option');
+                option.value = item.id;
+                option.text = item.name;
+                selectElement.appendChild(option);
+            });
+
+            var selectedValue = textElement.innerText;
+            if (selectedValue) {
+                var matchingOption = Array.from(selectElement.options).find(option => option.text === selectedValue);
+
+                if (matchingOption) {
+                    matchingOption.selected = true;
+                }
+            }
+        } catch (error) {
+        }
+    }
+
+    function clickOutsideHandler(event) {
+        var target = event.target;
+
+        if (!target.closest('.select-container')) {
+            var selectContainers = document.querySelectorAll('.select-container select');
+
+            selectContainers.forEach(function (select) {
+                while (select.options.length > 0) {
+                    select.remove(0);
+                }
+            });
+
+            selectContainers.forEach(function (container) {
+                container.style.display = 'none';
+            });
+
+            var textElements = document.querySelectorAll('.value-td .badge');
+
+            textElements.forEach(function (textElement) {
+                textElement.style.display = 'inline-block';
+            });
+
+            document.removeEventListener('click', clickOutsideHandler);
+        }
+    }
+
+    async function convertLocationToInput(index) {
+        var textElement = document.getElementById('container-click-truck-location-' + index);
+        var selectContainer = document.getElementById('input-truck-location-container-' + index);
+        var selectElement = document.getElementById('input-truck-location-' + index);
+
+        textElement.style.display = 'none';
+        selectContainer.style.display = 'flex';
+
+        document.addEventListener('click', clickOutsideInputLocationHandler);
+    }
+
+    function clickOutsideInputLocationHandler(event) {
+        var target = event.target;
+
+        if (!target.closest('.input-location-container')) {
+            var selectContainers = document.querySelectorAll('.input-location-container');
+
+            selectContainers.forEach(function (container) {
+                container.style.display = 'none';
+            });
+
+            var textElements = document.querySelectorAll('.value-td .panel-control');
+
+            textElements.forEach(function (textElement) {
+                textElement.style.display = 'flex';
+            });
+
+            document.removeEventListener('click', clickOutsideInputLocationHandler);
+        }
+    }
+
+    function submitForm(index) {
+        var textElement = document.getElementById('container-click-truck-status-' + index);
+        var selectElement = document.getElementById('select-truck-status-' + index);
+        var selectContainer = document.getElementById('select-container-truck-status-' + index);
+
+        var selectedValue = selectElement.value;
+        var blockId = $(textElement).closest('.table-truck-container').attr('data-group-id');
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("SaveTruckStatus", "Equipment")',
+            data: {
+                truckId: index,
+                truckStatusId: selectedValue
+            },
+            success: function (response) {
+                if (response) {
+                    SuccessAlert('@Localizer["MessageSuccessChangeStatus"]');
+
+                    var upArrowIcon = $('#table_block_' + blockId + ' i.bi-caret-up-fill');
+
+                    var downArrowIcon = $('#table_block_' + blockId + ' i.bi-caret-down-fill');
+
+                    let filter;
+
+                    if (upArrowIcon.length > 0) {
+                        filter = upArrowIcon;
+                    } else if (downArrowIcon.length > 0) {
+                        filter = downArrowIcon;
+                    }
+
+                    if (filter !== undefined && filter.length > 0) {
+
+                        var aElement = filter.closest('th').find('a');
+
+                        var currentSortField = aElement.data('sortfield');
+
+                        var currentSortType = aElement.data('sorttype');
+
+                        currentSortType = (currentSortType === 'Ascending') ? 'Descending' : 'Ascending';
+
+                        var url = '@Url.Action("GetTrucksInGroupByFilters", "Equipment")' + '?groupId=' + blockId + '&sortField=' + currentSortField + ' &sortType=' + currentSortType;
+
+                        $.get(url, function (data) {
+                            $('#tabs .tabContent #table_block_' + blockId).html(data);
+
+                            $('#Table_' + blockId + ' th').removeClass('active - sort asc desc').find('i').remove();
+
+                            var thElement = $('#Table_' + blockId + ' a[data-sortfield="' + currentSortField + '"]').closest('th');
+
+                            if (currentSortType === 'Ascending') {
+                                thElement.append('<i class="bi bi-caret-down-fill"></i>');
+                            } else {
+                                thElement.append('<i class="bi bi-caret-up-fill"></i>');
+                            }
+
+                            thElement.addClass('active-sort ' + currentSortType);
+                        });
+                    }
+                    else {
+                        var url = '@Url.Action("GetTrucksInGroupByFilters", "Equipment")' + '?groupId=' + blockId;
+
+                        $.get(url, function (data) {
+                            $('#tabs .tabContent #table_block_' + blockId).html(data);
+
+                            $('#Table_' + blockId + ' th').removeClass('active - sort asc desc').find('i').remove();
+                        });
+                    }
+
+                    updateWidgets();
+                }
+                else {
+                    WarningAlert('@Localizer["MessageErrorChangeStatus"]');
+                }
+            },
+            error: function (error) {
+            }
+        });
+    }
+
+
+    function submitTruckLocationForm(index) {
+        var textElement = document.getElementById('container-click-truck-location-' + index);
+        var selectElement = document.getElementById('input-truck-location-' + index);
+        var selectContainer = document.getElementById('input-truck-location-container-' + index);
+
+        var selectedValue = selectElement.value;
+        var blockId = $(textElement).closest('.table-truck-container').attr('data-group-id');
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("SaveTruckLocation", "Equipment")',
+            data: {
+                truckId: index,
+                truckLocation: selectedValue
+            },
+            success: function (response) {
+                if (response) {
+                    SuccessAlert('@Localizer["MessageSuccessChangeLocation"]');
+
+                    var upArrowIcon = $('#table_block_' + blockId + ' i.bi-caret-up-fill');
+
+                    var downArrowIcon = $('#table_block_' + blockId + ' i.bi-caret-down-fill');
+
+                    let filter;
+
+                    if (upArrowIcon.length > 0) {
+                        filter = upArrowIcon;
+                    } else if (downArrowIcon.length > 0) {
+                        filter = downArrowIcon;
+                    }
+
+                    if (filter !== undefined && filter.length > 0) {
+
+                        var aElement = filter.closest('th').find('a');
+
+                        var currentSortField = aElement.data('sortfield');
+
+                        var currentSortType = aElement.data('sorttype');
+
+                        currentSortType = (currentSortType === 'Ascending') ? 'Descending' : 'Ascending';
+
+                        var url = '@Url.Action("GetTrucksInGroupByFilters", "Equipment")' + '?groupId=' + blockId + '&sortField=' + currentSortField + ' &sortType=' + currentSortType;
+
+                        $.get(url, function (data) {
+                            $('#tabs .tabContent #table_block_' + blockId).html(data);
+
+                            $('#Table_' + blockId + ' th').removeClass('active - sort asc desc').find('i').remove();
+
+                            var thElement = $('#Table_' + blockId + ' a[data-sortfield="' + currentSortField + '"]').closest('th');
+
+                            if (currentSortType === 'Ascending') {
+                                thElement.append('<i class="bi bi-caret-down-fill"></i>');
+                            } else {
+                                thElement.append('<i class="bi bi-caret-up-fill"></i>');
+                            }
+
+                            thElement.addClass('active-sort ' + currentSortType);
+                        });
+                    }
+                    else {
+                        var url = '@Url.Action("GetTrucksInGroupByFilters", "Equipment")' + '?groupId=' + blockId;
+
+                        $.get(url, function (data) {
+                            $('#tabs .tabContent #table_block_' + blockId).html(data);
+
+                            $('#Table_' + blockId + ' th').removeClass('active - sort asc desc').find('i').remove();
+                        });
+                    }
+                }
+                else {
+                    WarningAlert('@Localizer["MessageErrorChangeLocation"]');
+                }
+            },
+            error: function (error) {
+            }
+        });
+    }
+</script>
+
+<script>
+    // Функция для синхронизации ширины столбцов таблиц
+    function syncColumnWidths() {
+        var tables = document.querySelectorAll('.all-trucks table');
+
+        var maxColumnWidths = [];
+
+        tables.forEach(function (table) {
+            var secondThead = table.querySelectorAll('thead')[1];
+            var secondThs = secondThead.querySelectorAll('th');
+
+            // Сохраняем ширину столбцов для каждой таблицы
+            secondThs.forEach(function (th, index) {
+                var width = th.offsetWidth;
+                if (!maxColumnWidths[index] || width > maxColumnWidths[index]) {
+                    maxColumnWidths[index] = width;
+                }
+            });
+        });
+
+        // Устанавливаем максимальные ширины столбцов для всех таблиц
+        tables.forEach(function (table) {
+            var secondThead = table.querySelectorAll('thead')[1];
+            var secondThs = secondThead.querySelectorAll('th');
+
+            secondThs.forEach(function (th, index) {
+                th.style.width = maxColumnWidths[index] + 'px';
+            });
+        });
+    }
+
+    // Вызываем функцию при изменении размера окна браузера
+    window.addEventListener('resize', syncColumnWidths);
+
+</script>

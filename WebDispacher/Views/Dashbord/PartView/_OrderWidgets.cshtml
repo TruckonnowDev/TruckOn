@@ -1,0 +1,170 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization;
+@using WebDispacher.Constants;
+@model List<DaoModels.DAO.Models.OrderStatusWidget>
+@inject IViewLocalizer Localizer
+
+<div class="group-widgets">
+
+    @foreach (var item in Model)
+    {
+        @await Html.PartialAsync("~/Views/PartView/Widgets/_Widget.cshtml", item)
+    }
+
+    @if (Model != null && Model.Count < WidgetConstants.MaxWidgetsInNormalCompany)
+    {
+        <div class="widget add-widget-button" style="margin-bottom:12px;" onclick="createNewStatus()">
+            <div class="widget-item">
+                <span class="fas">+</span>
+            </div>
+            <div class="widget-status-name"></div>
+        </div>
+    }
+</div>
+
+<script>
+    function editWidget(id) {
+        var modalContainer = $('#modalEditWidgetFormContainer');
+
+        $('#modalEditWidgetFormContainer').off('submit', '#editWidget form');
+        $('#editWidget').off('hidden.bs.modal');
+
+        modalContainer.load('@Url.Action("GetWidgetForm", "Dashbord")?id=' + id, function () {
+            $("#editWidget").modal('show');
+
+            $('#modalEditWidgetFormContainer').on('submit', '#editWidget form', function (event) {
+                event.preventDefault();
+                saveWidgetAndRefreshItems();
+            });
+
+            $('#addWidget').on('hidden.bs.modal', function () {
+
+            });
+        });
+    }
+
+    function createNewStatus() {
+        var modalContainer = $('#modalCreateWidgetFormContainer');
+
+        $('#modalCreateWidgetFormContainer').off('submit', '#addWidget form');
+        $('#addWidget').off('hidden.bs.modal');
+
+        modalContainer.load('@Url.Action("GetCreateWidgetForm", "Dashbord")', function () {
+            $("#addWidget").modal('show');
+
+            $('#modalCreateWidgetFormContainer').on('submit', '#addWidget form', function (event) {
+                event.preventDefault();
+                saveNewWidgetAndRefreshItems();
+            });
+
+            $('#addWidget').on('hidden.bs.modal', function () {
+
+            });
+        });
+    }
+
+    function saveWidgetAndRefreshItems() {
+        var form = $('#editWidget form');
+        $.ajax({
+            url: '/Order/UpdateWidget',
+            type: 'POST',
+            data: form.serialize(),
+            success: function (data) {
+                var newBody = $('.modal-body', data);
+
+                var isValid = newBody.find('[name="IsValid"]').val() == 'True';
+
+                if (isValid) {
+                    $('#editWidget').modal('hide');
+                    $('#statusName').val('');
+                    SuccessAlert("@Localizer["OrderWidgetSuccessUpdated"]");
+                    updateWidgets();
+                } else {
+                    $('#modalEditWidgetFormContainer').find('.modal-body').replaceWith(newBody);
+                    InitializeEditTruck();
+                }
+            },
+            error: function () {
+                WarningAlert("@Localizer["OrderWidgetNotUpdated"]")
+            }
+        });
+    }
+
+    function saveNewWidgetAndRefreshItems() {
+        var form = $('#addWidget form');
+        $.ajax({
+            url: '/Order/SaveWidget',
+            type: 'POST',
+            data: form.serialize(),
+            success: function (data) {
+                var newBody = $('.modal-body', data);
+
+                var isValid = newBody.find('[name="IsValid"]').val() == 'True';
+
+                if (isValid) {
+                    $('#addWidget').modal('hide');
+                    $('#statusName').val('');
+                    SuccessAlert("@Localizer["OrderWidgetSuccessAdded"]");
+                    updateWidgets();
+                } else {
+                    console.log($('#modalCreateWidgetFormContainer').find('.modal-body'));
+                    $('#modalCreateWidgetFormContainer').find('.modal-body').replaceWith(newBody);
+                    InitializeCreateTruck();
+                }
+            },
+            error: function () {
+                WarningAlert("@Localizer["OrderWidgetNotAdded"]")
+            }
+        });
+    }
+</script>
+
+
+<style>
+    .group-widgets {
+        display: flex;
+        position: relative;
+        gap: 20px
+    }
+
+        .group-widgets .widget.add-widget-button .widget-item {
+            background: none;
+            border: 3px dashed gray;
+            box-shadow: none;
+            height: 60px;
+            width: 60px;
+            margin-top: 6px;
+            border-radius: 50%;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            -o-user-select: none;
+            user-select: none;
+        }
+
+            .group-widgets .widget.add-widget-button .widget-item .big-circle {
+                position: absolute;
+                content: "";
+                height: 70px;
+                width: 70px;
+                bottom: -11px;
+                left: -11px;
+                z-index: -2;
+                border-radius: 50%;
+                border: 3px dashed gray;
+                background: none;
+            }
+
+            .group-widgets .widget.add-widget-button .widget-item .fas {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                text-decoration: none;
+                font-weight: normal;
+                color: gray;
+                font-size: 38px;
+                text-shadow: none;
+            }
+</style>

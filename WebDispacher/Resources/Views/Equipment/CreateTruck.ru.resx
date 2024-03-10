@@ -195,4 +195,118 @@
   <data name="ChooseVehicleCategory" xml:space="preserve">
     <value>Выберите тип авто</value>
   </data>
+  <data name="ChooseTruckStatus" xml:space="preserve">
+    <value>Выберите статус грузовика</value>
+  </data>
+  <data name="TruckStatusActive" xml:space="preserve">
+    <value>Активный</value>
+  </data>
+  <data name="TruckStatusInactive" xml:space="preserve">
+    <value>Неактивный</value>
+  </data>
+  <data name="TruckStatusDamaged" xml:space="preserve">
+    <value>Поврежденный</value>
+  </data>
+  <data name="TruckStatusBroken" xml:space="preserve">
+    <value>Сломанный</value>
+  </data>
+  <data name="TruckStatusShop" xml:space="preserve">
+    <value>Магазин</value>
+  </data>
+  <data name="TruckStatusDealership" xml:space="preserve">
+    <value>Дилерский центр</value>
+  </data>
+  <data name="TruckStatusTowYard" xml:space="preserve">
+    <value>Буксирная площадка</value>
+  </data>
+  <data name="TruckStatusEmergency" xml:space="preserve">
+    <value>Аварийный</value>
+  </data>
+  <data name="TruckStatus" xml:space="preserve">
+    <value>Статус грузовика</value>
+  </data>
+  <data name="NameTruckLabelInfo" xml:space="preserve">
+    <value>Поразите воображение увлекательным названием</value>
+  </data>
+  <data name="YearLabelInfo" xml:space="preserve">
+    <value>Укажите год, в котором разворачивается Ваша автомобильная история</value>
+  </data>
+  <data name="MakeLabelInfo" xml:space="preserve">
+    <value>Введите название производителя, стоящего за Вашей автомобильной гордостью</value>
+  </data>
+  <data name="ModelLabelInfo" xml:space="preserve">
+    <value>Введите название модели Вашего грузовика</value>
+  </data>
+  <data name="TruckGroupSuccessAdded" xml:space="preserve">
+    <value>Успешно добавлена новая группа грузовиков</value>
+  </data>
+  <data name="TruckGroupNotAdded" xml:space="preserve">
+    <value>Не удалось добавить новую группу грузовиков</value>
+  </data>
+  <data name="ChooseGroupType" xml:space="preserve">
+    <value>Выберите группу грузовика</value>
+  </data>
+  <data name="CreateNewGroupType" xml:space="preserve">
+    <value>...Добавить новую группу</value>
+  </data>
+  <data name="VinLabelInfo" xml:space="preserve">
+    <value>Введите VIN (идентификационный номер транспортного средства) – 17-значный код, однозначно идентифицирующий марку, модель, год выпуска и основные детали грузовика.</value>
+  </data>
+  <data name="PlateTruckLabelInfo" xml:space="preserve">
+    <value>Номерной знак грузовика: Введите номерной знак или регистрационный идентификатор, связанный с грузовиком, для точного и эффективного ведения учета.</value>
+  </data>
+  <data name="PlateExpLabelInfo" xml:space="preserve">
+    <value>Срок действия номерного знака истекает: Введите дату истечения срока действия номерного знака грузовика для своевременного контроля и соблюдения требований к регистрации.</value>
+  </data>
+  <data name="StateLabelInfo" xml:space="preserve">
+    <value>Штат: Укажите штат или юрисдикцию, в которой зарегистрирован грузовик, предоставив необходимую информацию о местоположении для административных и регулирующих целей.</value>
+  </data>
+  <data name="ColorLabelInfo" xml:space="preserve">
+    <value>Цвет: Введите основной цвет грузовика, обеспечивая визуальную привязку для идентификации и повышения точности записи.</value>
+  </data>
+  <data name="OwnerLabelInfo" xml:space="preserve">
+    <value>Propietario: Ingrese el nombre o la identificación del propietario actual del camión, lo que facilita la documentación precisa de la propiedad y la información de contacto para fines administrativos.</value>
+  </data>
+  <data name="TruckStatusLabelInfo" xml:space="preserve">
+    <value>Статус грузовика: Выберите текущее рабочее состояние или комплектацию грузовика из доступных опций, отражающих его статус в системе для всестороннего отслеживания и управления.</value>
+  </data>
+  <data name="GroupTruck" xml:space="preserve">
+    <value>Группа грузовика</value>
+  </data>
+  <data name="TypeTruckLabelInfo" xml:space="preserve">
+    <value>Тип грузового автомобиля: Укажите конкретную категорию или конфигурацию грузового автомобиля, выбрав один из доступных вариантов, указав его отличительный дизайн для эффективной классификации и организации.</value>
+  </data>
+  <data name="VehicleCategoryLabelInfo" xml:space="preserve">
+    <value>Категория транспортного средства: Укажите общую классификацию грузовика, выбрав один из предоставленных вариантов, определив его общий тип для эффективной классификации и ведения учета.</value>
+  </data>
+  <data name="CreateNewTruckStatus" xml:space="preserve">
+    <value>Добавить новый статус</value>
+  </data>
+  <data name="TruckStatusSuccessAdded" xml:space="preserve">
+    <value>Успешно добавлен новый статус грузовика</value>
+  </data>
+  <data name="TruckStatusNotAdded" xml:space="preserve">
+    <value>Не удалось добавить новый статус грузовиков</value>
+  </data>
+  <data name="TruckLocation" xml:space="preserve">
+    <value>Добавьте местоположение объекта</value>
+  </data>
+  <data name="ErrorMessageSelect" xml:space="preserve">
+    <value>Пожалуйста, сделайте выбор из выпадающего списка</value>
+  </data>
+  <data name="AnnualIns" xml:space="preserve">
+    <value>Ежегодная проверка</value>
+  </data>
+  <data name="TruckLocationType" xml:space="preserve">
+    <value>Тип местоположения</value>
+  </data>
+  <data name="MannuallyLocationType" xml:space="preserve">
+    <value>Местоположение вручную</value>
+  </data>
+  <data name="GPSLocationType" xml:space="preserve">
+    <value>Местоположение по GPS</value>
+  </data>
+  <data name="LaterLocationType" xml:space="preserve">
+    <value>Местоположение позже</value>
+  </data>
 </root>

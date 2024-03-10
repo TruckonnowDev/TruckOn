@@ -14,20 +14,20 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form>                        
+                    <form>
                         <div class="form-group">
-                                <label for="">
-                                    @Localizer["SubjectMessage"]:
-                            <input id="subjectId" type="text" class="modal-inp-text validation subject-input" required />
-                                </label>
-                            </div>
-                        
-                            <div class="form-group">
-                                <label for="">
-                                    @Localizer["MessageBox"]:
+                            <label for="">
+                                @Localizer["SubjectMessage"]:
+                                <input id="subjectId" type="text" class="modal-inp-text validation subject-input" required />
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="">
+                                @Localizer["MessageBox"]:
                                 <textarea type="text" id="messageBox" class="modal-inp-text textarea-resize-none message-area-input" name="messageBox" style="height:200px;" required></textarea>
-                                </label>
-                            </div>
+                            </label>
+                        </div>
                         <div class="form-group full-label">
                             <button type="button" class="button-custom submit-add" id="remove-entry-button" onclick="SendEmail()">@Localizer["SendEmail"]</button>
                         </div>
@@ -204,7 +204,7 @@
         border-bottom: 0;
     }
 
-    .modal-header .close{
-        padding: 1rem 1rem 1rem 0.5rem;
-    }
+        .modal-header .close {
+            padding: 1rem 1rem 1rem 0.5rem;
+        }
 </style>

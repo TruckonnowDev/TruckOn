@@ -73,8 +73,6 @@ function CheckValid(elementFileId, elementInputId, errorMessage ="Selected file 
 }
 
 function GetFileName(str, id) {
-    console.log(str);
-    console.log(id);
     if (str.lastIndexOf('\\')) {
         var i = str.lastIndexOf('\\') + 1;
     } else {
@@ -91,26 +89,57 @@ function GetFileName(str, id) {
     }
 }
 
-function CheckValidDoB(e, inputId, errorMessageClassNameElem, label) {
-    let currentDoB = $(`#${inputId}`);
+function CheckValidDoB(e, labelId, inputId, errorMessageClassNameElem, customErrorMessage) {
+    let label = document.getElementById(labelId);
+    let currentDoB = label.querySelector(`#${inputId}`);
+    let errorMessageElem = label.querySelector(`.${errorMessageClassNameElem}`);
     let dtNow = new Date();
-    let currentDoBValue = currentDoB.val();
-    
-    if (currentDoBValue !== "underfiend" && currentDoBValue !== "") {
+    let currentDoBValue = currentDoB.value;
+    if (currentDoBValue !== "undefined" && currentDoBValue !== "") {
         let currentDate = new Date(currentDoBValue);
-
         if (dtNow >= currentDate) { }
         else {
             e.preventDefault();
-            document.getElementsByClassName(errorMessageClassNameElem)[0].innerHTML = '<i class="bi bi-exclamation-circle-fill" style="font-size: 16px"></i> Please enter a valid date';
-            currentDoB.addClass("danger-input");
-            document.getElementById(label).scrollIntoView();
+            errorMessageElem.innerHTML = `<i class="bi bi-exclamation-circle-fill" style="font-size: 16px"></i> ${customErrorMessage || 'Please enter a valid date'}`;
+            currentDoB.classList.add("danger-input");
+            label.scrollIntoView();
         }
     }
     else {
         e.preventDefault();
-        document.getElementsByClassName(errorMessageClassNameElem)[0].innerHTML = '<i class="bi bi-exclamation-circle-fill" style="font-size: 16px"></i>Please fill in a complete birthday';
-        currentDoB.addClass("danger-input");
-        document.getElementById(label).scrollIntoView();
+        errorMessageElem.innerHTML = `<i class="bi bi-exclamation-circle-fill" style="font-size: 16px"></i> ${customErrorMessage || 'Please fill in a complete date'}`;
+        currentDoB.classList.add("danger-input");
+        label.scrollIntoView();
+    }
+}
+
+function CheckValidExp(e, labelId, inputId, errorMessageClassNameElem, customErrorMessage) {
+    let label = document.getElementById(labelId);
+    let currentExpDateInput = label.querySelector(`#${inputId}`);
+    let errorMessageElem = label.querySelector(`.${errorMessageClassNameElem}`);
+    let currentDate = new Date();
+    let currentExpDateValue = currentExpDateInput.value;
+    if (currentExpDateValue !== "undefined" && currentExpDateValue !== "") {
+        let expDate = new Date(currentExpDateValue);
+        expDate.setHours(23, 59, 59, 999);
+        let maxAllowedDate = new Date();
+        maxAllowedDate.setFullYear(maxAllowedDate.getFullYear() + 20);
+        if (expDate <= maxAllowedDate && expDate >= currentDate)
+        {
+        }
+        else
+        {
+            e.preventDefault();
+            errorMessageElem.innerHTML = `<i class="bi bi-exclamation-circle-fill" style="font-size: 16px"></i> ${customErrorMessage || 'Please enter a valid date within the next 20 years'}`;
+            currentExpDateInput.classList.add("danger-input");
+            label.scrollIntoView();
+        }
+    }
+    else
+    {
+        e.preventDefault();
+        errorMessageElem.innerHTML = `<i class="bi bi-exclamation-circle-fill" style="font-size: 16px"></i> ${customErrorMessage || 'Please fill in a complete date'}`;
+        currentExpDateInput.classList.add("danger-input");
+        label.scrollIntoView();
     }
 }
